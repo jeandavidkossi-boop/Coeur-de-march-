@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cœur de Marché Bouaflé</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 font-sans">
-    <header class="bg-purple-800 text-white p-8 shadow-xl rounded-b-3xl text-center">
+<body class="bg-gray-50 font-sans text-center">
+    <header class="bg-purple-800 text-white p-8 shadow-xl rounded-b-3xl">
         <div class="w-28 h-28 bg-white rounded-full mx-auto mb-4 overflow-hidden border-4 border-white shadow-lg">
             <img src="IMG-20260115-WA0005.jpg" alt="Logo Cœur de Marché" class="w-full h-full object-contain">
         </div>
@@ -16,13 +17,30 @@
     </header>
 
     <main class="p-6">
-        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center">
+        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-6">
             <h2 class="text-xl font-bold text-gray-800 leading-tight">Bienvenue à Bouaflé</h2>
-            <p class="text-gray-600 mt-2">Le carrefour digital de la Marahoué arrive bientôt.</p>
-            <button class="mt-6 w-full bg-purple-700 text-white py-4 rounded-2xl font-bold shadow-lg">
-                Bientôt disponible
-            </button>
+            <p class="text-gray-600 mt-2">Le carrefour digital de la Marahoué.</p>
+        </div>
+
+        <div class="mb-4">
+            <a href="https://wa.me/2250576326645?text=Bonjour%20Cœur%20de%20Marché%2C%20je%20suis%20un%20Client%20et%20je%20souhaite%20acheter%20des%20articles" 
+               class="flex items-center justify-center gap-3 w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-lg transition-all">
+                <i class="fas fa-shopping-basket"></i>
+                Espace Clients
+            </a>
+        </div>
+
+        <div>
+            <a href="https://wa.me/2250576326645?text=Bonjour%20Cœur%20de%20Marché%2C%20je%20suis%20un%20Commerçant%20et%20je%20souhaite%20exposer%20mes%20produits" 
+               class="flex items-center justify-center gap-3 w-full bg-purple-700 hover:bg-purple-800 text-white py-4 rounded-2xl font-bold shadow-lg transition-all border-2 border-white">
+                <i class="fas fa-store"></i>
+                Espace Commerçants
+            </a>
         </div>
     </main>
+
+    <footer class="mt-8 pb-8 text-gray-400 text-xs">
+        &copy; 2026 Cœur de Marché Bouaflé
+    </footer>
 </body>
 </html>
