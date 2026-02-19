@@ -1,4 +1,4 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -7,60 +7,87 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-gray-50 font-sans pb-24">
+<body class="bg-white font-sans pb-24">
 
-    <header class="bg-purple-800 p-6 rounded-b-[40px] shadow-xl">
-        <div class="flex justify-between items-center mb-6">
-            <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-16 h-16 bg-white rounded-full p-1 border-2 border-white shadow-md">
-            <span class="bg-orange-500 text-white text-[10px] font-bold px-4 py-2 rounded-full shadow-sm">Bouaflé - Marahoué</span>
+    <header class="bg-purple-900 p-6 rounded-b-[45px] shadow-2xl relative">
+        <div class="flex items-center gap-4 mb-4">
+            <div class="w-16 h-16 bg-white rounded-full p-1 shadow-md">
+                <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-full h-full object-contain rounded-full">
+            </div>
+            <div>
+                <h1 class="text-white text-xl font-bold">Cœur de Marché</h1>
+                <span class="bg-orange-500 text-white text-[9px] font-bold px-3 py-1 rounded-full uppercase">Bouaflé - Marahoué</span>
+            </div>
         </div>
-        <h1 class="text-white text-xl font-bold leading-tight mb-4 text-center">Le marché de Bouaflé dans votre poche.</h1>
     </header>
 
-    <main class="p-4 grid grid-cols-2 gap-4">
-        
-        <div class="bg-white rounded-2xl shadow-md border border-orange-100 overflow-hidden relative">
-            <img src="IMG-20260115-WA0005.jpg" alt="Produit" class="w-full h-32 object-cover">
-            <span class="absolute top-24 right-2 bg-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-lg shadow-md">500 FCFA</span>
-            <div class="p-3">
-                <h3 class="font-bold text-sm text-gray-800">Article de Mercerie</h3>
-                <p class="text-[9px] text-gray-400 uppercase">Nina Fashion</p>
-                <div class="flex gap-2 mt-3">
-                    <a href="https://wa.me/2250576326645" class="bg-orange-500 text-white p-2 rounded-lg flex-1 text-center"><i class="fab fa-whatsapp"></i></a>
-                    <button class="bg-purple-50 text-purple-800 text-[10px] font-bold py-2 px-3 rounded-lg flex-[2] border border-purple-100">Détails</button>
+    <main class="mt-6">
+        <div class="px-6 mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-bold text-gray-800 flex items-center gap-2 text-sm uppercase">
+                    <i class="fas fa-shopping-basket text-orange-500"></i> Articles à la une
+                </h2>
+                <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+            </div>
+            
+            <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+                <div class="min-w-[180px] bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden relative">
+                    <img src="IMG-20260115-WA0005.jpg" alt="Mercerie" class="w-full h-32 object-cover">
+                    <span class="absolute top-2 right-2 bg-orange-500 text-white text-[9px] font-bold px-2 py-1 rounded-lg">500 FCFA</span>
+                    <div class="p-4">
+                        <h3 class="font-bold text-xs text-gray-800">Article Mercerie</h3>
+                        <p class="text-[9px] text-gray-400">Nina Fashion</p>
+                    </div>
+                </div>
+                <div class="min-w-[180px] bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden relative">
+                    <div class="w-full h-32 bg-gray-100 flex items-center justify-center italic text-gray-300 text-[10px]">Photo Produit</div>
+                    <span class="absolute top-2 right-2 bg-orange-500 text-white text-[9px] font-bold px-2 py-1 rounded-lg">2500 FCFA</span>
+                    <div class="p-4">
+                        <h3 class="font-bold text-xs text-gray-800">Produit Marché</h3>
+                        <p class="text-[9px] text-gray-400">Bouaflé Central</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-md border border-orange-100 overflow-hidden relative">
-            <div class="w-full h-32 bg-gray-100 flex items-center justify-center text-gray-300 italic text-[10px]">Photo Produit</div>
-            <span class="absolute top-24 right-2 bg-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-lg shadow-md">2500 FCFA</span>
-            <div class="p-3">
-                <h3 class="font-bold text-sm text-gray-800">Produit Alimentaire</h3>
-                <p class="text-[9px] text-gray-400 uppercase">Marché Central</p>
-                <div class="flex gap-2 mt-3">
-                    <a href="https://wa.me/2250576326645" class="bg-orange-500 text-white p-2 rounded-lg flex-1 text-center"><i class="fab fa-whatsapp"></i></a>
-                    <button class="bg-purple-50 text-purple-800 text-[10px] font-bold py-2 px-3 rounded-lg flex-[2] border border-purple-100">Détails</button>
-                </div>
+        <div class="px-6 pb-10">
+            <div class="bg-gray-50 p-6 rounded-[35px] border border-gray-100 shadow-inner">
+                <h2 class="font-bold text-gray-800 mb-1">Espace Commerçants</h2>
+                <p class="text-[11px] text-gray-500 mb-6">Publiez vos produits ici</p>
+                
+                <form action="https://formspree.io/f/mkovzkoz" method="POST" class="space-y-4">
+                    <input type="text" name="produit" placeholder="Nom produit" class="w-full p-4 bg-white rounded-2xl border-none shadow-sm text-xs focus:ring-2 focus:ring-purple-500" required>
+                    <input type="tel" name="whatsapp" placeholder="Votre numéro WhatsApp" class="w-full p-4 bg-white rounded-2xl border-none shadow-sm text-xs focus:ring-2 focus:ring-purple-500" required>
+                    <button type="submit" class="w-full bg-purple-900 text-white py-4 rounded-2xl font-bold shadow-lg text-xs uppercase tracking-wider active:scale-95 transition-all">
+                        Diffuser mon article
+                    </button>
+                </form>
             </div>
         </div>
-
     </main>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-3 flex justify-around items-center shadow-2xl z-50">
-        <div class="text-center text-orange-600 flex flex-col items-center">
-            <i class="fas fa-home text-lg"></i>
-            <span class="text-[9px] font-bold mt-1">ACCUEIL</span>
-        </div>
-        <div class="text-center text-gray-400 flex flex-col items-center">
-            <i class="fas fa-store text-lg"></i>
-            <span class="text-[9px] font-bold mt-1">VENDEURS</span>
-        </div>
-        <div class="text-center text-gray-400 flex flex-col items-center">
-            <i class="fas fa-shopping-basket text-lg"></i>
-            <span class="text-[9px] font-bold mt-1">PANIER</span>
-        </div>
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-50 p-4 flex justify-around items-center shadow-[0_-10px_30px_rgba(0,0,0,0.05)] z-50">
+        <a href="#" class="flex flex-col items-center text-orange-600">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-[8px] font-bold mt-1 uppercase">Acceuil</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-gray-300">
+            <i class="fas fa-info-circle text-xl"></i>
+            <span class="text-[8px] font-bold mt-1 uppercase">Infos</span>
+        </a>
+        <a href="#" class="flex flex-col items-center text-gray-300">
+            <i class="fas fa-store text-xl"></i>
+            <span class="text-[8px] font-bold mt-1 uppercase">Boutiques</span>
+        </a>
+        <a href="https://wa.me/2250576326645" class="flex flex-col items-center text-green-500">
+            <i class="fab fa-whatsapp text-2xl"></i>
+            <span class="text-[8px] font-bold mt-1 uppercase">Contact</span>
+        </a>
     </nav>
 
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </body>
 </html>
