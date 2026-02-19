@@ -1,45 +1,21 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cœur de Marché Bouaflé</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        section { display: none; }
-        section.active { display: block; }
-        .btn-tap:active { transform: scale(0.95); transition: 0.1s; }
-    </style>
-</head>
-<body class="bg-gray-50 font-sans pb-24 text-gray-800">
-
-    <header class="bg-purple-900 p-6 rounded-b-[45px] shadow-2xl">
-        <div class="flex items-center gap-4">
-            <div class="w-16 h-16 bg-white rounded-full p-1 shadow-md">
-                <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-full h-full object-contain rounded-full">
-            </div>
-            <div>
-                <h1 class="text-white text-xl font-bold italic">Cœur de Marché</h1>
-                <span class="bg-orange-500 text-white text-[9px] font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">Bouaflé</span>
-            </div>
-        </div>
-    </header>
-
     <section id="accueil" class="active mt-6">
         <div class="px-6 mb-8">
-            <h2 class="font-bold text-gray-800 mb-4 text-xs uppercase flex items-center gap-2 tracking-wider">
-                <i class="fas fa-shopping-basket text-orange-500"></i> Articles à la une
+            <h2 class="font-bold text-gray-800 mb-4 text-xs uppercase flex items-center gap-2">
+                <i class="fas fa-certificate text-orange-500"></i> Boutiques Vérifiées à Bouaflé
             </h2>
-            <div class="flex gap-4 overflow-x-auto pb-4">
-                <div class="min-w-[200px] bg-white rounded-[30px] shadow-lg border border-purple-50 overflow-hidden relative">
+            <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+                <div class="min-w-[200px] bg-white rounded-[35px] shadow-xl border border-purple-50 overflow-hidden relative">
                     <img src="IMG-20260115-WA0005.jpg" alt="Produit" class="w-full h-36 object-cover">
                     <span class="absolute top-3 right-3 bg-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-md">500 FCFA</span>
+                    <div class="absolute top-3 left-3 bg-white/90 backdrop-blur px-2 py-1 rounded-lg flex items-center gap-1 shadow-sm border border-green-200">
+                        <i class="fas fa-check-circle text-green-500 text-[10px]"></i>
+                        <span class="text-[8px] font-bold text-green-700 uppercase">Vérifié</span>
+                    </div>
                     <div class="p-4">
                         <h3 class="font-bold text-xs uppercase text-purple-900">Article de Mercerie</h3>
-                        <p class="text-[9px] text-gray-400 mb-3">Vendu par : Nina Fashion</p>
-                        <a href="https://wa.me/2250576326645" class="btn-tap flex items-center justify-center gap-2 bg-green-500 text-white py-3 rounded-2xl text-[10px] font-bold uppercase shadow-sm">
-                            <i class="fab fa-whatsapp text-sm"></i> Commander
+                        <p class="text-[9px] text-gray-400 mb-3 italic">"On se connaît à Bouaflé, la confiance d'abord"</p>
+                        <a href="https://wa.me/2250576326645" class="flex items-center justify-center gap-2 bg-green-500 text-white py-3 rounded-2xl text-[10px] font-bold uppercase shadow-lg">
+                            <i class="fab fa-whatsapp"></i> Acheter Maintenant
                         </a>
                     </div>
                 </div>
@@ -47,61 +23,32 @@
         </div>
 
         <div class="px-6 mb-10">
-            <div class="bg-white p-7 rounded-[40px] shadow-xl border border-orange-50">
-                <h2 class="font-bold text-purple-900 text-sm mb-1 uppercase tracking-tight">Diagnostic Gratuit</h2>
-                <p class="text-[10px] text-gray-500 mb-6 font-medium italic">Votre boutique est-elle visible sur Google ?</p>
-                <form action="https://formspree.io/f/mkovzkoz" method="POST" class="space-y-4">
-                    <input type="text" name="produit" placeholder="Nom de votre produit" class="w-full p-4 bg-gray-50 rounded-2xl border-none shadow-inner text-xs focus:ring-2 focus:ring-orange-500 outline-none" required>
-                    <input type="tel" name="whatsapp" placeholder="Votre numéro WhatsApp" class="w-full p-4 bg-gray-50 rounded-2xl border-none shadow-inner text-xs focus:ring-2 focus:ring-orange-500 outline-none" required>
-                    <button type="submit" class="btn-tap w-full bg-orange-500 text-white py-4 rounded-2xl font-bold shadow-lg text-xs uppercase tracking-widest">Recevoir mon audit</button>
-                </form>
+            <div class="bg-gradient-to-r from-orange-500 to-red-500 p-6 rounded-[35px] shadow-lg text-white relative overflow-hidden">
+                <div class="relative z-10">
+                    <h3 class="font-bold text-sm uppercase mb-1">Offre Lancement</h3>
+                    <p class="text-[10px] font-medium opacity-90">1ère page en 30 jours ou remboursement garanti !</p>
+                    <button class="mt-4 bg-white text-orange-600 px-6 py-2 rounded-xl font-bold text-[10px] uppercase shadow-md">J'en profite</button>
+                </div>
+                <i class="fas fa-bolt absolute -right-4 -bottom-4 text-white/20 text-7xl rotate-12"></i>
             </div>
         </div>
     </section>
 
-    <section id="infos" class="mt-8 px-6">
-        <h2 class="font-bold text-purple-900 text-lg mb-6 uppercase text-center italic tracking-widest underline decoration-orange-500 underline-offset-8">Votre Marché Réinventé</h2>
-        <div class="space-y-6">
-            <div class="bg-white p-6 rounded-[35px] shadow-md border-l-8 border-orange-500">
-                <h3 class="font-bold text-[11px] text-orange-600 uppercase mb-2">Pour les Commerçants</h3>
-                <p class="text-[12px] text-gray-600 leading-relaxed">Ne laissez plus vos clients locaux aller ailleurs. Devenez la référence digitale de votre quartier.</p>
+    <section id="infos" class="mt-8 px-6 pb-20">
+        <div class="bg-white p-6 rounded-[40px] shadow-xl border border-purple-50 mb-8">
+            <h2 class="font-bold text-purple-900 text-sm mb-6 text-center uppercase tracking-widest">Le Bouche-à-oreille vs Le Digital</h2>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                    <span class="text-[10px] text-gray-500">Bouche-à-oreille</span>
+                    <span class="text-[10px] font-bold text-red-500">Lent & Limité</span>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-orange-50 rounded-2xl border border-orange-100">
+                    <span class="text-[10px] text-orange-700 font-bold">Cœur de Marché</span>
+                    <span class="text-[10px] font-bold text-orange-700">Immédiat & 24h/24</span>
+                </div>
             </div>
-            <div class="bg-white p-6 rounded-[35px] shadow-md border-l-8 border-purple-800">
-                <h3 class="font-bold text-[11px] text-purple-800 uppercase mb-2">Sécurité Garantie</h3>
-                <p class="text-[12px] text-gray-600 leading-relaxed">Nous vérifions physiquement l'existence des boutiques à Bouaflé pour en finir avec les arnaques.</p>
-            </div>
+            <p class="mt-6 text-[11px] text-gray-400 text-center italic">"Même l'étranger à la gare de Bouaflé vous trouvera en premier."</p>
         </div>
     </section>
-
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-around items-center shadow-2xl z-50">
-        <button onclick="showSection('accueil')" id="btn-accueil" class="flex flex-col items-center text-orange-600">
-            <i class="fas fa-home text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Accueil</span>
-        </button>
-        <button onclick="showSection('infos')" id="btn-infos" class="flex flex-col items-center text-gray-400">
-            <i class="fas fa-info-circle text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Infos</span>
-        </button>
-        <a href="https://wa.me/2250576326645" class="flex flex-col items-center text-green-500">
-            <i class="fab fa-whatsapp text-2xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Contact</span>
-        </a>
-    </nav>
-
-    <script>
-        function showSection(id) {
-            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            
-            // Mise à jour des couleurs des boutons
-            const btnAccueil = document.getElementById('btn-accueil');
-            const btnInfos = document.getElementById('btn-infos');
-            
-            if(id === 'accueil') {
-                btnAccueil.classList.replace('text-gray-400', 'text-orange-600');
-                btnInfos.classList.replace('text-orange-600', 'text-gray-400');
-            } else {
-                btnInfos.classList.replace('text-gray-400', 'text-orange-600');
-                btnAccueil.classList.replace('text-orange-600', 'text-gray-400');
-            }
-        }
-    </script>
-</body>
-</html>
+    
