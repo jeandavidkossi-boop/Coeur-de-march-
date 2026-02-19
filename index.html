@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cœur de Marché Bouaflé</title>
-    
     <link rel="manifest" href="manifest.json">
-    
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="IMG-20260115-WA0005.jpg">
     <link rel="icon" type="image/jpg" href="IMG-20260115-WA0005.jpg">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -28,7 +25,7 @@
             <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-full h-full object-contain">
         </div>
         <h1 class="text-white text-2xl font-black italic uppercase underline decoration-orange-500 underline-offset-4">Cœur de Marché</h1>
-        <p class="text-orange-400 text-[10px] font-bold uppercase tracking-[0.3em] mt-2 text-center">Bouaflé - Marahoué</p>
+        <p class="text-orange-400 text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Bouaflé - Marahoué</p>
     </header>
 
     <section id="accueil" class="active px-6 mt-10">
@@ -46,15 +43,19 @@
                 <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-md text-center"><i class="fas fa-leaf text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Vivrier</p></button>
                 <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-md text-center"><i class="fas fa-magic text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Beauté</p></button>
                 <button onclick="ouvrirRayon('Élevage')" class="bg-white p-6 rounded-[35px] shadow-md text-center"><i class="fas fa-egg text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Élevage</p></button>
+                <button onclick="ouvrirRayon('Légumes')" class="bg-white p-6 rounded-[35px] shadow-md text-center"><i class="fas fa-pepper-hot text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Légumes</p></button>
+                <button onclick="ouvrirRayon('Maison')" class="bg-white p-6 rounded-[35px] shadow-md text-center"><i class="fas fa-home text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Maison</p></button>
+                <button onclick="ouvrirRayon('Tech')" class="bg-white p-6 rounded-[35px] shadow-md text-center"><i class="fas fa-mobile-alt text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Tech</p></button>
+                <button onclick="ouvrirRayon('Services')" class="bg-white p-6 rounded-[35px] shadow-md text-center"><i class="fas fa-briefcase text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Services</p></button>
             </div>
         </div>
         <div id="vue-produits" class="hidden">
             <button onclick="retourRayons()" class="mb-6 text-orange-600 font-bold text-[10px] uppercase flex items-center gap-2"><i class="fas fa-arrow-left"></i> Retour</button>
-            <div id="liste-produits" class="space-y-6 text-center mx-auto"></div>
+            <div id="liste-produits" class="space-y-6"></div>
         </div>
     </section>
 
-    <section id="marchands" class="px-6 mt-10 pb-20 text-center mx-auto">
+    <section id="marchands" class="px-6 mt-10 pb-20">
         <div class="bg-white p-8 rounded-[50px] shadow-2xl border-t-8 border-purple-900 mb-10 text-center">
             <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic">Que voulez-vous vendre ?</h2>
             <form class="space-y-4">
@@ -64,21 +65,35 @@
             </form>
         </div>
 
-        <h2 class="text-purple-900 font-black text-xl mb-8 uppercase italic underline decoration-orange-500">Nos Offres Pro</h2>
+        <h2 class="text-purple-900 font-black text-xl mb-8 uppercase italic text-center underline decoration-orange-500">Nos Offres Pro</h2>
         <div class="space-y-4">
-            <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-gray-400 flex flex-col gap-4 text-center">
-                <div class="flex items-center gap-4 text-center mx-auto">
-                    <h4 class="font-black text-[10px] text-purple-900 uppercase">Flash<br><span class="text-orange-600">5 000 F</span></h4>
-                    <p class="text-[9px] text-gray-500 italic border-l pl-4">Bénéfice: Visibilité 24h/24 à Bouaflé.</p>
+            <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-gray-400 flex flex-col gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-1/4 text-center"><h4 class="font-black text-[10px] text-purple-900 uppercase">Flash<br><span class="text-orange-600">5 000 F</span></h4></div>
+                    <div class="w-3/4 border-l pl-4 flex items-center gap-2 text-gray-500 text-[9px] italic"><i class="fas fa-clock text-gray-400"></i> Visibilité 24h/24.</div>
                 </div>
                 <button onclick="souscrire('FLASH', '5 000 F')" class="w-full bg-gray-100 text-gray-500 py-3 rounded-2xl font-black text-[8px] uppercase">Souscrire Flash</button>
             </div>
-            <div class="bg-purple-900 p-6 rounded-[35px] shadow-xl text-white flex flex-col gap-4 text-center text-center">
-                <div class="flex items-center gap-4 text-center text-center mx-auto">
-                    <h4 class="font-black text-[10px] text-orange-500 uppercase text-center">VIP<br><span class="text-white">50 000 F</span></h4>
-                    <p class="text-[9px] italic opacity-90 border-l pl-4 text-center text-center">Bénéfice: Pub Facebook + Coaching.</p>
+            <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-blue-500 flex flex-col gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-1/4 text-center"><h4 class="font-black text-[10px] text-purple-900 uppercase">Standard<br><span class="text-orange-600">15 000 F</span></h4></div>
+                    <div class="w-3/4 border-l pl-4 flex items-center gap-2 text-gray-500 text-[9px] italic"><i class="fas fa-shield-alt text-blue-500"></i> 5 produits + Badge.</div>
                 </div>
-                <button onclick="souscrire('VIP', '50 000 F')" class="w-full bg-orange-500 text-white py-3 rounded-2xl font-black text-[8px] uppercase">Devenir Marchand VIP</button>
+                <button onclick="souscrire('STANDARD', '15 000 F')" class="w-full bg-blue-600 text-white py-3 rounded-2xl font-black text-[8px] uppercase">Souscrire Standard</button>
+            </div>
+            <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-orange-500 flex flex-col gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-1/4 text-center"><h4 class="font-black text-[10px] text-purple-900 uppercase">Éclair<br><span class="text-orange-600">25 000 F</span></h4></div>
+                    <div class="w-3/4 border-l pl-4 flex items-center gap-2 text-gray-500 text-[9px] italic"><i class="fas fa-camera text-orange-500"></i> Photos pro + Priorité.</div>
+                </div>
+                <button onclick="souscrire('ÉCLAIR', '25 000 F')" class="w-full bg-orange-500 text-white py-3 rounded-2xl font-black text-[8px] uppercase">Souscrire Éclair</button>
+            </div>
+            <div class="bg-purple-900 p-6 rounded-[35px] shadow-xl text-white flex flex-col gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-1/4 text-center border-r border-white/20"><h4 class="font-black text-[10px] text-orange-500 uppercase text-center">VIP<br><span class="text-white">50 000 F</span></h4></div>
+                    <div class="w-3/4 pl-4 flex items-center gap-2 text-[9px] italic opacity-90 text-center"><i class="fas fa-rocket text-orange-500"></i> Pub Facebook + Coaching.</div>
+                </div>
+                <button onclick="souscrire('VIP', '50 000 F')" class="w-full bg-orange-500 text-white py-3 rounded-2xl font-black text-[8px] uppercase">Devenir VIP</button>
             </div>
         </div>
     </section>
@@ -105,14 +120,14 @@
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             const container = document.getElementById('liste-produits');
-            container.innerHTML = (produits[nom] || []).map(p => `<div class="bg-white rounded-[45px] shadow-xl overflow-hidden text-center mx-auto"><img src="${p.image}" class="w-full h-48 object-cover mx-auto"><div class="p-6 text-center"><h4 class="font-bold uppercase text-purple-900 text-center">${p.nom}</h4><p class="text-orange-600 font-black my-2 text-center">${p.prix}</p><a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="block bg-green-500 text-white py-4 rounded-3xl font-bold text-[9px] uppercase text-center">Commander</a></div></div>`).join('') || '<p class="text-center text-xs italic text-gray-400">Bientôt disponible...</p>';
+            container.innerHTML = (produits[nom] || []).map(p => `<div class="bg-white rounded-[45px] shadow-xl overflow-hidden text-center mx-auto mb-6"><img src="${p.image}" class="w-full h-48 object-cover"><div class="p-6 text-center"><h4 class="font-bold uppercase text-purple-900">${p.nom}</h4><p class="text-orange-600 font-black my-2">${p.prix}</p><a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="block bg-green-500 text-white py-4 rounded-3xl font-bold text-[9px] uppercase">Commander</a></div></div>`).join('') || '<p class="text-center text-xs italic text-gray-400">Bientôt disponible...</p>';
             window.scrollTo(0,0);
         }
         function retourRayons() { document.getElementById('vue-rayons').classList.remove('hidden'); document.getElementById('vue-produits').classList.add('hidden'); }
         function validerVente() {
             const b = document.getElementById('boutiqueNom').value;
             const a = document.getElementById('articlesInfos').value;
-            if(!b || !a) return alert("Veuillez remplir les informations.");
+            if(!b || !a) return alert("Veuillez remplir les champs.");
             window.location.href = `https://wa.me/2250576326645?text=${encodeURIComponent("Boutique: "+b+"\nVente: "+a)}`;
         }
         function souscrire(pack, prix) {
@@ -121,5 +136,5 @@
         }
     </script>
 </body>
-</html>
-
+    </html>
+    
