@@ -1,53 +1,110 @@
-    <section id="accueil" class="active px-6 pt-4 pb-28">
-        
-        <div class="mb-10 p-8 bg-white rounded-[45px] shadow-xl border border-purple-50 text-center relative overflow-hidden">
-            <h2 class="text-purple-900 font-black text-xl leading-tight mb-4 uppercase italic">
-                Cœur de Marché Bouaflé
-            </h2>
-            
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cœur de Marché Bouaflé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        section { display: none; }
+        section.active { display: block; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans pb-28 text-gray-900">
+
+    <header class="bg-purple-900 p-8 rounded-b-[50px] shadow-2xl text-center border-b-4 border-orange-500">
+        <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-28 h-28 bg-white rounded-full mx-auto mb-4 p-1 shadow-lg border-2 border-white">
+        <h1 class="text-white text-2xl font-black italic tracking-tighter uppercase">Cœur de Marché</h1>
+        <p class="text-orange-400 text-[10px] font-bold uppercase tracking-[0.3em]">Bouaflé - Marahoué</p>
+    </header>
+
+    <section id="accueil" class="active mt-8 px-6">
+        <div class="bg-white p-8 rounded-[45px] shadow-xl border border-purple-50 text-center mb-10">
+            <h2 class="text-purple-900 font-black text-lg mb-4 uppercase italic">Bienvenue !</h2>
             <p class="text-[11px] text-gray-600 mb-4 leading-relaxed">
-                <span class="font-bold text-orange-600">Aux commerçants :</span> Bienvenue sur Cœur de Marché ! [span_9](start_span)Ne laissez plus vos clients aller ailleurs ; devenez la référence digitale de votre quartier[span_9](end_span).
+                [span_0](start_span)<span class="font-bold text-orange-600">Aux commerçants :</span> Ne laissez plus vos clients aller ailleurs ; devenez la référence digitale de votre quartier[span_0](end_span).
             </p>
-
-            <div class="h-px w-12 bg-gray-200 mx-auto mb-4"></div>
-
+            <div class="h-px w-12 bg-gray-100 mx-auto mb-4"></div>
             <p class="text-[11px] text-gray-700 font-medium leading-relaxed italic">
-                <span class="font-bold text-purple-900 uppercase">Aux habitants de Bouaflé :</span> Ne délaissez pas nos commerçants locaux pour aller acheter ailleurs. [span_10](start_span)[span_11](start_span)[span_12](start_span)Trouvez tout ce qu'il vous faut ici, au cœur de notre ville[span_10](end_span)[span_11](end_span)[span_12](end_span).
+                <span class="font-bold text-purple-900 uppercase">Aux habitants :</span> Ne délaissez pas nos commerçants locaux pour aller acheter ailleurs. Trouvez tout ici, au cœur de notre ville.
             </p>
         </div>
 
-        <div class="bg-green-500 p-4 rounded-3xl mb-8 flex items-center gap-3 shadow-lg">
-            <div class="bg-white p-2 rounded-xl text-green-500 shadow-inner">
-                <i class="fas fa-shield-alt text-lg"></i>
+        <h3 class="font-bold text-gray-400 text-[10px] uppercase tracking-widest mb-4 px-2 italic">Pépites du Grand Marché</h3>
+        <div class="bg-white rounded-[45px] shadow-2xl border border-gray-50 overflow-hidden relative mb-10">
+            <img src="IMG-20260115-WA0005.jpg" class="w-full h-52 object-cover">
+            <div class="absolute top-4 left-4 bg-white/95 px-3 py-1 rounded-full flex items-center gap-2 shadow-md">
+                <i class="fas fa-check-circle text-green-500 text-xs"></i>
+                [span_1](start_span)<span class="text-[9px] font-bold text-purple-900 uppercase">Vendeur Vérifié à Bouaflé[span_1](end_span)</span>
             </div>
-            <div>
-                <h4 class="text-white font-bold text-[10px] uppercase">Achat 100% Sécurisé</h4>
-                [span_13](start_span)[span_14](start_span)<p class="text-green-100 text-[8px] italic">Nous vérifions l'existence réelle de chaque boutique à Bouaflé[span_13](end_span)[span_14](end_span).</p>
-            </div>
-        </div>
-
-        <div class="mb-6 flex justify-between items-center px-2">
-            <h3 class="font-bold text-gray-400 text-[10px] uppercase tracking-[0.2em]">Pépites du Grand Marché</h3>
-            <i class="fas fa-chevron-right text-orange-500 text-xs"></i>
-        </div>
-        
-        <div class="flex gap-5 overflow-x-auto no-scrollbar pb-6">
-            <div class="min-w-[240px] bg-white rounded-[40px] shadow-2xl border border-gray-50 overflow-hidden relative group">
-                <img src="IMG-20260115-WA0005.jpg" class="w-full h-48 object-cover transition-transform group-hover:scale-105">
-                <div class="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1 shadow-md border border-green-100">
-                    <i class="fas fa-certificate text-orange-500 text-[10px]"></i>
-                    <span class="text-[8px] font-bold text-purple-900 uppercase">Vendeur Vérifié</span>
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h4 class="font-bold text-sm text-purple-900 uppercase italic">Article de Qualité</h4>
+                    [span_2](start_span)<span class="text-orange-600 font-black text-sm italic underline decoration-2 underline-offset-4 tracking-tighter">Prix Direct Marché[span_2](end_span)</span>
                 </div>
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <h4 class="font-bold text-sm text-purple-900 uppercase">Article de Qualité</h4>
-                        <span class="text-orange-600 font-black text-sm italic">Prix Direct</span>
-                    </div>
-                    <a href="https://wa.me/2250576326645" class="block w-full bg-green-600 text-white text-center py-4 rounded-2xl font-bold text-[10px] uppercase shadow-lg active:scale-95 transition-all">
-                        [span_15](start_span)[span_16](start_span)Contacter le vendeur[span_15](end_span)[span_16](end_span)
-                    </a>
-                </div>
+                <a href="https://wa.me/2250576326645" class="block w-full bg-green-500 text-white text-center py-5 rounded-2xl font-bold text-[10px] uppercase shadow-lg active:scale-95 transition-all">
+                    [span_3](start_span)Contacter le Vendeur via WhatsApp[span_3](end_span)
+                </a>
             </div>
         </div>
     </section>
-    
+
+    <section id="boutique" class="mt-8 px-6">
+        <h2 class="text-purple-900 font-black text-xl mb-6 uppercase italic text-center underline decoration-orange-500 decoration-4 underline-offset-8">Nos Rayons</h2>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-[35px] shadow-md border border-gray-50 text-center">
+                <i class="fas fa-cut text-orange-500 text-xl mb-3"></i>
+                [span_4](start_span)<p class="text-[10px] font-bold uppercase tracking-tighter">Mercerie[span_4](end_span)</p>
+            </div>
+            <div class="bg-white p-6 rounded-[35px] shadow-md border border-gray-50 text-center">
+                <i class="fas fa-carrot text-orange-500 text-xl mb-3"></i>
+                [span_5](start_span)<p class="text-[10px] font-bold uppercase tracking-tighter">Vivres Frais[span_5](end_span)</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="marchands" class="mt-8 px-6">
+        <div class="bg-gradient-to-br from-purple-900 to-purple-800 p-8 rounded-[50px] shadow-2xl text-white mb-10 border-b-8 border-orange-500">
+            <h2 class="font-black text-xl text-orange-500 mb-4 italic uppercase">Boostez votre Boutique !</h2>
+            [span_6](start_span)<p class="text-xs italic mb-6 opacity-80 leading-relaxed">"Le bouche-à-oreille est lent, internet est immédiat[span_6](end_span)."</p>
+            <div class="space-y-4 text-[11px] mb-8">
+                [span_7](start_span)<p><i class="fas fa-check text-orange-500 mr-3"></i> 1ère page en 30 jours[span_7](end_span)</p>
+                [span_8](start_span)<p><i class="fas fa-check text-orange-500 mr-3"></i> Visibilité 24h/24[span_8](end_span)</p>
+                [span_9](start_span)<p><i class="fas fa-check text-orange-500 mr-3"></i> Remboursement garanti[span_9](end_span)</p>
+            </div>
+            <div class="bg-white text-purple-900 py-4 rounded-2xl font-black text-center text-xs shadow-inner">
+                [span_10](start_span)PACK À 25 000 F / MOIS[span_10](end_span)
+            </div>
+        </div>
+        <div class="text-center italic">
+            [span_11](start_span)<a href="https://wa.me/2250576326645" class="text-purple-900 font-bold text-[10px] uppercase border-b border-purple-900 pb-1">Demander mon Audit Gratuit[span_11](end_span)</a>
+        </div>
+    </section>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t p-5 flex justify-around items-center shadow-2xl z-50">
+        <button onclick="showSection('accueil')" class="text-orange-600 flex flex-col items-center">
+            <i class="fas fa-home text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Accueil</span>
+        </button>
+        <button onclick="showSection('boutique')" class="text-gray-400 flex flex-col items-center">
+            <i class="fas fa-store text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase tracking-tighter">Boutique</span>
+        </button>
+        <button onclick="showSection('marchands')" class="text-gray-400 flex flex-col items-center">
+            <i class="fas fa-user-tie text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase tracking-tighter">Marchands</span>
+        </button>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl -mt-14 border-4 border-white transition-transform active:scale-90">
+            <i class="fab fa-whatsapp text-2xl"></i>
+        </a>
+    </nav>
+
+    <script>
+        function showSection(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.replace('text-orange-600', 'text-gray-400'));
+            event.currentTarget.classList.replace('text-gray-400', 'text-orange-600');
+        }
+    </script>
+</body>
+</html>
