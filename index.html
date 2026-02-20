@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cœur de Marché Bouaflé</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="IMG-20260115-WA0005.jpg">
+    <link rel="icon" type="image/jpg" href="IMG-20260115-WA0005.jpg">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -12,97 +20,152 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="bg-gray-50 pb-32">
+<body class="bg-gray-50 font-sans pb-32 text-gray-900">
 
-    <header class="bg-purple-900 p-8 rounded-b-[50px] text-center border-b-4 border-orange-500 shadow-xl">
-        <div class="w-20 h-20 bg-white rounded-full mx-auto mb-3 overflow-hidden flex items-center justify-center">
-            <img src="IMG-20260115-WA0005.jpg" class="w-full h-full object-contain">
+    <header class="bg-purple-900 p-8 rounded-b-[50px] shadow-2xl text-center border-b-4 border-orange-500">
+        <div class="w-24 h-24 bg-white rounded-full mx-auto mb-4 p-1 shadow-lg border-2 border-white overflow-hidden flex items-center justify-center">
+            <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-full h-full object-contain">
         </div>
-        <h1 class="text-white text-xl font-black italic uppercase">Cœur de Marché</h1>
-        <p class="text-orange-400 text-[10px] font-bold tracking-widest uppercase text-center">Bouaflé - Marahoué</p>
+        <h1 class="text-white text-2xl font-black italic uppercase underline decoration-orange-500 underline-offset-4">Cœur de Marché</h1>
+        <p class="text-orange-400 text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Bouaflé - Marahoué</p>
     </header>
 
     <section id="accueil" class="active px-6 mt-6">
-        <div class="mb-6 relative">
-            <input type="text" id="mainSearch" onkeyup="rechercherArticle()" placeholder="Chercher un produit à Bouaflé..." class="w-full py-4 pl-12 pr-12 rounded-full shadow-lg text-xs focus:ring-2 focus:ring-orange-500 border-none outline-none">
-            <i class="fas fa-search absolute left-5 top-4 text-gray-400"></i>
-            <button onclick="lancerRechercheVocale()" class="absolute right-5 top-3.5 text-orange-500"><i class="fas fa-microphone text-lg" id="micIcon"></i></button>
-            <div id="resultatsRecherche" class="hidden mt-2 bg-white rounded-2xl shadow-xl p-4 absolute z-50 w-full border border-gray-100"></div>
+        
+        <div class="mb-8 relative text-center">
+            <div class="relative">
+                <i class="fas fa-search absolute left-5 top-4 text-gray-400"></i>
+                <input type="text" id="mainSearch" onkeyup="rechercherArticle()" 
+                       placeholder="Chercher un produit à Bouaflé..." 
+                       class="w-full bg-white border-none py-4 pl-12 pr-14 rounded-full shadow-lg text-[11px] focus:outline-none focus:ring-2 focus:ring-orange-500">
+                <button onclick="lancerRechercheVocale()" class="absolute right-5 top-3.5 text-orange-500">
+                    <i class="fas fa-microphone text-lg" id="micIcon"></i>
+                </button>
+            </div>
+            <div id="resultatsRecherche" class="hidden mt-2 bg-white rounded-2xl shadow-xl p-4 absolute z-50 w-full border border-gray-100 text-left"></div>
         </div>
 
-        <div class="bg-white p-6 rounded-[40px] shadow-lg border border-purple-50 text-center mb-6">
-            <h2 class="text-purple-900 font-black text-sm mb-4 uppercase underline decoration-orange-500 text-center">Bienvenue !</h2>
-            <p class="text-[10px] text-gray-600 italic mb-4 text-center">La vitrine n°1 de vos commerçants locaux à Bouaflé.</p>
+        <div class="bg-white p-8 rounded-[45px] shadow-xl border border-purple-50 text-center mb-8 mx-auto">
+            <h2 class="text-purple-900 font-black text-lg mb-4 uppercase italic underline decoration-orange-500 underline-offset-8">Bienvenue !</h2>
+            <p class="text-[11px] text-gray-600 italic leading-relaxed mb-6">
+                La vitrine n°1 de vos commerçants locaux à Bouaflé.
+            </p>
             <div class="flex gap-2 justify-center">
-                <button onclick="switchTab('boutique')" class="bg-purple-900 text-white px-5 py-2 rounded-xl text-[9px] font-bold uppercase">Explorer</button>
-                <button onclick="switchTab('marchands')" class="bg-orange-500 text-white px-5 py-2 rounded-xl text-[9px] font-bold uppercase">Vendre</button>
+                <button onclick="switchTab('boutique')" class="bg-purple-900 text-white px-6 py-2 rounded-xl text-[9px] font-bold uppercase shadow-md">Explorer</button>
+                <button onclick="switchTab('marchands')" class="bg-orange-500 text-white px-6 py-2 rounded-xl text-[9px] font-bold uppercase shadow-md">Vendre</button>
             </div>
         </div>
 
-        <div class="mb-6">
-            <h3 class="text-purple-900 font-black text-xs uppercase mb-3">Articles à la Une 🔥</h3>
-            <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
-                <div class="min-w-[140px] bg-white rounded-3xl shadow-md p-3 text-center border border-gray-100">
-                    <img src="IMG-20260115-WA0005.jpg" class="w-full h-20 object-cover rounded-xl mb-2 mx-auto">
-                    <p class="text-[9px] font-bold text-purple-900 uppercase">Nina Fashion</p>
-                    <a href="https://wa.me/2250576326645" class="text-[8px] text-orange-600 font-bold uppercase">Voir plus</a>
+        <div class="mb-10">
+            <h3 class="text-purple-900 font-black text-sm uppercase italic mb-4">Articles à la Une 🔥</h3>
+            <div class="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+                <div class="min-w-[160px] bg-white rounded-[30px] shadow-md overflow-hidden border border-gray-100">
+                    <img src="IMG-20260115-WA0005.jpg" class="w-full h-24 object-cover mx-auto">
+                    <div class="p-3 text-center">
+                        <p class="text-purple-900 font-bold text-[9px] uppercase italic">Nina Fashion</p>
+                        <p class="text-orange-600 font-black text-[10px] mb-2">Qualité Pro</p>
+                        <a href="https://wa.me/2250576326645" class="inline-block bg-green-500 text-white px-4 py-1 rounded-lg text-[8px] font-bold uppercase">Acheter</a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section id="boutique" class="px-6 mt-6">
+    <section id="boutique" class="px-6 mt-10">
         <div id="vue-rayons">
-            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase text-center underline decoration-orange-500">Nos Rayons</h2>
+            <h2 class="text-purple-900 font-black text-xl mb-8 uppercase italic text-center underline decoration-orange-500">Nos Rayons</h2>
             <div class="grid grid-cols-2 gap-4 text-center">
-                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-5 rounded-[30px] shadow-md"><i class="fas fa-cut text-orange-500 mb-2"></i><p class="text-[9px] font-bold uppercase">Mercerie</p></button>
-                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-5 rounded-[30px] shadow-md"><i class="fas fa-leaf text-orange-500 mb-2"></i><p class="text-[9px] font-bold uppercase">Vivrier</p></button>
-                <button onclick="ouvrirRayon('Beauté')" class="bg-white p-5 rounded-[30px] shadow-md"><i class="fas fa-magic text-orange-500 mb-2"></i><p class="text-[9px] font-bold uppercase">Beauté</p></button>
-                <button onclick="ouvrirRayon('Élevage')" class="bg-white p-5 rounded-[30px] shadow-md"><i class="fas fa-egg text-orange-500 mb-2"></i><p class="text-[9px] font-bold uppercase">Élevage</p></button>
-                <button onclick="ouvrirRayon('Légumes')" class="bg-white p-5 rounded-[30px] shadow-md"><i class="fas fa-pepper-hot text-orange-500 mb-2"></i><p class="text-[9px] font-bold uppercase text-center">Légumes</p></button>
-                <button onclick="ouvrirRayon('Maison')" class="bg-white p-5 rounded-[30px] shadow-md text-center"><i class="fas fa-home text-orange-500 mb-2"></i><p class="text-[9px] font-bold uppercase">Maison</p></button>
-                <button onclick="ouvrirRayon('Tech')" class="bg-white p-5 rounded-[30px] shadow-md text-center"><i class="fas fa-mobile-alt text-orange-500 mb-2"></i><p class="text-[9px] font-bold uppercase">Tech</p></button>
-                <button onclick="ouvrirRayon('Services')" class="bg-white p-5 rounded-[30px] shadow-md text-center"><i class="fas fa-briefcase text-orange-500 mb-2"></i><p class="text-[9px] font-bold uppercase">Services</p></button>
+                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-cut text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Mercerie</p></button>
+                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-leaf text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Vivrier</p></button>
+                <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-magic text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Beauté</p></button>
+                <button onclick="ouvrirRayon('Élevage')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-egg text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Élevage</p></button>
+                <button onclick="ouvrirRayon('Légumes')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-pepper-hot text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase text-center">Légumes</p></button>
+                <button onclick="ouvrirRayon('Maison')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-home text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Maison</p></button>
+                <button onclick="ouvrirRayon('Tech')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-mobile-alt text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Tech</p></button>
+                <button onclick="ouvrirRayon('Services')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-briefcase text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Services</p></button>
             </div>
         </div>
-        <div id="vue-produits" class="hidden text-center">
+        <div id="vue-produits" class="hidden">
             <button onclick="retourRayons()" class="mb-6 text-orange-600 font-bold text-[10px] uppercase flex items-center gap-2"><i class="fas fa-arrow-left"></i> Retour</button>
-            <div id="liste-produits" class="space-y-4"></div>
+            <div id="liste-produits" class="space-y-6"></div>
         </div>
     </section>
 
-    <section id="marchands" class="px-6 mt-6 pb-20 text-center">
-        <h2 class="text-purple-900 font-black text-lg mb-6 uppercase underline decoration-orange-500">Abonnements Mensuels</h2>
-        <div class="space-y-4">
-            <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-gray-400">
-                <h4 class="font-black text-[10px] text-purple-900 uppercase">Pack FLASH : 2 000 F</h4>
-                <p class="text-[8px] text-gray-500 italic mb-3 text-center">Visibilité dans 1 rayon.</p>
-                <button onclick="souscrire('FLASH', '2 000 F')" class="w-full bg-gray-100 py-2 rounded-xl text-[8px] font-bold uppercase">Choisir</button>
+    <section id="marchands" class="px-6 mt-10 pb-20 text-center">
+        
+        <div class="bg-white p-8 rounded-[50px] shadow-2xl border-t-8 border-purple-900 mb-10 text-center mx-auto">
+            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic">Inscrire ma Boutique</h2>
+            <form class="space-y-4">
+                <input type="text" id="boutiqueNom" placeholder="Nom de votre commerce" class="w-full bg-gray-50 border-none p-5 rounded-2xl text-xs outline-none">
+                <textarea id="articlesInfos" rows="4" placeholder="Liste des articles et prix..." class="w-full bg-gray-50 border-none p-5 rounded-2xl text-xs outline-none"></textarea>
+                <button type="button" onclick="validerVente()" class="w-full bg-orange-500 text-white py-5 rounded-3xl font-black text-[10px] uppercase shadow-lg">Envoyer ma liste par WhatsApp</button>
+            </form>
+        </div>
+
+        <h2 class="text-purple-900 font-black text-xl mb-8 uppercase italic text-center underline decoration-orange-500">Nos Packs Mensuels</h2>
+        
+        <div class="space-y-6 text-left">
+            <div class="bg-white p-6 rounded-[40px] shadow-md border-l-8 border-gray-400">
+                <div class="flex justify-between items-start mb-4">
+                    <h4 class="font-black text-xs text-purple-900 uppercase">Pack FLASH</h4>
+                    <span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-[10px] font-black">2 000 F</span>
+                </div>
+                <ul class="text-[9px] text-gray-600 space-y-2 mb-4 italic">
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Présence dans 1 rayon au choix.</li>
+                    <li><i class="fas fa-check text-green-500 mr-2"></i> Commandes sur votre WhatsApp.</li>
+                </ul>
+                <button onclick="souscrire('FLASH', '2 000 F')" class="w-full bg-gray-100 py-3 rounded-2xl font-black text-[8px] uppercase">Choisir Flash</button>
             </div>
-            <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-blue-500">
-                <h4 class="font-black text-[10px] text-purple-900 uppercase text-center">Pack STANDARD : 5 000 F</h4>
-                <p class="text-[8px] text-gray-500 italic mb-3 text-center">10 produits + Badge Vérifié.</p>
-                <button onclick="souscrire('STANDARD', '5 000 F')" class="w-full bg-blue-600 text-white py-2 rounded-xl text-[8px] font-bold uppercase text-center">Choisir</button>
+
+            <div class="bg-white p-6 rounded-[40px] shadow-md border-l-8 border-blue-500">
+                <div class="flex justify-between items-start mb-4">
+                    <h4 class="font-black text-xs text-purple-900 uppercase">Pack STANDARD</h4>
+                    <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black">5 000 F</span>
+                </div>
+                <ul class="text-[9px] text-gray-600 space-y-2 mb-4 italic">
+                    <li><i class="fas fa-check text-blue-500 mr-2"></i> 10 produits avec photos.</li>
+                    <li><i class="fas fa-check text-blue-500 mr-2"></i> <b>Badge Vérifié</b> (Confiance).</li>
+                </ul>
+                <button onclick="souscrire('STANDARD', '5 000 F')" class="w-full bg-blue-600 text-white py-3 rounded-2xl font-black text-[8px] uppercase shadow-md">Choisir Standard</button>
             </div>
-            <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-orange-500">
-                <h4 class="font-black text-[10px] text-purple-900 uppercase text-center">Pack VISIBILITÉ : 10 000 F</h4>
-                <p class="text-[8px] text-gray-500 italic mb-3 text-center mx-auto text-center">Articles à la Une + Statuts.</p>
-                <button onclick="souscrire('VISIBILITE', '10 000 F')" class="w-full bg-orange-500 text-white py-2 rounded-xl text-[8px] font-bold uppercase text-center mx-auto text-center">Choisir</button>
+
+            <div class="bg-white p-6 rounded-[40px] shadow-md border-l-8 border-orange-500 border-dashed">
+                <div class="flex justify-between items-start mb-4">
+                    <h4 class="font-black text-xs text-purple-900 uppercase">Pack VISIBILITÉ</h4>
+                    <span class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[10px] font-black">10 000 F</span>
+                </div>
+                <ul class="text-[9px] text-gray-600 space-y-2 mb-4 italic">
+                    <li><i class="fas fa-check text-orange-500 mr-2"></i> Priorité en <b>"Articles à la Une"</b>.</li>
+                    <li><i class="fas fa-check text-orange-500 mr-2"></i> Publicité sur nos statuts.</li>
+                </ul>
+                <button onclick="souscrire('VISIBILITE', '10 000 F')" class="w-full bg-orange-500 text-white py-3 rounded-2xl font-black text-[8px] uppercase shadow-md">Choisir Visibilité</button>
+            </div>
+
+            <div class="bg-purple-900 p-8 rounded-[50px] shadow-xl text-white">
+                <div class="flex justify-between items-center mb-6">
+                    <h4 class="font-black text-xs text-orange-500 uppercase">Pack VIP</h4>
+                    <span class="bg-orange-500 text-white px-4 py-1 rounded-full text-[10px] font-black">25 000 F</span>
+                </div>
+                <ul class="text-[10px] opacity-90 space-y-3 mb-6 italic text-center mx-auto">
+                    <li><i class="fas fa-crown text-orange-500 mr-2"></i> Pub Facebook sur Bouaflé.</li>
+                    <li><i class="fas fa-crown text-orange-500 mr-2"></i> Coaching Marketing Pro.</li>
+                </ul>
+                <button onclick="souscrire('VIP', '25 000 F')" class="w-full bg-orange-500 text-white py-4 rounded-3xl font-black text-[9px] uppercase">Devenir VIP</button>
             </div>
         </div>
     </section>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 flex justify-around items-center z-50 rounded-t-[30px] shadow-2xl text-center">
-        <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center"><i class="fas fa-home text-xl text-center"></i><span class="text-[8px] font-bold uppercase">Accueil</span></button>
-        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center"><i class="fas fa-store text-xl text-center"></i><span class="text-[8px] font-bold uppercase text-center">Boutique</span></button>
-        <button onclick="switchTab('marchands')" id="btn-marchands" class="text-gray-400 flex flex-col items-center text-center"><i class="fas fa-user-tie text-xl text-center"></i><span class="text-[8px] font-bold uppercase text-center">Marchand</span></button>
-        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center -mt-12 border-4 border-white shadow-lg text-center"><i class="fab fa-whatsapp text-xl text-center"></i></a>
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-5 flex justify-around items-center z-50 rounded-t-[40px] shadow-2xl">
+        <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center"><i class="fas fa-home text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Accueil</span></button>
+        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center"><i class="fas fa-store text-xl text-center"></i><span class="text-[8px] font-bold mt-1 uppercase text-center">Boutique</span></button>
+        <button onclick="switchTab('marchands')" id="btn-marchands" class="text-gray-400 flex flex-col items-center text-center"><i class="fas fa-user-tie text-xl text-center"></i><span class="text-[8px] font-bold mt-1 uppercase text-center">Marchand</span></button>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-lg text-center"><i class="fab fa-whatsapp text-2xl text-center"></i></a>
     </nav>
 
     <script>
         const produits = {
-            "Mercerie": [{ nom: "Nina Fashion", prix: "Qualité Pro", image: "IMG-20260115-WA0005.jpg" }],
-            "Vivrier": [{ nom: "Riz Local", prix: "Frais", image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400" }],
+            "Mercerie": [{ nom: "Nina Fashion", prix: "Qualité Bouaflé", image: "IMG-20260115-WA0005.jpg" }],
+            "Vivrier": [{ nom: "Sac de Riz", prix: "Frais", image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400" }],
             "Tech": [{ nom: "Chargeur", prix: "Garanti", image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400" }]
         };
 
@@ -120,14 +183,15 @@
             document.getElementById('vue-produits').classList.remove('hidden');
             const container = document.getElementById('liste-produits');
             container.innerHTML = (produits[nom] || []).map(p => `
-                <div class="bg-white rounded-3xl shadow-lg border border-gray-100 max-w-xs mx-auto text-center">
-                    <img src="${p.image}" class="w-full h-32 object-cover rounded-t-3xl text-center mx-auto text-center">
-                    <div class="p-4 text-center">
-                        <h4 class="font-bold uppercase text-purple-900 text-xs text-center">${p.nom}</h4>
-                        <p class="text-orange-600 font-black my-1 text-xs text-center">${p.prix}</p>
-                        <a href="https://wa.me/2250576326645?text=Commander: ${p.nom}" class="block bg-green-500 text-white py-2 rounded-xl font-bold text-[8px] uppercase text-center">Commander</a>
+                <div class="bg-white rounded-[45px] shadow-xl overflow-hidden text-center mx-auto mb-6 max-w-sm border border-gray-100">
+                    <img src="${p.image}" class="w-full h-48 object-cover mx-auto">
+                    <div class="p-6 text-center">
+                        <h4 class="font-bold uppercase text-purple-900 text-center">${p.nom}</h4>
+                        <p class="text-orange-600 font-black my-2 text-center">${p.prix}</p>
+                        <a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="block bg-green-500 text-white py-4 rounded-3xl font-bold text-[9px] uppercase shadow-md text-center">Commander</a>
                     </div>
-                </div>`).join('') || '<p class="text-center text-[10px] italic text-gray-400 mt-10">Arrivage en cours...</p>';
+                </div>`).join('') || '<p class="text-center text-xs italic text-gray-400 mt-10">Bientôt disponible...</p>';
+            window.scrollTo(0,0);
         }
 
         function retourRayons() {
@@ -145,9 +209,9 @@
                 resultBox.classList.remove('hidden');
                 filtres.forEach(cat => {
                     const div = document.createElement('div');
-                    div.className = "p-3 border-b text-[10px] font-bold uppercase text-purple-900 cursor-pointer";
-                    div.innerHTML = cat;
-                    div.onclick = () => { switchTab('boutique'); ouvrirRayon(cat); resultBox.classList.add('hidden'); };
+                    div.className = "p-3 hover:bg-gray-50 border-b border-gray-50 text-[10px] font-bold uppercase text-purple-900 flex justify-between cursor-pointer";
+                    div.innerHTML = `${cat} <i class="fas fa-chevron-right text-orange-500"></i>`;
+                    div.onclick = () => { switchTab('boutique'); ouvrirRayon(cat); resultBox.classList.add('hidden'); document.getElementById('mainSearch').value = ''; };
                     resultBox.appendChild(div);
                 });
             }
@@ -165,10 +229,17 @@
             }
         }
 
+        function validerVente() {
+            const b = document.getElementById('boutiqueNom').value;
+            const a = document.getElementById('articlesInfos').value;
+            if(!b || !a) return alert("Complétez les champs.");
+            window.location.href = `https://wa.me/2250576326645?text=${encodeURIComponent("Boutique: "+b+"\nArticles: "+a)}`;
+        }
+
         function souscrire(pack, prix) {
-            window.location.href = `https://wa.me/2250576326645?text=${encodeURIComponent("Je souhaite le Pack "+pack+" ("+prix+")")}`;
+            window.location.href = `https://wa.me/2250576326645?text=${encodeURIComponent("Je souhaite souscrire au Pack "+pack+" ("+prix+")")}`;
         }
     </script>
 </body>
-</html>
-
+                    </html>
+    
