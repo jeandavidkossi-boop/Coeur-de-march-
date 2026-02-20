@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cœur de Marché Bouaflé</title>
     <link rel="manifest" href="manifest.json">
+    
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="IMG-20260115-WA0005.jpg">
     <link rel="icon" type="image/jpg" href="IMG-20260115-WA0005.jpg">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -30,7 +32,7 @@
 
     <section id="accueil" class="active px-6 mt-6">
         
-        <div class="mb-8 relative">
+        <div class="mb-8 relative text-center">
             <div class="relative">
                 <i class="fas fa-search absolute left-5 top-4 text-gray-400"></i>
                 <input type="text" id="mainSearch" onkeyup="rechercherArticle()" 
@@ -40,36 +42,32 @@
                     <i class="fas fa-microphone text-lg" id="micIcon"></i>
                 </button>
             </div>
-            <div id="resultatsRecherche" class="hidden mt-2 bg-white rounded-2xl shadow-xl p-4 absolute z-50 w-full border border-gray-100"></div>
+            <div id="resultatsRecherche" class="hidden mt-2 bg-white rounded-2xl shadow-xl p-4 absolute z-50 w-full border border-gray-100 text-left"></div>
         </div>
 
         <div class="bg-white p-8 rounded-[45px] shadow-xl border border-purple-50 text-center mb-8">
             <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic underline decoration-orange-500 underline-offset-8">Bienvenue !</h2>
-            
             <div class="mb-6">
-                <p class="text-[11px] text-gray-600 italic">
+                <p class="text-[11px] text-gray-600 italic leading-relaxed">
                     <strong class="text-orange-600 uppercase block mb-1">Cher Commerçant,</strong> 
                     Devenez la référence digitale de votre quartier et boostez vos ventes dès aujourd'hui.
                 </p>
             </div>
-
             <div class="h-px w-16 bg-gray-100 mx-auto mb-6"></div>
-
             <div class="mb-6">
-                <p class="text-[11px] text-gray-700 font-medium italic">
+                <p class="text-[11px] text-gray-700 font-medium italic leading-relaxed">
                     <strong class="text-purple-900 uppercase block mb-1">Cher Client,</strong> 
                     Soutenez nos talents locaux et trouvez les meilleurs produits de Bouaflé en un clic.
                 </p>
             </div>
-
             <div class="flex gap-2 justify-center">
-                <button onclick="switchTab('boutique')" class="bg-purple-900 text-white px-6 py-2 rounded-xl text-[9px] font-bold uppercase">Explorer</button>
-                <button onclick="switchTab('marchands')" class="bg-orange-500 text-white px-6 py-2 rounded-xl text-[9px] font-bold uppercase">Vendre</button>
+                <button onclick="switchTab('boutique')" class="bg-purple-900 text-white px-6 py-2 rounded-xl text-[9px] font-bold uppercase shadow-md">Explorer</button>
+                <button onclick="switchTab('marchands')" class="bg-orange-500 text-white px-6 py-2 rounded-xl text-[9px] font-bold uppercase shadow-md">Vendre</button>
             </div>
         </div>
 
         <div class="mb-10">
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex justify-between items-center mb-4 px-2">
                 <h3 class="text-purple-900 font-black text-sm uppercase italic">Articles à la Une</h3>
                 <span class="text-orange-600 text-[9px] font-bold uppercase animate-pulse">Top Bouaflé 🔥</span>
             </div>
@@ -77,17 +75,25 @@
                 <div class="min-w-[160px] bg-white rounded-[30px] shadow-md overflow-hidden border border-gray-100">
                     <img src="IMG-20260115-WA0005.jpg" class="w-full h-24 object-cover">
                     <div class="p-3 text-center">
-                        <p class="text-purple-900 font-bold text-[9px] uppercase italic">Articles Nina Fashion</p>
-                        <p class="text-orange-600 font-black text-[10px] mb-2">Qualité Garantie</p>
-                        <a href="https://wa.me/2250576326645?text=Je suis intéressé par vos articles à la une" class="inline-block bg-green-500 text-white px-3 py-1 rounded-lg text-[8px] font-bold uppercase">Acheter</a>
+                        <p class="text-purple-900 font-bold text-[9px] uppercase italic">Nina Fashion</p>
+                        <p class="text-orange-600 font-black text-[10px] mb-2">Qualité Marahoué</p>
+                        <a href="https://wa.me/2250576326645?text=Je suis intéressé par vos articles à la une" class="inline-block bg-green-500 text-white px-4 py-1 rounded-lg text-[8px] font-bold uppercase">Acheter</a>
                     </div>
+                </div>
+                <div class="min-w-[160px] bg-white rounded-[30px] shadow-md flex flex-col items-center justify-center p-4 border border-dashed border-gray-300 opacity-60">
+                    <i class="fas fa-plus-circle text-gray-300 text-2xl mb-2"></i>
+                    <p class="text-[8px] text-gray-400 font-bold uppercase text-center">Votre article ici ?</p>
                 </div>
             </div>
         </div>
 
-        <div class="bg-orange-100 p-4 rounded-2xl flex items-center gap-4 border border-orange-200 shadow-sm mb-10">
-            <div class="bg-orange-500 w-10 h-10 rounded-full flex items-center justify-center text-white shadow-md animate-bounce"><i class="fas fa-taxi"></i></div>
-            <p class="text-[9px] text-orange-900 font-bold leading-tight uppercase italic">Besoin d'être livré ? Nos taxis partenaires à Bouaflé s'en occupent !</p>
+        <div class="bg-orange-100 p-5 rounded-3xl flex items-center gap-4 border border-orange-200 shadow-sm mb-10">
+            <div class="bg-orange-500 w-12 h-12 rounded-full flex items-center justify-center text-white shadow-md animate-bounce">
+                <i class="fas fa-taxi"></i>
+            </div>
+            <p class="text-[10px] text-orange-900 font-bold leading-tight uppercase italic">
+                Besoin d'être livré ? Nos taxis partenaires s'en occupent !
+            </p>
         </div>
     </section>
 
@@ -99,71 +105,102 @@
                 <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-leaf text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Vivrier</p></button>
                 <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-magic text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Beauté</p></button>
                 <button onclick="ouvrirRayon('Élevage')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-egg text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Élevage</p></button>
-                <button onclick="ouvrirRayon('Légumes')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-pepper-hot text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Légumes</p></button>
-                <button onclick="ouvrirRayon('Maison')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-home text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Maison</p></button>
-                <button onclick="ouvrirRayon('Tech')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-mobile-alt text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Tech</p></button>
-                <button onclick="ouvrirRayon('Services')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-briefcase text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Services</p></button>
+                <button onclick="ouvrirRayon('Légumes')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-pepper-hot text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase text-center">Légumes</p></button>
+                <button onclick="ouvrirRayon('Maison')" class="bg-white p-6 rounded-[35px] shadow-md text-center"><i class="fas fa-home text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Maison</p></button>
+                <button onclick="ouvrirRayon('Tech')" class="bg-white p-6 rounded-[35px] shadow-md text-center"><i class="fas fa-mobile-alt text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Tech</p></button>
+                <button onclick="ouvrirRayon('Services')" class="bg-white p-6 rounded-[35px] shadow-md text-center"><i class="fas fa-briefcase text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Services</p></button>
             </div>
         </div>
         <div id="vue-produits" class="hidden">
-            <button onclick="retourRayons()" class="mb-6 text-orange-600 font-bold text-[10px] uppercase flex items-center gap-2"><i class="fas fa-arrow-left"></i> Retour</button>
+            <button onclick="retourRayons()" class="mb-6 text-orange-600 font-bold text-[10px] uppercase flex items-center gap-2"><i class="fas fa-arrow-left"></i> Retour aux rayons</button>
             <div id="liste-produits" class="space-y-6"></div>
         </div>
     </section>
 
     <section id="marchands" class="px-6 mt-10 pb-20">
         <div class="bg-white p-8 rounded-[50px] shadow-2xl border-t-8 border-purple-900 mb-10 text-center">
-            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic">Que voulez-vous vendre ?</h2>
+            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic">Devenir Marchand</h2>
             <form class="space-y-4">
                 <input type="text" id="boutiqueNom" placeholder="Nom de votre boutique" class="w-full bg-gray-50 border-none p-5 rounded-2xl text-xs">
-                <textarea id="articlesInfos" rows="3" placeholder="Articles et prix..." class="w-full bg-gray-50 border-none p-5 rounded-2xl text-xs"></textarea>
+                <textarea id="articlesInfos" rows="3" placeholder="Articles à vendre..." class="w-full bg-gray-50 border-none p-5 rounded-2xl text-xs"></textarea>
                 <button type="button" onclick="validerVente()" class="w-full bg-orange-500 text-white py-5 rounded-3xl font-black text-[10px] uppercase shadow-lg">Envoyer ma demande</button>
             </form>
         </div>
 
         <h2 class="text-purple-900 font-black text-xl mb-8 uppercase italic text-center underline decoration-orange-500">Nos Offres Pro</h2>
-        <div class="space-y-4">
-            <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-gray-400 flex flex-col gap-4 text-center">
+        <div class="space-y-4 pb-10 text-center">
+            <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-gray-400 flex flex-col gap-4">
                 <div class="flex items-center gap-4 mx-auto">
                     <h4 class="font-black text-[10px] text-purple-900 uppercase">Flash<br><span class="text-orange-600">5 000 F</span></h4>
                     <p class="text-[9px] text-gray-500 italic border-l pl-4">Visibilité 24h/24 à Bouaflé.</p>
                 </div>
-                <button onclick="souscrire('FLASH', '5 000 F')" class="w-full bg-gray-100 text-gray-500 py-3 rounded-2xl font-black text-[8px] uppercase">Souscrire Flash</button>
+                <button onclick="souscrire('FLASH', '5 000 F')" class="w-full bg-gray-100 text-gray-500 py-3 rounded-2xl font-black text-[8px] uppercase shadow-sm">Souscrire</button>
             </div>
             <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-blue-500 flex flex-col gap-4 text-center">
                 <div class="flex items-center gap-4 mx-auto">
-                    <h4 class="font-black text-[10px] text-purple-900 uppercase">Standard<br><span class="text-orange-600">15 000 F</span></h4>
-                    <p class="text-[9px] text-gray-500 italic border-l pl-4">5 produits + Badge Vérifié.</p>
+                    <h4 class="font-black text-[10px] text-purple-900 uppercase text-center">Standard<br><span class="text-orange-600">15 000 F</span></h4>
+                    <p class="text-[9px] text-gray-500 italic border-l pl-4 text-center">5 produits + Badge Vérifié.</p>
                 </div>
-                <button onclick="souscrire('STANDARD', '15 000 F')" class="w-full bg-blue-600 text-white py-3 rounded-2xl font-black text-[8px] uppercase">Souscrire Standard</button>
+                <button onclick="souscrire('STANDARD', '15 000 F')" class="w-full bg-blue-600 text-white py-3 rounded-2xl font-black text-[8px] uppercase shadow-md text-center">Souscrire</button>
             </div>
             <div class="bg-white p-5 rounded-[30px] shadow-md border-l-4 border-orange-500 flex flex-col gap-4 text-center">
                 <div class="flex items-center gap-4 mx-auto text-center mx-auto">
-                    <h4 class="font-black text-[10px] text-purple-900 uppercase text-center mx-auto">Éclair<br><span class="text-orange-600 text-center mx-auto">25 000 F</span></h4>
-                    <p class="text-[9px] text-gray-500 italic border-l pl-4 text-center mx-auto">Photos pro + Priorité.</p>
+                    <h4 class="font-black text-[10px] text-purple-900 uppercase text-center">Éclair<br><span class="text-orange-600">25 000 F</span></h4>
+                    <p class="text-[9px] text-gray-500 italic border-l pl-4 text-center mx-auto text-center">Photos pro + Priorité.</p>
                 </div>
-                <button onclick="souscrire('ÉCLAIR', '25 000 F')" class="w-full bg-orange-500 text-white py-3 rounded-2xl font-black text-[8px] uppercase text-center mx-auto">Souscrire Éclair</button>
+                <button onclick="souscrire('ÉCLAIR', '25 000 F')" class="w-full bg-orange-500 text-white py-3 rounded-2xl font-black text-[8px] uppercase shadow-md text-center mx-auto text-center">Souscrire</button>
             </div>
-            <div class="bg-purple-900 p-6 rounded-[35px] shadow-xl text-white flex flex-col gap-4 text-center text-center mx-auto">
-                <div class="flex items-center gap-4 text-center mx-auto text-center mx-auto">
-                    <h4 class="font-black text-[10px] text-orange-500 uppercase text-center mx-auto">VIP<br><span class="text-white text-center mx-auto">50 000 F</span></h4>
+            <div class="bg-purple-900 p-6 rounded-[35px] shadow-xl text-white flex flex-col gap-4 text-center mx-auto text-center">
+                <div class="flex items-center gap-4 mx-auto text-center mx-auto">
+                    <h4 class="font-black text-[10px] text-orange-500 uppercase text-center mx-auto">VIP<br><span class="text-white text-center">50 000 F</span></h4>
                     <p class="text-[9px] italic opacity-90 border-l pl-4 text-center mx-auto text-center mx-auto">Pub Facebook + Coaching.</p>
                 </div>
-                <button onclick="souscrire('VIP', '50 000 F')" class="w-full bg-orange-500 text-white py-3 rounded-2xl font-black text-[8px] uppercase text-center mx-auto text-center mx-auto text-center mx-auto">Devenir Marchand VIP</button>
+                <button onclick="souscrire('VIP', '50 000 F')" class="w-full bg-orange-500 text-white py-3 rounded-2xl font-black text-[8px] uppercase text-center">Devenir VIP</button>
             </div>
         </div>
     </section>
 
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-5 flex justify-around items-center z-50 rounded-t-[40px] shadow-2xl">
         <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center"><i class="fas fa-home text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Accueil</span></button>
-        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center"><i class="fas fa-store text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Boutique</span></button>
-        <button onclick="switchTab('marchands')" id="btn-marchands" class="text-gray-400 flex flex-col items-center"><i class="fas fa-user-tie text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Marchand</span></button>
-        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-lg"><i class="fab fa-whatsapp text-2xl text-center"></i></a>
+        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center"><i class="fas fa-store text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase text-center">Boutique</span></button>
+        <button onclick="switchTab('marchands')" id="btn-marchands" class="text-gray-400 flex flex-col items-center text-center"><i class="fas fa-user-tie text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase text-center">Marchand</span></button>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-lg text-center"><i class="fab fa-whatsapp text-2xl text-center"></i></a>
     </nav>
 
     <script>
-        const produits = { "Mercerie": [{ nom: "Produit Nina Fashion", prix: "Qualité Bouaflé", image: "IMG-20260115-WA0005.jpg" }] };
+        // DONNÉES PRODUITS PAR RAYON
+        const produits = {
+            "Mercerie": [
+                { nom: "Tissus Nina Fashion", prix: "Qualité Supérieure", image: "IMG-20260115-WA0005.jpg" },
+                { nom: "Fils et Accessoires", prix: "À partir de 500 F", image: "https://images.unsplash.com/photo-1506806732259-39c2d45b4573?w=500&q=80" }
+            ],
+            "Vivrier": [
+                { nom: "Sac de Riz local", prix: "Prix Marché", image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&q=80" },
+                { nom: "Huile de Palme (1L)", prix: "Frais Bouaflé", image: "https://images.unsplash.com/photo-1620706144501-52643360824b?w=500&q=80" }
+            ],
+            "Beauté": [
+                { nom: "Parfums & Soins", prix: "Contactez-nous", image: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&q=80" }
+            ],
+            "Élevage": [
+                { nom: "Poulets de chair", prix: "Prêt à livrer", image: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=500&q=80" },
+                { nom: "Alvéoles d'œufs", prix: "Frais du jour", image: "https://images.unsplash.com/photo-1516730106033-f083342393e6?w=500&q=80" }
+            ],
+            "Légumes": [
+                { nom: "Panier de Tomates", prix: "Récolte Marahoué", image: "https://images.unsplash.com/photo-1518977676601-b53f02bad675?w=500&q=80" },
+                { nom: "Piments frais", prix: "Très piquant", image: "https://images.unsplash.com/photo-1588253584673-c70118a3972c?w=500&q=80" }
+            ],
+            "Maison": [
+                { nom: "Ustensiles Cuisine", prix: "Qualité Inox", image: "https://images.unsplash.com/photo-1584990344616-3b9427ae52d2?w=500&q=80" }
+            ],
+            "Tech": [
+                { nom: "Chargeur Rapide", prix: "Garantie 6 mois", image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=500&q=80" }
+            ],
+            "Services": [
+                { nom: "Livraison Express", prix: "Taxi Bouaflé", image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=500&q=80" }
+            ]
+        };
         
+        // GESTION DES ONGLETS
         function switchTab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -174,59 +211,59 @@
             window.scrollTo(0,0);
         }
 
+        // OUVRIR UN RAYON
         function ouvrirRayon(nom) {
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             const container = document.getElementById('liste-produits');
-            container.innerHTML = (produits[nom] || []).map(p => `<div class="bg-white rounded-[45px] shadow-xl overflow-hidden text-center mx-auto mb-6"><img src="${p.image}" class="w-full h-48 object-cover"><div class="p-6 text-center"><h4 class="font-bold uppercase text-purple-900">${p.nom}</h4><p class="text-orange-600 font-black my-2">${p.prix}</p><a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="block bg-green-500 text-white py-4 rounded-3xl font-bold text-[9px] uppercase">Commander</a></div></div>`).join('') || '<p class="text-center text-xs italic text-gray-400">Bientôt disponible...</p>';
+            container.innerHTML = (produits[nom] || []).map(p => `
+                <div class="bg-white rounded-[45px] shadow-xl overflow-hidden text-center mx-auto mb-6 max-w-sm">
+                    <img src="${p.image}" class="w-full h-48 object-cover mx-auto text-center">
+                    <div class="p-6 text-center">
+                        <h4 class="font-bold uppercase text-purple-900 text-center">${p.nom}</h4>
+                        <p class="text-orange-600 font-black my-2 text-center">${p.prix}</p>
+                        <a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" 
+                           class="block bg-green-500 text-white py-4 rounded-3xl font-bold text-[9px] uppercase shadow-md text-center">Commander</a>
+                    </div>
+                </div>`).join('') || '<p class="text-center text-xs italic text-gray-400">Bientôt disponible...</p>';
             window.scrollTo(0,0);
         }
 
         function retourRayons() { document.getElementById('vue-rayons').classList.remove('hidden'); document.getElementById('vue-produits').classList.add('hidden'); }
 
+        // RECHERCHE INTELLIGENTE
         function rechercherArticle() {
             const input = document.getElementById('mainSearch').value.toLowerCase();
             const resultBox = document.getElementById('resultatsRecherche');
             resultBox.innerHTML = '';
             if (input.length < 2) { resultBox.classList.add('hidden'); return; }
-            const categories = ['Mercerie', 'Vivrier', 'Beauté', 'Élevage', 'Légumes', 'Maison', 'Tech', 'Services'];
+            const categories = Object.keys(produits);
             const filtres = categories.filter(cat => cat.toLowerCase().includes(input));
             if (filtres.length > 0) {
                 resultBox.classList.remove('hidden');
                 filtres.forEach(cat => {
                     const div = document.createElement('div');
-                    div.className = "p-3 hover:bg-gray-50 border-b border-gray-50 text-[10px] font-bold uppercase text-purple-900 flex justify-between";
-                    div.innerHTML = `${cat} <i class="fas fa-chevron-right text-orange-500 text-center"></i>`;
+                    div.className = "p-3 hover:bg-gray-50 border-b border-gray-50 text-[10px] font-bold uppercase text-purple-900 flex justify-between items-center cursor-pointer";
+                    div.innerHTML = `${cat} <i class="fas fa-chevron-right text-orange-500"></i>`;
                     div.onclick = () => { switchTab('boutique'); ouvrirRayon(cat); resultBox.classList.add('hidden'); document.getElementById('mainSearch').value = ''; };
                     resultBox.appendChild(div);
                 });
             } else { resultBox.innerHTML = '<p class="text-[9px] italic text-gray-400 text-center">Aucun rayon trouvé.</p>'; resultBox.classList.remove('hidden'); }
         }
 
+        // RECHERCHE VOCALE
         function lancerRechercheVocale() {
             window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (window.SpeechRecognition) {
                 const recognition = new SpeechRecognition();
                 recognition.lang = 'fr-FR';
-                recognition.onstart = () => document.getElementById('micIcon').className = "fas fa-microphone text-lg text-red-600 animate-pulse text-center";
+                recognition.onstart = () => document.getElementById('micIcon').className = "fas fa-microphone text-lg text-red-600 animate-pulse";
                 recognition.onresult = (e) => { document.getElementById('mainSearch').value = e.results[0][0].transcript; rechercherArticle(); };
-                recognition.onend = () => document.getElementById('micIcon').className = "fas fa-microphone text-lg text-orange-500 text-center";
+                recognition.onend = () => document.getElementById('micIcon').className = "fas fa-microphone text-lg text-orange-500";
                 recognition.start();
-            } else { alert("Recherche vocale non supportée."); }
+            } else { alert("La voix n'est pas supportée sur ce téléphone."); }
         }
 
+        // FORMULAIRE MARCHAND
         function validerVente() {
-            const b = document.getElementById('boutiqueNom').value;
-            const a = document.getElementById('articlesInfos').value;
-            if(!b || !a) return alert("Remplissez les informations.");
-            window.location.href = `https://wa.me/2250576326645?text=${encodeURIComponent("Boutique: "+b+"\nArticles: "+a)}`;
-        }
-
-        function souscrire(pack, prix) {
-            const m = `Bonjour Kossi, je veux souscrire au Pack ${pack} (${prix}).`;
-            window.location.href = `https://wa.me/2250576326645?text=${encodeURIComponent(m)}`;
-        }
-    </script>
-</body>
-                    </html>
-                                                                                                                                                                             
+          
