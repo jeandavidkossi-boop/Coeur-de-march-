@@ -2,258 +2,151 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cœur de Marché Bouaflé</title>
-    
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
-    </script>
-
-    <link rel="manifest" href="manifest.json">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="IMG-20260115-WA0005.jpg">
-    <link rel="icon" type="image/jpg" href="IMG-20260115-WA0005.jpg">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; }
         section { display: none; }
         section.active { display: block; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        .glass-nav { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(15px); }
     </style>
 </head>
-<body class="bg-gray-50 font-sans pb-32 text-gray-900 text-center">
+<body class="bg-gray-50 pb-32 text-gray-900">
 
-    <header class="bg-purple-900 p-8 rounded-b-[50px] shadow-2xl text-center border-b-4 border-orange-500">
-        <div class="w-24 h-24 bg-white rounded-full mx-auto mb-4 p-1 shadow-lg border-2 border-white overflow-hidden flex items-center justify-center">
-            <img src="IMG-20260115-WA0005.jpg" alt="Logo Nina Fashion" class="w-full h-full object-contain">
+    <header class="bg-purple-900 p-8 rounded-b-[50px] shadow-2xl text-center border-b-4 border-orange-500 relative">
+        <div class="w-20 h-20 bg-white rounded-full mx-auto mb-4 p-1 shadow-lg border-2 border-white overflow-hidden flex items-center justify-center">
+            <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-full h-full object-contain">
         </div>
         <h1 class="text-white text-2xl font-black italic uppercase underline decoration-orange-500 underline-offset-4">Cœur de Marché</h1>
         <p class="text-orange-400 text-[10px] font-bold uppercase tracking-[0.3em] mt-2">Bouaflé - Marahoué</p>
     </header>
 
     <section id="accueil" class="active px-6 mt-6">
-        
-        <div class="mb-8 relative">
-            <div class="relative">
-                <i class="fas fa-search absolute left-5 top-4 text-gray-400"></i>
-                <input type="text" id="mainSearch" onkeyup="rechercherArticle()" 
-                       placeholder="Chercher un produit à Bouaflé..." 
-                       class="w-full bg-white border-none py-4 pl-12 pr-14 rounded-full shadow-lg text-[11px] focus:outline-none focus:ring-2 focus:ring-orange-500">
-                <button onclick="lancerRechercheVocale()" class="absolute right-5 top-3.5 text-orange-500">
-                    <i class="fas fa-microphone text-lg" id="micIcon"></i>
-                </button>
-            </div>
-            <div id="resultatsRecherche" class="hidden mt-2 bg-white rounded-2xl shadow-xl p-4 absolute z-50 w-full border border-gray-100 text-left"></div>
-        </div>
-
-        <div class="bg-white p-8 rounded-[45px] shadow-xl border border-purple-50 text-center mb-8 mx-auto">
-            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic underline decoration-orange-500 underline-offset-8">Bienvenue !</h2>
-            <div class="mb-6">
-                <p class="text-[11px] text-gray-600 italic leading-relaxed">
-                    <strong class="text-orange-600 uppercase block mb-1">Cher Commerçant,</strong> 
-                    Devenez la référence digitale de votre quartier et boostez vos ventes dès aujourd'hui.
-                </p>
-            </div>
-            <div class="h-px w-16 bg-gray-100 mx-auto mb-6"></div>
-            <div class="mb-6">
-                <p class="text-[11px] text-gray-700 font-medium italic leading-relaxed">
-                    <strong class="text-purple-900 uppercase block mb-1">Cher Client,</strong> 
-                    Soutenez nos talents locaux et trouvez les meilleurs produits de Bouaflé en un clic.
-                </p>
-            </div>
-            <div class="flex gap-2 justify-center">
-                <button onclick="switchTab('boutique')" class="bg-purple-900 text-white px-6 py-2 rounded-xl text-[9px] font-bold uppercase shadow-md">Explorer</button>
-                <button onclick="switchTab('marchands')" class="bg-orange-500 text-white px-6 py-2 rounded-xl text-[9px] font-bold uppercase shadow-md">Vendre</button>
+        <div class="bg-white p-6 rounded-[40px] shadow-xl border border-purple-50 text-center mb-8">
+            <h2 class="text-purple-900 font-black text-lg mb-4 uppercase italic underline decoration-orange-500 underline-offset-8">Akwaaba !</h2>
+            <div class="flex gap-3 justify-center">
+                <button onclick="switchTab('boutique')" class="bg-purple-900 text-white flex-1 py-3 rounded-2xl text-[10px] font-bold uppercase shadow-lg">Découvrir</button>
+                <button onclick="switchTab('marchands')" class="bg-orange-500 text-white flex-1 py-3 rounded-2xl text-[10px] font-bold uppercase shadow-lg">S'inscrire</button>
             </div>
         </div>
-
-        <div class="mb-10 text-center mx-auto">
-            <h3 class="text-purple-900 font-black text-sm uppercase italic mb-4">Articles à la Une 🔥</h3>
-            <div class="flex gap-4 overflow-x-auto no-scrollbar pb-4">
-                <div class="min-w-[160px] bg-white rounded-[30px] shadow-md overflow-hidden border border-gray-100">
-                    <img src="IMG-20260115-WA0005.jpg" class="w-full h-24 object-cover mx-auto">
-                    <div class="p-3 text-center">
-                        <p class="text-purple-900 font-bold text-[9px] uppercase italic text-center mx-auto">Nina Fashion</p>
-                        <p class="text-orange-600 font-black text-[10px] mb-2 text-center mx-auto">Qualité Pro</p>
-                        <a href="https://wa.me/2250576326645" class="inline-block bg-green-500 text-white px-4 py-1 rounded-lg text-[8px] font-bold uppercase shadow-sm">Acheter</a>
-                    </div>
+        <div class="mb-10 text-center">
+            <h3 class="text-purple-900 font-black text-sm uppercase italic mb-4">À la Une 🔥</h3>
+            <div class="bg-purple-900 p-6 rounded-[50px] shadow-xl flex items-center gap-4 text-left">
+                <img src="IMG-20260115-WA0005.jpg" class="w-16 h-16 rounded-full border-2 border-orange-500">
+                <div>
+                    <h4 class="text-white font-bold text-xs uppercase">Nina Fashion</h4>
+                    <p class="text-[8px] text-purple-200 italic">"Votre inspiration, notre métier !"</p>
                 </div>
-            </div>
-        </div>
-
-        <div class="mb-10">
-            <div class="flex justify-between items-center mb-4 px-2 text-center mx-auto">
-                <h3 class="text-purple-900 font-black text-sm uppercase italic text-center">Événements à venir 📅</h3>
-                <span class="text-gray-400 text-[8px] font-bold uppercase italic animate-pulse text-center">Glisser →</span>
-            </div>
-            <div class="flex gap-4 overflow-x-auto no-scrollbar pb-4 px-2 snap-x snap-mandatory">
-                <div class="min-w-[280px] bg-orange-50 rounded-[40px] border-2 border-orange-200 p-5 snap-center shadow-sm">
-                    <div class="flex items-center gap-4">
-                        <div class="bg-orange-500 text-white p-3 rounded-2xl text-center min-w-[60px]">
-                            <p class="text-[8px] uppercase font-bold">Mars</p>
-                            <p class="text-lg font-black text-center">05</p>
-                        </div>
-                        <div class="text-left">
-                            <p class="text-purple-900 font-black text-[10px] uppercase">Foire de Bouaflé</p>
-                            <p class="text-[8px] text-gray-500 italic">Découvrez les pépites de la Marahoué !</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="min-w-[280px] bg-purple-50 rounded-[40px] border-2 border-purple-200 overflow-hidden snap-center shadow-sm flex items-center justify-center">
-                    <i class="fas fa-play-circle text-purple-900 text-3xl opacity-50"></i>
-                    <p class="ml-2 text-[8px] font-black uppercase text-purple-900">Vidéo à venir</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="mb-10 text-center mx-auto">
-            <h3 class="text-purple-900 font-black text-sm uppercase italic mb-4 text-center">Sous les projecteurs 🔦</h3>
-            <div class="bg-purple-900 p-6 rounded-[50px] shadow-xl relative overflow-hidden text-left mx-auto">
-                <div class="relative z-10 flex items-center gap-4">
-                    <img src="IMG-20260115-WA0005.jpg" class="w-16 h-16 rounded-full border-2 border-orange-500 object-cover">
-                    <div>
-                        <p class="text-orange-500 font-black text-[10px] uppercase">Marchand de la Semaine</p>
-                        <h4 class="text-white font-bold text-xs uppercase">Nina Fashion</h4>
-                        <p class="text-[8px] text-purple-200 italic text-center mx-auto">"Votre inspiration, notre métier !"</p>
-                    </div>
-                </div>
-                <div class="absolute -right-5 -bottom-5 text-purple-800 text-6xl opacity-20 rotate-12"><i class="fas fa-star"></i></div>
             </div>
         </div>
     </section>
 
     <section id="boutique" class="px-6 mt-10">
         <div id="vue-rayons">
-            <h2 class="text-purple-900 font-black text-xl mb-8 uppercase italic text-center underline decoration-orange-500">Nos Rayons</h2>
-            <div class="grid grid-cols-2 gap-4 text-center">
-                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-cut text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Mercerie</p></button>
-                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-leaf text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Vivrier</p></button>
-                <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-magic text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Beauté</p></button>
-                <button onclick="ouvrirRayon('Élevage')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-egg text-orange-600 mb-2"></i><p class="text-[9px] font-bold uppercase">Élevage</p></button>
-                <button onclick="ouvrirRayon('Légumes')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-pepper-hot text-orange-600 mb-2 text-center"></i><p class="text-[9px] font-bold uppercase text-center">Légumes</p></button>
-                <button onclick="ouvrirRayon('Maison')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-home text-orange-600 mb-2 text-center"></i><p class="text-[9px] font-bold uppercase text-center">Maison</p></button>
-                <button onclick="ouvrirRayon('Tech')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-mobile-alt text-orange-600 mb-2 text-center"></i><p class="text-[9px] font-bold uppercase text-center">Tech</p></button>
-                <button onclick="ouvrirRayon('Services')" class="bg-white p-6 rounded-[35px] shadow-md"><i class="fas fa-briefcase text-orange-600 mb-2 text-center"></i><p class="text-[9px] font-bold uppercase text-center">Services</p></button>
+            <h2 class="text-purple-900 font-black text-xl mb-8 uppercase italic text-center underline decoration-orange-500 underline-offset-8">Les Marchés</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-6 rounded-[35px] shadow-md flex flex-col items-center gap-3 border-b-4 border-orange-500">
+                    <i class="fas fa-cut text-orange-600 text-xl"></i>
+                    <p class="text-xs font-black uppercase text-purple-900">Mercerie</p>
+                </button>
+                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-md flex flex-col items-center gap-3 border-b-4 border-orange-500">
+                    <i class="fas fa-leaf text-green-600 text-xl"></i>
+                    <p class="text-xs font-black uppercase text-purple-900">Vivrier</p>
+                </button>
             </div>
         </div>
-        <div id="vue-produits" class="hidden text-center">
-            <button onclick="retourRayons()" class="mb-6 text-orange-600 font-bold text-[10px] uppercase flex items-center gap-2"><i class="fas fa-arrow-left"></i> Retour</button>
-            <div id="liste-produits" class="space-y-6"></div>
+        <div id="vue-produits" class="hidden">
+            <button onclick="retourRayons()" class="mb-6 text-orange-600 font-black text-xs uppercase flex items-center gap-2">
+                <i class="fas fa-chevron-left"></i> Retour
+            </button>
+            <div id="liste-produits" class="grid grid-cols-1 gap-6"></div>
         </div>
     </section>
 
-    <section id="marchands" class="px-6 mt-10 pb-20 text-center">
-        <div class="bg-white p-8 rounded-[50px] shadow-2xl border-t-8 border-purple-900 mb-10 mx-auto">
-            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic text-center">Inscrire ma Boutique</h2>
+    <section id="marchands" class="px-6 mt-10 pb-20">
+        <div class="bg-white p-8 rounded-[45px] shadow-2xl border-t-8 border-purple-900 mb-10 text-center">
+            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic">Inscrire ma Boutique</h2>
             <form class="space-y-4">
-                <input type="text" id="boutiqueNom" placeholder="Nom de votre commerce" class="w-full bg-gray-50 border-none p-5 rounded-2xl text-xs outline-none">
-                <textarea id="articlesInfos" rows="4" placeholder="Articles à vendre..." class="w-full bg-gray-50 border-none p-5 rounded-2xl text-xs outline-none"></textarea>
-                <button type="button" onclick="validerVente()" class="w-full bg-orange-500 text-white py-5 rounded-3xl font-black text-[10px] uppercase shadow-lg text-center">Envoyer via WhatsApp</button>
+                <input type="text" id="boutiqueNom" placeholder="Nom de votre commerce" class="w-full bg-gray-50 border-none p-5 rounded-2xl text-sm outline-none">
+                <textarea id="articlesInfos" rows="3" placeholder="Quels produits vendez-vous ?" class="w-full bg-gray-50 border-none p-5 rounded-2xl text-sm outline-none"></textarea>
+                <button type="button" onclick="validerVente()" class="w-full bg-orange-500 text-white py-5 rounded-3xl font-black text-xs uppercase shadow-lg">Envoyer via WhatsApp</button>
             </form>
         </div>
-
-        <h2 class="text-purple-900 font-black text-xl mb-8 uppercase italic text-center underline decoration-orange-500">Abonnements Mensuels</h2>
-        
-        <div class="space-y-6 text-left">
-            <div class="bg-white p-6 rounded-[40px] shadow-md border-l-8 border-gray-400">
-                <div class="flex justify-between items-start mb-4"><h4 class="font-black text-xs text-purple-900 uppercase">Pack FLASH</h4><span class="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-[10px] font-black">2 000 F</span></div>
-                <ul class="text-[9px] text-gray-600 space-y-2 mb-4 italic"><li><i class="fas fa-check text-green-500 mr-2"></i> Rayon Unique.</li></ul>
-                <button onclick="souscrire('FLASH', '2 000 F')" class="w-full bg-gray-100 py-3 rounded-2xl font-black text-[8px] uppercase">Choisir</button>
-            </div>
-            <div class="bg-purple-900 p-8 rounded-[50px] shadow-xl text-white">
-                <div class="flex justify-between items-center mb-6"><h4 class="font-black text-xs text-orange-500 uppercase">Pack VIP</h4><span class="bg-orange-500 text-white px-4 py-1 rounded-full text-[10px] font-black shadow-lg">25 000 F</span></div>
-                <ul class="text-[10px] opacity-90 space-y-3 mb-6 italic"><li><i class="fas fa-crown text-orange-500 mr-2"></i> Coaching Marketing Pro.</li></ul>
-                <button onclick="souscrire('VIP', '25 000 F')" class="w-full bg-orange-500 text-white py-4 rounded-3xl font-black text-[9px] uppercase shadow-2xl">Devenir VIP</button>
-            </div>
-        </div>
     </section>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-5 flex justify-around items-center z-50 rounded-t-[40px] shadow-2xl text-center mx-auto text-center">
-        <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center"><i class="fas fa-home text-xl text-center mx-auto text-center"></i><span class="text-[8px] font-bold mt-1 uppercase text-center mx-auto">Accueil</span></button>
-        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center text-center mx-auto text-center"><i class="fas fa-store text-xl text-center mx-auto text-center"></i><span class="text-[8px] font-bold mt-1 uppercase text-center mx-auto">Boutique</span></button>
-        <button onclick="switchTab('marchands')" id="btn-marchands" class="text-gray-400 flex flex-col items-center text-center mx-auto text-center"><i class="fas fa-user-tie text-xl text-center mx-auto text-center"></i><span class="text-[8px] font-bold mt-1 uppercase text-center mx-auto">Marchand</span></button>
-        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-lg text-center mx-auto text-center"><i class="fab fa-whatsapp text-2xl text-center mx-auto text-center"></i></a>
+    <nav class="fixed bottom-0 left-0 right-0 glass-nav border-t border-gray-100 p-4 flex justify-around items-center z-[200] rounded-t-[40px] shadow-2xl">
+        <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center">
+            <i class="fas fa-home text-xl"></i><span class="text-[10px] font-black mt-1 uppercase">Accueil</span>
+        </button>
+        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center">
+            <i class="fas fa-store text-xl"></i><span class="text-[10px] font-black mt-1 uppercase">Boutique</span>
+        </button>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-xl">
+            <i class="fab fa-whatsapp text-2xl"></i>
+        </a>
     </nav>
 
     <script>
-        const produits = {
-            "Mercerie": [{ nom: "Nina Fashion", prix: "Qualité Bouaflé", image: "IMG-20260115-WA0005.jpg" }],
-            "Vivrier": [{ nom: "Sac de Riz", prix: "Frais", image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400" }]
-        };
+        // LIEN GOOGLE SCRIPT CONNECTÉ
+        const urlScript = "https://script.google.com/macros/s/AKfycbzUAXyeFs7Fgbw1XFc3PsIk0YLpHsRRGHiz0fRp06qjSH6XwU08zMy3Q4bv0Vok4Oyk/exec";
 
         function switchTab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            ['accueil', 'boutique', 'marchands'].forEach(b => {
-                document.getElementById('btn-'+b).classList.replace(b===id?'text-gray-400':'text-orange-600', b===id?'text-orange-600':'text-gray-400');
+            ['accueil', 'boutique', 'marchands'].forEach(t => {
+                const btn = document.getElementById('btn-' + t);
+                if(btn) btn.classList.toggle('text-orange-600', t === id);
+                if(btn) btn.classList.toggle('text-gray-400', t !== id);
             });
-            window.scrollTo(0,0);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function ouvrirRayon(nom) {
+        async function ouvrirRayon(nom) {
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             const container = document.getElementById('liste-produits');
-            container.innerHTML = (produits[nom] || []).map(p => `
-                <div class="bg-white rounded-[45px] shadow-xl overflow-hidden text-center mx-auto mb-6 max-w-sm border border-gray-100">
-                    <img src="${p.image}" class="w-full h-48 object-cover mx-auto text-center mx-auto">
-                    <div class="p-6 text-center">
-                        <h4 class="font-bold uppercase text-purple-900 text-center">${p.nom}</h4>
-                        <p class="text-orange-600 font-black my-2 text-center">${p.prix}</p>
-                        <a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="block bg-green-500 text-white py-4 rounded-3xl font-bold text-[9px] uppercase shadow-md text-center">Commander</a>
-                    </div>
-                </div>`).join('') || '<p class="text-center text-xs italic text-gray-400 mt-10">Bientôt disponible...</p>';
-            window.scrollTo(0,0);
-        }
+            container.innerHTML = '<p class="text-center text-xs italic text-gray-400 mt-10">Connexion au marché de Bouaflé...</p>';
 
-        function retourRayons() { document.getElementById('vue-rayons').classList.remove('hidden'); document.getElementById('vue-produits').classList.add('hidden'); }
-
-        function rechercherArticle() {
-            const input = document.getElementById('mainSearch').value.toLowerCase();
-            const resultBox = document.getElementById('resultatsRecherche');
-            resultBox.innerHTML = '';
-            if (input.length < 2) { resultBox.classList.add('hidden'); return; }
-            const filtres = Object.keys(produits).filter(cat => cat.toLowerCase().includes(input));
-            if (filtres.length > 0) {
-                resultBox.classList.remove('hidden');
-                filtres.forEach(cat => {
-                    const div = document.createElement('div');
-                    div.className = "p-3 hover:bg-gray-50 border-b border-gray-50 text-[10px] font-bold uppercase text-purple-900 flex justify-between cursor-pointer";
-                    div.innerHTML = `${cat} <i class="fas fa-chevron-right text-orange-500"></i>`;
-                    div.onclick = () => { switchTab('boutique'); ouvrirRayon(cat); resultBox.classList.add('hidden'); document.getElementById('mainSearch').value = ''; };
-                    resultBox.appendChild(div);
-                });
+            try {
+                const response = await fetch(urlScript);
+                const articles = await response.json();
+                
+                if (articles.length > 0) {
+                    container.innerHTML = articles.map(p => `
+                        <div class="bg-white rounded-[45px] shadow-xl overflow-hidden border border-gray-100 mb-4 relative mx-auto max-w-sm">
+                            ${p.certifie ? '<span class="absolute top-4 right-4 bg-orange-500 text-white text-[8px] font-black px-3 py-1 rounded-full shadow-lg z-10">⭐ CERTIFIÉ</span>' : ''}
+                            <img src="${p.image}" class="w-full h-60 object-cover" onerror="this.src='https://placehold.co/400x300?text=Produit'">
+                            <div class="p-6 text-center">
+                                <h4 class="font-black uppercase text-purple-900 text-lg">${p.nom}</h4>
+                                <p class="text-gray-400 text-[9px] mb-2 uppercase italic">${p.boutique}</p>
+                                <p class="text-orange-600 font-black my-2">${p.prix} FCFA</p>
+                                <a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="block bg-green-500 text-white py-4 rounded-2xl font-black text-xs uppercase shadow-lg">
+                                    <i class="fab fa-whatsapp mr-2"></i> Commander
+                                </a>
+                            </div>
+                        </div>`).join('');
+                } else {
+                    container.innerHTML = '<p class="text-center text-xs italic text-gray-400 mt-10">Aucun article validé (OK) pour le moment.</p>';
+                }
+            } catch (error) {
+                container.innerHTML = '<p class="text-center text-xs text-red-500 mt-10">Erreur de connexion.</p>';
             }
         }
 
-        function lancerRechercheVocale() {
-            window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (window.SpeechRecognition) {
-                const rec = new SpeechRecognition();
-                rec.lang = 'fr-FR';
-                rec.onstart = () => document.getElementById('micIcon').className = "fas fa-microphone text-lg text-red-600 animate-pulse text-center mx-auto";
-                rec.onresult = (e) => { document.getElementById('mainSearch').value = e.results[0][0].transcript; rechercherArticle(); };
-                rec.onend = () => document.getElementById('micIcon').className = "fas fa-microphone text-lg text-orange-500 text-center mx-auto";
-                rec.start();
-            }
+        function retourRayons() {
+            document.getElementById('vue-rayons').classList.remove('hidden');
+            document.getElementById('vue-produits').classList.add('hidden');
         }
 
         function validerVente() {
             const b = document.getElementById('boutiqueNom').value;
             const a = document.getElementById('articlesInfos').value;
-            if(!b || !a) return alert("Complétez les champs.");
-            window.location.href = `https://wa.me/2250576326645?text=${encodeURIComponent("Boutique: "+b+"\nArticles: "+a)}`;
-        }
-
-        function souscrire(pack, prix) {
-            window.location.href = `https://wa.me/2250576326645?text=${encodeURIComponent("Je souhaite souscrire au Pack "+pack+" ("+prix+")")}`;
+            if(!b || !a) return alert("Remplissez les champs.");
+            window.location.href = `https://wa.me/2250576326645?text=${encodeURIComponent("*INSCRIPTION MARCHAND*\nBoutique: "+b+"\nArticles: "+a)}`;
         }
     </script>
 </body>
