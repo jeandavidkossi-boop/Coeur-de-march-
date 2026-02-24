@@ -8,9 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         section { display: none; }
-        section.active { display: block; }
+        section.active { display: block; animation: fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body class="bg-gray-50 pb-32 text-gray-900 text-center">
@@ -25,19 +26,34 @@
 
     <section id="accueil" class="active px-6 mt-6">
         <div class="bg-white p-8 rounded-[45px] shadow-xl border border-purple-50 mb-8 mx-auto max-w-sm">
-            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic underline decoration-orange-500 underline-offset-8">Akwaaba !</h2>
-            <p class="text-[11px] text-gray-600 italic mb-4"><strong>Cher Commerçant,</strong> Devenez la référence digitale de Bouaflé.</p>
-            <p class="text-[11px] text-gray-600 italic mb-6"><strong>Cher Client,</strong> Soutenez nos talents locaux en un clic.</p>
+            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic underline decoration-orange-500 underline-offset-8">Bienvenue !</h2>
+            <div class="mb-4">
+                <p class="text-[11px] text-gray-600 italic"><strong>Cher Commerçant,</strong> Devenez la référence digitale de votre quartier et boostez vos ventes dès aujourd'hui.</p>
+            </div>
+            <div class="mb-6">
+                <p class="text-[11px] text-gray-600 italic"><strong>Cher Client,</strong> Soutenez nos talents locaux et trouvez les meilleurs produits de Bouaflé en un clic.</p>
+            </div>
             <div class="flex gap-2 justify-center">
                 <button onclick="switchTab('boutique')" class="bg-purple-900 text-white px-6 py-3 rounded-xl text-[9px] font-bold uppercase shadow-md">Explorer</button>
                 <button onclick="switchTab('marchands')" class="bg-orange-500 text-white px-6 py-3 rounded-xl text-[9px] font-bold uppercase shadow-md">Vendre</button>
+            </div>
+        </div>
+
+        <div class="mb-10 mx-auto max-w-sm">
+            <h3 class="text-purple-900 font-black text-sm uppercase italic mb-4">Partenaire Officiel 🔥</h3>
+            <div class="bg-purple-900 p-6 rounded-[50px] shadow-xl flex items-center gap-4 text-left border-l-4 border-orange-500">
+                <img src="IMG-20260115-WA0005.jpg" class="w-16 h-16 rounded-full border-2 border-orange-500">
+                <div>
+                    <h4 class="text-white font-bold text-xs uppercase">Nina Fashion</h4>
+                    <p class="text-[8px] text-purple-200 italic">"Votre inspiration, notre métier !"</p>
+                </div>
             </div>
         </div>
     </section>
 
     <section id="boutique" class="px-6 mt-10">
         <div id="vue-rayons">
-            <h2 class="text-purple-900 font-black text-xl mb-8 uppercase italic underline decoration-orange-500 underline-offset-8 text-center">Les Marchés</h2>
+            <h2 class="text-purple-900 font-black text-xl mb-8 uppercase italic underline decoration-orange-500 underline-offset-8">Les Marchés</h2>
             <div class="grid grid-cols-2 gap-4">
                 <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-6 rounded-[35px] shadow-md flex flex-col items-center gap-3 border-b-4 border-orange-500">
                     <i class="fas fa-cut text-orange-600 text-xl"></i>
@@ -51,30 +67,50 @@
         </div>
         <div id="vue-produits" class="hidden text-center">
             <button onclick="retourRayons()" class="mb-6 text-orange-600 font-black text-xs uppercase flex items-center gap-2">
-                <i class="fas fa-arrow-left"></i> Retour aux rayons
+                <i class="fas fa-arrow-left"></i> Retour aux catégories
             </button>
             <div id="liste-produits" class="grid grid-cols-1 gap-6"></div>
         </div>
     </section>
 
+    <section id="marchands" class="px-6 mt-10 pb-20">
+        <div class="bg-white p-8 rounded-[45px] shadow-2xl border-t-8 border-purple-900 mb-10 text-center mx-auto max-w-sm">
+            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic">Inscrire ma Boutique</h2>
+            <form class="space-y-4">
+                <input type="text" id="boutiqueNom" placeholder="Nom de votre commerce" class="w-full bg-gray-50 border-none p-5 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-orange-500">
+                <textarea id="articlesInfos" rows="3" placeholder="Quels produits vendez-vous ?" class="w-full bg-gray-50 border-none p-5 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-orange-500"></textarea>
+                <button type="button" onclick="validerVente()" class="w-full bg-orange-500 text-white py-5 rounded-3xl font-black text-[10px] uppercase shadow-lg">Envoyer via WhatsApp</button>
+            </form>
+        </div>
+    </section>
+
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-5 flex justify-around items-center z-50 rounded-t-[40px] shadow-2xl">
-        <button onclick="switchTab('accueil')" class="text-orange-600 flex flex-col items-center">
+        <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center">
             <i class="fas fa-home text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Accueil</span>
         </button>
-        <button onclick="switchTab('boutique')" class="text-gray-400 flex flex-col items-center">
+        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center">
             <i class="fas fa-store text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Boutique</span>
         </button>
-        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-xl">
+        <button onclick="switchTab('marchands')" id="btn-marchands" class="text-gray-400 flex flex-col items-center">
+            <i class="fas fa-user-tie text-xl"></i><span class="text-[8px] font-bold mt-1 uppercase">Vendre</span>
+        </button>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-xl active:scale-90 transition-all">
             <i class="fab fa-whatsapp text-2xl"></i>
         </a>
     </nav>
 
     <script>
+        // LIEN INTÉGRAL SANS CACHETTE
         const urlScript = "https://script.google.com/macros/s/AKfycbzUAXyeFs7Fgbw1XFc3PsIk0YLpHsRRGHiz0fRp06qjSH6XwU08zMy3Q4bv0Vok4Oyk/exec";
 
         function switchTab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
+            ['accueil', 'boutique', 'marchands'].forEach(t => {
+                const btn = document.getElementById('btn-' + t);
+                btn.classList.toggle('text-orange-600', t === id);
+                btn.classList.toggle('text-gray-400', t !== id);
+            });
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -82,31 +118,34 @@
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             const container = document.getElementById('liste-produits');
-            container.innerHTML = '<p class="text-center text-xs italic text-gray-400 mt-10">Chargement...</p>';
+            container.innerHTML = '<p class="text-center text-xs italic text-gray-400 mt-10">Connexion à Bouaflé...</p>';
 
             try {
                 const response = await fetch(urlScript);
                 const articles = await response.json();
-                // Filtrage par rayon exact
+                
+                // Filtrage automatique par rayon
                 const filtrés = articles.filter(p => p.rayon === nom);
                 
                 if (filtrés.length > 0) {
                     container.innerHTML = filtrés.map(p => `
                         <div class="bg-white rounded-[45px] shadow-xl overflow-hidden border border-gray-100 mb-6 relative mx-auto max-w-sm">
                             ${p.certifie ? '<span class="absolute top-4 right-4 bg-orange-500 text-white text-[7px] font-black px-3 py-1 rounded-full shadow-lg z-10">⭐ CERTIFIÉ</span>' : ''}
-                            <img src="${p.image}" class="w-full h-52 object-cover" onerror="this.src='https://placehold.co/400x300?text=Produit'">
+                            <img src="${p.image}" class="w-full h-52 object-cover" onerror="this.src='https://placehold.co/400x300?text=Image+Produit'">
                             <div class="p-6 text-center">
                                 <h4 class="font-black uppercase text-purple-900 text-lg">${p.nom}</h4>
                                 <p class="text-gray-400 text-[9px] mb-2 uppercase italic">${p.boutique}</p>
                                 <p class="text-orange-600 font-black my-2">${p.prix} FCFA</p>
-                                <a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="block bg-green-500 text-white py-4 rounded-3xl font-black text-[9px] uppercase shadow-lg">Commander</a>
+                                <a href="https://wa.me/2250576326645?text=Bonjour, je souhaite commander : ${p.nom}" class="block bg-green-500 text-white py-4 rounded-3xl font-black text-[9px] uppercase shadow-lg">
+                                    <i class="fab fa-whatsapp mr-2"></i> Commander
+                                </a>
                             </div>
                         </div>`).join('');
                 } else {
-                    container.innerHTML = '<p class="text-center text-xs italic text-gray-400 mt-10">Rayon vide pour le moment.</p>';
+                    container.innerHTML = '<p class="text-center text-xs italic text-gray-400 mt-10">Aucun produit dans ce rayon pour le moment.</p>';
                 }
             } catch (error) {
-                container.innerHTML = '<p class="text-center text-xs text-red-500 mt-10">Vérifiez votre connexion.</p>';
+                container.innerHTML = '<p class="text-center text-xs text-red-500 mt-10">Erreur de connexion réseau.</p>';
             }
         }
 
@@ -114,7 +153,13 @@
             document.getElementById('vue-rayons').classList.remove('hidden');
             document.getElementById('vue-produits').classList.add('hidden');
         }
+
+        function validerVente() {
+            const b = document.getElementById('boutiqueNom').value;
+            const a = document.getElementById('articlesInfos').value;
+            if(!b || !a) return alert("Veuillez remplir tous les champs.");
+            window.location.href = `https://wa.me/2250576326645?text=${encodeURIComponent("*INSCRIPTION MARCHAND*\nBoutique: "+b+"\nArticles: "+a)}`;
+        }
     </script>
 </body>
 </html>
-
