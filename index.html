@@ -24,13 +24,13 @@
     </header>
 
     <section id="accueil" class="active px-6 mt-6">
-        <div class="bg-white p-8 rounded-[45px] shadow-xl border border-purple-50 mb-8 mx-auto max-w-sm text-center">
-            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic underline decoration-orange-500 underline-offset-8">Bienvenue !</h2>
+        <div class="bg-white p-8 rounded-[45px] shadow-xl border border-purple-50 mb-8 mx-auto max-w-sm">
+            <h2 class="text-purple-900 font-black text-lg mb-6 uppercase italic underline decoration-orange-500 underline-offset-8">Akwaaba !</h2>
             <p class="text-[11px] text-gray-600 italic mb-4"><strong>Cher Commerçant,</strong> Devenez la référence digitale de Bouaflé.</p>
-            <p class="text-[11px] text-gray-600 italic mb-6"><strong>Cher Client,</strong> Trouvez les meilleurs produits locaux en un clic.</p>
+            <p class="text-[11px] text-gray-600 italic mb-6"><strong>Cher Client,</strong> Soutenez nos talents locaux en un clic.</p>
             <div class="flex gap-2 justify-center">
-                <button onclick="switchTab('boutique')" class="bg-purple-900 text-white px-6 py-3 rounded-xl text-[9px] font-bold uppercase shadow-md">Explorer</button>
-                <button onclick="switchTab('marchands')" class="bg-orange-500 text-white px-6 py-3 rounded-xl text-[9px] font-bold uppercase shadow-md">Vendre</button>
+                <button onclick="switchTab('boutique')" class="bg-purple-900 text-white px-6 py-3 rounded-xl text-[9px] font-bold uppercase">Explorer</button>
+                <button onclick="switchTab('marchands')" class="bg-orange-500 text-white px-6 py-3 rounded-xl text-[9px] font-bold uppercase">Vendre</button>
             </div>
         </div>
     </section>
@@ -41,11 +41,11 @@
             <div class="grid grid-cols-2 gap-4">
                 <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-6 rounded-[35px] shadow-md flex flex-col items-center gap-3 border-b-4 border-orange-500">
                     <i class="fas fa-cut text-orange-600 text-xl"></i>
-                    <p class="text-[9px] font-black uppercase text-purple-900">Mercerie</p>
+                    <p class="text-[9px] font-black uppercase">Mercerie</p>
                 </button>
                 <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-md flex flex-col items-center gap-3 border-b-4 border-orange-500">
                     <i class="fas fa-magic text-pink-600 text-xl"></i>
-                    <p class="text-[9px] font-black uppercase text-purple-900">Beauté</p>
+                    <p class="text-[9px] font-black uppercase">Beauté</p>
                 </button>
             </div>
         </div>
@@ -75,14 +75,13 @@
         function switchTab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         async function ouvrirRayon(nom) {
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             const container = document.getElementById('liste-produits');
-            container.innerHTML = '<p class="text-center text-xs italic text-gray-400 mt-10">Chargement...</p>';
+            container.innerHTML = '<p class="text-center text-xs italic text-gray-400 mt-10">Connexion à Bouaflé...</p>';
 
             try {
                 const response = await fetch(urlScript);
@@ -98,9 +97,7 @@
                                 <h4 class="font-black uppercase text-purple-900 text-lg">${p.nom}</h4>
                                 <p class="text-gray-400 text-[9px] mb-2 uppercase italic">${p.boutique}</p>
                                 <p class="text-orange-600 font-black my-2">${p.prix} FCFA</p>
-                                <a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="block bg-green-500 text-white py-4 rounded-3xl font-black text-[9px] uppercase shadow-lg">
-                                    <i class="fab fa-whatsapp mr-2"></i> Commander
-                                </a>
+                                <a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="block bg-green-500 text-white py-4 rounded-3xl font-black text-[9px] uppercase shadow-lg">Commander</a>
                             </div>
                         </div>`).join('');
                 } else {
