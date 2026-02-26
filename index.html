@@ -8,39 +8,64 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
         section { display: none; }
         section.active { display: block; animation: slideUp 0.4s ease-out; }
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 30px; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
     </style>
 </head>
-<body class="bg-gray-50 pb-32 text-gray-900">
+<body class="pb-32 text-gray-900">
 
-    <header class="bg-purple-900 pt-12 pb-16 rounded-b-[60px] shadow-2xl border-b-4 border-orange-500 text-center relative overflow-hidden">
-        <div class="w-24 h-24 bg-white rounded-3xl mx-auto mb-4 p-2 shadow-2xl flex items-center justify-center border-4 border-orange-100">
+    <header class="bg-purple-900 pt-10 pb-16 rounded-b-[60px] shadow-2xl border-b-4 border-orange-500 text-center relative">
+        <div class="w-20 h-20 bg-white rounded-3xl mx-auto mb-4 p-2 shadow-2xl flex items-center justify-center">
             <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-full h-full object-contain">
         </div>
-        <h1 class="text-white text-3xl font-black italic uppercase">Cœur de Marché</h1>
-        <div class="bg-orange-500 text-purple-900 inline-block px-4 py-1 rounded-full text-[9px] font-black uppercase mt-2 shadow-lg">
-            Bouaflé • Marahoué
-        </div>
+        <h1 class="text-white text-2xl font-black italic uppercase">Cœur de Marché</h1>
+        <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase">Bouaflé • Marahoué</p>
     </header>
 
     <section id="accueil" class="active px-6 -mt-10">
-        <div class="bg-white p-6 rounded-[40px] shadow-2xl border border-gray-100 mb-8 text-center relative z-10">
-            <h2 class="text-purple-900 font-black text-sm mb-4 uppercase italic">Bienvenue !</h2>
-            <div class="grid grid-cols-2 gap-3 mb-4 text-[7px] text-gray-500 italic">
-                <div class="bg-purple-50 p-3 rounded-2xl">Trouvez le meilleur de Bouaflé.</div>
-                <div class="bg-orange-50 p-3 rounded-2xl">Boostez votre boutique ici.</div>
+        <div class="bg-white p-6 rounded-[40px] shadow-2xl border border-gray-100 mb-6 relative z-10 text-center">
+            <h2 class="text-purple-900 font-black text-[10px] mb-4 uppercase italic">Que cherchez-vous à Bouaflé ?</h2>
+            <div class="flex gap-2">
+                <div class="relative flex-1">
+                    <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher..." 
+                           class="w-full bg-gray-100 border-none rounded-2xl py-4 px-10 text-[11px] outline-none focus:ring-2 focus:ring-orange-500">
+                    <i class="fas fa-search absolute left-4 top-4 text-gray-400"></i>
+                </div>
+                <button onclick="lancerMicro()" class="bg-orange-500 text-white w-12 h-12 rounded-2xl shadow-lg flex items-center justify-center active:scale-95 transition-all">
+                    <i class="fas fa-microphone text-lg" id="iconMicro"></i>
+                </button>
             </div>
-            <button onclick="switchTab('boutique')" class="w-full bg-purple-900 text-white py-4 rounded-2xl text-[10px] font-black uppercase shadow-lg">Explorer la Boutique</button>
         </div>
 
-        <div class="mb-10">
-            <h3 class="text-purple-900 font-black text-sm uppercase italic mb-4 px-2">À la Une 🔥</h3>
+        <div id="zone-projecteurs" class="mb-10">
+            <h3 class="text-purple-900 font-black text-sm uppercase italic mb-4 px-2 flex items-center gap-2">
+                <i class="fas fa-star text-orange-500"></i> Sous les Projecteurs
+            </h3>
+            <div class="bg-white p-4 rounded-[40px] shadow-xl border border-gray-100">
+                <div id="video-content" class="video-container bg-gray-200 flex items-center justify-center">
+                    <p class="text-[9px] text-gray-500 italic">Chargement de la vidéo commerçant...</p>
+                </div>
+                <div class="mt-4 px-2">
+                    <h4 id="titre-video" class="text-purple-900 font-black text-xs uppercase truncate">Chargement...</h4>
+                    <p id="desc-video" class="text-[9px] text-gray-500 italic mt-1 leading-tight">Découvrez l'histoire de nos marchands locaux.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="zone-resultats" class="hidden mb-10">
+            <h3 class="text-orange-600 font-black text-xs uppercase mb-4 px-2 italic underline">Résultats trouvés</h3>
+            <div id="liste-recherche" class="grid grid-cols-1 gap-4"></div>
+        </div>
+
+        <div id="zone-produits-accueil" class="mb-10">
+            <h3 class="text-purple-900 font-black text-sm uppercase italic mb-4 px-2">Nouveautés 🔥</h3>
             <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-4 px-2">
-                <p class="text-[9px] text-gray-400 italic">Chargement des pépites...</p>
+                <p class="text-[9px] text-gray-400 italic">Connexion au marché...</p>
             </div>
         </div>
     </section>
@@ -49,11 +74,11 @@
         <div id="vue-rayons">
             <h2 class="text-purple-900 font-black text-2xl mb-8 uppercase italic text-center underline decoration-orange-500 underline-offset-8">Les Marchés</h2>
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-8 rounded-[40px] shadow-xl flex flex-col items-center gap-4 border-b-8 border-orange-500">
+                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-8 rounded-[40px] shadow-xl flex flex-col items-center gap-4 border-b-8 border-orange-500 active:scale-95 transition-all">
                     <i class="fas fa-scissors text-2xl text-orange-600"></i>
                     <p class="text-[10px] font-black uppercase text-purple-900">Mercerie</p>
                 </button>
-                <button onclick="ouvrirRayon('Beauté')" class="bg-white p-8 rounded-[40px] shadow-xl flex flex-col items-center gap-4 border-b-8 border-pink-500">
+                <button onclick="ouvrirRayon('Beauté')" class="bg-white p-8 rounded-[40px] shadow-xl flex flex-col items-center gap-4 border-b-8 border-pink-500 active:scale-95 transition-all">
                     <i class="fas fa-magic text-2xl text-pink-600"></i>
                     <p class="text-[10px] font-black uppercase text-purple-900">Beauté</p>
                 </button>
@@ -61,18 +86,18 @@
         </div>
         <div id="vue-produits" class="hidden">
             <button onclick="retourRayons()" class="mb-8 text-orange-600 font-black text-[10px] uppercase flex items-center gap-2">
-                <i class="fas fa-chevron-left"></i> Retour
+                <i class="fas fa-chevron-left"></i> Retour aux Marchés
             </button>
-            <div id="liste-produits" class="grid grid-cols-1 gap-8"></div>
+            <div id="liste-produits" class="grid grid-cols-1 gap-6"></div>
         </div>
     </section>
 
-    <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-[35px] shadow-2xl p-4 flex justify-around items-center z-50">
+    <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-[35px] shadow-2xl p-4 flex justify-around items-center z-50 border border-gray-100">
         <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center">
             <i class="fas fa-home text-lg"></i><span class="text-[7px] font-black mt-1 uppercase">Accueil</span>
         </button>
         <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center">
-            <i class="fas fa-th-large text-lg"></i><span class="text-[7px] font-black mt-1 uppercase">Boutique</span>
+            <i class="fas fa-store text-lg"></i><span class="text-[7px] font-black mt-1 uppercase">Boutique</span>
         </button>
         <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-xl">
             <i class="fab fa-whatsapp text-2xl"></i>
@@ -81,6 +106,96 @@
 
     <script>
         const urlScript = "https://script.google.com/macros/s/AKfycbzUAXyeFs7Fgbw1XFc3PsIk0YLpHsRRGHiz0fRp06qjSH6XwU08zMy3Q4bv0Vok4Oyk/exec";
+        let tousLesProduits = [];
+
+        async function chargerDonnees() {
+            try {
+                const response = await fetch(urlScript);
+                tousLesProduits = await response.json();
+                afficherAccueil();
+            } catch (e) { console.log("Erreur de chargement des données."); }
+        }
+
+        function afficherAccueil() {
+            // 1. Filtrer pour la vidéo (on cherche un produit qui a un lien YouTube en Colonne E et OUI en H)
+            const videoProduit = tousLesProduits.find(p => p.certifie === "OUI" && p.image.includes('youtube.com'));
+            if (videoProduit) {
+                const videoID = videoProduit.image.split('v=')[1];
+                document.getElementById('video-content').innerHTML = `<iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>`;
+                document.getElementById('titre-video').innerText = videoProduit.nom;
+                document.getElementById('desc-video').innerText = "Portrait de : " + videoProduit.boutique;
+            }
+
+            // 2. Carrousel Nouveautés (produits classiques avec OUI et OK)
+            const certifiés = tousLesProduits.filter(p => p.certifie === "OUI" && p.statut === "OK" && !p.image.includes('youtube'));
+            const carrousel = document.getElementById('carrousel-une');
+            if (certifiés.length > 0) {
+                carrousel.innerHTML = certifiés.map(p => `
+                    <div class="min-w-[130px] bg-white rounded-3xl shadow-md overflow-hidden border border-gray-100">
+                        <img src="${p.image}" class="w-full h-24 object-cover">
+                        <div class="p-3 text-center">
+                            <p class="text-[8px] font-black uppercase text-purple-900 truncate">${p.nom}</p>
+                            <p class="text-orange-600 font-black text-[9px]">${p.prix} F</p>
+                        </div>
+                    </div>`).join('');
+            }
+        }
+
+        // FONCTION MICROPHONE
+        function lancerMicro() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'fr-FR';
+            const icon = document.getElementById('iconMicro');
+            recognition.onstart = () => { icon.className = "fas fa-circle-notch fa-spin"; };
+            recognition.onend = () => { icon.className = "fas fa-microphone text-lg"; };
+            recognition.onresult = (event) => {
+                const parole = event.results[0][0].transcript;
+                document.getElementById('inputRecherche').value = parole;
+                rechercherProduit();
+            };
+            recognition.start();
+        }
+
+        function rechercherProduit() {
+            const texte = document.getElementById('inputRecherche').value.toLowerCase();
+            const zoneRes = document.getElementById('zone-resultats');
+            const zoneProj = document.getElementById('zone-projecteurs');
+            const zoneProd = document.getElementById('zone-produits-accueil');
+            const liste = document.getElementById('liste-recherche');
+
+            if (texte.length > 1) {
+                zoneRes.classList.remove('hidden');
+                zoneProj.classList.add('hidden');
+                zoneProd.classList.add('hidden');
+                const filtrés = tousLesProduits.filter(p => p.nom.toLowerCase().includes(texte) && p.statut === "OK");
+                liste.innerHTML = filtrés.map(p => cardProduit(p)).join('');
+            } else {
+                zoneRes.classList.add('hidden');
+                zoneProj.classList.remove('hidden');
+                zoneProd.classList.remove('hidden');
+            }
+        }
+
+        function cardProduit(p) {
+            return `
+                <div class="bg-white rounded-[30px] shadow-lg flex items-center p-3 gap-4 border border-gray-50">
+                    <img src="${p.image}" class="w-16 h-16 rounded-2xl object-cover shadow-sm">
+                    <div class="flex-1">
+                        <h4 class="font-black uppercase text-purple-900 text-[10px]">${p.nom}</h4>
+                        <p class="text-orange-600 font-black text-[10px]">${p.prix} FCFA</p>
+                    </div>
+                    <a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="bg-green-500 text-white p-3 rounded-full shadow-md">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>`;
+        }
+
+        async function ouvrirRayon(nom) {
+            document.getElementById('vue-rayons').classList.add('hidden');
+            document.getElementById('vue-produits').classList.remove('hidden');
+            const filtrés = tousLesProduits.filter(p => p.rayon === nom && p.statut === "OK");
+            document.getElementById('liste-produits').innerHTML = filtrés.map(p => cardProduit(p)).join('');
+        }
 
         function switchTab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
@@ -92,62 +207,13 @@
             });
         }
 
-        async function chargerALaUne() {
-            try {
-                const response = await fetch(urlScript);
-                const articles = await response.json();
-                // On filtre les produits qui ont "OUI" en colonne H et "OK" en colonne G
-                const certifiés = articles.filter(p => p.certifie === "OUI" && p.statut === "OK");
-                const carrousel = document.getElementById('carrousel-une');
-                
-                if (certifiés.length > 0) {
-                    carrousel.innerHTML = certifiés.map(p => `
-                        <div class="min-w-[140px] bg-white rounded-[25px] shadow-lg overflow-hidden border border-gray-100">
-                            <img src="${p.image}" class="w-full h-24 object-cover">
-                            <div class="p-3">
-                                <p class="text-[8px] font-black uppercase text-purple-900 truncate">${p.nom}</p>
-                                <p class="text-orange-600 font-black text-[9px]">${p.prix} F</p>
-                            </div>
-                        </div>`).join('');
-                } else {
-                    carrousel.innerHTML = '<p class="text-[8px] text-gray-400">Aucune nouveauté certifiée.</p>';
-                }
-            } catch (e) { console.log(e); }
-        }
-
-        async function ouvrirRayon(nom) {
-            document.getElementById('vue-rayons').classList.add('hidden');
-            document.getElementById('vue-produits').classList.remove('hidden');
-            const container = document.getElementById('liste-produits');
-            container.innerHTML = '<p class="text-center text-[10px] italic text-gray-400 mt-20">Recherche à Bouaflé...</p>';
-
-            try {
-                const response = await fetch(urlScript);
-                const articles = await response.json();
-                const filtrés = articles.filter(p => p.rayon === nom && p.statut === "OK");
-                
-                if (filtrés.length > 0) {
-                    container.innerHTML = filtrés.map(p => `
-                        <div class="bg-white rounded-[40px] shadow-xl overflow-hidden border border-gray-50 relative">
-                            <img src="${p.image}" class="w-full h-64 object-cover">
-                            <div class="p-8 text-center">
-                                <h4 class="font-black uppercase text-purple-900 text-xl">${p.nom}</h4>
-                                <p class="text-orange-600 font-black text-lg my-4">${p.prix} FCFA</p>
-                                <a href="https://wa.me/2250576326645?text=Je commande: ${p.nom}" class="block bg-green-500 text-white py-5 rounded-[25px] font-black text-[10px] uppercase shadow-xl">Commander</a>
-                            </div>
-                        </div>`).join('');
-                } else {
-                    container.innerHTML = '<p class="text-center text-[10px] italic text-gray-400 mt-20">Rayon vide.</p>';
-                }
-            } catch (e) { container.innerHTML = "Erreur de chargement."; }
-        }
-
         function retourRayons() {
             document.getElementById('vue-rayons').classList.remove('hidden');
             document.getElementById('vue-produits').classList.add('hidden');
         }
 
-        window.onload = chargerALaUne;
+        window.onload = chargerDonnees;
     </script>
 </body>
-</html>
+    </html>
+    
