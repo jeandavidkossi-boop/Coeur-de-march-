@@ -9,37 +9,33 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+        section { display: none; }
+        section.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 25px; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 20px; width: 100%; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-32 text-gray-900">
 
     <header class="bg-purple-900 pt-8 pb-12 rounded-b-[50px] shadow-2xl text-center border-b-4 border-orange-500">
-        <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center shadow-lg">
+        <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center">
             <img src="IMG-20260115-WA0005.jpg" class="w-full h-full object-contain">
         </div>
         <h1 class="text-white text-xl font-black uppercase italic">Cœur de Marché</h1>
     </header>
 
-    <main class="px-4 -mt-8">
-        
-        <div class="bg-white p-5 rounded-[35px] shadow-xl border border-gray-100 mb-6 relative z-10">
-            <div class="text-center mb-4 border-b border-gray-100 pb-3">
-                <h2 class="text-purple-900 font-black text-[11px] uppercase italic">Bienvenue chers Clients !</h2>
-                <p class="text-gray-500 text-[9px] italic">Trouvez tout ce qu'il vous faut à Bouaflé en un clic.</p>
-            </div>
-            
-            <div class="text-center mb-4">
-                <h2 class="text-orange-600 font-black text-[11px] uppercase italic">Bienvenue chers Marchands !</h2>
-                <p class="text-gray-500 text-[9px] italic">Propulsez vos produits sur le marché digital de la Marahoué.</p>
-            </div>
+    <section id="accueil" class="active px-4 -mt-8">
+        <div class="bg-white p-5 rounded-[35px] shadow-xl border border-gray-100 mb-6 relative z-10 text-center">
+            <h2 class="text-purple-900 font-black text-[11px] uppercase italic mb-1">Bienvenue chers Clients !</h2>
+            <p class="text-gray-400 text-[8px] mb-3">Tout Bouaflé en un clic.</p>
+            <h2 class="text-orange-600 font-black text-[11px] uppercase italic mb-1 border-t pt-3">Bienvenue chers Marchands !</h2>
+            <p class="text-gray-400 text-[8px] mb-4">Propulsez vos produits ici.</p>
 
-            <div class="flex gap-2 mt-2">
+            <div class="flex gap-2">
                 <div class="relative flex-1">
-                    <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher un article..." 
-                           class="w-full bg-gray-100 rounded-xl py-3 px-10 text-[10px] outline-none border-none focus:ring-2 focus:ring-purple-900">
+                    <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Chercher..." class="w-full bg-gray-100 rounded-xl py-3 px-10 text-[10px] outline-none">
                     <i class="fas fa-search absolute left-4 top-3 text-gray-400"></i>
                 </div>
                 <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md">
@@ -49,51 +45,65 @@
         </div>
 
         <div class="mb-8">
-            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 flex items-center gap-2">
-                <i class="fas fa-fire text-orange-500"></i> À la Une
-            </h3>
-            <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1">
-                </div>
+            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 italic">🔥 À la Une</h3>
+            <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1"></div>
         </div>
 
         <div class="mb-8">
-            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 flex items-center gap-2">
-                <i class="fas fa-star text-orange-500"></i> Sous les Projecteurs
-            </h3>
-            <div class="bg-white p-3 rounded-[30px] shadow-lg border border-gray-50">
-                <div class="video-container bg-gray-100" id="video-placeholder">
-                    </div>
+            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 italic underline decoration-orange-500">🌟 Sous les Projecteurs</h3>
+            <div id="zone-video" class="bg-white p-3 rounded-[30px] shadow-lg border border-gray-50 flex items-center justify-center min-h-[150px]">
+                <p class="italic text-[9px] text-gray-400 text-center px-4">Découvrez nos commerçants en vidéo...</p>
             </div>
         </div>
+    </section>
 
-        <div class="mb-8 text-center">
-            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-4 px-2 italic">Nos Rayons</h3>
+    <section id="boutique" class="px-6 mt-10">
+        <div id="vue-rayons">
+            <h2 class="text-purple-900 font-black text-2xl mb-8 uppercase italic text-center underline decoration-orange-500">Les Marchés</h2>
             <div class="grid grid-cols-2 gap-4">
-                <button onclick="filtrerRayon('Mercerie')" class="bg-white p-5 rounded-3xl shadow-md border-b-4 border-orange-500 active:scale-95 transition-all">
-                    <i class="fas fa-scissors text-orange-500 text-xl mb-2"></i>
+                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-500 flex flex-col items-center active:scale-95 transition-all">
+                    <i class="fas fa-scissors text-orange-600 text-xl mb-2"></i>
                     <p class="text-[9px] font-black uppercase text-purple-900">Mercerie</p>
                 </button>
-                <button onclick="filtrerRayon('Beauté')" class="bg-white p-5 rounded-3xl shadow-md border-b-4 border-pink-500 active:scale-95 transition-all">
-                    <i class="fas fa-magic text-pink-500 text-xl mb-2"></i>
+                <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-pink-500 flex flex-col items-center active:scale-95 transition-all">
+                    <i class="fas fa-magic text-pink-600 text-xl mb-2"></i>
                     <p class="text-[9px] font-black uppercase text-purple-900">Beauté</p>
+                </button>
+                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-green-500 flex flex-col items-center active:scale-95 transition-all">
+                    <i class="fas fa-leaf text-green-600 text-xl mb-2"></i>
+                    <p class="text-[9px] font-black uppercase text-purple-900">Vivrier</p>
+                </button>
+                <button onclick="ouvrirRayon('Mode')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-blue-500 flex flex-col items-center active:scale-95 transition-all">
+                    <i class="fas fa-tshirt text-blue-600 text-xl mb-2"></i>
+                    <p class="text-[9px] font-black uppercase text-purple-900">Mode</p>
+                </button>
+                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-500 flex flex-col items-center active:scale-95 transition-all">
+                    <i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i>
+                    <p class="text-[9px] font-black uppercase text-purple-900">Alimentation</p>
+                </button>
+                <button onclick="ouvrirRayon('Électronique')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-yellow-500 flex flex-col items-center active:scale-95 transition-all">
+                    <i class="fas fa-mobile-alt text-yellow-600 text-xl mb-2"></i>
+                    <p class="text-[9px] font-black uppercase text-purple-900">Électronique</p>
                 </button>
             </div>
         </div>
-
-        <div id="zone-affichage" class="mb-10">
-            <div class="flex justify-between items-center mb-4 px-2">
-                <h3 id="titre-zone" class="text-purple-900 font-black text-[10px] uppercase italic underline decoration-orange-500">Tous les produits</h3>
-                <button onclick="afficherTout()" class="text-gray-400 text-[8px] uppercase font-bold">Voir tout</button>
-            </div>
-            <div id="liste-produits" class="grid grid-cols-1 gap-4 px-1">
-                </div>
+        <div id="vue-produits" class="hidden">
+            <button onclick="retourRayons()" class="mb-6 text-orange-600 font-black text-[10px] uppercase underline">← Retour aux marchés</button>
+            <div id="liste-produits" class="grid grid-cols-1 gap-6"></div>
         </div>
+    </section>
 
-    </main>
-
-    <a href="https://wa.me/2250576326645" class="fixed bottom-6 right-6 bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl z-50 animate-bounce">
-        <i class="fab fa-whatsapp text-2xl"></i>
-    </a>
+    <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-[35px] shadow-2xl p-4 flex justify-around items-center z-50 border border-gray-100">
+        <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center">
+            <i class="fas fa-home"></i><span class="text-[7px] font-black uppercase mt-1">Accueil</span>
+        </button>
+        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center">
+            <i class="fas fa-store"></i><span class="text-[7px] font-black uppercase mt-1">Boutique</span>
+        </button>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-xl shadow-green-200">
+            <i class="fab fa-whatsapp text-2xl"></i>
+        </a>
+    </nav>
 
     <script>
         const urlScript = "https://script.google.com/macros/s/AKfycbzUAXyeFs7Fgbw1XFc3PsIk0YLpHsRRGHiz0fRp06qjSH6XwU08zMy3Q4bv0Vok4Oyk/exec";
@@ -103,62 +113,76 @@
             try {
                 const res = await fetch(urlScript);
                 articles = await res.json();
-                afficherTout();
+                
+                // 1. À la une
+                const une = articles.filter(p => p.certifie === "OUI" && p.statut === "OK" && !p.image.includes('youtube'));
+                document.getElementById('carrousel-une').innerHTML = une.map(p => `
+                    <div class="min-w-[130px] bg-white rounded-2xl shadow-md overflow-hidden border border-gray-50">
+                        <img src="${p.image}" class="w-full h-24 object-cover">
+                        <div class="p-2 text-center text-[7px] font-black uppercase text-purple-900 truncate">${p.nom}</div>
+                    </div>`).join('');
+
+                // 2. Vidéo
+                const v = articles.find(p => p.certifie === "OUI" && p.image.includes('http://googleusercontent.com/youtube.com/3'));
+                if(v) {
+                    const id = v.image.split('v=')[1];
+                    document.getElementById('zone-video').innerHTML = `<div class="video-container"><iframe src="http://googleusercontent.com/youtube.com/4{id}" allowfullscreen></iframe></div>`;
+                }
             } catch (e) { console.log("Erreur de connexion"); }
         }
 
-        function afficherTout() {
-            document.getElementById('titre-zone').innerText = "Tous les produits";
-            // 1. À la une
-            const une = articles.filter(p => p.certifie === "OUI" && p.statut === "OK");
-            document.getElementById('carrousel-une').innerHTML = une.map(p => `
-                <div class="min-w-[130px] bg-white rounded-2xl shadow-md overflow-hidden border border-gray-50">
-                    <img src="${p.image}" class="w-full h-24 object-cover">
-                    <div class="p-2 text-center text-[8px] font-black uppercase text-purple-900">${p.nom}</div>
-                </div>`).join('');
-
-            // 2. Liste complète
-            const liste = articles.filter(p => p.statut === "OK");
-            document.getElementById('liste-produits').innerHTML = liste.map(p => card(p)).join('');
+        function switchTab(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            ['accueil', 'boutique'].forEach(t => document.getElementById('btn-'+t).className = (t === id ? 'text-orange-600' : 'text-gray-400') + ' flex flex-col items-center');
         }
 
-        function card(p) {
-            return `
+        function ouvrirRayon(nom) {
+            document.getElementById('vue-rayons').classList.add('hidden');
+            document.getElementById('vue-produits').classList.remove('hidden');
+            const filtrés = articles.filter(p => p.rayon === nom && p.statut === "OK");
+            document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
                 <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50">
                     <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover shadow-sm">
                     <div class="flex-1">
-                        <h4 class="font-black uppercase text-purple-900 text-[10px]">${p.nom}</h4>
+                        <h4 class="font-black uppercase text-purple-900 text-[9px]">${p.nom}</h4>
                         <p class="text-orange-600 font-black text-[10px]">${p.prix} FCFA</p>
                     </div>
                     <a href="https://wa.me/2250576326645?text=Je commande : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full">
                         <i class="fab fa-whatsapp text-lg"></i>
                     </a>
-                </div>`;
-        }
-
-        function filtrerRayon(nom) {
-            document.getElementById('titre-zone').innerText = "Marché : " + nom;
-            const filtrés = articles.filter(p => p.rayon === nom && p.statut === "OK");
-            document.getElementById('liste-produits').innerHTML = filtrés.map(p => card(p)).join('');
-            window.scrollTo({ top: 600, behavior: 'smooth' });
+                </div>`).join('');
         }
 
         function rechercherProduit() {
             const t = document.getElementById('inputRecherche').value.toLowerCase();
-            const filtrés = articles.filter(p => p.nom.toLowerCase().includes(t) && p.statut === "OK");
-            document.getElementById('liste-produits').innerHTML = filtrés.map(p => card(p)).join('');
+            if(t.length > 1) {
+                switchTab('boutique');
+                document.getElementById('vue-rayons').classList.add('hidden');
+                document.getElementById('vue-produits').classList.remove('hidden');
+                const filtrés = articles.filter(p => p.nom.toLowerCase().includes(t) && p.statut === "OK");
+                document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
+                    <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3">
+                        <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover">
+                        <div class="flex-1"><h4 class="font-black uppercase text-[9px]">${p.nom}</h4><p class="text-orange-600 font-black text-[10px]">${p.prix} F</p></div>
+                        <a href="https://wa.me/2250576326645?text=Je commande : ${p.nom}" class="text-green-500 p-2"><i class="fab fa-whatsapp text-lg"></i></a>
+                    </div>`).join('');
+            }
         }
 
         function lancerMicro() {
             const rec = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             rec.lang = 'fr-FR';
-            rec.onstart = () => { document.getElementById('iconMicro').className = "fas fa-spinner fa-spin text-white"; };
-            rec.onend = () => { document.getElementById('iconMicro').className = "fas fa-microphone text-white"; };
             rec.onresult = (e) => {
                 document.getElementById('inputRecherche').value = e.results[0][0].transcript;
                 rechercherProduit();
             };
             rec.start();
+        }
+
+        function retourRayons() {
+            document.getElementById('vue-rayons').classList.remove('hidden');
+            document.getElementById('vue-produits').classList.add('hidden');
         }
 
         window.onload = charger;
