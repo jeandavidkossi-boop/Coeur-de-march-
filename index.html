@@ -215,6 +215,7 @@
                     } else {
                         videoID = videoProjet.image.split('/').pop();
                     }
+                    // CORRECTION ICI : Utilisation de l'adresse embed officielle et du signe $
                     document.getElementById('zone-video').innerHTML = `
                         <div class="video-container">
                             <iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>
@@ -333,5 +334,5 @@
         window.onload = chargerDonnees;
     </script>
 </body>
-                                                                         </html>
-                                                                         
+                        </html>
+        
