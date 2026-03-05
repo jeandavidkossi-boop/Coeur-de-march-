@@ -183,17 +183,14 @@
     </nav>
 
     <script>
-        /* MISE À JOUR : Votre nouveau lien de déploiement */
         const urlScript = "https://script.google.com/macros/s/AKfycbxIWaVqDIBUhkcZ1lGLaywdTANE6LQjKxqpCzk0zN1X_DhWUJZidn4DoxWj4icCP55M/exec";
         let articles = [];
 
-        // Fonction de chargement initial des données
         async function chargerDonnees() {
             try {
                 const reponse = await fetch(urlScript);
                 articles = await reponse.json();
                 
-                // 1. Affichage des produits "À la Une"
                 const certifiés = articles.filter(p => p.certifie === "OUI" && p.statut === "OK" && !p.image.includes('youtube'));
                 const carrousel = document.getElementById('carrousel-une');
                 
@@ -207,7 +204,6 @@
                     carrousel.innerHTML = '<p class="text-[8px] text-gray-400 w-full text-center py-4">Aucune nouveauté certifiée.</p>';
                 }
 
-                // 2. Affichage de la Vidéo "Sous les Projecteurs"
                 const videoProjet = articles.find(p => p.certifie === "OUI" && (p.image.includes('youtube.com') || p.image.includes('youtu.be')));
                 if (videoProjet) {
                     let videoID = "";
@@ -216,7 +212,7 @@
                     } else {
                         videoID = videoProjet.image.split('/').pop();
                     }
-                    /* CORRECTION : Ajout du signe $ ici */
+                    /* CORRECTION VIDÉO : Ajout du signe $ */
                     document.getElementById('zone-video').innerHTML = `
                         <div class="video-container">
                             <iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>
@@ -227,7 +223,6 @@
             }
         }
 
-        // Fonction pour changer d'onglet
         function switchTab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
@@ -244,13 +239,17 @@
             }
         }
 
-        // Fonction pour ouvrir un rayon spécifique
         function ouvrirRayon(nomRayon) {
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             
             const listeContainer = document.getElementById('liste-produits');
-            const filtrés = articles.filter(p => p.rayon === nomRayon && p.statut === "OK");
+            
+            /* CORRECTION RAYONS : Nettoyage automatique des espaces et majuscules */
+            const filtrés = articles.filter(p => 
+                String(p.rayon).trim().toLowerCase() === String(nomRayon).trim().toLowerCase() && 
+                String(p.statut).trim().toUpperCase() === "OK"
+            );
             
             if (filtrés.length > 0) {
                 listeContainer.innerHTML = filtrés.map(p => `
@@ -269,13 +268,11 @@
             }
         }
 
-        // Retourner à la liste des rayons
         function retourRayons() {
             document.getElementById('vue-rayons').classList.remove('hidden');
             document.getElementById('vue-produits').classList.add('hidden');
         }
 
-        // Fonction de recherche par texte
         function rechercherProduit() {
             const saisie = document.getElementById('inputRecherche').value.toLowerCase();
             if (saisie.length > 1) {
@@ -283,7 +280,7 @@
                 document.getElementById('vue-rayons').classList.add('hidden');
                 document.getElementById('vue-produits').classList.remove('hidden');
                 
-                const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && p.statut === "OK");
+                const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && String(p.statut).trim().toUpperCase() === "OK");
                 const listeContainer = document.getElementById('liste-produits');
                 
                 if (filtrés.length > 0) {
@@ -297,43 +294,32 @@
                             <a href="https://wa.me/2250576326645?text=Bonjour, je souhaite commander : ${p.nom}" class="text-green-500 p-2"><i class="fab fa-whatsapp text-lg"></i></a>
                         </div>`).join('');
                 } else {
-                    listeContainer.innerHTML = '<p class="text-center text-[10px] mt-20 italic text-gray-400">Aucun résultat trouvé pour cette recherche.</p>';
+                    listeContainer.innerHTML = '<p class="text-center text-[10px] mt-20 italic text-gray-400">Aucun résultat trouvé.</p>';
                 }
             }
         }
 
-        // Fonction de reconnaissance vocale (Microphone)
         function lancerMicro() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
                 alert("Votre navigateur ne supporte pas la recherche vocale.");
                 return;
             }
-            
             const recognition = new SpeechRecognition();
             recognition.lang = 'fr-FR';
             const microIcon = document.getElementById('iconMicro');
-            
-            recognition.onstart = () => {
-                microIcon.className = "fas fa-spinner fa-spin";
-            };
-            
-            recognition.onend = () => {
-                microIcon.className = "fas fa-microphone text-lg";
-            };
-            
+            recognition.onstart = () => { microIcon.className = "fas fa-spinner fa-spin"; };
+            recognition.onend = () => { microIcon.className = "fas fa-microphone text-lg"; };
             recognition.onresult = (event) => {
                 const parole = event.results[0][0].transcript;
                 document.getElementById('inputRecherche').value = parole;
                 rechercherProduit();
             };
-            
             recognition.start();
         }
 
-        // Chargement automatique au démarrage
         window.onload = chargerDonnees;
     </script>
 </body>
-            </html>
-            
+    </html>
+    
