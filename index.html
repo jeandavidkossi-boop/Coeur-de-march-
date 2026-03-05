@@ -191,7 +191,7 @@
                 const reponse = await fetch(urlScript);
                 articles = await reponse.json();
                 
-                const certifiés = articles.filter(p => p.certifie === "OUI" && p.statut === "OK" && !p.image.includes('youtube'));
+                const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK" && !String(p.image).includes('youtube'));
                 const carrousel = document.getElementById('carrousel-une');
                 
                 if (certifiés.length > 0) {
@@ -204,14 +204,9 @@
                     carrousel.innerHTML = '<p class="text-[8px] text-gray-400 w-full text-center py-4">Aucune nouveauté certifiée.</p>';
                 }
 
-                const videoProjet = articles.find(p => p.certifie === "OUI" && (p.image.includes('youtube.com') || p.image.includes('youtu.be')));
+                const videoProjet = articles.find(p => String(p.certifie).toUpperCase() === "OUI" && (String(p.image).includes('youtube')));
                 if (videoProjet) {
-                    let videoID = "";
-                    if (videoProjet.image.includes('v=')) {
-                        videoID = videoProjet.image.split('v=')[1].split('&')[0];
-                    } else {
-                        videoID = videoProjet.image.split('/').pop();
-                    }
+                    let videoID = videoProjet.image.includes('v=') ? videoProjet.image.split('v=')[1].split('&')[0] : videoProjet.image.split('/').pop();
                     /* CORRECTION VIDÉO : Ajout du signe $ */
                     document.getElementById('zone-video').innerHTML = `
                         <div class="video-container">
@@ -253,7 +248,7 @@
             
             if (filtrés.length > 0) {
                 listeContainer.innerHTML = filtrés.map(p => `
-                    <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50">
+                    <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3">
                         <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover shadow-sm" onerror="this.src='https://placehold.co/100'">
                         <div class="flex-1">
                             <h4 class="font-black uppercase text-purple-900 text-[9px]">${p.nom}</h4>
@@ -321,5 +316,4 @@
         window.onload = chargerDonnees;
     </script>
 </body>
-    </html>
-    
+</html>
