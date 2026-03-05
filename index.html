@@ -183,7 +183,8 @@
     </nav>
 
     <script>
-        const urlScript = "https://script.google.com/macros/s/AKfycbzUAXyeFs7Fgbw1XFc3PsIk0YLpHsRRGHiz0fRp06qjSH6XwU08zMy3Q4bv0Vok4Oyk/exec";
+        // MISE À JOUR : Votre lien de déploiement Apps Script
+        const urlScript = "https://script.google.com/macros/s/AKfycbxIWaVqDIBUhkcZ1lGLaywdTANE6LQjKxqpCzk0zN1X_DhWUJZidn4DoxWj4icCP55M/exec";
         let articles = [];
 
         // Fonction de chargement initial des données
@@ -215,7 +216,7 @@
                     } else {
                         videoID = videoProjet.image.split('/').pop();
                     }
-                    // CORRECTION ICI : Utilisation de l'adresse embed officielle et du signe $
+                    // CORRECTION : Ajout du signe $ avant {videoID}
                     document.getElementById('zone-video').innerHTML = `
                         <div class="video-container">
                             <iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>
@@ -334,5 +335,5 @@
         window.onload = chargerDonnees;
     </script>
 </body>
-                        </html>
-        
+                    </html>
+
