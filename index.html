@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cœur de Marché Bouaflé</title>
+    
+    <link rel="canonical" href="https://jeandavidkossi-boop.github.io/Coeur-de-march-/">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4c1d95">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -77,8 +82,8 @@
                 <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Beauté</p></button>
                 <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-green-500 flex flex-col items-center"><i class="fas fa-leaf text-green-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Vivrier</p></button>
                 <button onclick="ouvrirRayon('Mode')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mode</p></button>
-                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Alimentation</p></button>
-                <button onclick="ouvrirRayon('Resto')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Resto</p></button>
+                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase text-purple-900">Alimentation</p></button>
+                <button onclick="ouvrirRayon('Resto')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase text-purple-900">Resto</p></button>
             </div>
         </div>
         <div id="vue-produits" class="hidden">
@@ -107,7 +112,6 @@
 
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
 
-        // AMÉLIORATION : Fonction Partager avec le Lien Magique vers GitHub
         function partagerProduit(nom) {
             const lienAppli = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/"; 
             const lienDirect = lienAppli + "?article=" + encodeURIComponent(nom);
@@ -175,7 +179,7 @@
                     </div>
                     <div class="flex flex-col gap-2">
                         <a href="tel:${p.telephone || '2250576326645'}" class="btn-call flex items-center justify-center"><i class="fas fa-phone text-xs"></i></a>
-                        <a href="https://wa.me/2250576326645?text=Je souhaite commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center"><i class="fab fa-whatsapp text-lg"></i></a>
+                        <a href="https://wa.me/2250576326645?text=Je souhaite commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center shadow-sm"><i class="fab fa-whatsapp text-lg"></i></a>
                     </div>
                 </div>`).join('');
         }
@@ -215,7 +219,17 @@
             rec.start();
         }
 
-        // AMÉLIORATION : Détecteur de Lien au démarrage
+        // AMÉLIORATION : Détecteur de Lien + GESTION DE L'INSTALLATION PWA
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Déclenche l'invitation d'installation après 6 secondes pour ne pas brusquer l'utilisateur
+            setTimeout(() => {
+                if (deferredPrompt) deferredPrompt.prompt();
+            }, 6000);
+        });
+
         window.addEventListener('load', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const art = urlParams.get('article');
