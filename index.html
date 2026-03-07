@@ -38,11 +38,6 @@
         .scroll-categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; scroll-behavior: smooth; }
         .cat-pill { white-space: nowrap; background: white; padding: 6px 15px; border-radius: 20px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: 1px solid #e5e7eb; color: #6b21a8; transition: all 0.2s; }
         .cat-pill.active { background: #6b21a8; color: white; border-color: #6b21a8; }
-
-        /* AMÉLIORATIONS AJOUTÉES (SANS MODIFIER L'EXISTANT) */
-        #carrousel-une { scroll-snap-type: x mandatory; scroll-behavior: smooth; }
-        #carrousel-une > div { scroll-snap-align: center; }
-        button:active, .cat-pill:active, nav button:active { transform: scale(0.95); transition: transform 0.1s; }
     </style>
 </head>
 <body class="pb-32 text-gray-900">
@@ -149,8 +144,6 @@
                         <img src="${p.image}" class="w-full h-24 object-cover">
                         <div class="p-2 text-center text-[7px] font-black uppercase text-purple-900 truncate">${p.nom}</div>
                     </div>`).join('');
-                
-                // CORRECTION VIDÉO (SANS MODIFIER LA LOGIQUE)
                 const video = articles.find(p => String(p.certifie).toUpperCase() === "OUI" && String(p.image).includes('youtube'));
                 if (video) {
                     let videoID = video.image.includes('v=') ? video.image.split('v=')[1].split('&')[0] : video.image.split('/').pop();
@@ -245,7 +238,6 @@
             rec.start();
         }
 
-        // --- AJOUTS DE PERFORMANCE (SANS TOUCHER AU CODE CI-DESSUS) ---
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -258,4 +250,9 @@
             const art = urlParams.get('article');
             if (art) {
                 setTimeout(() => { document.getElementById('inputRecherche').value = art; rechercherProduit(); }, 1800);
-          
+            }
+            chargerDonnees();
+        });
+    </script>
+</body>
+    </html>
