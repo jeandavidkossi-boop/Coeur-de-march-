@@ -32,7 +32,6 @@
         .auteur-avis { font-size: 6px; font-weight: 900; color: #15803d; text-transform: uppercase; margin-top: 2px; display: block; }
         .stock-warning { color: #dc2626; font-size: 7px; font-weight: bold; margin-top: 2px; }
 
-        /* NOUVEAU : Animation de chargement Squelette */
         .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 10px; }
         @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
 
@@ -73,14 +72,11 @@
 
         <div class="mb-8">
             <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> À la Une</h3>
-            <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1">
-                <div class="min-w-[130px] h-32 skeleton"></div>
-                <div class="min-w-[130px] h-32 skeleton"></div>
-            </div>
+            <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1"></div>
         </div>
         <div class="mb-8">
             <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 italic underline decoration-orange-500 underline-offset-4"><i class="fas fa-star text-orange-500"></i> Sous les Projecteurs</h3>
-            <div id="zone-video" class="bg-white p-3 rounded-[30px] shadow-lg border border-gray-50 flex items-center justify-center min-h-[160px]"><p class="italic text-[9px] text-gray-400 text-center px-6">Chargement des portraits...</p></div>
+            <div id="zone-video" class="bg-white p-3 rounded-[30px] shadow-lg border border-gray-50 flex items-center justify-center min-h-[160px]"><p class="italic text-[9px] text-gray-400 text-center px-6">Chargement...</p></div>
         </div>
     </section>
 
@@ -91,13 +87,13 @@
                 <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-500 flex flex-col items-center"><i class="fas fa-scissors text-orange-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mercerie</p></button>
                 <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Beauté</p></button>
                 <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-green-500 flex flex-col items-center"><i class="fas fa-leaf text-green-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Vivrier</p></button>
-                <button onclick="openingRayon('Mode')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mode</p></button>
+                <button onclick="ouvrirRayon('Mode')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mode</p></button>
                 <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Alimentation</p></button>
                 <button onclick="ouvrirRayon('Resto')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Resto</p></button>
             </div>
         </div>
         <div id="vue-produits" class="hidden">
-            <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase underline flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour aux marchés</button>
+            <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase underline flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
             <div class="scroll-categories no-scrollbar" id="barre-rapide">
                 <button onclick="ouvrirRayon('Mercerie')" class="cat-pill" id="pill-Mercerie">Mercerie</button>
                 <button onclick="ouvrirRayon('Beauté')" class="cat-pill" id="pill-Beauté">Beauté</button>
@@ -126,22 +122,15 @@
         function partagerProduit(nom) {
             const lienAppli = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/"; 
             const lienDirect = lienAppli + "?article=" + encodeURIComponent(nom);
-            const texte = `🛍️ *Cœur de Marché Bouaflé*\n\nRegarde cet article : *${nom}*\n\nClique ici pour voir les détails et l'image :\n${lienDirect}`;
+            const texte = `🛍️ *Cœur de Marché Bouaflé*\n\nRegarde cet article : *${nom}*\n\nClique ici pour voir :\n${lienDirect}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(texte)}`, '_blank');
         }
 
-        // AMÉLIORATION : Fonction de Tri par Prix
         function trierParPrix() {
             articles.sort((a, b) => triBasEnHaut ? a.prix - b.prix : b.prix - a.prix);
             triBasEnHaut = !triBasEnHaut;
-            // On rafraîchit la vue actuelle
-            const currentSection = document.querySelector('section.active').id;
-            if(currentSection === 'boutique') {
-                const activePill = document.querySelector('.cat-pill.active');
-                if(activePill) ouvrirRayon(activePill.innerText);
-            } else {
-                rechercherProduit();
-            }
+            const activePill = document.querySelector('.cat-pill.active');
+            if(activePill) ouvrirRayon(activePill.innerText);
         }
 
         async function chargerDonnees() {
@@ -186,7 +175,6 @@
 
             const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === String(nomRayon).trim().toLowerCase() && String(p.statut).toUpperCase() === "OK");
             document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
-                // AMÉLIORATION : Gestion visuelle du stock
                 let stockHTML = "";
                 if(p.stock && !isNaN(p.stock)) {
                     let couleur = p.stock < 5 ? 'bg-red-500' : 'bg-green-500';
@@ -203,18 +191,14 @@
                         <div class="stars-gold"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                         <h4 class="font-black uppercase text-purple-900 text-[9px] leading-tight">${p.nom}</h4>
                         <p class="text-gray-500 text-[7px] italic mb-1 leading-tight">${p.description || ''}</p>
-                        ${p.commentaire ? `<div class="zone-temoignage"><p class="bulle-avis">"${p.commentaire}"</p><span class="auteur-avis">- ${p.client || 'Client vérifié'}</span></div>` : `<a href="https://wa.me/2250576326645?text=Avis sur : ${p.nom}" class="text-[6px] text-blue-500 italic block underline">Laisser un témoignage</a>`}
-                        
-                        <button onclick="partagerProduit('${p.nom}')" class="text-blue-400 text-[7px] mt-2 border border-blue-50 px-2 py-1 rounded-md active:scale-90 transition-all">
-                            <i class="fas fa-share-alt mr-1"></i> Partager l'article
-                        </button>
-
+                        ${p.commentaire ? `<div class="zone-temoignage"><p class="bulle-avis">"${p.commentaire}"</p><span class="auteur-avis">- ${p.client || 'Client'}</span></div>` : `<a href="https://wa.me/2250576326645?text=Avis sur : ${p.nom}" class="text-[6px] text-blue-500 block underline">Laisser un avis</a>`}
+                        <button onclick="partagerProduit('${p.nom}')" class="text-blue-400 text-[7px] mt-2 border border-blue-50 px-2 py-1 rounded-md"><i class="fas fa-share-alt mr-1"></i> Partager</button>
                         <p class="text-orange-600 font-black text-[10px] mt-2">${p.prix} FCFA</p>
                         ${stockHTML}
                     </div>
                     <div class="flex flex-col gap-2">
                         <a href="tel:${p.telephone || '2250576326645'}" class="btn-call flex items-center justify-center"><i class="fas fa-phone text-xs"></i></a>
-                        <a href="https://wa.me/2250576326645?text=Je souhaite commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center shadow-sm"><i class="fab fa-whatsapp text-lg"></i></a>
+                        <a href="https://wa.me/2250576326645?text=Commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center"><i class="fab fa-whatsapp text-lg"></i></a>
                     </div>
                 </div>`}).join('');
         }
@@ -230,7 +214,7 @@
                 switchTab('boutique');
                 document.getElementById('vue-rayons').classList.add('hidden');
                 document.getElementById('vue-produits').classList.remove('hidden');
-                const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && String(p.statut).trim().toUpperCase() === "OK");
+                const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && String(p.statut).toUpperCase() === "OK");
                 document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
                     <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3">
                         <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover">
@@ -254,10 +238,22 @@
             rec.start();
         }
 
-        // AMÉLIORATION : Détecteur de Lien + GESTION DE L'INSTALLATION PWA
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            setTimeout(() => {
-             
+            setTimeout(() => { if (deferredPrompt) deferredPrompt.prompt(); }, 10000);
+        });
+
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const art = urlParams.get('article');
+            if (art) {
+                setTimeout(() => { document.getElementById('inputRecherche').value = art; rechercherProduit(); }, 1800);
+            }
+            chargerDonnees();
+        });
+    </script>
+</body>
+                                                                                                                                                                                 </html>
+                                                                                                                                                                                 
