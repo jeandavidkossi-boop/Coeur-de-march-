@@ -32,6 +32,10 @@
         .auteur-avis { font-size: 6px; font-weight: 900; color: #15803d; text-transform: uppercase; margin-top: 2px; display: block; }
         .stock-warning { color: #dc2626; font-size: 7px; font-weight: bold; margin-top: 2px; }
 
+        /* NOUVEAU : Animation de chargement Squelette */
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 10px; }
+        @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
         .scroll-categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; scroll-behavior: smooth; }
         .cat-pill { white-space: nowrap; background: white; padding: 6px 15px; border-radius: 20px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: 1px solid #e5e7eb; color: #6b21a8; transition: all 0.2s; }
         .cat-pill.active { background: #6b21a8; color: white; border-color: #6b21a8; }
@@ -60,13 +64,19 @@
                     <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher un article..." class="w-full bg-gray-100 border-none rounded-xl py-3 px-10 text-[10px] outline-none focus:ring-2 focus:ring-purple-900">
                     <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
                 </div>
+                <button onclick="trierParPrix()" class="bg-white border border-gray-200 text-purple-900 w-10 h-10 rounded-xl flex items-center justify-center shadow-sm active:scale-95">
+                    <i class="fas fa-sort-amount-down-alt"></i>
+                </button>
                 <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-microphone text-lg" id="iconMicro"></i></button>
             </div>
         </div>
 
         <div class="mb-8">
             <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> À la Une</h3>
-            <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1"></div>
+            <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1">
+                <div class="min-w-[130px] h-32 skeleton"></div>
+                <div class="min-w-[130px] h-32 skeleton"></div>
+            </div>
         </div>
         <div class="mb-8">
             <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 italic underline decoration-orange-500 underline-offset-4"><i class="fas fa-star text-orange-500"></i> Sous les Projecteurs</h3>
@@ -81,9 +91,9 @@
                 <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-500 flex flex-col items-center"><i class="fas fa-scissors text-orange-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mercerie</p></button>
                 <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Beauté</p></button>
                 <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-green-500 flex flex-col items-center"><i class="fas fa-leaf text-green-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Vivrier</p></button>
-                <button onclick="ouvrirRayon('Mode')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mode</p></button>
-                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase text-purple-900">Alimentation</p></button>
-                <button onclick="ouvrirRayon('Resto')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase text-purple-900">Resto</p></button>
+                <button onclick="openingRayon('Mode')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mode</p></button>
+                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Alimentation</p></button>
+                <button onclick="ouvrirRayon('Resto')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Resto</p></button>
             </div>
         </div>
         <div id="vue-produits" class="hidden">
@@ -109,6 +119,7 @@
     <script>
         const urlScript = "https://script.google.com/macros/s/AKfycbxIWaVqDIBUhkcZ1lGLaywdTANE6LQjKxqpCzk0zN1X_DhWUJZidn4DoxWj4icCP55M/exec";
         let articles = [];
+        let triBasEnHaut = true;
 
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
 
@@ -117,6 +128,20 @@
             const lienDirect = lienAppli + "?article=" + encodeURIComponent(nom);
             const texte = `🛍️ *Cœur de Marché Bouaflé*\n\nRegarde cet article : *${nom}*\n\nClique ici pour voir les détails et l'image :\n${lienDirect}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(texte)}`, '_blank');
+        }
+
+        // AMÉLIORATION : Fonction de Tri par Prix
+        function trierParPrix() {
+            articles.sort((a, b) => triBasEnHaut ? a.prix - b.prix : b.prix - a.prix);
+            triBasEnHaut = !triBasEnHaut;
+            // On rafraîchit la vue actuelle
+            const currentSection = document.querySelector('section.active').id;
+            if(currentSection === 'boutique') {
+                const activePill = document.querySelector('.cat-pill.active');
+                if(activePill) ouvrirRayon(activePill.innerText);
+            } else {
+                rechercherProduit();
+            }
         }
 
         async function chargerDonnees() {
@@ -160,7 +185,17 @@
             if(activePill) activePill.classList.add('active');
 
             const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === String(nomRayon).trim().toLowerCase() && String(p.statut).toUpperCase() === "OK");
-            document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
+            document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
+                // AMÉLIORATION : Gestion visuelle du stock
+                let stockHTML = "";
+                if(p.stock && !isNaN(p.stock)) {
+                    let couleur = p.stock < 5 ? 'bg-red-500' : 'bg-green-500';
+                    stockHTML = `<div class="w-full bg-gray-100 h-1 rounded-full mt-2"><div class="${couleur} h-1 rounded-full" style="width: ${Math.min(p.stock*10, 100)}%"></div></div><p class="text-[6px] font-bold mt-1 text-gray-400">Encore ${p.stock} en stock</p>`;
+                } else if (p.stock) {
+                    stockHTML = `<p class="stock-warning">⚠️ ${p.stock}</p>`;
+                }
+
+                return `
                 <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3 relative overflow-hidden">
                     ${p.badge ? `<div class="badge-promo">${p.badge}</div>` : ''}
                     <img src="${p.image}" onclick="zoom('${p.image}')" class="w-20 h-20 rounded-2xl object-cover shadow-sm">
@@ -175,13 +210,13 @@
                         </button>
 
                         <p class="text-orange-600 font-black text-[10px] mt-2">${p.prix} FCFA</p>
-                        ${p.stock ? `<p class="stock-warning">⚠️ Stock limité : ${p.stock}</p>` : ''}
+                        ${stockHTML}
                     </div>
                     <div class="flex flex-col gap-2">
                         <a href="tel:${p.telephone || '2250576326645'}" class="btn-call flex items-center justify-center"><i class="fas fa-phone text-xs"></i></a>
                         <a href="https://wa.me/2250576326645?text=Je souhaite commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center shadow-sm"><i class="fab fa-whatsapp text-lg"></i></a>
                     </div>
-                </div>`).join('');
+                </div>`}).join('');
         }
 
         function retourRayons() {
@@ -224,24 +259,5 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Déclenche l'invitation d'installation après 6 secondes pour ne pas brusquer l'utilisateur
             setTimeout(() => {
-                if (deferredPrompt) deferredPrompt.prompt();
-            }, 6000);
-        });
-
-        window.addEventListener('load', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const art = urlParams.get('article');
-            if (art) {
-                setTimeout(() => {
-                    document.getElementById('inputRecherche').value = art;
-                    rechercherProduit();
-                }, 1800);
-            }
-            chargerDonnees();
-        });
-    </script>
-</body>
-                    </html>
-                    
+             
