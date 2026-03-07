@@ -45,16 +45,34 @@
             height: 100%; 
             border: 0; 
         }
+
+        /* --- AJOUTS DE STYLE POUR LES NOUVELLES FONCTIONNALITÉS --- */
+        #modalZoom { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
+        #modalZoom img { max-width: 90%; max-height: 80vh; border-radius: 15px; border: 3px solid white; }
+        
+        .btn-call { background-color: #f97316; color: white; padding: 10px; border-radius: 9999px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s; }
+        .btn-call:active { scale: 0.9; }
+
+        .badge-promo { position: absolute; top: 0; left: 0; background: #ef4444; color: white; font-size: 7px; font-weight: 900; padding: 3px 8px; border-radius: 0 10px 10px 0; text-transform: uppercase; z-index: 10; }
+        .stars-gold { color: #fbbf24; font-size: 8px; }
+        
+        .zone-temoignage { background-color: #f0fdf4; border: 1px dashed #bbf7d0; padding: 6px; border-radius: 12px; margin-top: 5px; }
+        .bulle-avis { font-size: 7px; color: #166534; font-style: italic; line-height: 1.2; }
+        .auteur-avis { font-size: 6px; font-weight: 900; color: #15803d; text-transform: uppercase; margin-top: 2px; display: block; }
+        
+        .stock-warning { color: #dc2626; font-size: 7px; font-weight: bold; margin-top: 2px; }
     </style>
 </head>
 <body class="pb-32 text-gray-900">
+
+    <div id="modalZoom" onclick="this.style.display='none'"><img id="imgZoomed" src=""></div>
 
     <header class="bg-purple-900 pt-8 pb-12 rounded-b-[50px] shadow-2xl text-center border-b-4 border-orange-500">
         <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center border-2 border-orange-100 shadow-lg">
             <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-full h-full object-contain">
         </div>
         <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Cœur de Marché</h1>
-        <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase">Bouaflé • Marahoué</p>
+        <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase italic">Bouaflé • Marahoué</p>
     </header>
 
     <section id="accueil" class="active px-4 -mt-8">
@@ -186,6 +204,9 @@
         const urlScript = "https://script.google.com/macros/s/AKfycbxIWaVqDIBUhkcZ1lGLaywdTANE6LQjKxqpCzk0zN1X_DhWUJZidn4DoxWj4icCP55M/exec";
         let articles = [];
 
+        // FONCTION ZOOM
+        function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
+
         async function chargerDonnees() {
             try {
                 const reponse = await fetch(urlScript);
@@ -196,7 +217,8 @@
                 
                 if (certifiés.length > 0) {
                     carrousel.innerHTML = certifiés.map(p => `
-                        <div class="min-w-[130px] bg-white rounded-2xl shadow-md overflow-hidden border border-gray-50">
+                        <div class="min-w-[130px] relative bg-white rounded-2xl shadow-md overflow-hidden border border-gray-50" onclick="zoom('${p.image}')">
+                            ${p.badge ? `<div class="badge-promo">${p.badge}</div>` : ''}
                             <img src="${p.image}" class="w-full h-24 object-cover" onerror="this.src='https://placehold.co/400x300?text=Image+indisponible'">
                             <div class="p-2 text-center text-[7px] font-black uppercase text-purple-900 truncate">${p.nom}</div>
                         </div>`).join('');
@@ -207,7 +229,6 @@
                 const videoProjet = articles.find(p => String(p.certifie).toUpperCase() === "OUI" && (String(p.image).includes('youtube')));
                 if (videoProjet) {
                     let videoID = videoProjet.image.includes('v=') ? videoProjet.image.split('v=')[1].split('&')[0] : videoProjet.image.split('/').pop();
-                    /* CORRECTION VIDÉO : Ajout du signe $ */
                     document.getElementById('zone-video').innerHTML = `
                         <div class="video-container">
                             <iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe>
@@ -240,7 +261,6 @@
             
             const listeContainer = document.getElementById('liste-produits');
             
-            /* CORRECTION RAYONS : Nettoyage automatique des espaces et majuscules */
             const filtrés = articles.filter(p => 
                 String(p.rayon).trim().toLowerCase() === String(nomRayon).trim().toLowerCase() && 
                 String(p.statut).trim().toUpperCase() === "OK"
@@ -248,15 +268,33 @@
             
             if (filtrés.length > 0) {
                 listeContainer.innerHTML = filtrés.map(p => `
-                    <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3">
-                        <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover shadow-sm" onerror="this.src='https://placehold.co/100'">
+                    <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3 relative overflow-hidden">
+                        ${p.badge ? `<div class="badge-promo">${p.badge}</div>` : ''}
+                        <img src="${p.image}" onclick="zoom('${p.image}')" class="w-20 h-20 rounded-2xl object-cover shadow-sm" onerror="this.src='https://placehold.co/100'">
                         <div class="flex-1">
-                            <h4 class="font-black uppercase text-purple-900 text-[9px]">${p.nom}</h4>
-                            <p class="text-orange-600 font-black text-[10px]">${p.prix} FCFA</p>
+                            <div class="stars-gold"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                            <h4 class="font-black uppercase text-purple-900 text-[9px] leading-tight">${p.nom}</h4>
+                            <p class="text-gray-500 text-[7px] italic mb-1 leading-tight">${p.description || ''}</p>
+                            
+                            ${p.commentaire ? `
+                            <div class="zone-temoignage">
+                                <p class="bulle-avis">"${p.commentaire}"</p>
+                                <span class="auteur-avis">- ${p.client || 'Client vérifié'}</span>
+                            </div>` : `
+                            <a href="https://wa.me/2250576326645?text=Je souhaite laisser un avis sur : ${p.nom}" class="text-[6px] text-blue-500 italic mt-1 block underline">Laisser un témoignage</a>
+                            `}
+
+                            <p class="text-orange-600 font-black text-[10px] mt-2">${p.prix} FCFA</p>
+                            ${p.stock ? `<p class="stock-warning">⚠️ Stock limité : ${p.stock}</p>` : ''}
                         </div>
-                        <a href="https://wa.me/2250576326645?text=Bonjour, je souhaite commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full shadow-sm">
-                            <i class="fab fa-whatsapp text-lg"></i>
-                        </a>
+                        <div class="flex flex-col gap-2">
+                            <a href="tel:${p.telephone || '2250576326645'}" class="btn-call flex items-center justify-center">
+                                <i class="fas fa-phone text-xs"></i>
+                            </a>
+                            <a href="https://wa.me/2250576326645?text=Je souhaite commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full shadow-sm flex items-center justify-center">
+                                <i class="fab fa-whatsapp text-lg"></i>
+                            </a>
+                        </div>
                     </div>`).join('');
             } else {
                 listeContainer.innerHTML = '<p class="text-center text-[10px] mt-20 italic text-gray-400">Aucun article dans ce marché pour le moment.</p>';
@@ -280,40 +318,10 @@
                 
                 if (filtrés.length > 0) {
                     listeContainer.innerHTML = filtrés.map(p => `
-                        <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3">
+                        <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3 overflow-hidden relative">
                             <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover shadow-sm">
                             <div class="flex-1">
                                 <h4 class="font-black uppercase text-purple-900 text-[9px]">${p.nom}</h4>
                                 <p class="text-orange-600 font-black text-[10px]">${p.prix} FCFA</p>
                             </div>
-                            <a href="https://wa.me/2250576326645?text=Bonjour, je souhaite commander : ${p.nom}" class="text-green-500 p-2"><i class="fab fa-whatsapp text-lg"></i></a>
-                        </div>`).join('');
-                } else {
-                    listeContainer.innerHTML = '<p class="text-center text-[10px] mt-20 italic text-gray-400">Aucun résultat trouvé.</p>';
-                }
-            }
-        }
-
-        function lancerMicro() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Votre navigateur ne supporte pas la recherche vocale.");
-                return;
-            }
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'fr-FR';
-            const microIcon = document.getElementById('iconMicro');
-            recognition.onstart = () => { microIcon.className = "fas fa-spinner fa-spin"; };
-            recognition.onend = () => { microIcon.className = "fas fa-microphone text-lg"; };
-            recognition.onresult = (event) => {
-                const parole = event.results[0][0].transcript;
-                document.getElementById('inputRecherche').value = parole;
-                rechercherProduit();
-            };
-            recognition.start();
-        }
-
-        window.onload = chargerDonnees;
-    </script>
-</body>
-</html>
+          
