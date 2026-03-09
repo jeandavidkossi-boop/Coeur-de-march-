@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; scroll-behavior: smooth; }
         section { display: none; }
         section.active { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -38,11 +38,20 @@
         .scroll-categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; scroll-behavior: smooth; }
         .cat-pill { white-space: nowrap; background: white; padding: 6px 15px; border-radius: 20px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: 1px solid #e5e7eb; color: #6b21a8; transition: all 0.2s; }
         .cat-pill.active { background: #6b21a8; color: white; border-color: #6b21a8; }
+
+        /* AJOUT : Animation de pulsation pour WhatsApp */
+        .pulse-wa { animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        
+        /* AJOUT : Bouton retour en haut */
+        #btnBackToTop { display: none; position: fixed; bottom: 100px; right: 20px; z-index: 40; background: #4c1d95; color: white; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body class="pb-32 text-gray-900">
 
     <div id="modalZoom" onclick="this.style.display='none'"><img id="imgZoomed" src=""></div>
+    
+    <button id="btnBackToTop" onclick="window.scrollTo(0,0)"><i class="fas fa-arrow-up"></i></button>
 
     <header class="bg-purple-900 pt-8 pb-12 rounded-b-[50px] shadow-2xl text-center border-b-4 border-orange-500">
         <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center border-2 border-orange-100 shadow-lg">
@@ -60,7 +69,7 @@
             <h2 class="text-orange-600 font-black text-[11px] uppercase italic mb-1 pt-2">Bienvenue chers Marchands !</h2>
             <div class="flex gap-2 mt-4">
                 <div class="relative flex-1">
-                    <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher un article..." class="w-full bg-gray-100 border-none rounded-xl py-3 px-10 text-[10px] outline-none focus:ring-2 focus:ring-purple-900">
+                    <input type="text" id="inputRecherche" onkeyup="rechercherProduit(event)" placeholder="Rechercher un article..." class="w-full bg-gray-100 border-none rounded-xl py-3 px-10 text-[10px] outline-none focus:ring-2 focus:ring-purple-900">
                     <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
                 </div>
                 <button onclick="trierParPrix()" class="bg-white border border-gray-200 text-purple-900 w-10 h-10 rounded-xl flex items-center justify-center shadow-sm active:scale-95">
@@ -94,6 +103,9 @@
         </div>
         <div id="vue-produits" class="hidden">
             <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase underline flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
+            
+            <p id="compteur-articles" class="text-[8px] font-bold text-gray-400 mb-2 px-2 italic"></p>
+
             <div class="scroll-categories no-scrollbar" id="barre-rapide">
                 <button onclick="ouvrirRayon('Mercerie')" class="cat-pill" id="pill-Mercerie">Mercerie</button>
                 <button onclick="ouvrirRayon('Beauté')" class="cat-pill" id="pill-Beauté">Beauté</button>
@@ -109,13 +121,24 @@
     <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-[35px] shadow-2xl p-4 flex justify-around items-center z-50 border border-gray-100">
         <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center transition-all"><i class="fas fa-home text-lg"></i><span class="text-[7px] font-black uppercase mt-1">Accueil</span></button>
         <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center transition-all"><i class="fas fa-store text-lg"></i><span class="text-[7px] font-black uppercase mt-1">Boutique</span></button>
-        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-xl"><i class="fab fa-whatsapp text-2xl"></i></a>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-xl shadow-green-200 pulse-wa">
+            <i class="fab fa-whatsapp text-2xl"></i>
+        </a>
     </nav>
 
     <script>
         const urlScript = "https://script.google.com/macros/s/AKfycbxIWaVqDIBUhkcZ1lGLaywdTANE6LQjKxqpCzk0zN1X_DhWUJZidn4DoxWj4icCP55M/exec";
         let articles = [];
         let triBasEnHaut = true;
+
+        // Gestion du bouton retour en haut
+        window.onscroll = function() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                document.getElementById("btnBackToTop").style.display = "block";
+            } else {
+                document.getElementById("btnBackToTop").style.display = "none";
+            }
+        };
 
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
 
@@ -174,6 +197,10 @@
             if(activePill) activePill.classList.add('active');
 
             const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === String(nomRayon).trim().toLowerCase() && String(p.statut).toUpperCase() === "OK");
+            
+            // AJOUT : Mise à jour du compteur
+            document.getElementById('compteur-articles').innerText = filtrés.length + " article(s) trouvé(s) dans " + nomRayon;
+
             document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
                 let stockHTML = "";
                 if(p.stock && !isNaN(p.stock)) {
@@ -198,7 +225,7 @@
                     </div>
                     <div class="flex flex-col gap-2">
                         <a href="tel:${p.telephone || '2250576326645'}" class="btn-call flex items-center justify-center"><i class="fas fa-phone text-xs"></i></a>
-                        <a href="https://wa.me/2250576326645?text=Commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center"><i class="fab fa-whatsapp text-lg"></i></a>
+                        <a href="https://wa.me/2250576326645?text=Commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center shadow-sm pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
                     </div>
                 </div>`}).join('');
         }
@@ -208,13 +235,20 @@
             document.getElementById('vue-produits').classList.add('hidden');
         }
 
-        function rechercherProduit() {
+        function rechercherProduit(event) {
             const saisie = document.getElementById('inputRecherche').value.toLowerCase();
+            if (event && event.key !== "Enter") return;
+
             if (saisie.length > 1) {
                 switchTab('boutique');
                 document.getElementById('vue-rayons').classList.add('hidden');
                 document.getElementById('vue-produits').classList.remove('hidden');
+                
                 const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && String(p.statut).toUpperCase() === "OK");
+                
+                // AJOUT : Compteur de recherche
+                document.getElementById('compteur-articles').innerText = filtrés.length + " résultat(s) pour votre recherche";
+
                 document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
                     <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3">
                         <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover">
@@ -222,37 +256,4 @@
                             <h4 class="font-black uppercase text-purple-900 text-[9px]">${p.nom}</h4>
                             <p class="text-orange-600 font-black text-[10px]">${p.prix} FCFA</p>
                         </div>
-                        <a href="https://wa.me/2250576326645?text=Je commande : ${p.nom}" class="text-green-500 p-2"><i class="fab fa-whatsapp text-lg"></i></a>
-                    </div>`).join('');
-            }
-        }
-
-        function lancerMicro() {
-            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!Speech) return;
-            const rec = new Speech(); rec.lang = 'fr-FR';
-            const icon = document.getElementById('iconMicro');
-            rec.onstart = () => icon.className = "fas fa-spinner fa-spin";
-            rec.onend = () => icon.className = "fas fa-microphone text-lg";
-            rec.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
-            rec.start();
-        }
-
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            setTimeout(() => { if (deferredPrompt) deferredPrompt.prompt(); }, 10000);
-        });
-
-        window.addEventListener('load', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const art = urlParams.get('article');
-            if (art) {
-                setTimeout(() => { document.getElementById('inputRecherche').value = art; rechercherProduit(); }, 1800);
-            }
-            chargerDonnees();
-        });
-    </script>
-</body>
-    </html>
+                        <a href="https://wa.me/2250576326645?text=Je commande : ${p.nom}" class="text-green-500 p-2 pulse-wa"><i class=
