@@ -1,4 +1,154 @@
-             try {
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cœur de Marché Bouaflé</title>
+    
+    <link rel="canonical" href="https://jeandavidkossi-boop.github.io/Coeur-de-march-/">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4c1d95">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; scroll-behavior: smooth; }
+        section { display: none; }
+        section.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 20px; width: 100%; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; }
+
+        #modalZoom { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
+        #modalZoom img { max-width: 90%; max-height: 80vh; border-radius: 15px; border: 3px solid white; }
+        .btn-call { background-color: #f97316; color: white; padding: 10px; border-radius: 9999px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s; }
+        .badge-promo { position: absolute; top: 0; left: 0; background: #ef4444; color: white; font-size: 7px; font-weight: 900; padding: 3px 8px; border-radius: 0 10px 10px 0; text-transform: uppercase; z-index: 10; }
+        .stars-gold { color: #fbbf24; font-size: 8px; }
+        .zone-temoignage { background-color: #f0fdf4; border: 1px dashed #bbf7d0; padding: 6px; border-radius: 12px; margin-top: 5px; }
+        .bulle-avis { font-size: 7px; color: #166534; font-style: italic; line-height: 1.2; }
+        .auteur-avis { font-size: 6px; font-weight: 900; color: #15803d; text-transform: uppercase; margin-top: 2px; display: block; }
+        .stock-warning { color: #dc2626; font-size: 7px; font-weight: bold; margin-top: 2px; }
+
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 10px; }
+        @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+        .scroll-categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; scroll-behavior: smooth; }
+        .cat-pill { white-space: nowrap; background: white; padding: 6px 15px; border-radius: 20px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: 1px solid #e5e7eb; color: #6b21a8; transition: all 0.2s; }
+        .cat-pill.active { background: #6b21a8; color: white; border-color: #6b21a8; }
+
+        .pulse-wa { animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        
+        #btnBackToTop { display: none; position: fixed; bottom: 100px; right: 20px; z-index: 40; background: #4c1d95; color: white; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body class="pb-32 text-gray-900">
+
+    <div id="modalZoom" onclick="this.style.display='none'"><img id="imgZoomed" src=""></div>
+    
+    <button id="btnBackToTop" onclick="window.scrollTo(0,0)"><i class="fas fa-arrow-up"></i></button>
+
+    <header class="bg-purple-900 pt-8 pb-12 rounded-b-[50px] shadow-2xl text-center border-b-4 border-orange-500">
+        <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center border-2 border-orange-100 shadow-lg">
+            <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-full h-full object-contain">
+        </div>
+        <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Cœur de Marché</h1>
+        <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase italic">Bouaflé • Marahoué</p>
+    </header>
+
+    <section id="accueil" class="active px-4 -mt-8">
+        <div class="bg-white p-5 rounded-[35px] shadow-xl border border-gray-100 mb-6 relative z-10 text-center">
+            <h2 class="text-purple-900 font-black text-[11px] uppercase italic mb-1">Bienvenue chers Clients !</h2>
+            <p class="text-gray-400 text-[8px] mb-3 font-medium">Trouvez tout ce qu'il vous faut à Bouaflé en un clic.</p>
+            <div class="border-t border-gray-50 my-2"></div>
+            <h2 class="text-orange-600 font-black text-[11px] uppercase italic mb-1 pt-2">Bienvenue chers Marchands !</h2>
+            <div class="flex gap-2 mt-4">
+                <div class="relative flex-1">
+                    <input type="text" id="inputRecherche" onkeyup="rechercherProduit(event)" placeholder="Rechercher un article..." class="w-full bg-gray-100 border-none rounded-xl py-3 px-10 text-[10px] outline-none focus:ring-2 focus:ring-purple-900">
+                    <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
+                </div>
+                <button onclick="trierParPrix()" class="bg-white border border-gray-200 text-purple-900 w-10 h-10 rounded-xl flex items-center justify-center shadow-sm active:scale-95">
+                    <i class="fas fa-sort-amount-down-alt"></i>
+                </button>
+                <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-microphone text-lg" id="iconMicro"></i></button>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> À la Une</h3>
+            <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1"></div>
+        </div>
+        <div class="mb-8">
+            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 italic underline decoration-orange-500 underline-offset-4"><i class="fas fa-star text-orange-500"></i> Sous les Projecteurs</h3>
+            <div id="zone-video" class="bg-white p-3 rounded-[30px] shadow-lg border border-gray-50 flex items-center justify-center min-h-[160px]"><p class="italic text-[9px] text-gray-400 text-center px-6">Chargement...</p></div>
+        </div>
+    </section>
+
+    <section id="boutique" class="px-6 mt-10">
+        <div id="vue-rayons">
+            <h2 class="text-purple-900 font-black text-2xl mb-8 uppercase italic text-center underline decoration-orange-500 underline-offset-8">Les Marchés</h2>
+            <div class="grid grid-cols-2 gap-4 pb-12">
+                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-500 flex flex-col items-center"><i class="fas fa-scissors text-orange-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mercerie</p></button>
+                <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Beauté</p></button>
+                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-green-500 flex flex-col items-center"><i class="fas fa-leaf text-green-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Vivrier</p></button>
+                <button onclick="ouvrirRayon('Mode')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mode</p></button>
+                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Alimentation</p></button>
+                <button onclick="ouvrirRayon('Resto')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Resto</p></button>
+            </div>
+        </div>
+        <div id="vue-produits" class="hidden">
+            <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase underline flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
+            <p id="compteur-articles" class="text-[8px] font-bold text-gray-400 mb-2 px-2 italic"></p>
+            <div class="scroll-categories no-scrollbar" id="barre-rapide">
+                <button onclick="ouvrirRayon('Mercerie')" class="cat-pill" id="pill-Mercerie">Mercerie</button>
+                <button onclick="ouvrirRayon('Beauté')" class="cat-pill" id="pill-Beauté">Beauté</button>
+                <button onclick="ouvrirRayon('Vivrier')" class="cat-pill" id="pill-Vivrier">Vivrier</button>
+                <button onclick="ouvrirRayon('Mode')" class="cat-pill" id="pill-Mode">Mode</button>
+                <button onclick="ouvrirRayon('Alimentation')" class="cat-pill" id="pill-Alimentation">Alimentation</button>
+                <button onclick="ouvrirRayon('Resto')" class="cat-pill" id="pill-Resto">Resto</button>
+            </div>
+            <div id="liste-produits" class="grid grid-cols-1 gap-6"></div>
+        </div>
+    </section>
+
+    <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-[35px] shadow-2xl p-4 flex justify-around items-center z-50 border border-gray-100">
+        <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center transition-all"><i class="fas fa-home text-lg"></i><span class="text-[7px] font-black uppercase mt-1">Accueil</span></button>
+        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center transition-all"><i class="fas fa-store text-lg"></i><span class="text-[7px] font-black uppercase mt-1">Boutique</span></button>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-xl shadow-green-200 pulse-wa"><i class="fab fa-whatsapp text-2xl"></i></a>
+    </nav>
+
+    <script>
+        const urlScript = "https://script.google.com/macros/s/AKfycbxIWaVqDIBUhkcZ1lGLaywdTANE6LQjKxqpCzk0zN1X_DhWUJZidn4DoxWj4icCP55M/exec";
+        let articles = [];
+        let triBasEnHaut = true;
+
+        window.onscroll = function() {
+            const btn = document.getElementById("btnBackToTop");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) btn.style.display = "block";
+            else btn.style.display = "none";
+        };
+
+        function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
+
+        function partagerProduit(nom) {
+            const lienAppli = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/"; 
+            const lienDirect = lienAppli + "?article=" + encodeURIComponent(nom);
+            const texte = `🛍️ *Cœur de Marché Bouaflé*\n\nRegarde cet article : *${nom}*\n\nClique ici :\n${lienDirect}`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(texte)}`, '_blank');
+        }
+
+        function trierParPrix() {
+            articles.sort((a, b) => triBasEnHaut ? a.prix - b.prix : b.prix - a.prix);
+            triBasEnHaut = !triBasEnHaut;
+            const activePill = document.querySelector('.cat-pill.active');
+            if(activePill) ouvrirRayon(activePill.innerText);
+        }
+
+        async function chargerDonnees() {
+            try {
                 const reponse = await fetch(urlScript);
                 articles = await reponse.json();
                 const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
