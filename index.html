@@ -226,13 +226,16 @@
 
         function rechercherProduit(event) {
             const saisie = document.getElementById('inputRecherche').value.toLowerCase();
-            if (event && event.key !== "Enter") return;
+            if (event && event.key !== "Enter" && event.type !== "click") return;
+
             if (saisie.length > 1) {
                 switchTab('boutique');
                 document.getElementById('vue-rayons').classList.add('hidden');
                 document.getElementById('vue-produits').classList.remove('hidden');
+                
                 const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && String(p.statut).toUpperCase() === "OK");
                 document.getElementById('compteur-articles').innerText = filtrés.length + " résultat(s) trouvé(s)";
+
                 document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
                     <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3">
                         <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover">
@@ -240,7 +243,7 @@
                             <h4 class="font-black uppercase text-purple-900 text-[9px]">${p.nom}</h4>
                             <p class="text-orange-600 font-black text-[10px]">${p.prix} FCFA</p>
                         </div>
-                        <a href="https://wa.me/2250576326645?text=Commander : ${p.nom}" class="text-green-500 p-2 pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
+                        <a href="https://wa.me/2250576326645?text=Je commande : ${p.nom}" class="text-green-500 p-2 pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
                     </div>`).join('');
             }
         }
@@ -249,29 +252,4 @@
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!Speech) return;
             const rec = new Speech(); rec.lang = 'fr-FR';
-            const icon = document.getElementById('iconMicro');
-            rec.onstart = () => icon.className = "fas fa-spinner fa-spin";
-            rec.onend = () => icon.className = "fas fa-microphone text-lg";
-            rec.onresult = (e) => { 
-                document.getElementById('inputRecherche').value = e.results[0][0].transcript; 
-                rechercherProduit({key: "Enter"});
-            };
-            rec.start();
-        }
-
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            setTimeout(() => { if (deferredPrompt) deferredPrompt.prompt(); }, 15000);
-        });
-
-        window.addEventListener('load', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const art = urlParams.get('article');
-            if (art) setTimeout(() => { document.getElementById('inputRecherche').value = art; rechercherProduit({key: "Enter"}); }, 1800);
-            chargerDonnees();
-        });
-    </script>
-</body>
-</html>
+            const icon = document.getElementById('iconMi
