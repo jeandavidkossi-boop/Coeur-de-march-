@@ -32,6 +32,9 @@
         .auteur-avis { font-size: 6px; font-weight: 900; color: #15803d; text-transform: uppercase; margin-top: 2px; display: block; }
         .stock-warning { color: #dc2626; font-size: 7px; font-weight: bold; margin-top: 2px; }
 
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 10px; }
+        @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
         .scroll-categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; scroll-behavior: smooth; }
         .cat-pill { white-space: nowrap; background: white; padding: 6px 15px; border-radius: 20px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: 1px solid #e5e7eb; color: #6b21a8; transition: all 0.2s; }
         .cat-pill.active { background: #6b21a8; color: white; border-color: #6b21a8; }
@@ -223,8 +226,7 @@
 
         function rechercherProduit(event) {
             const saisie = document.getElementById('inputRecherche').value.toLowerCase();
-            if (event && event.type === "keyup" && event.key !== "Enter" && saisie.length < 3) return;
-            
+            if (event && event.key !== "Enter") return;
             if (saisie.length > 1) {
                 switchTab('boutique');
                 document.getElementById('vue-rayons').classList.add('hidden');
@@ -245,10 +247,7 @@
 
         function lancerMicro() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!Speech) { alert("La reconnaissance vocale n'est pas supportée par votre navigateur."); return; }
-            const rec = new Speech(); 
-            rec.lang = 'fr-FR';
+            if (!Speech) return;
+            const rec = new Speech(); rec.lang = 'fr-FR';
             const icon = document.getElementById('iconMicro');
-            rec.onstart = () => { icon.className = "fas fa-circle-notch fa-spin text-lg text-red-500"; };
-            rec.onresult = (e) => {
-                const parole = 
+            rec.onstart = () => icon.cla
