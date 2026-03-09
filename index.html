@@ -70,6 +70,7 @@
                 <button onclick="trierParPrix()" class="bg-white border border-gray-200 text-purple-900 w-10 h-10 rounded-xl flex items-center justify-center shadow-sm active:scale-95">
                     <i class="fas fa-sort-amount-down-alt"></i>
                 </button>
+                <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-microphone text-lg" id="iconMicro"></i></button>
             </div>
         </div>
 
@@ -93,34 +94,18 @@
                 <button onclick="ouvrirRayon('Mode')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mode</p></button>
                 <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Alimentation</p></button>
                 <button onclick="ouvrirRayon('Resto')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Resto</p></button>
-                <button onclick="ouvrirRayon('Electroménager')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-gray-500 flex flex-col items-center"><i class="fas fa-plug text-gray-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Electroménager</p></button>
-                <button onclick="ouvrirRayon('Electronique')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-indigo-500 flex flex-col items-center"><i class="fas fa-laptop text-indigo-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Electronique</p></button>
-                <button onclick="ouvrirRayon('Immobilier')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-yellow-600 flex flex-col items-center"><i class="fas fa-home text-yellow-700 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Immobilier</p></button>
-                <button onclick="ouvrirRayon('Services')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-teal-500 flex flex-col items-center"><i class="fas fa-tools text-teal-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Services</p></button>
-                <button onclick="ouvrirRayon('Agricole')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-green-700 flex flex-col items-center"><i class="fas fa-seedling text-green-700 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Agricole</p></button>
-                <button onclick="ouvrirRayon('Transport')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-600 flex flex-col items-center"><i class="fas fa-taxi text-orange-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Transport</p></button>
-                <button onclick="ouvrirRayon('Santé')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-400 flex flex-col items-center"><i class="fas fa-hand-holding-medkit text-red-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Santé</p></button>
-                <button onclick="ouvrirRayon('Evénementiel')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-pink-400 flex flex-col items-center"><i class="fas fa-microphone-alt text-pink-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Evénementiel</p></button>
             </div>
         </div>
         <div id="vue-produits" class="hidden">
             <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase underline flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
             <p id="compteur-articles" class="text-[8px] font-bold text-gray-400 mb-2 px-2 italic"></p>
             <div class="scroll-categories no-scrollbar" id="barre-rapide">
-                <button onclick="ouvrirRayon('Mercerie')" class="cat-pill">Mercerie</button>
-                <button onclick="ouvrirRayon('Beauté')" class="cat-pill">Beauté</button>
-                <button onclick="ouvrirRayon('Vivrier')" class="cat-pill">Vivrier</button>
-                <button onclick="ouvrirRayon('Mode')" class="cat-pill">Mode</button>
-                <button onclick="ouvrirRayon('Alimentation')" class="cat-pill">Alimentation</button>
-                <button onclick="ouvrirRayon('Resto')" class="cat-pill">Resto</button>
-                <button onclick="ouvrirRayon('Electroménager')" class="cat-pill">Electroménager</button>
-                <button onclick="ouvrirRayon('Electronique')" class="cat-pill">Electronique</button>
-                <button onclick="ouvrirRayon('Immobilier')" class="cat-pill">Immobilier</button>
-                <button onclick="ouvrirRayon('Services')" class="cat-pill">Services</button>
-                <button onclick="ouvrirRayon('Agricole')" class="cat-pill">Agricole</button>
-                <button onclick="ouvrirRayon('Transport')" class="cat-pill">Transport</button>
-                <button onclick="ouvrirRayon('Santé')" class="cat-pill">Santé</button>
-                <button onclick="ouvrirRayon('Evénementiel')" class="cat-pill">Evénementiel</button>
+                <button onclick="ouvrirRayon('Mercerie')" class="cat-pill" id="pill-Mercerie">Mercerie</button>
+                <button onclick="ouvrirRayon('Beauté')" class="cat-pill" id="pill-Beauté">Beauté</button>
+                <button onclick="ouvrirRayon('Vivrier')" class="cat-pill" id="pill-Vivrier">Vivrier</button>
+                <button onclick="ouvrirRayon('Mode')" class="cat-pill" id="pill-Mode">Mode</button>
+                <button onclick="ouvrirRayon('Alimentation')" class="cat-pill" id="pill-Alimentation">Alimentation</button>
+                <button onclick="ouvrirRayon('Resto')" class="cat-pill" id="pill-Resto">Resto</button>
             </div>
             <div id="liste-produits" class="grid grid-cols-1 gap-6"></div>
         </div>
@@ -175,8 +160,7 @@
                     let videoID = video.image.includes('v=') ? video.image.split('v=')[1].split('&')[0] : video.image.split('/').pop();
                     document.getElementById('zone-video').innerHTML = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe></div>`;
                 }
-                return true;
-            } catch (erreur) { console.error("Erreur :", erreur); return false; }
+            } catch (erreur) { console.error("Erreur :", erreur); }
         }
 
         function switchTab(id) {
@@ -185,11 +169,11 @@
             const btnA = document.getElementById('btn-accueil');
             const btnB = document.getElementById('btn-boutique');
             if (id === 'accueil') {
-                btnA.className = 'text-orange-600 flex flex-col items-center';
-                btnB.className = 'text-gray-400 flex flex-col items-center';
+                btnA.className = 'text-orange-600 flex flex-col items-center transition-all';
+                btnB.className = 'text-gray-400 flex flex-col items-center transition-all';
             } else {
-                btnA.className = 'text-gray-400 flex flex-col items-center';
-                btnB.className = 'text-orange-600 flex flex-col items-center';
+                btnA.className = 'text-gray-400 flex flex-col items-center transition-all';
+                btnB.className = 'text-orange-600 flex flex-col items-center transition-all';
             }
         }
 
@@ -197,8 +181,8 @@
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-            const pills = document.querySelectorAll('.cat-pill');
-            pills.forEach(p => { if(p.innerText === nomRayon) p.classList.add('active'); });
+            const activePill = document.getElementById('pill-' + nomRayon);
+            if(activePill) activePill.classList.add('active');
 
             const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === String(nomRayon).trim().toLowerCase() && String(p.statut).toUpperCase() === "OK");
             document.getElementById('compteur-articles').innerText = filtrés.length + " article(s) trouvé(s) dans " + nomRayon;
@@ -219,12 +203,52 @@
                     <div class="flex-1">
                         <div class="stars-gold"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                         <h4 class="font-black uppercase text-purple-900 text-[9px] leading-tight">${p.nom}</h4>
-                        <p class="text-orange-600 font-black text-xs mt-1">${p.prix} FCFA</p>
+                        <p class="text-gray-500 text-[7px] italic mb-1 leading-tight">${p.description || ''}</p>
+                        ${p.commentaire ? `<div class="zone-temoignage"><p class="bulle-avis">"${p.commentaire}"</p><span class="auteur-avis">- ${p.client || 'Client'}</span></div>` : `<a href="https://wa.me/2250576326645?text=Avis sur : ${p.nom}" class="text-[6px] text-blue-500 block underline italic">Laisser un avis</a>`}
+                        <button onclick="partagerProduit('${p.nom}')" class="text-blue-400 text-[7px] mt-2 border border-blue-50 px-2 py-1 rounded-md"><i class="fas fa-share-alt mr-1"></i> Partager</button>
+                        <p class="text-orange-600 font-black text-[10px] mt-2">${p.prix} FCFA</p>
                         ${stockHTML}
-                        ${p.avis ? `<div class="zone-temoignage"><p class="bulle-avis">"${p.avis}"</p><span class="auteur-avis">- ${p.client || 'Client'}</span></div>` : ''}
                     </div>
                     <div class="flex flex-col gap-2">
-                        <a href="https://wa.me/2250576326645?text=Bonjour, je souhaite commander : ${encodeURIComponent(p.nom)}" class="btn-call flex items-center justify-center w-10 h-10 shadow-lg active:scale-90">
-                            <i class="fab fa-whatsapp text-lg"></i>
-                        </a>
-                        <button onclick="partagerProduit('${p.nom.replace(/'/g, "\\'")}')" class="bg-gray-100 text-gray-500 w-10 h-10 rounded-full flex items-center just
+                        <a href="tel:${p.telephone || '2250576326645'}" class="btn-call flex items-center justify-center"><i class="fas fa-phone text-xs"></i></a>
+                        <a href="https://wa.me/2250576326645?text=Commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
+                    </div>
+                </div>`}).join('');
+        }
+
+        function retourRayons() {
+            document.getElementById('vue-rayons').classList.remove('hidden');
+            document.getElementById('vue-produits').classList.add('hidden');
+        }
+
+        function rechercherProduit(event) {
+            const saisie = document.getElementById('inputRecherche').value.toLowerCase();
+            if (event && event.type === "keyup" && event.key !== "Enter" && saisie.length < 3) return;
+            
+            if (saisie.length > 1) {
+                switchTab('boutique');
+                document.getElementById('vue-rayons').classList.add('hidden');
+                document.getElementById('vue-produits').classList.remove('hidden');
+                const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && String(p.statut).toUpperCase() === "OK");
+                document.getElementById('compteur-articles').innerText = filtrés.length + " résultat(s) trouvé(s)";
+                document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
+                    <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3">
+                        <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover">
+                        <div class="flex-1">
+                            <h4 class="font-black uppercase text-purple-900 text-[9px]">${p.nom}</h4>
+                            <p class="text-orange-600 font-black text-[10px]">${p.prix} FCFA</p>
+                        </div>
+                        <a href="https://wa.me/2250576326645?text=Commander : ${p.nom}" class="text-green-500 p-2 pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
+                    </div>`).join('');
+            }
+        }
+
+        function lancerMicro() {
+            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!Speech) { alert("La reconnaissance vocale n'est pas supportée par votre navigateur."); return; }
+            const rec = new Speech(); 
+            rec.lang = 'fr-FR';
+            const icon = document.getElementById('iconMicro');
+            rec.onstart = () => { icon.className = "fas fa-circle-notch fa-spin text-lg text-red-500"; };
+            rec.onresult = (e) => {
+                const parole = 
