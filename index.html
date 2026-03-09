@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -101,9 +101,7 @@
         </div>
         <div id="vue-produits" class="hidden">
             <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase underline flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
-            
             <p id="compteur-articles" class="text-[8px] font-bold text-gray-400 mb-2 px-2 italic"></p>
-
             <div class="scroll-categories no-scrollbar" id="barre-rapide">
                 <button onclick="ouvrirRayon('Mercerie')" class="cat-pill" id="pill-Mercerie">Mercerie</button>
                 <button onclick="ouvrirRayon('Beauté')" class="cat-pill" id="pill-Beauté">Beauté</button>
@@ -119,9 +117,7 @@
     <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-[35px] shadow-2xl p-4 flex justify-around items-center z-50 border border-gray-100">
         <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center transition-all"><i class="fas fa-home text-lg"></i><span class="text-[7px] font-black uppercase mt-1">Accueil</span></button>
         <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center transition-all"><i class="fas fa-store text-lg"></i><span class="text-[7px] font-black uppercase mt-1">Boutique</span></button>
-        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-xl shadow-green-200 pulse-wa">
-            <i class="fab fa-whatsapp text-2xl"></i>
-        </a>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center -mt-16 border-4 border-white shadow-xl shadow-green-200 pulse-wa"><i class="fab fa-whatsapp text-2xl"></i></a>
     </nav>
 
     <script>
@@ -130,11 +126,9 @@
         let triBasEnHaut = true;
 
         window.onscroll = function() {
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-                document.getElementById("btnBackToTop").style.display = "block";
-            } else {
-                document.getElementById("btnBackToTop").style.display = "none";
-            }
+            const btn = document.getElementById("btnBackToTop");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) btn.style.display = "block";
+            else btn.style.display = "none";
         };
 
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
@@ -142,7 +136,7 @@
         function partagerProduit(nom) {
             const lienAppli = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/"; 
             const lienDirect = lienAppli + "?article=" + encodeURIComponent(nom);
-            const texte = `🛍️ *Cœur de Marché Bouaflé*\n\nRegarde cet article : *${nom}*\n\nClique ici pour voir :\n${lienDirect}`;
+            const texte = `🛍️ *Cœur de Marché Bouaflé*\n\nRegarde cet article : *${nom}*\n\nClique ici :\n${lienDirect}`;
             window.open(`https://wa.me/?text=${encodeURIComponent(texte)}`, '_blank');
         }
 
@@ -169,8 +163,7 @@
                     let videoID = video.image.includes('v=') ? video.image.split('v=')[1].split('&')[0] : video.image.split('/').pop();
                     document.getElementById('zone-video').innerHTML = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe></div>`;
                 }
-                return true;
-            } catch (erreur) { console.error("Erreur :", erreur); return false; }
+            } catch (erreur) { console.error("Erreur :", erreur); }
         }
 
         function switchTab(id) {
@@ -233,8 +226,7 @@
 
         function rechercherProduit(event) {
             const saisie = document.getElementById('inputRecherche').value.toLowerCase();
-            if (event && event.key !== "Enter" && event.type !== "click") return;
-
+            if (event && event.key !== "Enter") return;
             if (saisie.length > 1) {
                 switchTab('boutique');
                 document.getElementById('vue-rayons').classList.add('hidden');
@@ -248,11 +240,14 @@
                             <h4 class="font-black uppercase text-purple-900 text-[9px]">${p.nom}</h4>
                             <p class="text-orange-600 font-black text-[10px]">${p.prix} FCFA</p>
                         </div>
-                        <a href="https://wa.me/2250576326645?text=Je commande : ${p.nom}" class="text-green-500 p-2 pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
+                        <a href="https://wa.me/2250576326645?text=Commander : ${p.nom}" class="text-green-500 p-2 pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
                     </div>`).join('');
             }
         }
 
         function lancerMicro() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!
+            if (!Speech) return;
+            const rec = new Speech(); rec.lang = 'fr-FR';
+            const icon = document.getElementById('iconMicro');
+            rec.onstart = () => icon.cla
