@@ -97,6 +97,7 @@
                 <button onclick="ouvrirRayon('Mode')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mode</p></button>
                 <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Alimentation</p></button>
                 <button onclick="ouvrirRayon('Resto')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Resto</p></button>
+                
                 <button onclick="ouvrirRayon('Electroménager')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-gray-500 flex flex-col items-center"><i class="fas fa-plug text-gray-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Electroménager</p></button>
                 <button onclick="ouvrirRayon('Electronique')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-indigo-500 flex flex-col items-center"><i class="fas fa-laptop text-indigo-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Electronique</p></button>
                 <button onclick="ouvrirRayon('Immobilier')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-yellow-600 flex flex-col items-center"><i class="fas fa-home text-yellow-700 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Immobilier</p></button>
@@ -111,20 +112,20 @@
             <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase underline flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
             <p id="compteur-articles" class="text-[8px] font-bold text-gray-400 mb-2 px-2 italic"></p>
             <div class="scroll-categories no-scrollbar" id="barre-rapide">
-                <button onclick="ouvrirRayon('Mercerie')" class="cat-pill" id="pill-Mercerie">Mercerie</button>
-                <button onclick="ouvrirRayon('Beauté')" class="cat-pill" id="pill-Beauté">Beauté</button>
-                <button onclick="ouvrirRayon('Vivrier')" class="cat-pill" id="pill-Vivrier">Vivrier</button>
-                <button onclick="ouvrirRayon('Mode')" class="cat-pill" id="pill-Mode">Mode</button>
-                <button onclick="ouvrirRayon('Alimentation')" class="cat-pill" id="pill-Alimentation">Alimentation</button>
-                <button onclick="ouvrirRayon('Resto')" class="cat-pill" id="pill-Resto">Resto</button>
-                <button onclick="ouvrirRayon('Electroménager')" class="cat-pill" id="pill-Electroménager">Electroménager</button>
-                <button onclick="ouvrirRayon('Electronique')" class="cat-pill" id="pill-Electronique">Electronique</button>
-                <button onclick="ouvrirRayon('Immobilier')" class="cat-pill" id="pill-Immobilier">Immobilier</button>
-                <button onclick="ouvrirRayon('Services')" class="cat-pill" id="pill-Services">Services</button>
-                <button onclick="ouvrirRayon('Agricole')" class="cat-pill" id="pill-Agricole">Agricole</button>
-                <button onclick="ouvrirRayon('Transport')" class="cat-pill" id="pill-Transport">Transport</button>
-                <button onclick="ouvrirRayon('Santé')" class="cat-pill" id="pill-Santé">Santé</button>
-                <button onclick="ouvrirRayon('Evénementiel')" class="cat-pill" id="pill-Evénementiel">Evénementiel</button>
+                <button onclick="ouvrirRayon('Mercerie')" class="cat-pill">Mercerie</button>
+                <button onclick="ouvrirRayon('Beauté')" class="cat-pill">Beauté</button>
+                <button onclick="ouvrirRayon('Vivrier')" class="cat-pill">Vivrier</button>
+                <button onclick="ouvrirRayon('Mode')" class="cat-pill">Mode</button>
+                <button onclick="ouvrirRayon('Alimentation')" class="cat-pill">Alimentation</button>
+                <button onclick="ouvrirRayon('Resto')" class="cat-pill">Resto</button>
+                <button onclick="ouvrirRayon('Electroménager')" class="cat-pill">Electroménager</button>
+                <button onclick="ouvrirRayon('Electronique')" class="cat-pill">Electronique</button>
+                <button onclick="ouvrirRayon('Immobilier')" class="cat-pill">Immobilier</button>
+                <button onclick="ouvrirRayon('Services')" class="cat-pill">Services</button>
+                <button onclick="ouvrirRayon('Agricole')" class="cat-pill">Agricole</button>
+                <button onclick="ouvrirRayon('Transport')" class="cat-pill">Transport</button>
+                <button onclick="ouvrirRayon('Santé')" class="cat-pill">Santé</button>
+                <button onclick="ouvrirRayon('Evénementiel')" class="cat-pill">Evénementiel</button>
             </div>
             <div id="liste-produits" class="grid grid-cols-1 gap-6"></div>
         </div>
@@ -179,8 +180,7 @@
                     let videoID = video.image.includes('v=') ? video.image.split('v=')[1].split('&')[0] : video.image.split('/').pop();
                     document.getElementById('zone-video').innerHTML = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe></div>`;
                 }
-                return true;
-            } catch (erreur) { console.error("Erreur :", erreur); return false; }
+            } catch (erreur) { console.error("Erreur :", erreur); }
         }
 
         function switchTab(id) {
@@ -201,6 +201,7 @@
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+            
             const activePill = Array.from(document.querySelectorAll('.cat-pill')).find(p => p.innerText.trim().toLowerCase() === nomRayon.trim().toLowerCase());
             if(activePill) activePill.classList.add('active');
 
@@ -222,4 +223,6 @@
                     <img src="${p.image}" onclick="zoom('${p.image}')" class="w-20 h-20 rounded-2xl object-cover shadow-sm">
                     <div class="flex-1">
                         <div class="stars-gold"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        <h4 class="font-black uppercase text-purple-900 text-[9px] 
+                        <h4 class="font-black uppercase text-purple-900 text-[9px] leading-tight">${p.nom}</h4>
+                        <p class="text-gray-500 text-[7px] italic mb-1 leading-tight">${p.description || ''}</p>
+                        ${p.commentaire ? `<div class="zone-temoignage"><p class="bulle-avis">"${p.commentaire}"</p><span class="auteur-avis">- $            
