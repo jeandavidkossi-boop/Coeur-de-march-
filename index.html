@@ -50,12 +50,6 @@
         </div>
         <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Cœur de Marché</h1>
         <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase italic">Bouaflé • Marahoué</p>
-        
-        <div id="installArea" class="hidden mt-4">
-            <button id="btnInstall" class="bg-orange-500 text-white text-[10px] font-black px-6 py-2 rounded-full shadow-lg animate-bounce">
-                <i class="fas fa-download mr-2"></i> INSTALLER L'APPLICATION
-            </button>
-        </div>
     </header>
 
     <section id="accueil" class="active px-4 -mt-8">
@@ -86,7 +80,7 @@
                 <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-500 flex flex-col items-center"><i class="fas fa-scissors text-orange-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mercerie</p></button>
                 <button onclick="ouvrirRayon('Beauté')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Beauté</p></button>
                 <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-green-500 flex flex-col items-center"><i class="fas fa-leaf text-green-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Vivrier</p></button>
-                <button onclick="ouvrirRayon('Mode')" class="bg-white p-6 rounded-[35px) shadow-xl border-b-8 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mode</p></button>
+                <button onclick="ouvrirRayon('Mode')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-2xl mb-2"></i><p class="text-[9px] font-black uppercase">Mode</p></button>
                 <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Alimentation</p></button>
                 <button onclick="ouvrirRayon('Resto')" class="bg-white p-6 rounded-[35px] shadow-xl border-b-8 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[9px] font-black uppercase">Resto</p></button>
             </div>
@@ -214,42 +208,6 @@
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
 
         window.onload = chargerDonnees;
-
-        // --- GESTION DU SERVICE WORKER ET DU BOUTON D'INSTALLATION ---
-        let deferredPrompt;
-        const installArea = document.getElementById('installArea');
-        const btnInstall = document.getElementById('btnInstall');
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker prêt !'))
-                    .catch(err => console.error('Erreur technique :', err));
-            });
-        }
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installArea.classList.remove('hidden');
-        });
-
-        btnInstall.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    console.log('App installée');
-                }
-                deferredPrompt = null;
-                installArea.classList.add('hidden');
-            }
-        });
-
-        window.addEventListener('appinstalled', () => {
-            installArea.classList.add('hidden');
-        });
     </script>
 </body>
     </html>
-    
