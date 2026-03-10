@@ -208,7 +208,16 @@
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
 
         window.onload = chargerDonnees;
+
+        // --- CODE AJOUTÉ POUR L'INSTALLATION (SERVICE WORKER) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker prêt !'))
+                    .catch(err => console.error('Erreur technique :', err));
+            });
+        }
     </script>
 </body>
-    </html>
-    
+            </html>
+            
