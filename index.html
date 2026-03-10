@@ -32,9 +32,6 @@
         .auteur-avis { font-size: 6px; font-weight: 900; color: #15803d; text-transform: uppercase; margin-top: 2px; display: block; }
         .stock-warning { color: #dc2626; font-size: 7px; font-weight: bold; margin-top: 2px; }
 
-        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 10px; }
-        @keyframes loading { from { background-position: 200% 0; } to { background-position: -200% 0; } }
-
         .scroll-categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; scroll-behavior: smooth; }
         .cat-pill { white-space: nowrap; background: white; padding: 6px 15px; border-radius: 20px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: 1px solid #e5e7eb; color: #6b21a8; transition: all 0.2s; }
         .cat-pill.active { background: #6b21a8; color: white; border-color: #6b21a8; }
@@ -67,7 +64,7 @@
             <h2 class="text-orange-600 font-black text-[11px] uppercase italic mb-1 pt-2">Bienvenue chers Marchands !</h2>
             <div class="flex gap-2 mt-4">
                 <div class="relative flex-1">
-                    <input type="text" id="inputRecherche" onkeyup="rechercherProduit(event)" placeholder="Rechercher un article..." class="w-full bg-gray-100 border-none rounded-xl py-3 px-10 text-[10px] outline-none focus:ring-2 focus:ring-purple-900">
+                    <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Rechercher un article..." class="w-full bg-gray-100 border-none rounded-xl py-3 px-10 text-[10px] outline-none focus:ring-2 focus:ring-purple-900">
                     <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
                 </div>
                 <button onclick="trierParPrix()" class="bg-white border border-gray-200 text-purple-900 w-10 h-10 rounded-xl flex items-center justify-center shadow-sm active:scale-95">
@@ -184,8 +181,8 @@
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-            const activePill = document.getElementById('pill-' + nomRayon);
-            if(activePill) activePill.classList.add('active');
+            const pill = document.getElementById('pill-' + nomRayon);
+            if(pill) pill.classList.add('active');
 
             const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === String(nomRayon).trim().toLowerCase() && String(p.statut).toUpperCase() === "OK");
             document.getElementById('compteur-articles').innerText = filtrés.length + " article(s) trouvé(s) dans " + nomRayon;
@@ -206,15 +203,16 @@
                     <div class="flex-1">
                         <div class="stars-gold"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                         <h4 class="font-black uppercase text-purple-900 text-[9px] leading-tight">${p.nom}</h4>
-                        <p class="text-gray-500 text-[7px] italic mb-1 leading-tight">${p.description || ''}</p>
-                        ${p.commentaire ? `<div class="zone-temoignage"><p class="bulle-avis">"${p.commentaire}"</p><span class="auteur-avis">- ${p.client || 'Client'}</span></div>` : `<a href="https://wa.me/2250576326645?text=Avis sur : ${p.nom}" class="text-[6px] text-blue-500 block underline italic">Laisser un avis</a>`}
-                        <button onclick="partagerProduit('${p.nom}')" class="text-blue-400 text-[7px] mt-2 border border-blue-50 px-2 py-1 rounded-md"><i class="fas fa-share-alt mr-1"></i> Partager</button>
-                        <p class="text-orange-600 font-black text-[10px] mt-2">${p.prix} FCFA</p>
+                        <p class="text-orange-600 font-black text-xs mt-1">${p.prix} FCFA</p>
                         ${stockHTML}
                     </div>
                     <div class="flex flex-col gap-2">
-                        <a href="tel:${p.telephone || '2250576326645'}" class="btn-call flex items-center justify-center"><i class="fas fa-phone text-xs"></i></a>
-                        <a href="https://wa.me/2250576326645?text=Commander : ${p.nom}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
+                        <a href="https://wa.me/2250576326645?text=Bonjour, je souhaite commander : ${encodeURIComponent(p.nom)}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center pulse-wa">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                        </a>
+                        <button onclick="partagerProduit('${p.nom.replace(/'/g, "\\'")}')" class="bg-gray-100 text-gray-500 w-10 h-10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-share-alt text-sm"></i>
+                        </button>
                     </div>
                 </div>`}).join('');
         }
@@ -224,9 +222,8 @@
             document.getElementById('vue-produits').classList.add('hidden');
         }
 
-        function rechercherProduit(event) {
+        function rechercherProduit() {
             const saisie = document.getElementById('inputRecherche').value.toLowerCase();
-            if (event && event.key !== "Enter") return;
             if (saisie.length > 1) {
                 switchTab('boutique');
                 document.getElementById('vue-rayons').classList.add('hidden');
@@ -238,16 +235,33 @@
                         <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover">
                         <div class="flex-1">
                             <h4 class="font-black uppercase text-purple-900 text-[9px]">${p.nom}</h4>
-                            <p class="text-orange-600 font-black text-[10px]">${p.prix} FCFA</p>
+                            <p class="text-orange-600 font-black text-xs">${p.prix} FCFA</p>
                         </div>
-                        <a href="https://wa.me/2250576326645?text=Commander : ${p.nom}" class="text-green-500 p-2 pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
+                        <a href="https://wa.me/2250576326645?text=Commander : ${encodeURIComponent(p.nom)}" class="text-green-500 p-2 pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
                     </div>`).join('');
             }
         }
 
         function lancerMicro() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!Speech) return;
-            const rec = new Speech(); rec.lang = 'fr-FR';
+            if (!Speech) {
+                alert("La recherche vocale n'est pas supportée par ce téléphone.");
+                return;
+            }
+            const rec = new Speech(); 
+            rec.lang = 'fr-FR';
             const icon = document.getElementById('iconMicro');
-            rec.onstart = () => icon.cla
+            rec.onstart = () => { icon.className = "fas fa-circle-notch fa-spin text-lg text-red-500"; };
+            rec.onresult = (e) => {
+                const parole = e.results[0][0].transcript;
+                document.getElementById('inputRecherche').value = parole;
+                rechercherProduit();
+            };
+            rec.onend = () => { icon.className = "fas fa-microphone text-lg"; };
+            rec.start();
+        }
+
+        window.onload = chargerDonnees;
+    </script>
+</body>
+</html>
