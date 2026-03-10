@@ -27,11 +27,7 @@
         .btn-call { background-color: #f97316; color: white; padding: 10px; border-radius: 9999px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.2s; }
         .badge-promo { position: absolute; top: 0; left: 0; background: #ef4444; color: white; font-size: 7px; font-weight: 900; padding: 3px 8px; border-radius: 0 10px 10px 0; text-transform: uppercase; z-index: 10; }
         .stars-gold { color: #fbbf24; font-size: 8px; }
-        .zone-temoignage { background-color: #f0fdf4; border: 1px dashed #bbf7d0; padding: 6px; border-radius: 12px; margin-top: 5px; }
-        .bulle-avis { font-size: 7px; color: #166534; font-style: italic; line-height: 1.2; }
-        .auteur-avis { font-size: 6px; font-weight: 900; color: #15803d; text-transform: uppercase; margin-top: 2px; display: block; }
-        .stock-warning { color: #dc2626; font-size: 7px; font-weight: bold; margin-top: 2px; }
-
+        
         .scroll-categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; scroll-behavior: smooth; }
         .cat-pill { white-space: nowrap; background: white; padding: 6px 15px; border-radius: 20px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: 1px solid #e5e7eb; color: #6b21a8; transition: all 0.2s; }
         .cat-pill.active { background: #6b21a8; color: white; border-color: #6b21a8; }
@@ -67,9 +63,6 @@
                     <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Rechercher un article..." class="w-full bg-gray-100 border-none rounded-xl py-3 px-10 text-[10px] outline-none focus:ring-2 focus:ring-purple-900">
                     <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
                 </div>
-                <button onclick="trierParPrix()" class="bg-white border border-gray-200 text-purple-900 w-10 h-10 rounded-xl flex items-center justify-center shadow-sm active:scale-95">
-                    <i class="fas fa-sort-amount-down-alt"></i>
-                </button>
                 <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-microphone text-lg" id="iconMicro"></i></button>
             </div>
         </div>
@@ -77,10 +70,6 @@
         <div class="mb-8">
             <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> À la Une</h3>
             <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1"></div>
-        </div>
-        <div class="mb-8">
-            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 italic underline decoration-orange-500 underline-offset-4"><i class="fas fa-star text-orange-500"></i> Sous les Projecteurs</h3>
-            <div id="zone-video" class="bg-white p-3 rounded-[30px] shadow-lg border border-gray-50 flex items-center justify-center min-h-[160px]"><p class="italic text-[9px] text-gray-400 text-center px-6">Chargement...</p></div>
         </div>
     </section>
 
@@ -100,12 +89,12 @@
             <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase underline flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
             <p id="compteur-articles" class="text-[8px] font-bold text-gray-400 mb-2 px-2 italic"></p>
             <div class="scroll-categories no-scrollbar" id="barre-rapide">
-                <button onclick="ouvrirRayon('Mercerie')" class="cat-pill" id="pill-Mercerie">Mercerie</button>
-                <button onclick="ouvrirRayon('Beauté')" class="cat-pill" id="pill-Beauté">Beauté</button>
-                <button onclick="ouvrirRayon('Vivrier')" class="cat-pill" id="pill-Vivrier">Vivrier</button>
-                <button onclick="ouvrirRayon('Mode')" class="cat-pill" id="pill-Mode">Mode</button>
-                <button onclick="ouvrirRayon('Alimentation')" class="cat-pill" id="pill-Alimentation">Alimentation</button>
-                <button onclick="ouvrirRayon('Resto')" class="cat-pill" id="pill-Resto">Resto</button>
+                <button onclick="ouvrirRayon('Mercerie')" class="cat-pill">Mercerie</button>
+                <button onclick="ouvrirRayon('Beauté')" class="cat-pill">Beauté</button>
+                <button onclick="ouvrirRayon('Vivrier')" class="cat-pill">Vivrier</button>
+                <button onclick="ouvrirRayon('Mode')" class="cat-pill">Mode</button>
+                <button onclick="ouvrirRayon('Alimentation')" class="cat-pill">Alimentation</button>
+                <button onclick="ouvrirRayon('Resto')" class="cat-pill">Resto</button>
             </div>
             <div id="liste-produits" class="grid grid-cols-1 gap-6"></div>
         </div>
@@ -120,29 +109,6 @@
     <script>
         const urlScript = "https://script.google.com/macros/s/AKfycbxIWaVqDIBUhkcZ1lGLaywdTANE6LQjKxqpCzk0zN1X_DhWUJZidn4DoxWj4icCP55M/exec";
         let articles = [];
-        let triBasEnHaut = true;
-
-        window.onscroll = function() {
-            const btn = document.getElementById("btnBackToTop");
-            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) btn.style.display = "block";
-            else btn.style.display = "none";
-        };
-
-        function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
-
-        function partagerProduit(nom) {
-            const lienAppli = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/"; 
-            const lienDirect = lienAppli + "?article=" + encodeURIComponent(nom);
-            const texte = `🛍️ *Cœur de Marché Bouaflé*\n\nRegarde cet article : *${nom}*\n\nClique ici :\n${lienDirect}`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(texte)}`, '_blank');
-        }
-
-        function trierParPrix() {
-            articles.sort((a, b) => triBasEnHaut ? a.prix - b.prix : b.prix - a.prix);
-            triBasEnHaut = !triBasEnHaut;
-            const activePill = document.querySelector('.cat-pill.active');
-            if(activePill) ouvrirRayon(activePill.innerText);
-        }
 
         async function chargerDonnees() {
             try {
@@ -151,15 +117,9 @@
                 const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
                 document.getElementById('carrousel-une').innerHTML = certifiés.map(p => `
                     <div class="min-w-[130px] relative bg-white rounded-2xl shadow-md overflow-hidden border border-gray-50" onclick="zoom('${p.image}')">
-                        ${p.badge ? `<div class="badge-promo">${p.badge}</div>` : ''}
                         <img src="${p.image}" class="w-full h-24 object-cover">
                         <div class="p-2 text-center text-[7px] font-black uppercase text-purple-900 truncate">${p.nom}</div>
                     </div>`).join('');
-                const video = articles.find(p => String(p.certifie).toUpperCase() === "OUI" && String(p.image).includes('youtube'));
-                if (video) {
-                    let videoID = video.image.includes('v=') ? video.image.split('v=')[1].split('&')[0] : video.image.split('/').pop();
-                    document.getElementById('zone-video').innerHTML = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${videoID}" allowfullscreen></iframe></div>`;
-                }
             } catch (erreur) { console.error("Erreur :", erreur); }
         }
 
@@ -169,52 +129,42 @@
             const btnA = document.getElementById('btn-accueil');
             const btnB = document.getElementById('btn-boutique');
             if (id === 'accueil') {
-                btnA.className = 'text-orange-600 flex flex-col items-center transition-all';
-                btnB.className = 'text-gray-400 flex flex-col items-center transition-all';
+                btnA.className = 'text-orange-600 flex flex-col items-center';
+                btnB.className = 'text-gray-400 flex flex-col items-center';
             } else {
-                btnA.className = 'text-gray-400 flex flex-col items-center transition-all';
-                btnB.className = 'text-orange-600 flex flex-col items-center transition-all';
+                btnA.className = 'text-gray-400 flex flex-col items-center';
+                btnB.className = 'text-orange-600 flex flex-col items-center';
             }
         }
 
         function ouvrirRayon(nomRayon) {
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
+            
             document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-            const pill = document.getElementById('pill-' + nomRayon);
-            if(pill) pill.classList.add('active');
+            const pills = document.querySelectorAll('.cat-pill');
+            pills.forEach(p => {
+                if (p.innerText.trim().toLowerCase() === nomRayon.trim().toLowerCase()) p.classList.add('active');
+            });
 
             const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === String(nomRayon).trim().toLowerCase() && String(p.statut).toUpperCase() === "OK");
             document.getElementById('compteur-articles').innerText = filtrés.length + " article(s) trouvé(s) dans " + nomRayon;
 
-            document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
-                let stockHTML = "";
-                if(p.stock && !isNaN(p.stock)) {
-                    let couleur = p.stock < 5 ? 'bg-red-500' : 'bg-green-500';
-                    stockHTML = `<div class="w-full bg-gray-100 h-1 rounded-full mt-2"><div class="${couleur} h-1 rounded-full" style="width: ${Math.min(p.stock*10, 100)}%"></div></div><p class="text-[6px] font-bold mt-1 text-gray-400">Encore ${p.stock} en stock</p>`;
-                } else if (p.stock) {
-                    stockHTML = `<p class="stock-warning">⚠️ ${p.stock}</p>`;
-                }
-
-                return `
-                <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3 relative overflow-hidden">
-                    ${p.badge ? `<div class="badge-promo">${p.badge}</div>` : ''}
+            document.getElementById('liste-produits').innerHTML = filtrés.length === 0 ? 
+                '<p class="text-center text-gray-400 py-10">Bientôt disponible...</p>' : 
+                filtrés.map(p => `
+                <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-100 mb-3 relative overflow-hidden">
                     <img src="${p.image}" onclick="zoom('${p.image}')" class="w-20 h-20 rounded-2xl object-cover shadow-sm">
                     <div class="flex-1">
                         <div class="stars-gold"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                         <h4 class="font-black uppercase text-purple-900 text-[9px] leading-tight">${p.nom}</h4>
                         <p class="text-orange-600 font-black text-xs mt-1">${p.prix} FCFA</p>
-                        ${stockHTML}
                     </div>
                     <div class="flex flex-col gap-2">
-                        <a href="https://wa.me/2250576326645?text=Bonjour, je souhaite commander : ${encodeURIComponent(p.nom)}" class="bg-green-100 text-green-600 p-3 rounded-full flex items-center justify-center pulse-wa">
-                            <i class="fab fa-whatsapp text-lg"></i>
-                        </a>
-                        <button onclick="partagerProduit('${p.nom.replace(/'/g, "\\'")}')" class="bg-gray-100 text-gray-500 w-10 h-10 rounded-full flex items-center justify-center">
-                            <i class="fas fa-share-alt text-sm"></i>
-                        </button>
+                        <a href="https://wa.me/2250576326645?text=Je commande : ${encodeURIComponent(p.nom)}" class="bg-green-100 text-green-600 p-3 rounded-full pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
                     </div>
-                </div>`}).join('');
+                </div>`).join('');
+            window.scrollTo(0,0);
         }
 
         function retourRayons() {
@@ -231,35 +181,31 @@
                 const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && String(p.statut).toUpperCase() === "OK");
                 document.getElementById('compteur-articles').innerText = filtrés.length + " résultat(s) trouvé(s)";
                 document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
-                    <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-50 mb-3">
+                    <div class="bg-white rounded-3xl shadow-md flex items-center p-3 gap-4 border border-gray-100 mb-3">
                         <img src="${p.image}" class="w-16 h-16 rounded-xl object-cover">
                         <div class="flex-1">
                             <h4 class="font-black uppercase text-purple-900 text-[9px]">${p.nom}</h4>
                             <p class="text-orange-600 font-black text-xs">${p.prix} FCFA</p>
                         </div>
-                        <a href="https://wa.me/2250576326645?text=Commander : ${encodeURIComponent(p.nom)}" class="text-green-500 p-2 pulse-wa"><i class="fab fa-whatsapp text-lg"></i></a>
+                        <a href="https://wa.me/2250576326645?text=Commander : ${p.nom}" class="text-green-500 p-2"><i class="fab fa-whatsapp text-lg"></i></a>
                     </div>`).join('');
             }
         }
 
         function lancerMicro() {
             const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!Speech) {
-                alert("La recherche vocale n'est pas supportée par ce téléphone.");
-                return;
-            }
-            const rec = new Speech(); 
-            rec.lang = 'fr-FR';
-            const icon = document.getElementById('iconMicro');
-            rec.onstart = () => { icon.className = "fas fa-circle-notch fa-spin text-lg text-red-500"; };
+            if (!Speech) return;
+            const rec = new Speech(); rec.lang = 'fr-FR';
+            rec.onstart = () => { document.getElementById('iconMicro').className = "fas fa-spinner fa-spin text-red-500"; };
             rec.onresult = (e) => {
-                const parole = e.results[0][0].transcript;
-                document.getElementById('inputRecherche').value = parole;
+                document.getElementById('inputRecherche').value = e.results[0][0].transcript;
                 rechercherProduit();
             };
-            rec.onend = () => { icon.className = "fas fa-microphone text-lg"; };
+            rec.onend = () => { document.getElementById('iconMicro').className = "fas fa-microphone text-lg"; };
             rec.start();
         }
+
+        function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
 
         window.onload = chargerDonnees;
     </script>
