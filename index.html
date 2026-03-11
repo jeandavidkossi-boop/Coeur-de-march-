@@ -19,6 +19,7 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
+        /* Bande-annonce défilante */
         .marquee-container { background: #6b21a8; color: white; padding: 6px 0; overflow: hidden; white-space: nowrap; font-size: 10px; font-weight: 700; text-transform: uppercase; border-bottom: 2px solid #f97316; }
         .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
@@ -26,6 +27,7 @@
         #modalZoom { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
         #modalZoom img { max-width: 90%; max-height: 80vh; border-radius: 15px; border: 3px solid white; }
         
+        /* Boutons d'action */
         .btn-action-call { background: #f97316; color: white; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-action-share { background: #6b21a8; color: white; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-action-order { background: #22c55e; color: white; padding: 0 15px; height: 42px; border-radius: 14px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: center; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -50,7 +52,7 @@
         <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Cœur de Marché</h1>
         <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase italic mb-4">Bouaflé • Marahoué</p>
         <div class="marquee-container">
-            <span class="marquee-text" id="texteBandeAnnonce">Bienvenue sur Cœur de Marché Bouaflé - Toutes vos boutiques en un clic !</span>
+            <span class="marquee-text" id="texteBandeAnnonce">Bienvenue sur Cœur de Marché Bouaflé - Les meilleures offres sont ici !</span>
         </div>
     </header>
 
@@ -126,16 +128,23 @@
             try {
                 const reponse = await fetch(urlScript);
                 articles = await reponse.json();
+                
                 const annonce = articles.find(p => String(p.nom).toUpperCase() === "ANNONCE");
                 if(annonce) document.getElementById('texteBandeAnnonce').innerText = annonce.description;
 
                 const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
                 document.getElementById('carrousel-une').innerHTML = certifiés.map(p => `
-                    <div class="min-w-[120px] bg-white rounded-2xl shadow-md overflow-hidden border border-gray-50" onclick="zoom('${p.image}')">
-                        <img src="${p.image}" class="w-full h-20 object-cover">
-                        <div class="p-2 text-center text-[7px] font-black uppercase text-purple-900 truncate">${p.nom}</div>
+                    <div class="min-w-[130px] bg-white rounded-2xl shadow-md overflow-hidden border border-gray-50 flex flex-col">
+                        <img src="${p.image}" onclick="zoom('${p.image}')" class="w-full h-24 object-cover">
+                        <div class="p-2 flex flex-col flex-1 justify-between">
+                            <h4 class="text-purple-900 text-[8px] font-black uppercase truncate mb-1">${p.nom}</h4>
+                            <a href="https://wa.me/2250576326645?text=Je commande l'article à la UNE : ${encodeURIComponent(p.nom)}" 
+                               class="bg-green-500 text-white text-[7px] font-black py-1.5 rounded-lg text-center uppercase shadow-sm">
+                               Commander
+                            </a>
+                        </div>
                     </div>`).join('');
-            } catch (erreur) { console.error(erreur); }
+            } catch (erreur) { console.error("Erreur :", erreur); }
         }
 
         function switchTab(id) {
@@ -148,7 +157,6 @@
         function ouvrirRayon(nomRayon) {
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
-            
             document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
             const activePill = Array.from(document.querySelectorAll('.cat-pill')).find(p => p.innerText.trim().toLowerCase() === nomRayon.trim().toLowerCase());
             if(activePill) activePill.classList.add('active');
@@ -164,7 +172,7 @@
                         <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
                         <div class="flex-1">
                             <div class="stars-gold mb-1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                            <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
+                            <h4 class="font-black uppercase text-purple-900 text-[10px] leading-tight mb-1">${p.nom}</h4>
                             <p class="text-orange-600 font-black text-sm">${p.prix} FCFA</p>
                         </div>
                     </div>
@@ -207,9 +215,9 @@
             if (!Speech) return;
             const rec = new Speech(); rec.lang = 'fr-FR';
             const icon = document.getElementById('iconMicro');
-            rec.onstart = () => { icon.className = "fas fa-spinner fa-spin text-red-500"; };
+            rec.onstart = () => icon.className = "fas fa-spinner fa-spin text-red-500";
             rec.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
-            rec.onend = () => { icon.className = "fas fa-microphone"; };
+            rec.onend = () => icon.className = "fas fa-microphone";
             rec.start();
         }
 
@@ -217,5 +225,5 @@
         window.onload = chargerDonnees;
     </script>
 </body>
-                    </html>
-    
+                                                                                                                                                           </html>
+
