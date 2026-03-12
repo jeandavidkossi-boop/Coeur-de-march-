@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cœur de Marché Bouaflé</title>
+    
     <link rel="canonical" href="https://jeandavidkossi-boop.github.io/Coeur-de-march-/">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4c1d95">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -16,15 +18,20 @@
         section.active { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        
         .marquee-container { background: #6b21a8; color: white; padding: 6px 0; overflow: hidden; white-space: nowrap; font-size: 10px; font-weight: 700; text-transform: uppercase; border-bottom: 2px solid #f97316; }
         .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+
         #modalZoom { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
         #modalZoom img { max-width: 90%; max-height: 80vh; border-radius: 15px; border: 3px solid white; }
-        .btn-action-call { background: #f97316; color: white; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
-        .btn-action-order { background: #22c55e; color: white; padding: 0 15px; height: 42px; border-radius: 14px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: center; flex: 1; }
+        
+        .btn-action-call { background: #f97316; color: white; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-action-order { background: #22c55e; color: white; padding: 0 15px; height: 42px; border-radius: 14px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: center; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        
         .bubble-cat { min-width: 70px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
-        .bubble-icon { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid #f3f4f6; color: #6b21a8; font-size: 18px; }
+        .bubble-icon { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid #f3f4f6; color: #6b21a8; font-size: 18px; transition: all 0.2s; }
+        .bubble-icon:active { transform: scale(0.9); background: #f97316; color: white; }
     </style>
 </head>
 <body class="pb-32 text-gray-900">
@@ -39,71 +46,82 @@
             </div>
             <div id="contenuPanier" class="p-6 overflow-y-auto flex-1 space-y-4"></div>
             <div class="p-6 border-t border-gray-100 bg-gray-50">
-                <div class="flex justify-between items-center mb-4 text-purple-900 font-black">Total: <span id="totalPanier">0 F</span></div>
-                <button onclick="envoyerPanierWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs">Envoyer la commande</button>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="font-bold text-gray-500 uppercase text-[10px]">Total</span>
+                    <span id="totalPanier" class="font-black text-xl text-purple-900">0 F</span>
+                </div>
+                <button onclick="envoyerPanierWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs shadow-lg flex items-center justify-center gap-3">
+                    <i class="fab fa-whatsapp text-lg"></i> Envoyer sur WhatsApp
+                </button>
             </div>
         </div>
     </div>
 
-    <header class="bg-purple-900 pt-8 rounded-b-[40px] text-center">
-        <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center overflow-hidden">
+    <header class="bg-purple-900 pt-8 rounded-b-[40px] shadow-2xl text-center">
+        <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center border-2 border-orange-100 shadow-lg overflow-hidden">
             <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-full h-full object-contain">
         </div>
-        <h1 class="text-white text-xl font-black uppercase italic">Cœur de Marché</h1>
-        <p class="text-orange-400 text-[8px] font-bold uppercase mb-4">Bouaflé • Marahoué</p>
+        <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Cœur de Marché</h1>
+        <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase italic mb-4">Bouaflé • Marahoué</p>
         <div class="marquee-container">
-            <span class="marquee-text" id="texteBandeAnnonce">Chargement des meilleures offres...</span>
+            <span class="marquee-text" id="texteBandeAnnonce">Initialisation...</span>
         </div>
     </header>
 
     <section id="accueil" class="active px-4 mt-6">
-        <div class="bg-white p-5 rounded-[30px] shadow-xl mb-4 text-center">
+        <div class="bg-white p-5 rounded-[30px] shadow-xl border border-gray-50 mb-4 text-center">
             <div class="flex gap-2">
-                <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Rechercher..." class="flex-1 bg-gray-100 rounded-xl py-3 px-4 text-[10px] outline-none">
-                <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl"><i class="fas fa-microphone" id="iconMicro"></i></button>
+                <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Rechercher..." class="flex-1 bg-gray-100 border-none rounded-xl py-3 px-4 text-[10px] outline-none">
+                <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center"><i class="fas fa-microphone" id="iconMicro"></i></button>
             </div>
         </div>
 
-        <div class="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2">
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Vivrier')"><div class="bubble-icon"><i class="fas fa-leaf"></i></div><span class="text-[7px] font-black uppercase">Vivrier</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Beauté')"><div class="bubble-icon"><i class="fas fa-magic"></i></div><span class="text-[7px] font-black uppercase">Beauté</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Resto')"><div class="bubble-icon"><i class="fas fa-utensils"></i></div><span class="text-[7px] font-black uppercase">Resto</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Mode')"><div class="bubble-icon"><i class="fas fa-tshirt"></i></div><span class="text-[7px] font-black uppercase">Mode</span></div>
+        <div class="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 py-2">
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Vivrier')">
+                <div class="bubble-icon"><i class="fas fa-leaf"></i></div>
+                <span class="text-[7px] font-black uppercase">Vivrier</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Beauté')">
+                <div class="bubble-icon"><i class="fas fa-magic"></i></div>
+                <span class="text-[7px] font-black uppercase">Beauté</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Resto')">
+                <div class="bubble-icon"><i class="fas fa-utensils"></i></div>
+                <span class="text-[7px] font-black uppercase">Resto</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Mode')">
+                <div class="bubble-icon"><i class="fas fa-tshirt"></i></div>
+                <span class="text-[7px] font-black uppercase">Mode</span>
+            </div>
         </div>
 
-        <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> À la Une</h3>
-        <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2"></div>
+        <div class="mb-8">
+            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> À la Une</h3>
+            <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1"></div>
+        </div>
     </section>
 
     <section id="boutique" class="px-4 mt-8">
         <div id="vue-rayons">
-            <h2 class="text-purple-900 font-black text-xl mb-6 uppercase text-center underline decoration-orange-500 underline-offset-4">Nos Marchés</h2>
+            <h2 class="text-purple-900 font-black text-xl mb-6 uppercase italic text-center">Nos Marchés</h2>
             <div class="grid grid-cols-2 gap-3 pb-12">
-                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-500 flex flex-col items-center"><i class="fas fa-scissors text-orange-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Mercerie</p></button>
-                <button onclick="ouvrirRayon('Beauté')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Beauté</p></button>
-                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-500 flex flex-col items-center"><i class="fas fa-leaf text-green-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Vivrier</p></button>
-                <button onclick="ouvrirRayon('Mode')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Mode</p></button>
-                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Alimentation</p></button>
-                <button onclick="ouvrirRayon('Resto')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Resto</p></button>
-                <button onclick="ouvrirRayon('Electroménager')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-gray-500 flex flex-col items-center"><i class="fas fa-plug text-gray-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Electroménager</p></button>
-                <button onclick="ouvrirRayon('Electronique')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-indigo-500 flex flex-col items-center"><i class="fas fa-laptop text-indigo-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Electronique</p></button>
-                <button onclick="ouvrirRayon('Santé')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-400 flex flex-col items-center"><i class="fas fa-heartbeat text-red-400 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Santé</p></button>
-                <button onclick="ouvrirRayon('Immobilier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-yellow-800 flex flex-col items-center"><i class="fas fa-home text-yellow-800 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Immobilier</p></button>
-                <button onclick="ouvrirRayon('Agricole')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-700 flex flex-col items-center"><i class="fas fa-tractor text-green-700 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Agricole</p></button>
-                <button onclick="ouvrirRayon('Élevage')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-900 flex flex-col items-center"><i class="fas fa-paw text-orange-900 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Élevage</p></button>
-                <button onclick="ouvrirRayon('Transport')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-600 flex flex-col items-center"><i class="fas fa-motorcycle text-blue-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Transport</p></button>
-                <button onclick="ouvrirRayon('Services')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-purple-500 flex flex-col items-center"><i class="fas fa-concierge-bell text-purple-500 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Services</p></button>
+                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-500 flex flex-col items-center"><i class="fas fa-leaf text-green-600 mb-2 text-xl"></i><p class="text-[8px] font-black uppercase">Vivrier</p></button>
+                <button onclick="ouvrirRayon('Beauté')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 mb-2 text-xl"></i><p class="text-[8px] font-black uppercase">Beauté</p></button>
+                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 mb-2 text-xl"></i><p class="text-[8px] font-black uppercase">Alimentation</p></button>
+                <button onclick="ouvrirRayon('Mode')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 mb-2 text-xl"></i><p class="text-[8px] font-black uppercase">Mode</p></button>
             </div>
         </div>
+
         <div id="vue-produits" class="hidden">
-            <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase"><i class="fas fa-chevron-left"></i> Retour</button>
+            <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
+            <p id="compteur-articles" class="text-[8px] font-bold text-gray-400 mb-2 px-2 italic"></p>
             <div id="liste-produits" class="space-y-4"></div>
         </div>
     </section>
 
     <button id="btn-panier-flottant" onclick="ouvrirPanier()" class="hidden fixed bottom-24 right-6 bg-orange-600 text-white p-4 rounded-full shadow-2xl z-[60] animate-bounce">
         <i class="fas fa-shopping-basket text-xl"></i>
-        <span id="count-panier" class="absolute -top-1 -right-1 bg-white text-orange-600 w-5 h-5 rounded-full flex items-center justify-center font-black text-[10px]">0</span>
+        <span id="count-panier" class="absolute -top-1 -right-1 bg-white text-orange-600 w-5 h-5 rounded-full flex items-center justify-center font-black text-[10px] shadow-md">0</span>
     </button>
 
     <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-full shadow-2xl p-3 flex justify-around items-center z-50 border border-gray-100">
@@ -114,29 +132,35 @@
 
     <script>
         const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
-        const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
         let articles = [];
         let panier = [];
 
         async function chargerDonnees() {
             try {
-                const reponse = await fetch(urlScript);
-                articles = await reponse.json();
+                const response = await fetch(urlScript);
+                articles = await response.json();
                 
+                // 1. Bande annonce
                 const annonce = articles.find(p => String(p.nom).toUpperCase() === "ANNONCE");
                 if(annonce) document.getElementById('texteBandeAnnonce').innerText = annonce.description;
 
+                // 2. À la une
                 const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
-                document.getElementById('carrousel-une').innerHTML = certifiés.map(p => `
+                const carrousel = document.getElementById('carrousel-une');
+                carrousel.innerHTML = certifiés.map(p => `
                     <div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex flex-col relative">
                         <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-lg z-10">${p.prix} F</div>
                         <img src="${p.image}" onclick="zoom('${p.image}')" class="w-full h-28 object-cover">
                         <div class="p-3">
                             <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
+                            <p class="text-blue-600 text-[8px] font-bold"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
                             <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white text-[8px] font-black py-2 rounded-xl uppercase">Ajouter</button>
                         </div>
                     </div>`).join('');
-            } catch (e) { console.error(e); }
+            } catch (e) { 
+                console.error("Erreur de chargement", e); 
+                document.getElementById('texteBandeAnnonce').innerText = "Erreur de connexion";
+            }
         }
 
         function switchTab(id) {
@@ -146,34 +170,66 @@
             document.getElementById('btn-boutique').className = id === 'boutique' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center';
         }
 
-        function ouvrirRayonDepuisAccueil(nomRayon) { switchTab('boutique'); ouvrirRayon(nomRayon); }
+        function ouvrirRayonDepuisAccueil(nomRayon) {
+            switchTab('boutique');
+            ouvrirRayon(nomRayon);
+        }
 
         function ouvrirRayon(nomRayon) {
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === nomRayon.toLowerCase() && String(p.statut).toUpperCase() === "OK");
+            document.getElementById('compteur-articles').innerText = filtrés.length + " article(s)";
+            
             document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
                 const escapedNom = p.nom.replace(/'/g, "\\'");
-                const shareMsg = encodeURIComponent("🛍️ *" + p.nom + "*\n💰 " + p.prix + " F\n📍 " + (p.quartier || 'Bouaflé') + "\n🔗 " + appLink);
                 return `
                 <div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50 flex gap-4">
                     <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
-                    <div class="flex-1">
-                        <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
-                        <p class="text-orange-600 font-black text-sm">${p.prix} F</p>
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
+                            <p class="text-orange-600 font-black text-sm">${p.prix} F</p>
+                            <p class="text-gray-500 text-[7px] italic mt-1 leading-tight">${p.description || ''}</p>
+                        </div>
                         <div class="flex gap-2 mt-2">
-                            <a href="tel:${p.telephone}" class="btn-action-call w-8 h-8 rounded-lg bg-orange-500 text-white"><i class="fas fa-phone-alt text-xs"></i></a>
-                            <a href="https://wa.me/?text=${shareMsg}" class="w-8 h-8 rounded-lg bg-purple-700 flex items-center justify-center text-white"><i class="fas fa-share-alt text-xs"></i></a>
-                            <button onclick="ajouterAuPanier('${escapedNom}', '${p.prix}')" class="bg-orange-500 text-white px-3 rounded-lg"><i class="fas fa-cart-plus"></i></button>
-                            <a href="https://wa.me/2250576326645?text=Commande : ${encodeURIComponent(p.nom)}" class="btn-action-order h-8 text-[7px]">DIRECT</a>
+                            <a href="tel:${p.telephone}" class="btn-action-call w-8 h-8 rounded-lg"><i class="fas fa-phone-alt text-xs"></i></a>
+                            <button onclick="ajouterAuPanier('${escapedNom}', '${p.prix}')" class="bg-orange-500 text-white px-3 rounded-lg text-[10px] font-black"><i class="fas fa-cart-plus"></i></button>
+                            <a href="https://wa.me/2250576326645?text=Je commande : ${encodeURIComponent(p.nom)}" class="btn-action-order h-8 rounded-lg text-[7px]">Commander</a>
                         </div>
                     </div>
                 </div>`;
             }).join('');
+            window.scrollTo(0,0);
         }
 
-        function retourRayons() { document.getElementById('vue-rayons').classList.remove('hidden'); document.getElementById('vue-produits').classList.add('hidden'); }
+        function retourRayons() {
+            document.getElementById('vue-rayons').classList.remove('hidden');
+            document.getElementById('vue-produits').classList.add('hidden');
+        }
 
+        function rechercherProduit() {
+            const saisie = document.getElementById('inputRecherche').value.toLowerCase();
+            if (saisie.length > 1) {
+                switchTab('boutique');
+                document.getElementById('vue-rayons').classList.add('hidden');
+                document.getElementById('vue-produits').classList.remove('hidden');
+                const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && String(p.statut).toUpperCase() === "OK");
+                document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
+                    <div class="bg-white rounded-2xl shadow p-3 flex items-center gap-3">
+                        <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover">
+                        <div class="flex-1 text-[8px]">
+                            <h4 class="font-black uppercase text-purple-900">${p.nom}</h4>
+                            <p class="text-orange-600 font-black">${p.prix} F</p>
+                        </div>
+                        <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', '${p.prix}')" class="bg-orange-500 text-white p-2 rounded-lg"><i class="fas fa-plus"></i></button>
+                    </div>`).join('');
+            }
+        }
+
+        function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
+
+        // LOGIQUE PANIER
         function ajouterAuPanier(nom, prix) {
             panier.push({ nom, prix });
             document.getElementById('btn-panier-flottant').classList.remove('hidden');
@@ -181,42 +237,56 @@
         }
 
         function ouvrirPanier() {
-            const m = document.getElementById('modalPanier');
-            const c = document.getElementById('contenuPanier');
-            m.style.display = 'flex';
-            let t = 0;
-            c.innerHTML = panier.map((item, i) => {
-                t += parseInt(item.prix.toString().replace(/\s/g, ''));
+            const modal = document.getElementById('modalPanier');
+            const contenu = document.getElementById('contenuPanier');
+            const totalAffichage = document.getElementById('totalPanier');
+            modal.style.display = 'flex';
+            let total = 0;
+            contenu.innerHTML = panier.map((item, i) => {
+                let p = parseInt(item.prix.toString().replace(/\s/g, ''));
+                total += p;
                 return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
-                    <div class="text-[10px] uppercase font-black">${item.nom} - ${item.prix} F</div>
-                    <button onclick="supprimerDuPanier(${i})" class="text-red-500"><i class="fas fa-trash-alt"></i></button>
+                    <div><p class="font-black text-[10px] uppercase text-purple-900">${item.nom}</p><p class="text-orange-600 font-bold text-[10px]">${item.prix} F</p></div>
+                    <button onclick="supprimerDuPanier(${i})" class="text-red-500 p-2"><i class="fas fa-trash-alt"></i></button>
                 </div>`;
             }).join('');
-            document.getElementById('totalPanier').innerText = t.toLocaleString() + " F";
+            totalAffichage.innerText = total.toLocaleString() + " F";
         }
 
         function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
-        
+
         function supprimerDuPanier(i) {
             panier.splice(i, 1);
-            if (panier.length === 0) { fermerPanier(); document.getElementById('btn-panier-flottant').classList.add('hidden'); }
-            else { ouvrirPanier(); document.getElementById('count-panier').innerText = panier.length; }
+            if (panier.length === 0) { 
+                fermerPanier(); 
+                document.getElementById('btn-panier-flottant').classList.add('hidden'); 
+            } else { ouvrirPanier(); document.getElementById('count-panier').innerText = panier.length; }
         }
 
         function envoyerPanierWhatsApp() {
             let msg = "Bonjour Cœur de Marché, je commande :\n\n";
             let total = 0;
             panier.forEach((it, i) => {
-                msg += (i + 1) + ". *" + it.nom + "* (" + it.prix + " F)\n";
+                msg += `${i + 1}. *${it.nom}* (${it.prix} F)\n`;
                 total += parseInt(it.prix.toString().replace(/\s/g, ''));
             });
-            msg += "\n*TOTAL : " + total.toLocaleString() + " FCFA*";
-            window.open("https://wa.me/2250576326645?text=" + encodeURIComponent(msg), '_blank');
+            msg += `\n*TOTAL : ${total.toLocaleString()} FCFA*`;
+            window.open(`https://wa.me/2250576326645?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
+        function lancerMicro() {
+            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!Speech) return;
+            const rec = new Speech(); rec.lang = 'fr-FR';
+            rec.onstart = () => document.getElementById('iconMicro').className = "fas fa-spinner fa-spin text-red-500";
+            rec.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
+            rec.onend = () => document.getElementById('iconMicro').className = "fas fa-microphone";
+            rec.start();
+        }
+
+        // LANCEMENT
         window.onload = chargerDonnees;
     </script>
 </body>
-                    </html>
-                    
+    </html>
+    
