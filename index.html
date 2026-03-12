@@ -26,12 +26,11 @@
         #modalZoom { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
         #modalZoom img { max-width: 90%; max-height: 80vh; border-radius: 15px; border: 3px solid white; }
         
-        .btn-action-call { background: #f97316; color: white; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn-action-order { background: #22c55e; color: white; padding: 0 15px; height: 42px; border-radius: 14px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: center; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-action-call { background: #f97316; color: white; width: 32px; height: 32px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+        .btn-action-order { background: #22c55e; color: white; padding: 0 10px; height: 32px; border-radius: 10px; font-size: 9px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: center; flex: 1; }
         
         .bubble-cat { min-width: 70px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
-        .bubble-icon { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid #f3f4f6; color: #6b21a8; font-size: 18px; transition: all 0.2s; }
-        .bubble-icon:active { transform: scale(0.9); background: #f97316; color: white; }
+        .bubble-icon { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid #f3f4f6; color: #6b21a8; font-size: 18px; }
     </style>
 </head>
 <body class="pb-32 text-gray-900">
@@ -51,7 +50,7 @@
                     <span id="totalPanier" class="font-black text-xl text-purple-900">0 F</span>
                 </div>
                 <button onclick="envoyerPanierWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs shadow-lg flex items-center justify-center gap-3">
-                    <i class="fab fa-whatsapp text-lg"></i> Envoyer sur WhatsApp
+                    <i class="fab fa-whatsapp text-lg"></i> Envoyer la commande
                 </button>
             </div>
         </div>
@@ -77,11 +76,12 @@
         </div>
 
         <div class="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 py-2">
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Vivrier')"><div class="bubble-icon"><i class="fas fa-leaf"></i></div><span class="text-[7px] font-black uppercase">Vivrier</span></div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Mercerie')"><div class="bubble-icon"><i class="fas fa-scissors"></i></div><span class="text-[7px] font-black uppercase">Mercerie</span></div>
             <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Beauté')"><div class="bubble-icon"><i class="fas fa-magic"></i></div><span class="text-[7px] font-black uppercase">Beauté</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Resto')"><div class="bubble-icon"><i class="fas fa-utensils"></i></div><span class="text-[7px] font-black uppercase">Resto</span></div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Vivrier')"><div class="bubble-icon"><i class="fas fa-leaf"></i></div><span class="text-[7px] font-black uppercase">Vivrier</span></div>
             <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Mode')"><div class="bubble-icon"><i class="fas fa-tshirt"></i></div><span class="text-[7px] font-black uppercase">Mode</span></div>
             <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Alimentation')"><div class="bubble-icon"><i class="fas fa-shopping-basket"></i></div><span class="text-[7px] font-black uppercase">Alimentation</span></div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Resto')"><div class="bubble-icon"><i class="fas fa-utensils"></i></div><span class="text-[7px] font-black uppercase">Resto</span></div>
         </div>
 
         <div class="mb-8">
@@ -180,10 +180,10 @@
                         <p class="text-orange-600 font-black text-sm">${p.prix} F</p>
                         <p class="text-gray-500 text-[7px] italic mt-1 leading-tight">${p.description || ''}</p>
                         <div class="flex gap-2 mt-2">
-                            <a href="tel:${p.telephone}" class="btn-action-call w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white"><i class="fas fa-phone-alt text-xs"></i></a>
-                            <a href="https://wa.me/?text=${shareMsg}" class="w-8 h-8 rounded-lg bg-purple-700 flex items-center justify-center text-white"><i class="fas fa-share-alt text-xs"></i></a>
-                            <button onclick="ajouterAuPanier('${escapedNom}', '${p.prix}')" class="bg-orange-500 text-white px-3 rounded-lg text-[10px] font-black"><i class="fas fa-cart-plus"></i></button>
-                            <a href="https://wa.me/2250576326645?text=Commande : ${encodeURIComponent(p.nom)}" class="btn-action-order h-8 rounded-lg text-[7px]">DIRECT</a>
+                            <a href="tel:${p.telephone}" class="btn-action-call bg-orange-500 text-white"><i class="fas fa-phone-alt text-[10px]"></i></a>
+                            <a href="https://wa.me/?text=${shareMsg}" class="w-8 h-8 rounded-lg bg-purple-700 flex items-center justify-center text-white"><i class="fas fa-share-alt text-[10px]"></i></a>
+                            <button onclick="ajouterAuPanier('${escapedNom}', '${p.prix}')" class="bg-orange-500 text-white px-2 rounded-lg text-[9px] font-black flex items-center justify-center"><i class="fas fa-cart-plus"></i></button>
+                            <a href="https://wa.me/2250576326645?text=Commande : ${encodeURIComponent(p.nom)}" class="btn-action-order">DIRECT</a>
                         </div>
                     </div>
                 </div>`;
@@ -222,4 +222,5 @@
             c.innerHTML = panier.map((item, i) => {
                 let p = parseInt(item.prix.toString().replace(/\s/g, ''));
                 t += p;
-                return `<div class="flex justify-between items-center bg-gray-50 p-3
+                return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
+   
