@@ -47,14 +47,14 @@
         <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Cœur de Marché</h1>
         <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase italic mb-4">Bouaflé • Marahoué</p>
         <div class="marquee-container">
-            <span class="marquee-text" id="texteBandeAnnonce">Chargement des actualités de Bouaflé...</span>
+            <span class="marquee-text" id="texteBandeAnnonce">Chargement des meilleures offres...</span>
         </div>
     </header>
 
     <section id="accueil" class="active px-4 mt-6">
         <div class="bg-white p-5 rounded-[30px] shadow-xl border border-gray-50 mb-6 text-center">
             <div class="flex gap-2">
-                <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Que cherchez-vous ?" class="flex-1 bg-gray-100 border-none rounded-xl py-3 px-4 text-[10px] outline-none">
+                <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Rechercher un article..." class="flex-1 bg-gray-100 border-none rounded-xl py-3 px-4 text-[10px] outline-none">
                 <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center"><i class="fas fa-microphone" id="iconMicro"></i></button>
             </div>
         </div>
@@ -76,12 +76,6 @@
                 <button onclick="ouvrirRayon('Resto')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Resto</p></button>
                 <button onclick="ouvrirRayon('Electroménager')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-gray-500 flex flex-col items-center"><i class="fas fa-plug text-gray-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Electroménager</p></button>
                 <button onclick="ouvrirRayon('Electronique')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-indigo-500 flex flex-col items-center"><i class="fas fa-laptop text-indigo-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Electronique</p></button>
-                <button onclick="ouvrirRayon('Immobilier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-yellow-600 flex flex-col items-center"><i class="fas fa-home text-yellow-700 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Immobilier</p></button>
-                <button onclick="ouvrirRayon('Services')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-teal-500 flex flex-col items-center"><i class="fas fa-tools text-teal-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Services</p></button>
-                <button onclick="ouvrirRayon('Agricole')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-700 flex flex-col items-center"><i class="fas fa-seedling text-green-700 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Agricole</p></button>
-                <button onclick="ouvrirRayon('Transport')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-600 flex flex-col items-center"><i class="fas fa-taxi text-orange-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Transport</p></button>
-                <button onclick="ouvrirRayon('Santé')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-400 flex flex-col items-center"><i class="fas fa-hand-holding-medkit text-red-400 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Santé</p></button>
-                <button onclick="ouvrirRayon('Evénementiel')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-pink-400 flex flex-col items-center"><i class="fas fa-microphone-alt text-pink-400 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Evénementiel</p></button>
             </div>
         </div>
 
@@ -95,11 +89,12 @@
     <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-full shadow-2xl p-3 flex justify-around items-center z-50 border border-gray-100">
         <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center"><i class="fas fa-home text-lg"></i><span class="text-[7px] font-black uppercase">Accueil</span></button>
         <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center"><i class="fas fa-store text-lg"></i><span class="text-[7px] font-black uppercase">Boutique</span></button>
-        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center -mt-12 border-4 border-white shadow-lg pulse-wa"><i class="fab fa-whatsapp text-xl"></i></a>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center -mt-12 border-4 border-white shadow-lg"><i class="fab fa-whatsapp text-xl"></i></a>
     </nav>
 
     <script>
-        const urlScript = "https://script.google.com/macros/s/AKfycbxwFX1EvQBHg4eHwo7wRjE_xB1leZLGMzksJ8J3yxW0Tmj_2MDR989mjvKT833GDFNg/exec";
+        // Ton nouveau lien Version 4 est ici
+        const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
         const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
         let articles = [];
 
@@ -121,7 +116,7 @@
                                class="bg-green-500 text-white text-[7px] font-black py-1.5 rounded-lg text-center uppercase shadow-sm">Commander</a>
                         </div>
                     </div>`).join('');
-            } catch (e) { console.error(e); }
+            } catch (e) { console.error("Erreur de chargement", e); }
         }
 
         function switchTab(id) {
@@ -138,7 +133,7 @@
             document.getElementById('compteur-articles').innerText = filtrés.length + " article(s) trouvé(s)";
 
             document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
-                const shareMsg = encodeURIComponent(`Vu sur Cœur de Marché Bouaflé !\n🛍️ *${p.nom}*\n💰 ${p.prix} FCFA\n📍 Quartier : ${p.quartier || 'Bouaflé'}\n🔗 ${appLink}`);
+                const shareMsg = encodeURIComponent(`Vu sur Cœur de Marché Bouaflé !\n🛍️ *${p.nom}*\n💰 ${p.prix} FCFA\n📍 ${p.quartier || 'Bouaflé'}\n🔗 ${appLink}`);
                 return `
                 <div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50">
                     <div class="flex gap-4 mb-4">
@@ -149,7 +144,6 @@
                             <p class="text-orange-600 font-black text-sm">${p.prix} FCFA</p>
                             <p class="text-gray-500 text-[7px] mt-1 italic leading-tight">${p.description || ''}</p>
                             <p class="text-blue-600 text-[7px] font-bold uppercase mt-1"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
-                            <p class="text-green-600 text-[7px] font-bold uppercase mt-1">📦 Stock : ${p.stock || 'Disponible'}</p>
                         </div>
                     </div>
                     <div class="flex gap-2">
@@ -201,5 +195,5 @@
         window.onload = chargerDonnees;
     </script>
 </body>
-</html>
+    </html>
     
