@@ -19,7 +19,6 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* Bande-annonce défilante */
         .marquee-container { background: #6b21a8; color: white; padding: 6px 0; overflow: hidden; white-space: nowrap; font-size: 10px; font-weight: 700; text-transform: uppercase; border-bottom: 2px solid #f97316; }
         .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
@@ -27,7 +26,6 @@
         #modalZoom { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; }
         #modalZoom img { max-width: 90%; max-height: 80vh; border-radius: 15px; border: 3px solid white; }
         
-        /* Boutons d'action */
         .btn-action-call { background: #f97316; color: white; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-action-share { background: #6b21a8; color: white; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-action-order { background: #22c55e; color: white; padding: 0 15px; height: 42px; border-radius: 14px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: center; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -36,14 +34,11 @@
         .scroll-categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; scroll-behavior: smooth; }
         .cat-pill { white-space: nowrap; background: white; padding: 6px 15px; border-radius: 20px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: 1px solid #e5e7eb; color: #6b21a8; transition: all 0.2s; }
         .cat-pill.active { background: #6b21a8; color: white; border-color: #6b21a8; }
-        
-        #btnBackToTop { display: none; position: fixed; bottom: 100px; right: 20px; z-index: 40; background: #4c1d95; color: white; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body class="pb-32 text-gray-900">
 
     <div id="modalZoom" onclick="this.style.display='none'"><img id="imgZoomed" src=""></div>
-    <button id="btnBackToTop" onclick="window.scrollTo(0,0)"><i class="fas fa-arrow-up"></i></button>
 
     <header class="bg-purple-900 pt-8 rounded-b-[40px] shadow-2xl text-center">
         <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center border-2 border-orange-100 shadow-lg">
@@ -52,14 +47,14 @@
         <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Cœur de Marché</h1>
         <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase italic mb-4">Bouaflé • Marahoué</p>
         <div class="marquee-container">
-            <span class="marquee-text" id="texteBandeAnnonce">Bienvenue sur Cœur de Marché Bouaflé - Les meilleures offres sont ici !</span>
+            <span class="marquee-text" id="texteBandeAnnonce">Chargement des actualités de Bouaflé...</span>
         </div>
     </header>
 
     <section id="accueil" class="active px-4 mt-6">
         <div class="bg-white p-5 rounded-[30px] shadow-xl border border-gray-50 mb-6 text-center">
             <div class="flex gap-2">
-                <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Rechercher un article..." class="flex-1 bg-gray-100 border-none rounded-xl py-3 px-4 text-[10px] outline-none">
+                <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Que cherchez-vous ?" class="flex-1 bg-gray-100 border-none rounded-xl py-3 px-4 text-[10px] outline-none">
                 <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center"><i class="fas fa-microphone" id="iconMicro"></i></button>
             </div>
         </div>
@@ -91,24 +86,8 @@
         </div>
 
         <div id="vue-produits" class="hidden">
-            <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
+            <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour aux marchés</button>
             <p id="compteur-articles" class="text-[8px] font-bold text-gray-400 mb-2 px-2 italic"></p>
-            <div class="scroll-categories no-scrollbar" id="barre-rapide">
-                <button onclick="ouvrirRayon('Mercerie')" class="cat-pill">Mercerie</button>
-                <button onclick="ouvrirRayon('Beauté')" class="cat-pill">Beauté</button>
-                <button onclick="ouvrirRayon('Vivrier')" class="cat-pill">Vivrier</button>
-                <button onclick="ouvrirRayon('Mode')" class="cat-pill">Mode</button>
-                <button onclick="ouvrirRayon('Alimentation')" class="cat-pill">Alimentation</button>
-                <button onclick="ouvrirRayon('Resto')" class="cat-pill">Resto</button>
-                <button onclick="ouvrirRayon('Electroménager')" class="cat-pill">Electroménager</button>
-                <button onclick="ouvrirRayon('Electronique')" class="cat-pill">Electronique</button>
-                <button onclick="ouvrirRayon('Immobilier')" class="cat-pill">Immobilier</button>
-                <button onclick="ouvrirRayon('Services')" class="cat-pill">Services</button>
-                <button onclick="ouvrirRayon('Agricole')" class="cat-pill">Agricole</button>
-                <button onclick="ouvrirRayon('Transport')" class="cat-pill">Transport</button>
-                <button onclick="ouvrirRayon('Santé')" class="cat-pill">Santé</button>
-                <button onclick="ouvrirRayon('Evénementiel')" class="cat-pill">Evénementiel</button>
-            </div>
             <div id="liste-produits" class="space-y-4"></div>
         </div>
     </section>
@@ -120,7 +99,7 @@
     </nav>
 
     <script>
-        const urlScript = "https://script.google.com/macros/s/AKfycbxIWaVqDIBUhkcZ1lGLaywdTANE6LQjKxqpCzk0zN1X_DhWUJZidn4DoxWj4icCP55M/exec";
+        const urlScript = "https://script.google.com/macros/s/AKfycbxwFX1EvQBHg4eHwo7wRjE_xB1leZLGMzksJ8J3yxW0Tmj_2MDR989mjvKT833GDFNg/exec";
         const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
         let articles = [];
 
@@ -134,17 +113,15 @@
 
                 const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
                 document.getElementById('carrousel-une').innerHTML = certifiés.map(p => `
-                    <div class="min-w-[130px] bg-white rounded-2xl shadow-md overflow-hidden border border-gray-50 flex flex-col">
+                    <div class="min-w-[130px] bg-white rounded-2xl shadow-md overflow-hidden flex flex-col border border-gray-50">
                         <img src="${p.image}" onclick="zoom('${p.image}')" class="w-full h-24 object-cover">
                         <div class="p-2 flex flex-col flex-1 justify-between">
                             <h4 class="text-purple-900 text-[8px] font-black uppercase truncate mb-1">${p.nom}</h4>
                             <a href="https://wa.me/2250576326645?text=Je commande l'article à la UNE : ${encodeURIComponent(p.nom)}" 
-                               class="bg-green-500 text-white text-[7px] font-black py-1.5 rounded-lg text-center uppercase shadow-sm">
-                               Commander
-                            </a>
+                               class="bg-green-500 text-white text-[7px] font-black py-1.5 rounded-lg text-center uppercase shadow-sm">Commander</a>
                         </div>
                     </div>`).join('');
-            } catch (erreur) { console.error("Erreur :", erreur); }
+            } catch (e) { console.error(e); }
         }
 
         function switchTab(id) {
@@ -157,27 +134,26 @@
         function ouvrirRayon(nomRayon) {
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
-            document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-            const activePill = Array.from(document.querySelectorAll('.cat-pill')).find(p => p.innerText.trim().toLowerCase() === nomRayon.trim().toLowerCase());
-            if(activePill) activePill.classList.add('active');
-
-            const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === String(nomRayon).trim().toLowerCase() && String(p.statut).toUpperCase() === "OK");
+            const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === nomRayon.toLowerCase() && String(p.statut).toUpperCase() === "OK");
             document.getElementById('compteur-articles').innerText = filtrés.length + " article(s) trouvé(s)";
 
             document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
-                const shareMsg = encodeURIComponent(`Découvre cet article sur Cœur de Marché Bouaflé !\n\n🛍️ *${p.nom}*\n💰 Prix : ${p.prix} FCFA\n\nVoir ici :\n${appLink}`);
+                const shareMsg = encodeURIComponent(`Vu sur Cœur de Marché Bouaflé !\n🛍️ *${p.nom}*\n💰 ${p.prix} FCFA\n📍 Quartier : ${p.quartier || 'Bouaflé'}\n🔗 ${appLink}`);
                 return `
                 <div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50">
                     <div class="flex gap-4 mb-4">
                         <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
                         <div class="flex-1">
                             <div class="stars-gold mb-1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                            <h4 class="font-black uppercase text-purple-900 text-[10px] leading-tight mb-1">${p.nom}</h4>
+                            <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
                             <p class="text-orange-600 font-black text-sm">${p.prix} FCFA</p>
+                            <p class="text-gray-500 text-[7px] mt-1 italic leading-tight">${p.description || ''}</p>
+                            <p class="text-blue-600 text-[7px] font-bold uppercase mt-1"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
+                            <p class="text-green-600 text-[7px] font-bold uppercase mt-1">📦 Stock : ${p.stock || 'Disponible'}</p>
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <a href="tel:${p.telephone || '2250576326645'}" class="btn-action-call"><i class="fas fa-phone-alt"></i></a>
+                        <a href="tel:${p.telephone}" class="btn-action-call"><i class="fas fa-phone-alt"></i></a>
                         <a href="https://wa.me/?text=${shareMsg}" class="btn-action-share"><i class="fas fa-share-alt"></i></a>
                         <a href="https://wa.me/2250576326645?text=Je commande l'article : ${encodeURIComponent(p.nom)}" class="btn-action-order">COMMANDER</a>
                     </div>
@@ -205,7 +181,7 @@
                             <h4 class="font-black uppercase text-purple-900 text-[8px]">${p.nom}</h4>
                             <p class="text-orange-600 font-black text-[10px]">${p.prix} FCFA</p>
                         </div>
-                        <a href="https://wa.me/2250576326645?text=Je commande : ${encodeURIComponent(p.nom)}" class="bg-green-500 text-white text-[8px] font-black px-3 py-2 rounded-lg">COMMANDER</a>
+                        <a href="https://wa.me/2250576326645?text=Je commande : ${encodeURIComponent(p.nom)}" class="bg-green-500 text-white text-[8px] font-black px-3 py-2 rounded-lg uppercase">Commander</a>
                     </div>`).join('');
             }
         }
@@ -225,5 +201,5 @@
         window.onload = chargerDonnees;
     </script>
 </body>
-                                                                                                                                                           </html>
-
+</html>
+    
