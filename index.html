@@ -76,6 +76,13 @@
                 <button onclick="ouvrirRayon('Resto')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Resto</p></button>
                 <button onclick="ouvrirRayon('Electroménager')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-gray-500 flex flex-col items-center"><i class="fas fa-plug text-gray-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Electroménager</p></button>
                 <button onclick="ouvrirRayon('Electronique')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-indigo-500 flex flex-col items-center"><i class="fas fa-laptop text-indigo-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Electronique</p></button>
+                
+                <button onclick="ouvrirRayon('Santé')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-400 flex flex-col items-center"><i class="fas fa-heartbeat text-red-400 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Santé</p></button>
+                <button onclick="ouvrirRayon('Immobilier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-yellow-800 flex flex-col items-center"><i class="fas fa-home text-yellow-800 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Immobilier</p></button>
+                <button onclick="ouvrirRayon('Agricole')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-700 flex flex-col items-center"><i class="fas fa-tractor text-green-700 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Agricole</p></button>
+                <button onclick="ouvrirRayon('Élevage')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-900 flex flex-col items-center"><i class="fas fa-paw text-orange-900 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Élevage</p></button>
+                <button onclick="ouvrirRayon('Transport')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-600 flex flex-col items-center"><i class="fas fa-motorcycle text-blue-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Transport</p></button>
+                <button onclick="ouvrirRayon('Services')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-purple-500 flex flex-col items-center"><i class="fas fa-concierge-bell text-purple-500 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Services</p></button>
             </div>
         </div>
 
@@ -93,7 +100,6 @@
     </nav>
 
     <script>
-        // Ton nouveau lien Version 4 est ici
         const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
         const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
         let articles = [];
@@ -102,10 +108,8 @@
             try {
                 const reponse = await fetch(urlScript);
                 articles = await reponse.json();
-                
                 const annonce = articles.find(p => String(p.nom).toUpperCase() === "ANNONCE");
                 if(annonce) document.getElementById('texteBandeAnnonce').innerText = annonce.description;
-
                 const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
                 document.getElementById('carrousel-une').innerHTML = certifiés.map(p => `
                     <div class="min-w-[130px] bg-white rounded-2xl shadow-md overflow-hidden flex flex-col border border-gray-50">
@@ -131,7 +135,6 @@
             document.getElementById('vue-produits').classList.remove('hidden');
             const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === nomRayon.toLowerCase() && String(p.statut).toUpperCase() === "OK");
             document.getElementById('compteur-articles').innerText = filtrés.length + " article(s) trouvé(s)";
-
             document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
                 const shareMsg = encodeURIComponent(`Vu sur Cœur de Marché Bouaflé !\n🛍️ *${p.nom}*\n💰 ${p.prix} FCFA\n📍 ${p.quartier || 'Bouaflé'}\n🔗 ${appLink}`);
                 return `
@@ -193,15 +196,15 @@
 
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
 
-        // Code manifest et Service Worker ajouté ici
+        // Ajout du Service Worker sans modifier tes fonctions
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(e => console.log(e));
+                navigator.serviceWorker.register('./sw.js').catch(e => console.error(e));
             });
         }
 
         window.onload = chargerDonnees;
     </script>
 </body>
-                                                                                                                                                                  </html>
-                                                                                                                                                                  
+                                                                                                                                                           </html>
+                                                                                                                                                           
