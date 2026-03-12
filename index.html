@@ -51,7 +51,7 @@
                     <span id="totalPanier" class="font-black text-xl text-purple-900">0 F</span>
                 </div>
                 <button onclick="envoyerPanierWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs shadow-lg flex items-center justify-center gap-3">
-                    <i class="fab fa-whatsapp text-lg"></i> Envoyer la commande
+                    <i class="fab fa-whatsapp text-lg"></i> Envoyer sur WhatsApp
                 </button>
             </div>
         </div>
@@ -64,7 +64,7 @@
         <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Cœur de Marché</h1>
         <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase italic mb-4">Bouaflé • Marahoué</p>
         <div class="marquee-container">
-            <span class="marquee-text" id="texteBandeAnnonce">Chargement des données...</span>
+            <span class="marquee-text" id="texteBandeAnnonce">Chargement...</span>
         </div>
     </header>
 
@@ -82,7 +82,6 @@
             <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Resto')"><div class="bubble-icon"><i class="fas fa-utensils"></i></div><span class="text-[7px] font-black uppercase">Resto</span></div>
             <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Mode')"><div class="bubble-icon"><i class="fas fa-tshirt"></i></div><span class="text-[7px] font-black uppercase">Mode</span></div>
             <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Alimentation')"><div class="bubble-icon"><i class="fas fa-shopping-basket"></i></div><span class="text-[7px] font-black uppercase">Alimentation</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Mercerie')"><div class="bubble-icon"><i class="fas fa-scissors"></i></div><span class="text-[7px] font-black uppercase">Mercerie</span></div>
         </div>
 
         <div class="mb-8">
@@ -113,7 +112,7 @@
         </div>
 
         <div id="vue-produits" class="hidden">
-            <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
+            <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour aux marchés</button>
             <p id="compteur-articles" class="text-[8px] font-bold text-gray-400 mb-2 px-2 italic"></p>
             <div id="liste-produits" class="space-y-4"></div>
         </div>
@@ -140,28 +139,20 @@
             try {
                 const reponse = await fetch(urlScript);
                 articles = await reponse.json();
-                
                 const annonce = articles.find(p => String(p.nom).toUpperCase() === "ANNONCE");
                 if(annonce) document.getElementById('texteBandeAnnonce').innerText = annonce.description;
-
                 const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
-                document.getElementById('carrousel-une').innerHTML = certifiés.map(p => {
-                    const nomEscaped = p.nom.replace(/'/g, "\\'");
-                    return `
+                document.getElementById('carrousel-une').innerHTML = certifiés.map(p => `
                     <div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex flex-col relative">
                         <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-lg z-10">${p.prix} F</div>
                         <img src="${p.image}" onclick="zoom('${p.image}')" class="w-full h-28 object-cover">
                         <div class="p-3">
                             <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
                             <p class="text-blue-600 text-[8px] font-bold"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
-                            <button onclick="ajouterAuPanier('${nomEscaped}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white text-[8px] font-black py-2 rounded-xl uppercase">Ajouter</button>
+                            <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white text-[8px] font-black py-2 rounded-xl uppercase">Ajouter</button>
                         </div>
-                    </div>`;
-                }).join('');
-            } catch (e) { 
-                console.error("Erreur", e); 
-                document.getElementById('texteBandeAnnonce').innerText = "Vérifiez votre connexion internet...";
-            }
+                    </div>`).join('');
+            } catch (e) { console.error("Erreur", e); }
         }
 
         function switchTab(id) {
@@ -177,11 +168,10 @@
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
             const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === nomRayon.toLowerCase() && String(p.statut).toUpperCase() === "OK");
-            document.getElementById('compteur-articles').innerText = filtrés.length + " article(s) trouvé(s)";
+            document.getElementById('compteur-articles').innerText = filtrés.length + " article(s)";
             document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
                 const escapedNom = p.nom.replace(/'/g, "\\'");
-                const shareMsg = encodeURIComponent("Vu sur Cœur de Marché Bouaflé !\n🛍️ *" + p.nom + "*\n💰 " + p.prix + " FCFA\n📍 " + (p.quartier || 'Bouaflé') + "\n🔗 " + appLink);
-                
+                const shareMsg = encodeURIComponent(`Vu sur Cœur de Marché Bouaflé !\n🛍️ *${p.nom}*\n💰 ${p.prix} FCFA\n📍 ${p.quartier || 'Bouaflé'}\n🔗 ${appLink}`);
                 return `
                 <div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50 flex gap-4">
                     <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
@@ -190,9 +180,9 @@
                         <p class="text-orange-600 font-black text-sm">${p.prix} F</p>
                         <p class="text-gray-500 text-[7px] italic mt-1 leading-tight">${p.description || ''}</p>
                         <div class="flex gap-2 mt-2">
-                            <a href="tel:${p.telephone}" class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white shadow"><i class="fas fa-phone-alt text-xs"></i></a>
-                            <a href="https://wa.me/?text=${shareMsg}" class="w-8 h-8 rounded-lg bg-purple-700 flex items-center justify-center text-white shadow"><i class="fas fa-share-alt text-xs"></i></a>
-                            <button onclick="ajouterAuPanier('${escapedNom}', '${p.prix}')" class="bg-orange-500 text-white px-3 rounded-lg text-[10px] font-black shadow"><i class="fas fa-cart-plus"></i></button>
+                            <a href="tel:${p.telephone}" class="btn-action-call w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white"><i class="fas fa-phone-alt text-xs"></i></a>
+                            <a href="https://wa.me/?text=${shareMsg}" class="w-8 h-8 rounded-lg bg-purple-700 flex items-center justify-center text-white"><i class="fas fa-share-alt text-xs"></i></a>
+                            <button onclick="ajouterAuPanier('${escapedNom}', '${p.prix}')" class="bg-orange-500 text-white px-3 rounded-lg text-[10px] font-black"><i class="fas fa-cart-plus"></i></button>
                             <a href="https://wa.me/2250576326645?text=Commande : ${encodeURIComponent(p.nom)}" class="btn-action-order h-8 rounded-lg text-[7px]">DIRECT</a>
                         </div>
                     </div>
@@ -201,30 +191,35 @@
             window.scrollTo(0,0);
         }
 
-        function retourRayons() { 
-            document.getElementById('vue-rayons').classList.remove('hidden'); 
-            document.getElementById('vue-produits').classList.add('hidden'); 
-        }
+        function retourRayons() { document.getElementById('vue-rayons').classList.remove('hidden'); document.getElementById('vue-produits').classList.add('hidden'); }
 
         function rechercherProduit() {
             const s = document.getElementById('inputRecherche').value.toLowerCase();
             if (s.length > 1) {
-                switchTab('boutique');
-                document.getElementById('vue-rayons').classList.add('hidden');
-                document.getElementById('vue-produits').classList.remove('hidden');
+                switchTab('boutique'); document.getElementById('vue-rayons').classList.add('hidden'); document.getElementById('vue-produits').classList.remove('hidden');
                 const filtrés = articles.filter(p => p.nom.toLowerCase().includes(s) && String(p.statut).toUpperCase() === "OK");
-                document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
-                    const escapedNom = p.nom.replace(/'/g, "\\'");
-                    return `
+                document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
                     <div class="bg-white rounded-2xl shadow p-3 flex items-center gap-3">
                         <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover">
                         <div class="flex-1"><h4 class="font-black text-purple-900 text-[8px] uppercase">${p.nom}</h4><p class="text-orange-600 font-black text-[10px]">${p.prix} F</p></div>
-                        <button onclick="ajouterAuPanier('${escapedNom}', '${p.prix}')" class="bg-orange-500 text-white p-2 rounded-lg"><i class="fas fa-plus"></i></button>
-                    </div>`;
-                }).join('');
+                        <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', '${p.prix}')" class="bg-orange-500 text-white p-2 rounded-lg"><i class="fas fa-plus"></i></button>
+                    </div>`).join('');
             }
         }
 
         function ajouterAuPanier(nom, prix) {
             panier.push({ nom, prix });
-         
+            document.getElementById('btn-panier-flottant').classList.remove('hidden');
+            document.getElementById('count-panier').innerText = panier.length;
+        }
+
+        function ouvrirPanier() {
+            const m = document.getElementById('modalPanier');
+            const c = document.getElementById('contenuPanier');
+            const tA = document.getElementById('totalPanier');
+            m.style.display = 'flex';
+            let t = 0;
+            c.innerHTML = panier.map((item, i) => {
+                let p = parseInt(item.prix.toString().replace(/\s/g, ''));
+                t += p;
+                return `<div class="flex justify-between items-center bg-gray-50 p-3
