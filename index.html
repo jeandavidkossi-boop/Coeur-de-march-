@@ -51,7 +51,7 @@
                     <span id="totalPanier" class="font-black text-xl text-purple-900">0 F</span>
                 </div>
                 <button onclick="envoyerPanierWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs shadow-lg flex items-center justify-center gap-3">
-                    <i class="fab fa-whatsapp text-lg"></i> Envoyer sur WhatsApp
+                    <i class="fab fa-whatsapp text-lg"></i> Envoyer la commande
                 </button>
             </div>
         </div>
@@ -171,7 +171,7 @@
             document.getElementById('compteur-articles').innerText = filtrés.length + " article(s)";
             document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
                 const escapedNom = p.nom.replace(/'/g, "\\'");
-                const shareMsg = encodeURIComponent(`Vu sur Cœur de Marché Bouaflé !\n🛍️ *${p.nom}*\n💰 ${p.prix} FCFA\n📍 ${p.quartier || 'Bouaflé'}\n🔗 ${appLink}`);
+                const shareMsg = encodeURIComponent("Vu sur Cœur de Marché Bouaflé !\n🛍️ *" + p.nom + "*\n💰 " + p.prix + " FCFA\n📍 " + (p.quartier || 'Bouaflé') + "\n🔗 " + appLink);
                 return `
                 <div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50 flex gap-4">
                     <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
@@ -222,4 +222,4 @@
             c.innerHTML = panier.map((item, i) => {
                 let p = parseInt(item.prix.toString().replace(/\s/g, ''));
                 t += p;
-                return `<div class="flex justify-between items-center bg-gray-50 p-3
+                return `<div class="flex justify-between items-cente
