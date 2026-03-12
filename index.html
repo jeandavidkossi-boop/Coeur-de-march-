@@ -93,6 +93,7 @@
     </nav>
 
     <script>
+        // Ton nouveau lien Version 4 est ici
         const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
         const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
         let articles = [];
@@ -192,16 +193,15 @@
 
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
 
-        // --- CODE AJOUTÉ POUR L'INSTALLATION (PWA) ---
+        // Code manifest et Service Worker ajouté ici
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW error', err));
+                navigator.serviceWorker.register('./sw.js').catch(e => console.log(e));
             });
         }
-        // ---------------------------------------------
 
         window.onload = chargerDonnees;
     </script>
 </body>
-    </html>
-    
+                                                                                                                                                                  </html>
+                                                                                                                                                                  
