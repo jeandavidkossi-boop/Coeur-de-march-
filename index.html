@@ -30,10 +30,10 @@
         .btn-action-share { background: #6b21a8; color: white; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-action-order { background: #22c55e; color: white; padding: 0 15px; height: 42px; border-radius: 14px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: center; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         
-        .stars-gold { color: #fbbf24; font-size: 8px; }
-        .scroll-categories { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 10px; scroll-behavior: smooth; }
-        .cat-pill { white-space: nowrap; background: white; padding: 6px 15px; border-radius: 20px; font-size: 8px; font-weight: 900; text-transform: uppercase; border: 1px solid #e5e7eb; color: #6b21a8; transition: all 0.2s; }
-        .cat-pill.active { background: #6b21a8; color: white; border-color: #6b21a8; }
+        /* Style des bulles de catégories sur l'accueil */
+        .bubble-cat { min-width: 70px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .bubble-icon { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #f3f4f6; color: #6b21a8; font-size: 18px; transition: all 0.2s; }
+        .bubble-icon:active { transform: scale(0.9); background: #f97316; color: white; }
     </style>
 </head>
 <body class="pb-32 text-gray-900">
@@ -52,12 +52,40 @@
     </header>
 
     <section id="accueil" class="active px-4 mt-6">
-        <div class="bg-white p-5 rounded-[30px] shadow-xl border border-gray-50 mb-6 text-center">
+        <div class="bg-white p-5 rounded-[30px] shadow-xl border border-gray-50 mb-4 text-center">
             <div class="flex gap-2">
                 <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Rechercher un article..." class="flex-1 bg-gray-100 border-none rounded-xl py-3 px-4 text-[10px] outline-none">
                 <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center"><i class="fas fa-microphone" id="iconMicro"></i></button>
             </div>
         </div>
+
+        <div class="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 py-2">
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Vivrier')">
+                <div class="bubble-icon"><i class="fas fa-leaf"></i></div>
+                <span class="text-[7px] font-black uppercase">Vivrier</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Beauté')">
+                <div class="bubble-icon"><i class="fas fa-magic"></i></div>
+                <span class="text-[7px] font-black uppercase">Beauté</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Resto')">
+                <div class="bubble-icon"><i class="fas fa-utensils"></i></div>
+                <span class="text-[7px] font-black uppercase">Resto</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Mode')">
+                <div class="bubble-icon"><i class="fas fa-tshirt"></i></div>
+                <span class="text-[7px] font-black uppercase">Mode</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Alimentation')">
+                <div class="bubble-icon"><i class="fas fa-shopping-basket"></i></div>
+                <span class="text-[7px] font-black uppercase">Alimentation</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Services')">
+                <div class="bubble-icon"><i class="fas fa-concierge-bell"></i></div>
+                <span class="text-[7px] font-black uppercase">Services</span>
+            </div>
+        </div>
+
         <div class="mb-8">
             <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 px-2 flex items-center gap-2"><i class="fas fa-fire text-orange-500"></i> À la Une</h3>
             <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1"></div>
@@ -76,7 +104,6 @@
                 <button onclick="ouvrirRayon('Resto')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Resto</p></button>
                 <button onclick="ouvrirRayon('Electroménager')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-gray-500 flex flex-col items-center"><i class="fas fa-plug text-gray-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Electroménager</p></button>
                 <button onclick="ouvrirRayon('Electronique')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-indigo-500 flex flex-col items-center"><i class="fas fa-laptop text-indigo-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Electronique</p></button>
-                
                 <button onclick="ouvrirRayon('Santé')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-400 flex flex-col items-center"><i class="fas fa-heartbeat text-red-400 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Santé</p></button>
                 <button onclick="ouvrirRayon('Immobilier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-yellow-800 flex flex-col items-center"><i class="fas fa-home text-yellow-800 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Immobilier</p></button>
                 <button onclick="ouvrirRayon('Agricole')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-700 flex flex-col items-center"><i class="fas fa-tractor text-green-700 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Agricole</p></button>
@@ -108,16 +135,30 @@
             try {
                 const reponse = await fetch(urlScript);
                 articles = await reponse.json();
+                
                 const annonce = articles.find(p => String(p.nom).toUpperCase() === "ANNONCE");
                 if(annonce) document.getElementById('texteBandeAnnonce').innerText = annonce.description;
+
                 const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
                 document.getElementById('carrousel-une').innerHTML = certifiés.map(p => `
-                    <div class="min-w-[130px] bg-white rounded-2xl shadow-md overflow-hidden flex flex-col border border-gray-50">
-                        <img src="${p.image}" onclick="zoom('${p.image}')" class="w-full h-24 object-cover">
-                        <div class="p-2 flex flex-col flex-1 justify-between">
-                            <h4 class="text-purple-900 text-[8px] font-black uppercase truncate mb-1">${p.nom}</h4>
+                    <div class="min-w-[160px] max-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex flex-col relative">
+                        <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-lg z-10 shadow-md">
+                            ${p.prix} F
+                        </div>
+                        <img src="${p.image}" onclick="zoom('${p.image}')" class="w-full h-28 object-cover">
+                        <div class="p-3 flex flex-col gap-1">
+                            <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
+                            <div class="flex items-center gap-1 text-blue-600">
+                                <i class="fas fa-map-marker-alt text-[8px]"></i>
+                                <span class="text-[8px] font-bold truncate">${p.quartier || 'Bouaflé'}</span>
+                            </div>
+                            <div class="text-[7px] text-green-600 font-bold mb-1">
+                                📦 ${p.stock || 'En stock'}
+                            </div>
                             <a href="https://wa.me/2250576326645?text=Je commande l'article à la UNE : ${encodeURIComponent(p.nom)}" 
-                               class="bg-green-500 text-white text-[7px] font-black py-1.5 rounded-lg text-center uppercase shadow-sm">Commander</a>
+                               class="bg-purple-900 text-white text-[8px] font-black py-2 rounded-xl text-center uppercase shadow-sm">
+                               Commander
+                            </a>
                         </div>
                     </div>`).join('');
             } catch (e) { console.error("Erreur de chargement", e); }
@@ -128,6 +169,12 @@
             document.getElementById(id).classList.add('active');
             document.getElementById('btn-accueil').className = id === 'accueil' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center';
             document.getElementById('btn-boutique').className = id === 'boutique' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center';
+        }
+
+        // Nouvelle fonction pour le saut direct depuis l'accueil
+        function ouvrirRayonDepuisAccueil(nomRayon) {
+            switchTab('boutique');
+            ouvrirRayon(nomRayon);
         }
 
         function ouvrirRayon(nomRayon) {
@@ -195,16 +242,8 @@
         }
 
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
-
-        // Ajout du Service Worker sans modifier tes fonctions
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(e => console.error(e));
-            });
-        }
-
         window.onload = chargerDonnees;
     </script>
 </body>
-                                                                                                                                                           </html>
-                                                                                                                                                           
+                    </html>
+                    
