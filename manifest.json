@@ -8,14 +8,16 @@
   "theme_color": "#4c1d95",
   "icons": [
     {
-      "src": "IMG-20260115-WA0005.jpg",
+      "src": "1769121566036.png",
       "sizes": "192x192",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "IMG-20260115-WA0005.jpg",
+      "src": "1769121566036.png",
       "sizes": "512x512",
-      "type": "image/jpeg"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
