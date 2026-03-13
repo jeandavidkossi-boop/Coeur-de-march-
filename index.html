@@ -286,6 +286,11 @@
 
         // LANCEMENT
         window.onload = chargerDonnees;
+        if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    // On change sx.js en sw.js pour que ça corresponde à ton fichier GitHub
+    navigator.serviceWorker.register('./sw.js');
+  });
     </script>
 </body>
     </html>
