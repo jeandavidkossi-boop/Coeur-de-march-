@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cœur de Marché Bouaflé</title>
     
-    <link rel="canonical" href="https://jeandavidkossi-boop.github.io/Coeur-de-march-/">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4c1d95">
-
+    <link rel="apple-touch-icon" href="1769121566036.png">
+    
+    <link rel="canonical" href="https://jeandavidkossi-boop.github.io/Coeur-de-march-/">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -18,17 +19,13 @@
         section.active { display: block; animation: fadeIn 0.4s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        
         .marquee-container { background: #6b21a8; color: white; padding: 6px 0; overflow: hidden; white-space: nowrap; font-size: 10px; font-weight: 700; text-transform: uppercase; border-bottom: 2px solid #f97316; }
         .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
-
         #modalZoom { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
         #modalZoom img { max-width: 90%; max-height: 80vh; border-radius: 15px; border: 3px solid white; }
-        
         .btn-action-call { background: #f97316; color: white; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-action-order { background: #22c55e; color: white; padding: 0 15px; height: 42px; border-radius: 14px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: center; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        
         .bubble-cat { min-width: 70px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
         .bubble-icon { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid #f3f4f6; color: #6b21a8; font-size: 18px; transition: all 0.2s; }
         .bubble-icon:active { transform: scale(0.9); background: #f97316; color: white; }
@@ -139,12 +136,8 @@
             try {
                 const response = await fetch(urlScript);
                 articles = await response.json();
-                
-                // 1. Bande annonce
                 const annonce = articles.find(p => String(p.nom).toUpperCase() === "ANNONCE");
                 if(annonce) document.getElementById('texteBandeAnnonce').innerText = annonce.description;
-
-                // 2. À la une
                 const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
                 const carrousel = document.getElementById('carrousel-une');
                 carrousel.innerHTML = certifiés.map(p => `
@@ -180,7 +173,6 @@
             document.getElementById('vue-produits').classList.remove('hidden');
             const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === nomRayon.toLowerCase() && String(p.statut).toUpperCase() === "OK");
             document.getElementById('compteur-articles').innerText = filtrés.length + " article(s)";
-            
             document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
                 const escapedNom = p.nom.replace(/'/g, "\\'");
                 return `
@@ -192,100 +184,5 @@
                             <p class="text-orange-600 font-black text-sm">${p.prix} F</p>
                             <p class="text-gray-500 text-[7px] italic mt-1 leading-tight">${p.description || ''}</p>
                         </div>
-                        <div class="flex gap-2 mt-2">
-                            <a href="tel:${p.telephone}" class="btn-action-call w-8 h-8 rounded-lg"><i class="fas fa-phone-alt text-xs"></i></a>
-                            <button onclick="ajouterAuPanier('${escapedNom}', '${p.prix}')" class="bg-orange-500 text-white px-3 rounded-lg text-[10px] font-black"><i class="fas fa-cart-plus"></i></button>
-                            <a href="https://wa.me/2250576326645?text=Je commande : ${encodeURIComponent(p.nom)}" class="btn-action-order h-8 rounded-lg text-[7px]">Commander</a>
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-            window.scrollTo(0,0);
-        }
-
-        function retourRayons() {
-            document.getElementById('vue-rayons').classList.remove('hidden');
-            document.getElementById('vue-produits').classList.add('hidden');
-        }
-
-        function rechercherProduit() {
-            const saisie = document.getElementById('inputRecherche').value.toLowerCase();
-            if (saisie.length > 1) {
-                switchTab('boutique');
-                document.getElementById('vue-rayons').classList.add('hidden');
-                document.getElementById('vue-produits').classList.remove('hidden');
-                const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && String(p.statut).toUpperCase() === "OK");
-                document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
-                    <div class="bg-white rounded-2xl shadow p-3 flex items-center gap-3">
-                        <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover">
-                        <div class="flex-1 text-[8px]">
-                            <h4 class="font-black uppercase text-purple-900">${p.nom}</h4>
-                            <p class="text-orange-600 font-black">${p.prix} F</p>
-                        </div>
-                        <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', '${p.prix}')" class="bg-orange-500 text-white p-2 rounded-lg"><i class="fas fa-plus"></i></button>
-                    </div>`).join('');
-            }
-        }
-
-        function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
-
-        // LOGIQUE PANIER
-        function ajouterAuPanier(nom, prix) {
-            panier.push({ nom, prix });
-            document.getElementById('btn-panier-flottant').classList.remove('hidden');
-            document.getElementById('count-panier').innerText = panier.length;
-        }
-
-        function ouvrirPanier() {
-            const modal = document.getElementById('modalPanier');
-            const contenu = document.getElementById('contenuPanier');
-            const totalAffichage = document.getElementById('totalPanier');
-            modal.style.display = 'flex';
-            let total = 0;
-            contenu.innerHTML = panier.map((item, i) => {
-                let p = parseInt(item.prix.toString().replace(/\s/g, ''));
-                total += p;
-                return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
-                    <div><p class="font-black text-[10px] uppercase text-purple-900">${item.nom}</p><p class="text-orange-600 font-bold text-[10px]">${item.prix} F</p></div>
-                    <button onclick="supprimerDuPanier(${i})" class="text-red-500 p-2"><i class="fas fa-trash-alt"></i></button>
-                </div>`;
-            }).join('');
-            totalAffichage.innerText = total.toLocaleString() + " F";
-        }
-
-        function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
-
-        function supprimerDuPanier(i) {
-            panier.splice(i, 1);
-            if (panier.length === 0) { 
-                fermerPanier(); 
-                document.getElementById('btn-panier-flottant').classList.add('hidden'); 
-            } else { ouvrirPanier(); document.getElementById('count-panier').innerText = panier.length; }
-        }
-
-        function envoyerPanierWhatsApp() {
-            let msg = "Bonjour Cœur de Marché, je commande :\n\n";
-            let total = 0;
-            panier.forEach((it, i) => {
-                msg += `${i + 1}. *${it.nom}* (${it.prix} F)\n`;
-                total += parseInt(it.prix.toString().replace(/\s/g, ''));
-            });
-            msg += `\n*TOTAL : ${total.toLocaleString()} FCFA*`;
-            window.open(`https://wa.me/2250576326645?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function lancerMicro() {
-            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!Speech) return;
-            const rec = new Speech(); rec.lang = 'fr-FR';
-            rec.onstart = () => document.getElementById('iconMicro').className = "fas fa-spinner fa-spin text-red-500";
-            rec.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
-            rec.onend = () => document.getElementById('iconMicro').className = "fas fa-microphone";
-            rec.start();
-        }
-
-        // LANCEMENT
-        window.onload = chargerDonnees;
-    </script>
-</body>
-    </html>
+                        <div
+    
