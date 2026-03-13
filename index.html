@@ -46,9 +46,9 @@
             </div>
             <div id="contenuPanier" class="p-6 overflow-y-auto flex-1 space-y-4"></div>
             <div class="p-6 border-t border-gray-100 bg-gray-50">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="font-bold text-gray-500 uppercase text-[10px]">Total</span>
-                    <span id="totalPanier" class="font-black text-xl text-purple-900">0 F</span>
+                <div class="flex justify-between items-center mb-4 text-purple-900 font-black">
+                    <span class="uppercase text-[10px]">Total</span>
+                    <span id="totalPanier" class="text-xl">0 F</span>
                 </div>
                 <button onclick="envoyerPanierWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase text-xs shadow-lg flex items-center justify-center gap-3">
                     <i class="fab fa-whatsapp text-lg"></i> Envoyer sur WhatsApp
@@ -64,12 +64,12 @@
         <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Cœur de Marché</h1>
         <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase italic mb-4">Bouaflé • Marahoué</p>
         <div class="marquee-container">
-            <span class="marquee-text" id="texteBandeAnnonce">Initialisation...</span>
+            <span class="marquee-text" id="texteBandeAnnonce">Chargement...</span>
         </div>
     </header>
 
     <section id="accueil" class="active px-4 mt-6">
-        <div class="bg-white p-5 rounded-[30px] shadow-xl border border-gray-50 mb-4 text-center">
+        <div class="bg-white p-5 rounded-[30px] shadow-xl border border-gray-100 mb-4 text-center">
             <div class="flex gap-2">
                 <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Rechercher..." class="flex-1 bg-gray-100 border-none rounded-xl py-3 px-4 text-[10px] outline-none">
                 <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center"><i class="fas fa-microphone" id="iconMicro"></i></button>
@@ -173,7 +173,7 @@
             document.getElementById('compteur-articles').innerText = filtrés.length + " article(s)";
             document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
                 const escapedNom = p.nom.replace(/'/g, "\\'");
-                const shareMsg = encodeURIComponent("Vu sur Cœur de Marché Bouaflé !\n🛍️ *" + p.nom + "*\n💰 " + p.prix + " F\n📍 " + (p.quartier || 'Bouaflé') + "\n🔗 " + appLink);
+                const shareMsg = encodeURIComponent("🛍️ *" + p.nom + "*\n💰 " + p.prix + " F\n📍 " + (p.quartier || 'Bouaflé') + "\n🔗 " + appLink);
                 return `
                 <div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50 flex gap-4">
                     <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
@@ -184,7 +184,7 @@
                         <p class="text-blue-600 text-[7px] font-bold uppercase mt-1"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
                         <div class="flex gap-2 mt-2">
                             <a href="tel:${p.telephone}" class="btn-action-call w-8 h-8 rounded-lg"><i class="fas fa-phone-alt text-xs"></i></a>
-                            <a href="https://wa.me/?text=${shareMsg}" class="btn-action-call w-8 h-8 rounded-lg bg-purple-700"><i class="fas fa-share-alt text-xs"></i></a>
+                            <a href="https://wa.me/?text=${shareMsg}" class="btn-action-call w-8 h-8 rounded-lg bg-purple-700 flex items-center justify-center text-white"><i class="fas fa-share-alt text-xs"></i></a>
                             <button onclick="ajouterAuPanier('${escapedNom}', '${p.prix}')" class="bg-orange-500 text-white px-3 rounded-lg text-[10px] font-black"><i class="fas fa-cart-plus"></i></button>
                             <a href="https://wa.me/2250576326645?text=Commande : ${encodeURIComponent(p.nom)}" class="btn-action-order h-8 rounded-lg text-[7px]">DIRECT</a>
                         </div>
@@ -202,27 +202,5 @@
                 switchTab('boutique'); document.getElementById('vue-rayons').classList.add('hidden'); document.getElementById('vue-produits').classList.remove('hidden');
                 const filtrés = articles.filter(p => p.nom.toLowerCase().includes(s) && String(p.statut).toUpperCase() === "OK");
                 document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
-                    <div class="bg-white rounded-2xl shadow p-3 flex items-center gap-3">
-                        <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover">
-                        <div class="flex-1 text-[8px] font-black uppercase text-purple-900">${p.nom}</div>
-                        <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', '${p.prix}')" class="bg-orange-500 text-white p-2 rounded-lg"><i class="fas fa-plus"></i></button>
-                    </div>`).join('');
-            }
-        }
-
-        function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
-
-        function ajouterAuPanier(n, p) {
-            panier.push({ nom: n, prix: p });
-            document.getElementById('btn-panier-flottant').classList.remove('hidden');
-            document.getElementById('count-panier').innerText = panier.length;
-        }
-
-        function ouvrirPanier() {
-            const modal = document.getElementById('modalPanier');
-            modal.style.display = 'flex';
-            let total = 0;
-            document.getElementById('contenuPanier').innerHTML = panier.map((item, i) => {
-                total += parseInt(item.prix.toString().replace(/\s/g, ''));
-                return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
-                    <div><p class="font-black text-[10px] uppercase text-purple-900
+                    <div class="bg-white rounded-2xl shadow p-3 flex items-center gap-
+    
