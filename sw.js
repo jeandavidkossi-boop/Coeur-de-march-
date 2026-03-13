@@ -5,6 +5,7 @@ const CACHE_NAME = 'coeur-marche-bouafle-v1';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
+  './sw.js',
   './manifest.json',
   './IMG-20260115-WA0005.jpg', // Ton logo
   'https://cdn.tailwindcss.com',
@@ -37,8 +38,6 @@ self.addEventListener('activate', (event) => {
 });
 
 // 3. Stratégie de chargement : Réseau d'abord, sinon Cache
-// Cela permet d'avoir toujours les derniers prix si internet est là, 
-// sinon d'afficher l'app quand même.
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request).catch(() => {
