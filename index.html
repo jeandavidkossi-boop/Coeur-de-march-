@@ -91,7 +91,7 @@
 
     <section id="boutique" class="px-4 mt-8">
         <div id="vue-rayons">
-            <h2 class="text-purple-900 font-black text-xl mb-6 uppercase italic text-center">Nos Marchés</h2>
+            <h2 class="text-purple-900 font-black text-xl mb-6 uppercase italic text-center underline decoration-orange-500 underline-offset-4">Nos Marchés</h2>
             <div class="grid grid-cols-2 gap-3 pb-12">
                 <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-500 flex flex-col items-center"><i class="fas fa-scissors text-orange-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Mercerie</p></button>
                 <button onclick="ouvrirRayon('Beauté')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 text-xl mb-2"></i><p class="text-[8px] font-black uppercase">Beauté</p></button>
@@ -141,16 +141,19 @@
                 const annonce = articles.find(p => String(p.nom).toUpperCase() === "ANNONCE");
                 if(annonce) document.getElementById('texteBandeAnnonce').innerText = annonce.description;
                 const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
-                document.getElementById('carrousel-une').innerHTML = certifiés.map(p => `
+                document.getElementById('carrousel-une').innerHTML = certifiés.map(p => {
+                    const escNom = p.nom.replace(/'/g, "\\'");
+                    return `
                     <div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex flex-col relative">
                         <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-lg z-10">${p.prix} F</div>
                         <img src="${p.image}" onclick="zoom('${p.image}')" class="w-full h-28 object-cover">
                         <div class="p-3">
                             <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
                             <p class="text-blue-600 text-[8px] font-bold"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
-                            <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white text-[8px] font-black py-2 rounded-xl uppercase">Ajouter</button>
+                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white text-[8px] font-black py-2 rounded-xl uppercase">Ajouter</button>
                         </div>
-                    </div>`).join('');
+                    </div>`;
+                }).join('');
             } catch (e) { console.error(e); }
         }
 
@@ -221,7 +224,5 @@
             let total = 0;
             document.getElementById('contenuPanier').innerHTML = panier.map((item, i) => {
                 total += parseInt(item.prix.toString().replace(/\s/g, ''));
-                return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
-                    <div class="text-[10px] uppercase font-black">${item.nom} - ${item.prix} F</div>
-                    <button onclick="supprimerDuPanier(${i})" class="text-red-500 p-2"><i class="fas fa-trash-alt"></i></button>
-                </
+                return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
+                    <div><p class="font-black text-[10px] uppercase text-purple-900
