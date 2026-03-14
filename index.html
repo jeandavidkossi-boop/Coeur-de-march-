@@ -29,7 +29,7 @@
         .btn-action-call { background: #f97316; color: white; width: 42px; height: 42px; border-radius: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .btn-action-order { background: #22c55e; color: white; padding: 0 15px; height: 42px; border-radius: 14px; font-size: 10px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; justify-content: center; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         
-        .bubble-cat { min-width: 75px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
+        .bubble-cat { min-width: 70px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; }
         .bubble-icon { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid #f3f4f6; color: #6b21a8; font-size: 18px; transition: all 0.2s; }
         .bubble-icon:active { transform: scale(0.9); background: #f97316; color: white; }
     </style>
@@ -59,7 +59,7 @@
 
     <header class="bg-purple-900 pt-8 rounded-b-[40px] shadow-2xl text-center">
         <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center border-2 border-orange-100 shadow-lg overflow-hidden">
-            <img src="1769121566036.png" alt="Logo" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150?text=Logo'">
+            <img src="IMG-20260115-WA0005.jpg" alt="Logo" class="w-full h-full object-contain">
         </div>
         <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Cœur de Marché</h1>
         <p class="text-orange-400 text-[8px] font-bold tracking-widest uppercase italic mb-4">Bouaflé • Marahoué</p>
@@ -69,7 +69,7 @@
     </header>
 
     <section id="accueil" class="active px-4 mt-6">
-        <div class="bg-white p-5 rounded-[30px] shadow-xl border border-gray-100 mb-4 text-center">
+        <div class="bg-white p-5 rounded-[30px] shadow-xl border border-gray-50 mb-4 text-center">
             <div class="flex gap-2">
                 <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Rechercher..." class="flex-1 bg-gray-100 border-none rounded-xl py-3 px-4 text-[10px] outline-none">
                 <button onclick="lancerMicro()" class="bg-purple-900 text-white w-10 h-10 rounded-xl flex items-center justify-center"><i class="fas fa-microphone" id="iconMicro"></i></button>
@@ -77,20 +77,22 @@
         </div>
 
         <div class="flex gap-4 overflow-x-auto no-scrollbar mb-8 px-2 py-2">
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Vivrier')"><div class="bubble-icon"><i class="fas fa-leaf"></i></div><span class="text-[7px] font-black uppercase">Vivrier</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Beaute')"><div class="bubble-icon"><i class="fas fa-magic"></i></div><span class="text-[7px] font-black uppercase">Beauté</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Alimentation')"><div class="bubble-icon"><i class="fas fa-shopping-basket"></i></div><span class="text-[7px] font-black uppercase">Alim.</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Mode')"><div class="bubble-icon"><i class="fas fa-tshirt"></i></div><span class="text-[7px] font-black uppercase">Mode</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Mercerie')"><div class="bubble-icon"><i class="fas fa-scissors"></i></div><span class="text-[7px] font-black uppercase">Mercerie</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Resto')"><div class="bubble-icon"><i class="fas fa-utensils"></i></div><span class="text-[7px] font-black uppercase">Resto</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Electromenager')"><div class="bubble-icon"><i class="fas fa-plug"></i></div><span class="text-[7px] font-black uppercase">Electro.</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Electronique')"><div class="bubble-icon"><i class="fas fa-laptop"></i></div><span class="text-[7px] font-black uppercase">Électro.</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Sante')"><div class="bubble-icon"><i class="fas fa-heartbeat"></i></div><span class="text-[7px] font-black uppercase">Santé</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Immobilier')"><div class="bubble-icon"><i class="fas fa-home"></i></div><span class="text-[7px] font-black uppercase">Immo.</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Agricole')"><div class="bubble-icon"><i class="fas fa-tractor"></i></div><span class="text-[7px] font-black uppercase">Agricole</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Elevage')"><div class="bubble-icon"><i class="fas fa-paw"></i></div><span class="text-[7px] font-black uppercase">Élevage</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Transport')"><div class="bubble-icon"><i class="fas fa-motorcycle"></i></div><span class="text-[7px] font-black uppercase">Transport</span></div>
-            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Services')"><div class="bubble-icon"><i class="fas fa-concierge-bell"></i></div><span class="text-[7px] font-black uppercase">Services</span></div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Vivrier')">
+                <div class="bubble-icon"><i class="fas fa-leaf"></i></div>
+                <span class="text-[7px] font-black uppercase">Vivrier</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Beauté')">
+                <div class="bubble-icon"><i class="fas fa-magic"></i></div>
+                <span class="text-[7px] font-black uppercase">Beauté</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Resto')">
+                <div class="bubble-icon"><i class="fas fa-utensils"></i></div>
+                <span class="text-[7px] font-black uppercase">Resto</span>
+            </div>
+            <div class="bubble-cat" onclick="ouvrirRayonDepuisAccueil('Mode')">
+                <div class="bubble-icon"><i class="fas fa-tshirt"></i></div>
+                <span class="text-[7px] font-black uppercase">Mode</span>
+            </div>
         </div>
 
         <div class="mb-8">
@@ -101,22 +103,12 @@
 
     <section id="boutique" class="px-4 mt-8">
         <div id="vue-rayons">
-            <h2 class="text-purple-900 font-black text-xl mb-6 uppercase italic text-center underline decoration-orange-500 underline-offset-4">Nos Marchés</h2>
+            <h2 class="text-purple-900 font-black text-xl mb-6 uppercase italic text-center">Nos Marchés</h2>
             <div class="grid grid-cols-2 gap-3 pb-12">
-                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-500 flex flex-col items-center"><i class="fas fa-scissors text-orange-600 mb-2"></i><p class="text-[8px] font-black uppercase">Mercerie</p></button>
-                <button onclick="ouvrirRayon('Beaute')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 mb-2"></i><p class="text-[8px] font-black uppercase">Beauté</p></button>
-                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-500 flex flex-col items-center"><i class="fas fa-leaf text-green-600 mb-2"></i><p class="text-[8px] font-black uppercase">Vivrier</p></button>
-                <button onclick="ouvrirRayon('Mode')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 mb-2"></i><p class="text-[8px] font-black uppercase">Mode</p></button>
-                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 mb-2"></i><p class="text-[8px] font-black uppercase">Alimentation</p></button>
-                <button onclick="ouvrirRayon('Resto')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 mb-2"></i><p class="text-[8px] font-black uppercase">Resto</p></button>
-                <button onclick="ouvrirRayon('Electromenager')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-gray-500 flex flex-col items-center"><i class="fas fa-plug text-gray-600 mb-2"></i><p class="text-[8px] font-black uppercase">Electroménager</p></button>
-                <button onclick="ouvrirRayon('Electronique')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-indigo-500 flex flex-col items-center"><i class="fas fa-laptop text-indigo-600 mb-2"></i><p class="text-[8px] font-black uppercase">Electronique</p></button>
-                <button onclick="ouvrirRayon('Sante')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-400 flex flex-col items-center"><i class="fas fa-heartbeat text-red-400 mb-2"></i><p class="text-[8px] font-black uppercase">Santé</p></button>
-                <button onclick="ouvrirRayon('Immobilier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-yellow-800 flex flex-col items-center"><i class="fas fa-home text-yellow-800 mb-2"></i><p class="text-[8px] font-black uppercase">Immobilier</p></button>
-                <button onclick="ouvrirRayon('Agricole')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-700 flex flex-col items-center"><i class="fas fa-tractor text-green-700 mb-2"></i><p class="text-[8px] font-black uppercase">Agricole</p></button>
-                <button onclick="ouvrirRayon('Elevage')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-900 flex flex-col items-center"><i class="fas fa-paw text-orange-900 mb-2"></i><p class="text-[8px] font-black uppercase">Élevage</p></button>
-                <button onclick="ouvrirRayon('Transport')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-600 flex flex-col items-center"><i class="fas fa-motorcycle text-blue-600 mb-2"></i><p class="text-[8px] font-black uppercase">Transport</p></button>
-                <button onclick="ouvrirRayon('Services')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-purple-500 flex flex-col items-center"><i class="fas fa-concierge-bell text-purple-500 mb-2"></i><p class="text-[8px] font-black uppercase">Services</p></button>
+                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-500 flex flex-col items-center"><i class="fas fa-leaf text-green-600 mb-2 text-xl"></i><p class="text-[8px] font-black uppercase">Vivrier</p></button>
+                <button onclick="ouvrirRayon('Beauté')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 mb-2 text-xl"></i><p class="text-[8px] font-black uppercase">Beauté</p></button>
+                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 mb-2 text-xl"></i><p class="text-[8px] font-black uppercase">Alimentation</p></button>
+                <button onclick="ouvrirRayon('Mode')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 mb-2 text-xl"></i><p class="text-[8px] font-black uppercase">Mode</p></button>
             </div>
         </div>
 
@@ -140,12 +132,8 @@
 
     <script>
         const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
-        const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
         let articles = [];
         let panier = [];
-
-        // AMÉLIORATION SPÉCIALISTE : Nettoyage intelligent des textes
-        const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 
         async function chargerDonnees() {
             try {
@@ -153,16 +141,16 @@
                 articles = await response.json();
                 
                 // 1. Bande annonce
-                const annonce = articles.find(p => cleanTxt(p.nom) === "annonce");
+                const annonce = articles.find(p => String(p.nom).toUpperCase() === "ANNONCE");
                 if(annonce) document.getElementById('texteBandeAnnonce').innerText = annonce.description;
 
                 // 2. À la une
-                const certifiés = articles.filter(p => cleanTxt(p.certifie) === "oui" && cleanTxt(p.statut) === "ok");
+                const certifiés = articles.filter(p => String(p.certifie).toUpperCase() === "OUI" && String(p.statut).toUpperCase() === "OK");
                 const carrousel = document.getElementById('carrousel-une');
                 carrousel.innerHTML = certifiés.map(p => `
                     <div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex flex-col relative">
                         <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-lg z-10">${p.prix} F</div>
-                        <img src="${p.image}" onclick="zoom('${p.image}')" class="w-full h-28 object-cover" onerror="this.src='1769121566036.png'">
+                        <img src="${p.image}" onclick="zoom('${p.image}')" class="w-full h-28 object-cover">
                         <div class="p-3">
                             <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
                             <p class="text-blue-600 text-[8px] font-bold"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
@@ -178,10 +166,6 @@
         function switchTab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            
-            // AMÉLIORATION SPÉCIALISTE : Réinitialisation auto de la boutique
-            if(id === 'boutique') retourRayons();
-
             document.getElementById('btn-accueil').className = id === 'accueil' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center';
             document.getElementById('btn-boutique').className = id === 'boutique' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center';
         }
@@ -194,25 +178,114 @@
         function ouvrirRayon(nomRayon) {
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
+            const filtrés = articles.filter(p => String(p.rayon).trim().toLowerCase() === nomRayon.toLowerCase() && String(p.statut).toUpperCase() === "OK");
+            document.getElementById('compteur-articles').innerText = filtrés.length + " article(s)";
             
-            // AMÉLIORATION SPÉCIALISTE : Filtre insensible aux accents/majuscules
-            const filtres = articles.filter(p => cleanTxt(p.rayon) === cleanTxt(nomRayon) && cleanTxt(p.statut) === "ok");
-            document.getElementById('compteur-articles').innerText = filtres.length + " article(s)";
-            
-            document.getElementById('liste-produits').innerHTML = filtres.length === 0 ? 
-                `<p class="text-center text-gray-400 py-10">Aucun produit trouvé ici.</p>` :
-                filtres.map(p => {
-                    const escapedNom = p.nom.replace(/'/g, "\\'");
-                    return `
-                    <div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50 flex gap-4">
-                        <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm" onerror="this.src='1769121566036.png'">
-                        <div class="flex-1 flex flex-col justify-between">
-                            <div>
-                                <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
-                                <p class="text-orange-600 font-black text-sm">${p.prix} F</p>
-                                <p class="text-gray-500 text-[7px] italic mt-1 leading-tight">${p.description || ''}</p>
-                                <p class="text-blue-600 text-[7px] font-bold mt-1"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
-                            </div>
-                            <div class="flex gap-2 mt-2">
-                                <a href="tel:${p.telephone}" class="btn-action-call w-8 h-8 rounded-lg"><i class="fas fa-phone-alt text-xs"></i></a>
-                               
+            document.getElementById('liste-produits').innerHTML = filtrés.map(p => {
+                const escapedNom = p.nom.replace(/'/g, "\\'");
+                return `
+                <div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50 flex gap-4">
+                    <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
+                            <p class="text-orange-600 font-black text-sm">${p.prix} F</p>
+                            <p class="text-gray-500 text-[7px] italic mt-1 leading-tight">${p.description || ''}</p>
+                        </div>
+                        <div class="flex gap-2 mt-2">
+                            <a href="tel:${p.telephone}" class="btn-action-call w-8 h-8 rounded-lg"><i class="fas fa-phone-alt text-xs"></i></a>
+                            <button onclick="ajouterAuPanier('${escapedNom}', '${p.prix}')" class="bg-orange-500 text-white px-3 rounded-lg text-[10px] font-black"><i class="fas fa-cart-plus"></i></button>
+                            <a href="https://wa.me/2250576326645?text=Je commande : ${encodeURIComponent(p.nom)}" class="btn-action-order h-8 rounded-lg text-[7px]">Commander</a>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+            window.scrollTo(0,0);
+        }
+
+        function retourRayons() {
+            document.getElementById('vue-rayons').classList.remove('hidden');
+            document.getElementById('vue-produits').classList.add('hidden');
+        }
+
+        function rechercherProduit() {
+            const saisie = document.getElementById('inputRecherche').value.toLowerCase();
+            if (saisie.length > 1) {
+                switchTab('boutique');
+                document.getElementById('vue-rayons').classList.add('hidden');
+                document.getElementById('vue-produits').classList.remove('hidden');
+                const filtrés = articles.filter(p => p.nom.toLowerCase().includes(saisie) && String(p.statut).toUpperCase() === "OK");
+                document.getElementById('liste-produits').innerHTML = filtrés.map(p => `
+                    <div class="bg-white rounded-2xl shadow p-3 flex items-center gap-3">
+                        <img src="${p.image}" class="w-12 h-12 rounded-lg object-cover">
+                        <div class="flex-1 text-[8px]">
+                            <h4 class="font-black uppercase text-purple-900">${p.nom}</h4>
+                            <p class="text-orange-600 font-black">${p.prix} F</p>
+                        </div>
+                        <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', '${p.prix}')" class="bg-orange-500 text-white p-2 rounded-lg"><i class="fas fa-plus"></i></button>
+                    </div>`).join('');
+            }
+        }
+
+        function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
+
+        // LOGIQUE PANIER
+        function ajouterAuPanier(nom, prix) {
+            panier.push({ nom, prix });
+            document.getElementById('btn-panier-flottant').classList.remove('hidden');
+            document.getElementById('count-panier').innerText = panier.length;
+        }
+
+        function ouvrirPanier() {
+            const modal = document.getElementById('modalPanier');
+            const contenu = document.getElementById('contenuPanier');
+            const totalAffichage = document.getElementById('totalPanier');
+            modal.style.display = 'flex';
+            let total = 0;
+            contenu.innerHTML = panier.map((item, i) => {
+                let p = parseInt(item.prix.toString().replace(/\s/g, ''));
+                total += p;
+                return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
+                    <div><p class="font-black text-[10px] uppercase text-purple-900">${item.nom}</p><p class="text-orange-600 font-bold text-[10px]">${item.prix} F</p></div>
+                    <button onclick="supprimerDuPanier(${i})" class="text-red-500 p-2"><i class="fas fa-trash-alt"></i></button>
+                </div>`;
+            }).join('');
+            totalAffichage.innerText = total.toLocaleString() + " F";
+        }
+
+        function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
+
+        function supprimerDuPanier(i) {
+            panier.splice(i, 1);
+            if (panier.length === 0) { 
+                fermerPanier(); 
+                document.getElementById('btn-panier-flottant').classList.add('hidden'); 
+            } else { ouvrirPanier(); document.getElementById('count-panier').innerText = panier.length; }
+        }
+
+        function envoyerPanierWhatsApp() {
+            let msg = "Bonjour Cœur de Marché, je commande :\n\n";
+            let total = 0;
+            panier.forEach((it, i) => {
+                msg += `${i + 1}. *${it.nom}* (${it.prix} F)\n`;
+                total += parseInt(it.prix.toString().replace(/\s/g, ''));
+            });
+            msg += `\n*TOTAL : ${total.toLocaleString()} FCFA*`;
+            window.open(`https://wa.me/2250576326645?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function lancerMicro() {
+            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!Speech) return;
+            const rec = new Speech(); rec.lang = 'fr-FR';
+            rec.onstart = () => document.getElementById('iconMicro').className = "fas fa-spinner fa-spin text-red-500";
+            rec.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
+            rec.onend = () => document.getElementById('iconMicro').className = "fas fa-microphone";
+            rec.start();
+        }
+
+        // LANCEMENT
+        window.onload = chargerDonnees;
+    </script>
+</body>
+    </html>
