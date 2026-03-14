@@ -195,4 +195,16 @@
             m += "\nTOTAL : " + t.toLocaleString() + " FCFA";
             window.open("https://wa.me/2250576326645?text=" + encodeURIComponent(m), '_blank');
         }
-        fu
+                function lancerMicro() {
+            const S = window.SpeechRecognition || window.webkitSpeechRecognition; if (!S) return;
+            const r = new S(); r.lang = 'fr-FR';
+            r.onstart = () => document.getElementById('iconMicro').className = "fas fa-spinner fa-spin text-red-500";
+            r.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
+            r.onend = () => document.getElementById('iconMicro').className = "fas fa-microphone";
+            r.start();
+        }
+        window.onload = chargerDonnees;
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
+    </script>
+</body>
+</html>
