@@ -170,6 +170,7 @@
         }
 
         function retourRayons() { document.getElementById('vue-rayons').classList.remove('hidden'); document.getElementById('vue-produits').classList.add('hidden'); }
+        
         function rechercherProduit() {
             const s = document.getElementById('inputRecherche').value.toLowerCase();
             if (s.length > 1) {
@@ -178,8 +179,15 @@
                 document.getElementById('liste-produits').innerHTML = f.map(p => `<div class="bg-white rounded-2xl shadow p-3 flex items-center gap-3"><img src="${p.image}" class="w-12 h-12 rounded-lg object-cover" onerror="this.src='1769121566036.png'"><div class="flex-1 text-[8px] font-black uppercase text-purple-900">${p.nom}</div><button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', '${p.prix}')" class="bg-orange-500 text-white p-2 rounded-lg"><i class="fas fa-plus"></i></button></div>`).join('');
             }
         }
+        
         function zoom(s) { document.getElementById('imgZoomed').src = s; document.getElementById('modalZoom').style.display = 'flex'; }
-        function ajouterAuPanier(n, p) { panier.push({ nom: n, prix: p }); document.getElementById('btn-panier-flottant').classList.remove('hidden'); document.getElementById('count-panier').innerText = panier.length; }
+        
+        function ajouterAuPanier(n, p) { 
+            panier.push({ nom: n, prix: p }); 
+            document.getElementById('btn-panier-flottant').classList.remove('hidden'); 
+            document.getElementById('count-panier').innerText = panier.length; 
+        }
+        
         function ouvrirPanier() {
             document.getElementById('modalPanier').style.display = 'flex'; let t = 0;
             document.getElementById('contenuPanier').innerHTML = panier.map((item, i) => {
@@ -188,10 +196,11 @@
             }).join('');
             document.getElementById('totalPanier').innerText = t.toLocaleString() + " F";
         }
+        
         function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
+        
         function supprimerDuPanier(i) {
             panier.splice(i, 1);
-            if (panier.length === 0) { fermerPanier(); document.getElementById('btn-panier-flottant').classList.add('hidden'); }
-            else { ouvrirPanier(); document.getElementById('count-panier').innerText = panier.length; }
-        }
-        functio
+            if (panier.length === 0) { 
+                fermerPanier(); 
+                document.getElementById('btn-panier-flottant').classList.add('hidde
