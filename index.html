@@ -126,23 +126,27 @@
         function ouvrirRayonDepuisAccueil(n) { switchTab('boutique'); ouvrirRayon(n); }
 
         function ouvrirRayon(nomRayon) {
-            document.getElementById('vue-rayons').classList.add('hidden');
-            document.getElementById('vue-produits').classList.remove('hidden');
-            const filtres = articles.filter(p => cleanTxt(p.rayon) === cleanTxt(nomRayon) && cleanTxt(p.statut) === "ok");
-            document.getElementById('compteur-articles').innerText = filtres.length + " article(s)";
-            document.getElementById('liste-produits').innerHTML = filtres.length === 0 ? `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit ici.</p>` :
-                filtres.map(p => {
-                    const escNom = p.nom.replace(/'/g, "\\'");
-                    return `<div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50 flex gap-4">
-                        <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm" onerror="this.src='1769121566036.png'">
-                        <div class="flex-1"><h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4><p class="text-orange-600 font-black text-sm">${p.prix} F</p>
-                        <p class="text-gray-500 text-[7px] italic mt-1 leading-tight">${p.description || ''}</p><p class="text-blue-600 text-[7px] font-bold mt-1 uppercase">${p.quartier || 'Bouafle'}</p>
-                        <div class="flex gap-2 mt-2"><a href="tel:${p.telephone}" class="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center"><i class="fas fa-phone-alt text-xs"></i></a>
-                        <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-orange-500 text-white px-3 rounded-lg text-[10px] font-black"><i class="fas fa-cart-plus"></i></button>
-                        <a href="https://wa.me/2250576326645?text=Commande: ${encodeURIComponent(p.nom)}" class="btn-action-order h-8 rounded-lg text-[7px]">DIRECT</a></div></div></div>`;
-                }).join('');
-            window.scrollTo(0,0);
-        }
+    document.getElementById('vue-rayons').classList.add('hidden');
+    document.getElementById('vue-produits').classList.remove('hidden');
+    const filtres = articles.filter(p => cleanTxt(p.rayon) === cleanTxt(nomRayon) && cleanTxt(p.statut) === "ok");
+    document.getElementById('compteur-articles').innerText = filtres.length + " article(s)";
+    document.getElementById('liste-produits').innerHTML = filtres.length === 0 ? `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit ici.</p>` :
+        filtres.map(p => {
+            const escNom = p.nom.replace(/'/g, "\\'");
+            const textePartage = encodeURIComponent("Regarde ce produit sur Coeur de Marche : *" + p.nom + "* à " + p.prix + " F !\nLien : " + appLink);
+            return `<div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50 flex gap-4">
+                <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm" onerror="this.src='1769121566036.png'">
+                <div class="flex-1"><h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4><p class="text-orange-600 font-black text-sm">${p.prix} F</p>
+                <p class="text-gray-500 text-[7px] italic mt-1 leading-tight">${p.description || ''}</p><p class="text-blue-600 text-[7px] font-bold mt-1 uppercase">${p.quartier || 'Bouafle'}</p>
+                <div class="flex gap-2 mt-2">
+                    <a href="tel:${p.telephone}" class="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center"><i class="fas fa-phone-alt text-xs"></i></a>
+                    <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-orange-500 text-white px-3 rounded-lg text-[10px] font-black"><i class="fas fa-cart-plus"></i></button>
+                    <a href="https://wa.me/?text=${textePartage}" class="w-8 h-8 rounded-lg bg-green-500 text-white flex items-center justify-center"><i class="fas fa-share-alt text-xs"></i></a>
+                    <a href="https://wa.me/2250576326645?text=Commande: ${encodeURIComponent(p.nom)}" class="btn-action-order h-8 rounded-lg text-[7px]">DIRECT</a>
+                </div></div></div>`;
+        }).join('');
+    window.scrollTo(0,0);
+                }
 
         function retourRayons() { document.getElementById('vue-rayons').classList.remove('hidden'); document.getElementById('vue-produits').classList.add('hidden'); }
         
