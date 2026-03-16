@@ -214,15 +214,33 @@
     rec.onend = () => document.getElementById('iconMicro').classList.replace('fa-spinner','fa-microphone');
     rec.start();
 }
+// --- ZONE DE CORRECTION PWA ---
 
-// Activation de l'installation (PWA)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-            .then(() => console.log('Service Worker Enregistré'))
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('SW prêt'))
             .catch(err => console.error('Erreur SW', err));
     });
 }
-</script>
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
+
+function installerApp() {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choice) => {
+            if (choice.outcome === 'accepted') console.log('Installée');
+            deferredPrompt = null;
+        });
+    } else {
+        alert("L'installation est disponible dans le menu de votre navigateur.");
+    }
+}
+    </script>
 </body>
 </html>
