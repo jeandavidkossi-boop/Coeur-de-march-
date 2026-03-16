@@ -203,31 +203,27 @@
         }
 
         function lancerMicro() {
-            const S = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if(!S) return alert("Micro non supporté");
-            const rec = new S(); rec.lang = 'fr-FR';
-            rec.onstart = () => document.getElementById('iconMicro').classList.replace('fa-microphone','fa-spinner');
-            rec.onresult = (e) => { 
-                const t = e.results[0][0].transcript; 
-                document.getElementById('inputRecherche').value = t; 
-                rechercherProduit(); 
-            };
-            rec.onend = () => document.getElementById('iconMicro').classList.replace('fa-spinner','fa-microphone');
-            rec.start();
-        }
+        const S = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if(!S) return alert("Micro non supporté");
+    const rec = new S(); rec.lang = 'fr-FR';
+    rec.onstart = () => document.getElementById('iconMicro').classList.replace('fa-microphone','fa-spinner');
+    rec.onresult = (e) => { 
+        const t = e.results[0][0].transcript; 
+        document.getElementById('inputRecherche').value = t; 
+        rechercherProduit(); 
+    };
+    rec.onend = () => document.getElementById('iconMicro').classList.replace('fa-spinner','fa-microphone');
+    rec.start();
+}
 
-        function zoom(s) { 
-            document.getElementById('imgZoomed').src = s; 
-            document.getElementById('modalZoom').style.display = 'flex'; 
-        }
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(() => console.log('Service Worker Enregistré'))
-                    .catch(err => console.log('Erreur SW', err));
-            });
-        }
-    </script>
+// Activation de l'installation (PWA)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(() => console.log('Service Worker Enregistré'))
+            .catch(err => console.error('Erreur SW', err));
+    });
+}
+</script>
 </body>
 </html>
