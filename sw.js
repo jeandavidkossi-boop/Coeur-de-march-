@@ -1,4 +1,4 @@
-const CACHE_NAME = 'coeur-marche-v1';
+const CACHE_NAME = 'coeur-marche-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -6,16 +6,17 @@ const ASSETS_TO_CACHE = [
   './1769121566036.png'
 ];
 
-// Installation du Service Worker et mise en cache des fichiers essentiels
+// Installation et mise en cache
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
+  self.skipWaiting();
 });
 
-// Activation et nettoyage des anciens caches
+// Nettoyage des anciens caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -30,11 +31,11 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Stratégie : Réseau d'abord, sinon Cache (pour que vos produits soient toujours à jour)
+// Stratégie : Cache First (Priorité au cache pour la rapidité)
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
     })
   );
 });
