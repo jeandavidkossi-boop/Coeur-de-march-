@@ -80,6 +80,23 @@
         </div>
         <div id="vue-produits" class="hidden">
             <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
+        <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-full shadow-2xl p-3 flex justify-around items-center z-[90]">
+        <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-[8px]">Accueil</span>
+        </button>
+        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center">
+            <i class="fas fa-store text-xl"></i>
+            <span class="text-[8px]">Boutique</span>
+        </button>
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
+            <i class="fab fa-whatsapp text-2xl"></i>
+        </a>
+        <button onclick="installerApp()" class="text-orange-500 flex flex-col items-center">
+            <i class="fas fa-download text-xl"></i>
+            <span class="text-[8px]">Installer</span>
+        </button>
+        </nav>
             
     <script>
         const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
