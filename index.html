@@ -205,38 +205,33 @@
     rec.onend = () => document.getElementById('iconMicro').classList.replace('fa-spinner','fa-microphone');
     rec.start();
 }
-// --- NOUVELLE GESTION PWA AUTOMATIQUE ---
-const pwaBanner = document.getElementById('pwa-banner');
-let deferredPrompt;
-
+// --- GESTION PWA SÉCURISÉE ---
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW prêt'));
     });
 }
 
+let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    if(pwaBanner) pwaBanner.classList.remove('hidden');
 });
 
-function lancerInstallationDirecte() {
+function installerApp() {
     if (deferredPrompt) {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choice) => {
             if (choice.outcome === 'accepted') {
-                if(pwaBanner) pwaBanner.classList.add('hidden');
+                console.log('App installée');
             }
             deferredPrompt = null;
         });
+    } else {
+        alert("L'installation est disponible dans le menu de votre navigateur (Ajouter à l'écran d'accueil).");
     }
 }
 
-window.addEventListener('appinstalled', () => {
-    if(pwaBanner) pwaBanner.classList.add('hidden');
-});
-}
     </script>
 </body>
 </html>
