@@ -120,7 +120,36 @@
             </div>
         </div>
     </div>
+<div id="modalVendre" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);">
+    <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden flex flex-col max-h-[90vh] mx-4">
+        <div class="bg-purple-900 p-6 text-white flex justify-between items-center text-sm font-black italic uppercase tracking-wider">
+            <span>🚀 Devenir Marchand</span>
+            <button onclick="fermerModale('modalVendre')" class="text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div id="contenuVendre" class="p-6 overflow-y-auto space-y-4 text-gray-800 text-sm leading-relaxed"></div>
+        <div class="p-4 border-t border-gray-100 bg-gray-50 mt-auto">
+            <button onclick="window.location.href='https://wa.me/2250576326645?text=Bonjour, je souhaite souscrire à un Pack Marchand pour mon commerce.';" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-3 shadow-md">
+                <i class="fab fa-whatsapp text-2xl"></i>
+                CHOISIR MON PACK
+            </button>
+        </div>
+    </div>
+</div>
 
+<div id="modalAide" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);">
+    <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden flex flex-col max-h-[90vh] mx-4">
+        <div class="bg-purple-900 p-6 text-white flex justify-between items-center text-sm font-black italic uppercase tracking-wider">
+            <span>🐘 L'Esprit Cœur de Marché</span>
+            <button onclick="fermerModale('modalAide')" class="text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div id="contenuAide" class="p-6 overflow-y-auto space-y-4 text-gray-800 text-sm leading-relaxed"></div>
+    </div>
+            </div>
+    
     <div id="btn-panier-flottant" class="hidden" onclick="ouvrirPanier()">
         <div class="bg-orange-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl relative border-4 border-white">
             <i class="fas fa-shopping-basket text-xl"></i>
@@ -375,39 +404,41 @@
     };
 
     recognition.start();
-        }// --- FONCTION POUR LE BOUTON VENDRE (PACKS MARCHANDS) ---
-function ouvrirEspaceMarchand() {
-    const texte = "💎 DÉVELOPPEZ VOTRE COMMERCE À BOUAFLÉ 💎\n\n" +
-                  "Choisissez votre abonnement pour vendre sur la plateforme :\n\n" +
-                  "👁️ PACK VISIBILITÉ : Présence simple dans votre rayon.\n" +
-                  "⚖️ PACK STANDARD : Mise à jour prioritaire de vos stocks.\n" +
-                  "🚀 PACK PRO : Vos produits affichés 'À la Une' (Top ventes).\n" +
-                  "👑 PACK VIP : Photos professionnelles + Publicité garantie.\n\n" +
-                  "Cliquez sur OK pour choisir votre pack et activer votre boutique !";
-    
-    if(confirm(texte)) {
-        window.location.href = "https://wa.me/2250576326645?text=Bonjour, je souhaite souscrire à un Pack Marchand (Visibilité/Standard/Pro/VIP) pour mon commerce.";
-    }
+        }
+       // --- FONCTIONS DE GESTION DES MODALES (STYLE PANIER) ---
+function fermerModale(id) { 
+    document.getElementById(id).style.display = 'none'; 
 }
 
-// --- FONCTION POUR LE BOUTON AIDE (IDENTITÉ & FIERTÉ) ---
+function ouvrirEspaceMarchand() {
+    const html = `
+        <div class="font-bold text-center text-lg text-purple-900 mb-2 font-black italic">💎 BOOSTEZ VOTRE COMMERCE 💎</div>
+        <div class="space-y-3">
+            <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 italic text-xs">👁️ <span class="font-bold text-purple-800">PACK VISIBILITÉ</span> : Présence simple.</div>
+            <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 italic text-xs">⚖️ <span class="font-bold text-purple-800">PACK STANDARD</span> : Mise à jour prioritaire.</div>
+            <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 italic text-xs">🚀 <span class="font-bold text-purple-800">PACK PRO</span> : Produits 'À la Une'.</div>
+            <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 italic text-xs">👑 <span class="font-bold text-purple-800">PACK VIP</span> : Photos Pro + Pub garantie.</div>
+        </div>`;
+    document.getElementById('contenuVendre').innerHTML = html;
+    document.getElementById('modalVendre').style.display = 'flex';
+}
+
 function ouvrirAide() {
-    const message = "🐘 CŒUR DE MARCHÉ : LA FIERTÉ DE LA MARAHOUÉ 🐘\n\n" +
-          "Bouaflé avance, et notre économie doit rayonner ! 🌟\n\n" +
-          "Cœur de Marché n'est pas qu'une application, c'est l'âme de notre ville. " +
-          "C'est l'hommage à nos braves mamans du vivrier, à nos artisans talentueux " +
-          "et à tous ceux qui bâtissent la Marahoué chaque jour.\n\n" +
-          "💪 POURQUOI NOUS CHOISIR ?\n" +
-          "Acheter ici, c'est valoriser nos terres, soutenir nos familles " +
-          "et faire briller l'identité de Bouaflé aux yeux de tous.\n\n" +
-          "🤝 COMMENT ÇA MARCHE ?\n" +
-          "1. Parcourez nos richesses locales.\n" +
-          "2. Contactez directement les acteurs de notre économie par WhatsApp ou Appel.\n" +
-          "3. Le marchand gère directement la commande avec vous.\n\n" +
-          "Ensemble, faisons de Bouaflé la capitale de l'innovation ! 🇨🇮\n" +
-          "Contact Administration : 05 76 32 66 45";
-    
-    alert(message);
+    const html = `
+        <div class="font-bold text-center text-lg text-purple-900 mb-2 font-black italic">🐘 LA FIERTÉ DE LA MARAHOUÉ 🐘</div>
+        <p class="font-bold text-orange-600 text-center italic mb-4 text-sm">Bouaflé avance, et notre économie doit rayonner ! 🌟</p>
+        <div class="bg-purple-50 p-4 rounded-xl border border-purple-100 text-purple-950 text-[11px] leading-relaxed">
+            Cœur de Marché est l'âme de notre ville. C'est l'hommage à nos <span class="font-bold">braves mamans du vivrier</span> et à nos artisans qui bâtissent la Marahoué chaque jour.
+        </div>
+        <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-100 text-[11px]">
+            <p class="font-bold mb-1 underline text-purple-900">COMMENT ÇA MARCHE ?</p>
+            <p>1. Explorez les richesses de Bouaflé.</p>
+            <p>2. Contactez les vendeurs (WhatsApp/Appel).</p>
+            <p>3. Gérez votre commande en direct.</p>
+        </div>
+        <p class="font-bold text-center text-purple-900 mt-4 text-xs">Admin : 05 76 32 66 45</p>`;
+    document.getElementById('contenuAide').innerHTML = html;
+    document.getElementById('modalAide').style.display = 'flex';
 }
             
     </script>
