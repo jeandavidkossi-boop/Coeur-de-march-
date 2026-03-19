@@ -375,7 +375,41 @@
     };
 
     recognition.start();
-        }
+        }// --- FONCTION POUR LE BOUTON VENDRE (PACKS MARCHANDS) ---
+function ouvrirEspaceMarchand() {
+    const texte = "💎 DÉVELOPPEZ VOTRE COMMERCE À BOUAFLÉ 💎\n\n" +
+                  "Choisissez votre abonnement pour vendre sur la plateforme :\n\n" +
+                  "👁️ PACK VISIBILITÉ : Présence simple dans votre rayon.\n" +
+                  "⚖️ PACK STANDARD : Mise à jour prioritaire de vos stocks.\n" +
+                  "🚀 PACK PRO : Vos produits affichés 'À la Une' (Top ventes).\n" +
+                  "👑 PACK VIP : Photos professionnelles + Publicité garantie.\n\n" +
+                  "Cliquez sur OK pour choisir votre pack et activer votre boutique !";
+    
+    if(confirm(texte)) {
+        window.location.href = "https://wa.me/2250576326645?text=Bonjour, je souhaite souscrire à un Pack Marchand (Visibilité/Standard/Pro/VIP) pour mon commerce.";
+    }
+}
+
+// --- FONCTION POUR LE BOUTON AIDE (IDENTITÉ & FIERTÉ) ---
+function ouvrirAide() {
+    const message = "🐘 CŒUR DE MARCHÉ : LA FIERTÉ DE LA MARAHOUÉ 🐘\n\n" +
+          "Bouaflé avance, et notre économie doit rayonner ! 🌟\n\n" +
+          "Cœur de Marché n'est pas qu'une application, c'est l'âme de notre ville. " +
+          "C'est l'hommage à nos braves mamans du vivrier, à nos artisans talentueux " +
+          "et à tous ceux qui bâtissent la Marahoué chaque jour.\n\n" +
+          "💪 POURQUOI NOUS CHOISIR ?\n" +
+          "Acheter ici, c'est valoriser nos terres, soutenir nos familles " +
+          "et faire briller l'identité de Bouaflé aux yeux de tous.\n\n" +
+          "🤝 COMMENT ÇA MARCHE ?\n" +
+          "1. Parcourez nos richesses locales.\n" +
+          "2. Contactez directement les acteurs de notre économie par WhatsApp ou Appel.\n" +
+          "3. Le marchand gère directement la commande avec vous.\n\n" +
+          "Ensemble, faisons de Bouaflé la capitale de l'innovation ! 🇨🇮\n" +
+          "Contact Administration : 05 76 32 66 45";
+    
+    alert(message);
+}
+            
     </script>
 </body>
 </html>
