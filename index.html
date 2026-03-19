@@ -255,7 +255,46 @@
         }
 
         function lancerMicro() { alert("Recherche vocale bientôt disponible !"); }
-        function installerApp() { alert("Pour installer l'application : Cliquez sur le menu de votre navigateur et sélectionnez 'Ajouter à l'écran d'accueil'."); }
+        function lancerMicro() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (!SpeechRecognition) {
+        alert("Votre navigateur ne supporte pas la recherche vocale.");
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'fr-FR';
+    
+    recognition.onstart = () => {
+        // Change l'icône du micro pour montrer qu'on écoute
+        const icon = document.querySelector('.fa-microphone');
+        if(icon) icon.className = 'fas fa-spinner fa-spin text-purple-900';
+    };
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        // Met le texte dans la barre de recherche
+        const input = document.getElementById('inputRecherche');
+        if(input) {
+            input.value = transcript;
+            // Lance la recherche automatiquement
+            rechercherProduit();
+        }
+    };
+
+    recognition.onerror = () => {
+        alert("Désolé, je n'ai pas bien entendu. Réessayez.");
+    };
+
+    recognition.onend = () => {
+        // Remet l'icône normale
+        const icon = document.querySelector('.fa-spinner');
+        if(icon) icon.className = 'fas fa-microphone text-purple-900';
+    };
+
+    recognition.start();
+        }
     </script>
 </body>
 </html>
