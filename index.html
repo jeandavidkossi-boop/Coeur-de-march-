@@ -125,13 +125,11 @@
         <div class="bg-purple-900 p-6 text-white flex justify-between items-center text-sm font-black italic uppercase tracking-wider">
             <span>🚀 Devenir Marchand</span>
             <button onclick="fermerModale('modalVendre')" class="text-white">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
-        <div id="contenuVendre" class="p-6 overflow-y-auto space-y-4 text-gray-800 text-sm leading-relaxed"></div>
-        <div class="p-4 border-t border-gray-100 bg-gray-50 mt-auto">
-            <button onclick="window.location.href='https://wa.me/2250576326645?text=Bonjour, je souhaite souscrire à un Pack Marchand pour mon commerce.';" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-3 shadow-md">
-                <i class="fab fa-whatsapp text-2xl"></i>
+                <div id="btn-panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-24 right-6 bg-orange-600 text-white p-4 rounded-full shadow-2xl z-[3000] flex items-center justify-center transition-transform active:scale-95" style="display: none; width: 65px; height: 65px;">
+    <i class="fas fa-shopping-basket text-2xl"></i>
+    <span id="compteur-panier-flottant" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-md">0</span>
+                </div>
+            
                 CHOISIR MON PACK
             </button>
         </div>
