@@ -339,7 +339,35 @@
             m += "\n*Total : " + t.toLocaleString() + " F*";
             window.location.href = "https://wa.me/2250576326645?text=" + encodeURIComponent(m);
         }
-        function rechercherProduit() { alert("Recherche en cours..."); }
+        function rechercherProduit() {
+    const s = cleanTxt(document.getElementById('inputRecherche').value);
+    if (s.length > 1) {
+        switchTab('boutique'); // On bascule sur l'onglet boutique pour voir les résultats
+        document.getElementById('vue-rayons').classList.add('hidden');
+        document.getElementById('vue-produits').classList.remove('hidden');
+        
+        const f = articles.filter(p => cleanTxt(p.nom).includes(s) || cleanTxt(p.rayon).includes(s));
+        document.getElementById('compteur-articles').innerText = f.length + " résultat(s) pour '" + s + "'";
+        
+        document.getElementById('liste-produits').innerHTML = f.length === 0 ? 
+            `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé pour "${s}".</p>` :
+            f.map(p => {
+                const escNom = p.nom.replace(/'/g, "\\'");
+                const tPartage = encodeURIComponent("Produit Coeur de Marche : *" + p.nom + "* (" + p.prix + " F)\n" + appLink);
+                return `<div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50 flex gap-4">
+                    <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
+                    <div class="flex-1">
+                        <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
+                        <p class="text-orange-600 font-black text-sm">${p.prix} F</p>
+                        <div class="flex gap-2 mt-4">
+                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white p-2 rounded-xl text-[8px] font-black flex-1 uppercase">Ajouter</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+    }
+                                                                                            }
+            
         function lancerMicro() {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = 'fr-FR';
