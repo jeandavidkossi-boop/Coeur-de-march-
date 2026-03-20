@@ -125,23 +125,22 @@
             <span>🚀 Devenir Marchand</span>
             <button onclick="fermerModale('modalVendre')" class="text-white">
                 <i class="fas fa-times text-xl"></i>
+            <button onclick="fermerModale('modalVendre')" class="text-white">
+                <i class="fas fa-times text-xl"></i>
             </button>
         </div>
-        </div>
+        <div id="contenuVendre" class="p-6 overflow-y-auto space-y-4 text-gray-800 text-sm">
+            </div>
+    </div>
+</div>
+
 <div id="btn-panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-24 right-6 bg-orange-600 text-white p-4 rounded-full shadow-2xl z-[3000] flex items-center justify-center transition-transform active:scale-95" style="display: none; width: 65px; height: 65px;">
     <i class="fas fa-shopping-basket text-2xl"></i>
     <span id="compteur-panier-flottant" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-md">
         <span id="count-panier">0</span>
     </span>
 </div>
-
-<div id="modalAide" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);">
-    </div>
-            </div>
     
-    <div id="btn-panier-flottant" class="hidden" onclick="ouvrirPanier()">
-        <div class="bg-orange-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl relative border-4 border-white">
-            <i class="fas fa-shopping-basket text-xl"></i>
             <span id="count-panier" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] w-6 h-6 rounded-full flex items-center justify-center font-black">0</span>
         </div>
     </div>
