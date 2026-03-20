@@ -103,6 +103,31 @@
     </div>
     </div>
     
+        <div id="modalAide" class="modal-background">
+        <div class="modal-content">
+            <div class="bg-purple-900 p-6 text-white flex justify-between items-center text-sm font-black italic">
+                <span>🐘 L'ESPRIT CŒUR DE MARCHÉ</span>
+                <button onclick="fermerModale('modalAide')"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[60vh]">
+                <p class="text-center font-black text-purple-900 mb-6 italic">🐘 LA FIERTÉ DE LA MARAHOUÉ 🐘</p>
+                <p class="text-orange-600 text-center font-black italic text-[10px] mb-4">Bouaflé avance, et notre économie doit rayonner ! 🌟</p>
+                <div class="bg-purple-50 p-4 rounded-2xl border border-purple-100 mb-4">
+                    <p class="text-[9px] leading-relaxed text-gray-700">Cœur de Marché est l'âme de notre ville. C'est l'hommage à nos <b>braves mamans du vivrier</b> et à nos artisans qui bâtissent la Marahoué chaque jour.</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 mb-4">
+                    <p class="text-purple-900 font-black text-[10px] underline mb-2 uppercase">Comment ça marche ?</p>
+                    <ol class="text-[9px] text-gray-600 space-y-1">
+                        <li>1. Explorez les richesses de Bouaflé.</li>
+                        <li>2. Contactez les vendeurs (WhatsApp/Appel).</li>
+                        <li>3. Gérez votre commande en direct.</li>
+                    </ol>
+                </div>
+                <p class="text-center font-black text-purple-900 text-[11px] mt-4">Admin : 05 76 32 66 45</p>
+            </div>
+        </div>
+        </div>
+    
     <div id="btn-panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-24 right-6 bg-orange-600 text-white rounded-full shadow-2xl z-[3000] flex items-center justify-center transition-all duration-300 scale-0" style="display: none; width: 65px; height: 65px;">
         <i class="fas fa-shopping-basket text-2xl"></i>
         <span id="count-panier" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] w-6 h-6 rounded-full flex items-center justify-center font-black border-2 border-white">0</span>
@@ -316,7 +341,7 @@
         }
         function rechercherProduit() { alert("Recherche en cours..."); }
         function lancerMicro() { alert("Micro bientôt disponible !"); }
-        function ouvrirAide() { alert("Besoin d'aide ? Contactez-nous sur WhatsApp !"); }
+        function ouvrirAide() { document.getElementById('modalAide').style.display = 'flex'; }
     </script>
 </body>
 </html>
