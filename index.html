@@ -340,7 +340,28 @@
             window.location.href = "https://wa.me/2250576326645?text=" + encodeURIComponent(m);
         }
         function rechercherProduit() { alert("Recherche en cours..."); }
-        function lancerMicro() { alert("Micro bientôt disponible !"); }
+        function lancerMicro() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'fr-FR';
+    const icon = document.getElementById('iconMicro');
+    
+    recognition.onstart = () => {
+        icon.className = "fas fa-spinner fa-spin"; // L'icône tourne pendant qu'on écoute
+    };
+
+    recognition.onresult = (event) => {
+        const parole = event.results[0][0].transcript;
+        document.getElementById('inputRecherche').value = parole;
+        rechercherProduit(); // Lance la recherche automatiquement
+    };
+
+    recognition.onend = () => {
+        icon.className = "fas fa-microphone"; // L'icône revient à la normale
+    };
+
+    recognition.start();
+        }
+            
         function ouvrirAide() { document.getElementById('modalAide').style.display = 'flex'; }
     </script>
 </body>
