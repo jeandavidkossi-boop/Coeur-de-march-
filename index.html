@@ -354,16 +354,25 @@
             f.map(p => {
                 const escNom = p.nom.replace(/'/g, "\\'");
                 const tPartage = encodeURIComponent("Produit Coeur de Marche : *" + p.nom + "* (" + p.prix + " F)\n" + appLink);
-                return `<div class="bg-white rounded-[25px] shadow-md p-4 border border-gray-50 flex gap-4">
-                    <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
-                    <div class="flex-1">
-                        <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
-                        <p class="text-orange-600 font-black text-sm">${p.prix} F</p>
-                        <div class="flex gap-2 mt-4">
-                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white p-2 rounded-xl text-[8px] font-black flex-1 uppercase">Ajouter</button>
+                    return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
+                        <div class="flex gap-4">
+                            <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-50">
+                            <div class="flex-1">
+                                <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
+                                <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
+                                <p class="text-blue-600 text-[8px] font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
+                                <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${p.description || ''}</p>
+                            </div>
                         </div>
-                    </div>
-                </div>`;
+                        <div class="flex gap-2 border-t pt-4">
+                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white h-10 rounded-xl text-[8px] font-black flex-1 uppercase flex items-center justify-center gap-2">
+                                <i class="fas fa-plus-circle"></i> PANIER
+                            </button>
+                            <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fab fa-whatsapp text-lg"></i></a>
+                            <a href="tel:0576326645" class="bg-orange-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-phone-alt"></i></a>
+                            <button onclick="window.open('https://wa.me/?text=${tPartage}')" class="bg-blue-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-share-alt"></i></button>
+                        </div>
+                    </div>`;
             }).join('');
     }
                                                                                             }
