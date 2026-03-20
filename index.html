@@ -13,6 +13,39 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f9fafb; scroll-behavior: smooth; }
+                .modal-background {
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.8); 
+            z-index: 2000; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 16px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 40px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .pack-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
         section { display: none; }
         section.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -51,19 +84,25 @@
         </div>
     </div>
 
-    <div id="modalVendre" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
-        <div class="bg-white w-full max-w-md rounded-[30px] overflow-hidden">
-            <div class="bg-purple-900 p-6 text-white flex justify-between items-center text-sm font-black italic">
-                <span>🚀 DEVENIR MARCHAND</span><button onclick="fermerModale('modalVendre')"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <div id="contenuVendre" class="p-6 text-gray-800 text-sm">
-                <p class="font-bold text-purple-900 mb-4 text-center">Boostez votre commerce à Bouaflé !</p>
-                <p>Contactez notre service administratif pour enregistrer vos produits.</p>
-                <a href="https://wa.me/2250576326645" class="mt-4 block w-full bg-green-500 text-white text-center py-3 rounded-xl font-black italic">DISCUTER SUR WHATSAPP</a>
-            </div>
+    <div id="modalVendre" class="modal-background">
+    <div class="modal-content">
+        <div class="bg-purple-900 p-6 text-white flex justify-between items-center text-sm font-black italic">
+            <span>🚀 DEVENIR MARCHAND</span>
+            <button onclick="fermerModale('modalVendre')"><i class="fas fa-times text-xl"></i></button>
+        </div>
+        <div class="p-6 overflow-y-auto max-h-[60vh]">
+            <p class="text-center font-black text-purple-900 mb-6 italic">💎 BOOSTEZ VOTRE COMMERCE 💎</p>
+            <div class="pack-card"><span class="text-xl">👁️</span><p class="text-[10px] font-bold"><b>PACK VISIBILITÉ</b> : Présence simple.</p></div>
+            <div class="pack-card"><span class="text-xl">⚖️</span><p class="text-[10px] font-bold"><b>PACK STANDARD</b> : Mise à jour prioritaire.</p></div>
+            <div class="pack-card"><span class="text-xl">🚀</span><p class="text-[10px] font-bold"><b>PACK PRO</b> : Produits 'À la Une'.</p></div>
+            <div class="pack-card"><span class="text-xl">👑</span><p class="text-[10px] font-bold"><b>PACK VIP</b> : Photos Pro + Pub garantie.</p></div>
+            <button onclick="window.location.href='https://wa.me/2250576326645'" class="w-full bg-green-500 text-white mt-4 py-4 rounded-2xl font-black uppercase text-xs flex items-center justify-center gap-3 shadow-lg">
+                <i class="fab fa-whatsapp text-lg"></i> CHOISIR MON PACK
+            </button>
         </div>
     </div>
-
+    </div>
+    
     <div id="btn-panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-24 right-6 bg-orange-600 text-white rounded-full shadow-2xl z-[3000] flex items-center justify-center transition-all duration-300 scale-0" style="display: none; width: 65px; height: 65px;">
         <i class="fas fa-shopping-basket text-2xl"></i>
         <span id="count-panier" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] w-6 h-6 rounded-full flex items-center justify-center font-black border-2 border-white">0</span>
