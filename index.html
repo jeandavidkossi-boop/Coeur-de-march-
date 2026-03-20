@@ -268,7 +268,11 @@
             document.getElementById('liste-produits').innerHTML = filtres.length === 0 ? `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit ici.</p>` :
                 filtres.map(p => {
                     const escNom = p.nom.replace(/'/g, "\\'");
-                    const tPartage = encodeURIComponent("Produit Coeur de Marche : *" + p.nom + "* (" + p.prix + " F)\n" + appLink);
+                    const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\n" + 
+    "Produit : *" + p.nom + "*\n" + 
+    "Prix : *" + p.prix + " F*\n" + 
+    "Quartier : _" + (p.quartier || "Bouaflé") + "_\n\n" + 
+    "Lien : " + appLink);
                                     return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
                     <div class="flex gap-4">
                         <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-50">
@@ -361,7 +365,11 @@
             `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé pour "${s}".</p>` :
             f.map(p => {
                 const escNom = p.nom.replace(/'/g, "\\'");
-                const tPartage = encodeURIComponent("Produit Coeur de Marche : *" + p.nom + "* (" + p.prix + " F)\n" + appLink);
+                const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\n" + 
+    "Produit : *" + p.nom + "*\n" + 
+    "Prix : *" + p.prix + " F*\n" + 
+    "Quartier : _" + (p.quartier || "Bouaflé") + "_\n\n" + 
+    "Lien : " + appLink);
                     return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
                         <div class="flex gap-4">
                             <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-50">
