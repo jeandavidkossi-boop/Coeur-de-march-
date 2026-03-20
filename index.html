@@ -230,6 +230,7 @@
             try {
                 const r = await fetch(urlScript); 
                 articles = await r.json();
+                verifierLienPartage();
                 const ann = articles.find(p => cleanTxt(p.nom) === "annonce");
                 if(ann) document.getElementById('texteBandeAnnonce').innerText = ann.description;
                 
@@ -268,11 +269,7 @@
             document.getElementById('liste-produits').innerHTML = filtres.length === 0 ? `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit ici.</p>` :
                 filtres.map(p => {
                     const escNom = p.nom.replace(/'/g, "\\'");
-                    const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\n" + 
-    "Produit : *" + p.nom + "*\n" + 
-    "Prix : *" + p.prix + " F*\n" + 
-    "Quartier : _" + (p.quartier || "Bouaflé") + "_\n\n" + 
-    "Lien : " + appLink);
+                    const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\nProduit : *" + p.nom + "*\nPrix : *" + p.prix + " F*\nQuartier : _" + (p.quartier || "Bouaflé") + "_\n\nLien direct : " + appLink + "?p=" + encodeURIComponent(p.nom));
                                     return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
                     <div class="flex gap-4">
                         <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-50">
@@ -365,7 +362,7 @@
             `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé pour "${s}".</p>` :
             f.map(p => {
                 const escNom = p.nom.replace(/'/g, "\\'");
-                const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\n" + 
+                const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\nProduit : *" + p.nom + "*\nPrix : *" + p.prix + " F*\nQuartier : _" + (p.quartier || "Bouaflé") + "_\n\nLien direct : " + appLink + "?p=" + encodeURIComponent(p.nom));
     "Produit : *" + p.nom + "*\n" + 
     "Prix : *" + p.prix + " F*\n" + 
     "Quartier : _" + (p.quartier || "Bouaflé") + "_\n\n" + 
@@ -414,7 +411,18 @@
 
     recognition.start();
         }
-            
+         // CETTE FONCTION LIT LE NOM DU PRODUIT DANS LE LIEN
+function verifierLienPartage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const p = urlParams.get('p'); // On cherche le paramètre "p" (produit)
+    if (p) {
+        // On nettoie le nom et on le met dans la barre de recherche
+        const nomNettoye = decodeURIComponent(p);
+        document.getElementById('inputRecherche').value = nomNettoye;
+        // On lance la recherche automatiquement
+        setTimeout(() => { rechercherProduit(); }, 1000); 
+    }
+            }
         function ouvrirAide() { document.getElementById('modalAide').style.display = 'flex'; }
     </script>
 </body>
