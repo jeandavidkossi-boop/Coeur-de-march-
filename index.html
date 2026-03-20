@@ -131,18 +131,12 @@
             </div>
     </div>
 </div>
-
-<div id="btn-panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-24 right-6 bg-orange-600 text-white p-4 rounded-full shadow-2xl z-[3000] flex items-center justify-center transition-transform active:scale-95" style="display: none; width: 65px; height: 65px;">
+</div>
+<div id="btn-panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-24 right-6 bg-orange-600 text-white p-4 rounded-full shadow-2xl z-[3000] flex items-center justify-center transition-all duration-300 scale-0" style="display: none; width: 65px; height: 65px;">
     <i class="fas fa-shopping-basket text-2xl"></i>
-    <span id="compteur-panier-flottant" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] font-bold px-2 py-1 rounded-full border-2 border-white shadow-md">
-        <span id="count-panier">0</span>
-    </span>
+    <span id="count-panier" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] w-6 h-6 rounded-full flex items-center justify-center font-black border-2 border-white">0</span>
 </div>
     
-            <span id="count-panier" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] w-6 h-6 rounded-full flex items-center justify-center font-black">0</span>
-        </div>
-    </div>
-
     <header class="bg-purple-900 pt-8 rounded-b-[40px] shadow-2xl text-center">
         <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center border-2 border-orange-100 overflow-hidden"><img src="1769121566036.png" class="w-full h-full object-contain" onerror="this.src='https://via.placeholder.com/150?text=CMB'"></div>
         <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Coeur de Marche</h1>
@@ -313,11 +307,22 @@
             document.getElementById('count-panier').innerText = panier.length; 
         }
 
-        function ouvrirPanier() {
-            document.getElementById('modalPanier').style.display = 'flex'; 
-            let t = 0;
-            document.getElementById('contenuPanier').innerHTML = panier.map((item, i) => {
-                t += parseInt(item.prix.toString().replace(/\s/g, ''));
+        function ajouterAuPanier(n, p) {
+    panier.push({ nom: n, prix: p });
+    
+    // Mise à jour visuelle immédiate
+    const btn = document.getElementById('btn-panier-flottant');
+    const count = document.getElementById('count-panier');
+    
+    if(btn) {
+        btn.style.display = 'flex';
+        // Petit délai pour l'animation scale
+        setTimeout(() => btn.classList.remove('scale-0'), 10);
+        setTimeout(() => btn.classList.add('scale-100'), 10);
+    }
+    if(count) count.innerText = panier.length;
+        }
+            
                 return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
                     <div class="text-[10px] uppercase font-black text-purple-900">${item.nom} - ${item.prix} F</div>
                     <button onclick="supprimerDuPanier(${i})" class="text-red-500 p-2"><i class="fas fa-trash-alt"></i></button>
