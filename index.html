@@ -301,34 +301,30 @@
 
         function zoom(s) { document.getElementById('imgZoomed').src = s; document.getElementById('modalZoom').style.display = 'flex'; }
         
-        function ajouterAuPanier(n, p) { 
-            panier.push({ nom: n, prix: p }); 
-            document.getElementById('btn-panier-flottant').classList.remove('hidden'); 
-            document.getElementById('count-panier').innerText = panier.length; 
-        }
-
-        function ajouterAuPanier(n, p) {
+       function ajouterAuPanier(n, p) {
     panier.push({ nom: n, prix: p });
-    
-    // Mise à jour visuelle immédiate
     const btn = document.getElementById('btn-panier-flottant');
     const count = document.getElementById('count-panier');
-    
     if(btn) {
         btn.style.display = 'flex';
-        // Petit délai pour l'animation scale
         setTimeout(() => btn.classList.remove('scale-0'), 10);
         setTimeout(() => btn.classList.add('scale-100'), 10);
     }
     if(count) count.innerText = panier.length;
-        }
-            
-                return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
-                    <div class="text-[10px] uppercase font-black text-purple-900">${item.nom} - ${item.prix} F</div>
-                    <button onclick="supprimerDuPanier(${i})" class="text-red-500 p-2"><i class="fas fa-trash-alt"></i></button>
-                </div>`;
-            }).join('');
-            document.getElementById('totalPanier').innerText = t.toLocaleString() + " F";
+}
+
+function ouvrirPanier() {
+    document.getElementById('modalPanier').style.display = 'flex';
+    let t = 0;
+    document.getElementById('contenuPanier').innerHTML = panier.map((item, i) => {
+        t += parseInt(item.prix.toString().replace(/\s/g, ''));
+        return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
+            <div class="text-[10px] font-black text-purple-900">${item.nom}</div>
+            <button onclick="supprimerDuPanier(${i})" class="text-red-500"><i class="fas fa-trash"></i></button>
+        </div>`;
+    }).join('');
+    document.getElementById('totalPanier').innerText = t.toLocaleString() + " F";
+}
         }
 
         function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
@@ -337,7 +333,7 @@
             panier.splice(i, 1);
             if (panier.length === 0) { 
                 fermerPanier(); 
-                document.getElementById('btn-panier-flottant').classList.add('hidden'); 
+                document.getElementById('btn-panier-flottant').style.display = 'none';
             } else { 
                 ouvrirPanier(); 
                 document.getElementById('count-panier').innerText = panier.length; 
