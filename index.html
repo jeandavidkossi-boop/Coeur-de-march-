@@ -127,6 +127,36 @@
         </div>
     </div>
     </div>
+    <div id="modalProduit" class="modal-background" style="display:none; z-index: 3000;">
+    <div class="bg-white w-full max-w-md rounded-t-[40px] mt-auto overflow-hidden shadow-2xl flex flex-col" style="max-height: 90vh;">
+        <div class="relative h-72 w-full bg-gray-100">
+            <img id="p-detail-img" src="" class="w-full h-full object-cover">
+            <button onclick="document.getElementById('modalProduit').style.display='none'" class="absolute top-6 right-6 bg-white/80 w-10 h-10 rounded-full flex items-center justify-center text-purple-900 shadow-lg">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="p-8 overflow-y-auto pb-24">
+            <div class="flex justify-between items-start mb-4">
+                <div>
+                    <h2 id="p-detail-nom" class="text-xl font-black text-purple-900 uppercase leading-tight"></h2>
+                    <p id="p-detail-vendeur" class="text-blue-600 font-bold text-[10px] mt-1 italic"></p>
+                </div>
+                <div id="p-detail-prix" class="bg-orange-600 text-white px-4 py-2 rounded-2xl font-black text-sm"></div>
+            </div>
+            <hr class="border-gray-100 my-4">
+            <h4 class="text-gray-400 font-black text-[10px] uppercase mb-2">Description</h4>
+            <p id="p-detail-desc" class="text-gray-600 text-[11px] leading-relaxed"></p>
+            <div class="fixed bottom-0 left-0 right-0 p-6 bg-white border-t flex gap-3">
+                <button id="p-detail-btn-panier" class="flex-1 bg-purple-900 text-white h-14 rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-2">
+                    <i class="fas fa-shopping-basket"></i> AJOUTER AU PANIER
+                </button>
+                <a id="p-detail-btn-wa" href="#" class="bg-green-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center">
+                    <i class="fab fa-whatsapp text-2xl"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
     
         <div id="modalAide" class="modal-background">
         <div class="modal-content">
@@ -268,7 +298,7 @@
                     const escNom = p.nom.replace(/'/g, "\\'");
                     return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex flex-col mr-4 relative">
                         <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-lg z-10">${p.prix} F</div>
-                        <img src="${p.image}" onclick="zoom('${p.image}')" class="w-full h-28 object-cover" onerror="this.src='1769121566036.png'">
+                        <img src="${p.image}" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover" onerror="this.src='1769121566036.png'">
                         <div class="p-3">
                             <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
                             <p class="text-blue-600 text-[8px] font-bold">${p.quartier || 'Bouafle'}</p>
@@ -397,7 +427,7 @@
                 
                     return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
                         <div class="flex gap-4">
-                            <img src="${p.image}" onclick="zoom('${p.image}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-50">
+                            <img src="${p.image}" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-50">
                             <div class="flex-1">
                                 <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
                                 <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
@@ -472,6 +502,20 @@ function commanderPack(nomPack, intention) {
     
     window.location.href = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(message)}`;
 }
-    </script>
+            
+ function voirPlus(nom) {
+    const p = articles.find(item => item.nom === nom);
+    if (!p) return;
+    document.getElementById('p-detail-img').src = p.image;
+    document.getElementById('p-detail-nom').innerHTML = `${p.nom} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-certificate text-yellow-500 ml-2"></i>' : ''}`;
+    document.getElementById('p-detail-prix').innerText = p.prix + " F";
+    document.getElementById('p-detail-vendeur').innerText = "📍 " + (p.vendeur || "Boutique") + " - " + (p.quartier || "Bouaflé");
+    document.getElementById('p-detail-desc').innerText = p.description || "Aucune description disponible.";
+    document.getElementById('p-detail-btn-panier').onclick = () => { ajouterAuPanier(p.nom, p.prix); document.getElementById('modalProduit').style.display='none'; };
+    const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\nProduit : *" + p.nom + "*\nPrix : *" + p.prix + " F*");
+    document.getElementById('p-detail-btn-wa').href = "https://wa.me/2250576326645?text=" + tPartage;
+    document.getElementById('modalProduit').style.display = 'flex';
+ }
+        </script>
 </body>
 </html>
