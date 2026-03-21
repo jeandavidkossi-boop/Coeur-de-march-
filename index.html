@@ -440,6 +440,13 @@ window.addEventListener('scroll', function() {
     }
 });
         function ouvrirAide() { document.getElementById('modalAide').style.display = 'flex'; }
+            // FONCTION POUR COMMANDER UN PACK MARCHAND
+function commanderPack(nomPack, intention) {
+    const numeroWhatsApp = "2250576326645";
+    const message = `Bonjour Cœur de Marché, je suis marchand à Bouaflé.\n\nJe suis intéressé par le *${nomPack}*.\n_${intention}_\n\nQuelles sont les étapes pour commencer ?`;
+    
+    window.location.href = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(message)}`;
+}
     </script>
 </body>
 </html>
