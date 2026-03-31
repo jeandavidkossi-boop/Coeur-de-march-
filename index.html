@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coeur de Marche Bouafle</title>
+        <meta name="description" content="Le premier marché numérique de Bouaflé. Retrouvez vos produits vivriers, mode et services locaux directement sur votre téléphone.">
+    <meta property="og:title" content="Cœur de Marché Bouaflé">
+    <meta property="og:description" content="Votre marché réinventé dans la Marahoué. Commandez facilement sur WhatsApp !">
+    <meta property="og:image" content="https://jeandavidkossi-boop.github.io/Coeur-de-march-/1769121566036.png">
+    <meta property="og:url" content="https://jeandavidkossi-boop.github.io/Coeur-de-march-/">
+    <meta property="og:type" content="website">
     <link rel="canonical" href="https://jeandavidkossi-boop.github.io/Coeur-de-march-/">
     <link rel="manifest" href="manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
@@ -307,7 +313,7 @@
                     const escNom = p.nom.replace(/'/g, "\\'");
                     return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex flex-col mr-4 relative">
                         <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-lg z-10">${p.prix} F</div>
-                        <img src="${p.image}" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover" onerror="this.src='1769121566036.png'">
+        <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover" onerror="this.src='1769121566036.png'">
                         <div class="p-3">
                             <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
                             <p class="text-blue-600 text-[8px] font-bold">${p.quartier || 'Bouafle'}</p>
@@ -345,7 +351,7 @@
                     
                                     return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
                     <div class="flex gap-4">
-<img src="${p.image}" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-md">
+<img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-md">
                         <div class="flex-1">
 <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1 flex items-center gap-1">${p.nom} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-certificate text-yellow-500"></i>' : ''}</h4>
 
@@ -440,7 +446,7 @@
                 
                     return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
                         <div class="flex gap-4">
-                            <img src="${p.image}" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-50">
+                <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-50">
                             <div class="flex-1">
                                 <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
                                 <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
