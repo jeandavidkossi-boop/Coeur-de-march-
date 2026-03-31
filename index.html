@@ -69,6 +69,10 @@
     </style>
 </head>
 <body class="pb-32 text-gray-900" onload="chargerDonnees()">
+        <div id="loader" class="fixed inset-0 bg-white z-[5000] flex flex-col items-center justify-center">
+        <div class="w-16 h-16 border-4 border-gray-200 border-t-purple-900 rounded-full animate-spin mb-4"></div>
+        <p class="text-purple-900 font-black text-xs animate-pulse">Chargement du marché...</p>
+        </div>
     <div id="modalZoom" onclick="this.style.display='none'"><img id="imgZoomed" src=""></div>
     
     <div id="modalPanier" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 16px;">
@@ -286,10 +290,15 @@
         const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 
         async function chargerDonnees() {
+            const loader = document.getElementById('loader');
             try {
+                if(loader) loader.style.display = 'flex';
+                
                 const r = await fetch(urlScript); 
                 articles = await r.json();
+                
                 verifierLienPartage();
+                
                 const ann = articles.find(p => cleanTxt(p.nom) === "annonce");
                 if(ann) document.getElementById('texteBandeAnnonce').innerText = ann.description;
                 
@@ -306,9 +315,13 @@
                         </div>
                     </div>`;
                 }).join('');
-            } catch (e) { console.error("Erreur :", e); }
+            } catch (e) { 
+                console.error("Erreur :", e);
+                alert("Impossible de charger les données. Veuillez vérifier votre connexion internet et réessayer.");
+            } finally {
+                if(loader) loader.style.display = 'none';
+            }
         }
-
         function switchTab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(id); 
@@ -470,16 +483,15 @@
     recognition.start();
         }
          // CETTE FONCTION LIT LE NOM DU PRODUIT DANS LE LIEN
-function verifierLienPartage() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const p = urlParams.get('p'); // On cherche le paramètre "p" (produit)
-    if (p) {
-        // On nettoie le nom et on le met dans la barre de recherche
-        const nomNettoye = decodeURIComponent(p);
-        document.getElementById('inputRecherche').value = nomNettoye;
-        // On lance la recherche automatiquement
-        setTimeout(() => { rechercherProduit(); }, 1000); 
-    }
+        function verifierLienPartage() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const p = urlParams.get('p'); 
+            if (p) {
+                const nomNettoye = decodeURIComponent(p);
+                document.getElementById('inputRecherche').value = nomNettoye;
+                rechercherProduit(); 
+            }
+        }
             }
     // GESTION DU BOUTON REMONTER (Apparaît au défilement)
 window.addEventListener('scroll', function() {
