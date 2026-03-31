@@ -313,7 +313,7 @@
                     const escNom = p.nom.replace(/'/g, "\\'");
                     return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex flex-col mr-4 relative">
                         <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-lg z-10">${p.prix} F</div>
-        <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover" onerror="this.src='1769121566036.png'">
+                        <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover" onerror="this.src='1769121566036.png'">
                         <div class="p-3">
                             <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
                             <p class="text-blue-600 text-[8px] font-bold">${p.quartier || 'Bouafle'}</p>
@@ -328,6 +328,7 @@
                 if(loader) loader.style.display = 'none';
             }
         }
+
         function switchTab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(id); 
@@ -349,26 +350,25 @@
                     const escNom = p.nom.replace(/'/g, "\\'");
                     const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\nProduit : *" + p.nom + "*\nPrix : *" + p.prix + " F*\nQuartier : _" + (p.quartier || "Bouaflé") + "_\n\nLien direct : " + appLink + "?p=" + encodeURIComponent(p.nom));
                     
-                                    return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
-                    <div class="flex gap-4">
-<img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-md">
-                        <div class="flex-1">
-<h4 class="font-black uppercase text-purple-900 text-[10px] mb-1 flex items-center gap-1">${p.nom} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-certificate text-yellow-500"></i>' : ''}</h4>
-
-                            <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
-                            <p class="text-blue-600 text-[8px] font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
-                            <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${p.description || ''}</p>
+                    return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
+                        <div class="flex gap-4">
+                            <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-md">
+                            <div class="flex-1">
+                                <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1 flex items-center gap-1">${p.nom} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-certificate text-yellow-500"></i>' : ''}</h4>
+                                <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
+                                <p class="text-blue-600 text-[8px] font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
+                                <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${p.description || ''}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="flex gap-2 border-t pt-4">
-                        <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white h-10 rounded-xl text-[8px] font-black flex-1 uppercase flex items-center justify-center gap-2">
-                            <i class="fas fa-plus-circle"></i> PANIER
-                        </button>
-                        <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fab fa-whatsapp text-lg"></i></a>
-                        <a href="tel:0576326645" class="bg-orange-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-phone-alt"></i></a>
-                        <button onclick="window.open('https://wa.me/?text=${tPartage}')" class="bg-blue-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-share-alt"></i></button>
-                    </div>
-                </div>`;
+                        <div class="flex gap-2 border-t pt-4">
+                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white h-10 rounded-xl text-[8px] font-black flex-1 uppercase flex items-center justify-center gap-2">
+                                <i class="fas fa-plus-circle"></i> PANIER
+                            </button>
+                            <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fab fa-whatsapp text-lg"></i></a>
+                            <a href="tel:0576326645" class="bg-orange-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-phone-alt"></i></a>
+                            <button onclick="window.open('https://wa.me/?text=${tPartage}')" class="bg-blue-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-share-alt"></i></button>
+                        </div>
+                    </div>`;
                 }).join('');
             window.scrollTo(0,0);
         }
@@ -427,8 +427,8 @@
             });
             m += "\n*Total : " + t.toLocaleString() + " F*";
             window.location.href = "https://wa.me/2250576326645?text=" + encodeURIComponent(m);
-        }
-            function rechercherProduit() {
+                        }
+        function rechercherProduit() {
             const s = cleanTxt(document.getElementById('inputRecherche').value);
             if (s.length > 1) {
                 switchTab('boutique');
@@ -469,31 +469,30 @@
                     }).join('');
                 }
             }
-            }
-            }
-            
-        function lancerMicro() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'fr-FR';
-    const icon = document.getElementById('iconMicro');
-    
-    recognition.onstart = () => {
-        icon.className = "fas fa-spinner fa-spin"; // L'icône tourne pendant qu'on écoute
-    };
-
-    recognition.onresult = (event) => {
-        const parole = event.results[0][0].transcript;
-        document.getElementById('inputRecherche').value = parole;
-        rechercherProduit(); // Lance la recherche automatiquement
-    };
-
-    recognition.onend = () => {
-        icon.className = "fas fa-microphone"; // L'icône revient à la normale
-    };
-
-    recognition.start();
         }
-         // CETTE FONCTION LIT LE NOM DU PRODUIT DANS LE LIEN
+
+        function lancerMicro() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'fr-FR';
+            const icon = document.getElementById('iconMicro');
+            
+            recognition.onstart = () => {
+                icon.className = "fas fa-spinner fa-spin"; 
+            };
+
+            recognition.onresult = (event) => {
+                const parole = event.results[0][0].transcript;
+                document.getElementById('inputRecherche').value = parole;
+                rechercherProduit(); 
+            };
+
+            recognition.onend = () => {
+                icon.className = "fas fa-microphone"; 
+            };
+
+            recognition.start();
+        }
+
         function verifierLienPartage() {
             const urlParams = new URLSearchParams(window.location.search);
             const p = urlParams.get('p'); 
@@ -503,42 +502,42 @@
                 rechercherProduit(); 
             }
         }
+
+        window.addEventListener('scroll', function() {
+            const btn = document.getElementById('btnRemonter');
+            if (btn) {
+                if (window.scrollY > 300) {
+                    btn.classList.remove('scale-0', 'opacity-0');
+                    btn.classList.add('scale-100', 'opacity-100');
+                } else {
+                    btn.classList.remove('scale-100', 'opacity-100');
+                    btn.classList.add('scale-0', 'opacity-0');
+                }
             }
-    // GESTION DU BOUTON REMONTER (Apparaît au défilement)
-window.addEventListener('scroll', function() {
-    const btn = document.getElementById('btnRemonter');
-    if (btn) {
-        if (window.scrollY > 300) {
-            btn.classList.remove('scale-0', 'opacity-0');
-            btn.classList.add('scale-100', 'opacity-100');
-        } else {
-            btn.classList.remove('scale-100', 'opacity-100');
-            btn.classList.add('scale-0', 'opacity-0');
-        }
-    }
-});
+        });
+
         function ouvrirAide() { document.getElementById('modalAide').style.display = 'flex'; }
-            // FONCTION POUR COMMANDER UN PACK MARCHAND
-function commanderPack(nomPack, intention) {
-    const numeroWhatsApp = "2250576326645";
-    const message = `Bonjour Cœur de Marché, je suis marchand à Bouaflé.\n\nJe suis intéressé par le *${nomPack}*.\n_${intention}_\n\nQuelles sont les étapes pour commencer ?`;
-    
-    window.location.href = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(message)}`;
-}
+        
+        function commanderPack(nomPack, intention) {
+            const numeroWhatsApp = "2250576326645";
+            const message = `Bonjour Cœur de Marché, je suis marchand à Bouaflé.\n\nJe suis intéressé par le *${nomPack}*.\n_${intention}_\n\nQuelles sont les étapes pour commencer ?`;
+            window.location.href = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(message)}`;
+        }
+                    
+        function voirPlus(nom) {
+            const p = articles.find(item => item.nom === nom);
+            if (!p) return;
+            document.getElementById('p-detail-img').src = p.image;
+            document.getElementById('p-detail-nom').innerHTML = `${p.nom} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-certificate text-yellow-500 ml-2"></i>' : ''}`;
+            document.getElementById('p-detail-prix').innerText = p.prix + " F";
+            document.getElementById('p-detail-vendeur').innerText = "📍 " + (p.vendeur || "Boutique") + " - " + (p.quartier || "Bouaflé");
+            document.getElementById('p-detail-desc').innerText = p.description || "Aucune description disponible.";
+            document.getElementById('p-detail-btn-panier').onclick = () => { ajouterAuPanier(p.nom, p.prix); document.getElementById('modalProduit').style.display='none'; };
+            const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\nProduit : *" + p.nom + "*\nPrix : *" + p.prix + " F*");
+            document.getElementById('p-detail-btn-wa').href = "https://wa.me/2250576326645?text=" + tPartage;
+            document.getElementById('modalProduit').style.display = 'flex';
+                               }
             
- function voirPlus(nom) {
-    const p = articles.find(item => item.nom === nom);
-    if (!p) return;
-    document.getElementById('p-detail-img').src = p.image;
-    document.getElementById('p-detail-nom').innerHTML = `${p.nom} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-certificate text-yellow-500 ml-2"></i>' : ''}`;
-    document.getElementById('p-detail-prix').innerText = p.prix + " F";
-    document.getElementById('p-detail-vendeur').innerText = "📍 " + (p.vendeur || "Boutique") + " - " + (p.quartier || "Bouaflé");
-    document.getElementById('p-detail-desc').innerText = p.description || "Aucune description disponible.";
-    document.getElementById('p-detail-btn-panier').onclick = () => { ajouterAuPanier(p.nom, p.prix); document.getElementById('modalProduit').style.display='none'; };
-    const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\nProduit : *" + p.nom + "*\nPrix : *" + p.prix + " F*");
-    document.getElementById('p-detail-btn-wa').href = "https://wa.me/2250576326645?text=" + tPartage;
-    document.getElementById('modalProduit').style.display = 'flex';
- }
         </script>
 </body>
 </html>
