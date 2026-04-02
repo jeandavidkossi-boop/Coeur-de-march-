@@ -338,7 +338,7 @@ function securiserTexte(texte) {
         let lien = videoData.description;
         let videoId = lien.includes('v=') ? lien.split('v=')[1].substring(0, 11) : lien.split('/').pop().substring(0, 11);
         
-        document.getElementById('player-video').src = `https://www.youtube.com/embed/${videoId}`;
+        document.getElementById('player-video').src = "https://www.youtube.com/embed/" + videoId;
         document.getElementById('titre-video').innerText = videoData.details || "Reportage exclusif";
         document.getElementById('section-video').classList.remove('hidden');
     }
