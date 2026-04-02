@@ -542,7 +542,7 @@ function securiserTexte(texte) {
             const p = articles.find(item => item.nom === nom);
             if (!p) return;
             document.getElementById('p-detail-img').src = p.image;
-            document.getElementById('p-detail-nom').innerHTML = `${p.nom} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-certificate text-yellow-500 ml-2"></i>' : ''}`;
+            document.getElementById('p-detail-nom').innerHTML = `${securiserTexte(p.nom)} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-check-circle text-green-500 ml-1"></i>' : ''}`;
             document.getElementById('p-detail-prix').innerText = p.prix + " F";
             document.getElementById('p-detail-vendeur').innerText = "📍 " + (p.vendeur || "Boutique") + " - " + (p.quartier || "Bouaflé");
             document.getElementById('p-detail-desc').innerText = p.description || "Aucune description disponible.";
