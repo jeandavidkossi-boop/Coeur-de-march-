@@ -465,10 +465,10 @@ function securiserTexte(texte) {
                             <div class="flex gap-4">
                                 <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-50">
                                 <div class="flex-1">
-                                    <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
-                                    <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
-                                    <p class="text-blue-600 text-[8px] font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${p.quartier || 'Bouaflé'}</p>
-                                    <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${p.description || ''}</p>
+                                <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${securiserTexte(p.nom)}</h4>
+                                 <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
+                                <p class="text-blue-600 font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${securiserTexte(p.quartier)}</p>
+                                <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${securiserTexte(p.description || '')}</p>
                                 </div>
                             </div>
                             <div class="flex gap-2 border-t pt-4">
