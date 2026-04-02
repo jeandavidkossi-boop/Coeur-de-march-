@@ -294,7 +294,20 @@
         let articles = []; 
         let panier = [];
         const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-
+// Fonction pour sécuriser le texte et empêcher le piratage
+function securiserTexte(texte) {
+  if (!texte) return "";
+  return texte.toString().replace(/[&<>'"]/g, function(caractere) {
+    return {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    }[caractere];
+  });
+}
+            
         async function chargerDonnees() {
             const loader = document.getElementById('loader');
             try {
