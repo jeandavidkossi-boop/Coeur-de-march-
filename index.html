@@ -239,6 +239,18 @@
             </h3>
             <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1"></div>
         </div>
+            <div id="section-video" class="mb-8 px-2 mt-6 hidden">
+      <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 flex items-center gap-2">
+        <i class="fas fa-video text-orange-500"></i> Cœur de Marché TV
+      </h3>
+      
+      <div class="bg-white p-2 rounded-3xl shadow-lg border border-purple-100">
+        <div class="relative w-full overflow-hidden rounded-2xl bg-gray-200" style="padding-top: 56.25%;">
+          <iframe id="player-video" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p id="titre-video" class="text-center text-gray-500 font-bold text-[9px] mt-2 italic"></p>
+      </div>
+            </div>
     </section>
         <section id="boutique" class="px-4 mt-8">
         <div id="vue-rayons">
@@ -320,6 +332,17 @@ function securiserTexte(texte) {
                 
                 const ann = articles.find(p => cleanTxt(p.nom) === "annonce");
                 if(ann) document.getElementById('texteBandeAnnonce').innerText = ann.description;
+    // ------------------ COEUR DE MARCHE TV ------------------
+    const videoData = articles.find(p => p.nom === "VIDEO_PUB" || cleanTxt(p.nom) === "video_pub");
+    if (videoData && videoData.description && videoData.description.length > 5) {
+        let lien = videoData.description;
+        let videoId = lien.includes('v=') ? lien.split('v=')[1].substring(0, 11) : lien.split('/').pop().substring(0, 11);
+        
+        document.getElementById('player-video').src = `https://www.youtube.com/embed/${videoId}`;
+        document.getElementById('titre-video').innerText = videoData.details || "Reportage exclusif";
+        document.getElementById('section-video').classList.remove('hidden');
+    }
+    // --------------------------------------------------------
                 
                 const cert = articles.filter(p => cleanTxt(p.certifie) === "oui" && cleanTxt(p.statut) === "ok");
                 document.getElementById('carrousel-une').innerHTML = cert.map(p => {
