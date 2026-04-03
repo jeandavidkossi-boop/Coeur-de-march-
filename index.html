@@ -409,12 +409,28 @@ function securiserTexte(texte) {
 
         function ouvrirRayonDepuisAccueil(n) { switchTab('boutique'); ouvrirRayon(n); }
 
-        function ouvrirRayon(nomRayon) {
-            document.getElementById('vue-rayons').classList.add('hidden');
-            document.getElementById('vue-produits').classList.remove('hidden');
-            const filtres = articles.filter(p => cleanTxt(p.rayon) === cleanTxt(nomRayon) && cleanTxt(p.statut) === "ok");
-            document.getElementById('compteur-articles').innerText = filtres.length + " article(s)";
-            document.getElementById('liste-produits').innerHTML = filtres.length === 0 ? `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit ici.</p>` :
+            function ouvrirRayon(nomRayon, trierParPrix = false) {
+        document.getElementById('vue-rayons').classList.add('hidden');
+        document.getElementById('vue-produits').classList.remove('hidden');
+        
+        let filtres = articles.filter(p => cleanTxt(p.rayon) === cleanTxt(nomRayon) && cleanTxt(p.statut) === "ok");
+        
+        // --- LOGIQUE DE TRI ---
+        if (trierParPrix === true) {
+            filtres.sort((a, b) => {
+                let prixA = parseInt(a.prix.toString().replace(/\s/g, '')) || 0;
+                let prixB = parseInt(b.prix.toString().replace(/\s/g, '')) || 0;
+                return prixA - prixB; // Trie du plus petit prix au plus grand
+            });
+        }
+        
+        // --- AFFICHAGE DU BOUTON DE TRI ---
+        const escNomRayon = nomRayon.replace(/'/g, "\\'");
+        document.getElementById('compteur-articles').innerHTML = filtres.length + " article(s) " + 
+            `<button onclick="ouvrirRayon('${escNomRayon}', true)" class="ml-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[10px] font-black border border-orange-200 shadow-sm"><i class="fas fa-sort-amount-down-alt"></i> Moins chers d'abord</button>`;
+            
+        document.getElementById('liste-produits').innerHTML = filtres.length === 0 ? '<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé</p>' :
+                    
                 filtres.map(p => {
                     const escNom = p.nom.replace(/'/g, "\\'");
                     const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\nProduit : *" + p.nom + "*\nPrix : *" + p.prix + " F*\nQuartier : _" + (p.quartier || "Bouaflé") + "_\n\nLien direct : " + appLink + "?p=" + encodeURIComponent(p.nom));
@@ -497,16 +513,29 @@ function securiserTexte(texte) {
             m += "\n*Total : " + t.toLocaleString() + " F*";
             window.location.href = "https://wa.me/2250576326645?text=" + encodeURIComponent(m);
                         }
-        function rechercherProduit() {
-            const s = cleanTxt(document.getElementById('inputRecherche').value);
-            if (s.length > 1) {
-                switchTab('boutique');
-                document.getElementById('vue-rayons').classList.add('hidden');
-                document.getElementById('vue-produits').classList.remove('hidden');
-                
-                const f = articles.filter(p => cleanTxt(p.nom).includes(s) || cleanTxt(p.rayon).includes(s));
-                document.getElementById('compteur-articles').innerText = f.length + " résultat(s) pour '" + s + "'";
-                
+           function rechercherProduit(trierParPrix = false) {
+        const s = cleanTxt(document.getElementById('inputRecherche').value);
+        if (s.length > 1) {
+            switchTab('boutique');
+            document.getElementById('vue-rayons').classList.add('hidden');
+            document.getElementById('vue-produits').classList.remove('hidden');
+
+            // On cherche le texte et on vérifie que l'article a le statut 'ok'
+            let f = articles.filter(p => (cleanTxt(p.nom).includes(s) || cleanTxt(p.rayon).includes(s)) && cleanTxt(p.statut) === "ok");
+
+            // --- LOGIQUE DE TRI POUR LA RECHERCHE ---
+            if (trierParPrix === true) {
+                f.sort((a, b) => {
+                    let prixA = parseInt(a.prix.toString().replace(/\s/g, '')) || 0;
+                    let prixB = parseInt(b.prix.toString().replace(/\s/g, '')) || 0;
+                    return prixA - prixB;
+                });
+            }
+
+            // --- AFFICHAGE DU BOUTON DANS LES RÉSULTATS DE RECHERCHE ---
+            document.getElementById('compteur-articles').innerHTML = f.length + " résultat(s) pour '" + s + "' " + 
+                `<button onclick="rechercherProduit(true)" class="ml-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[10px] font-black border border-orange-200 shadow-sm"><i class="fas fa-sort-amount-down-alt"></i> Moins chers d'abord</button>`;
+                    
                 const listeProduits = document.getElementById('liste-produits');
                 
                 if (f.length === 0) {
