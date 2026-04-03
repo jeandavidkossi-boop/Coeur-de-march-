@@ -251,6 +251,13 @@
         <p id="titre-video" class="text-center text-gray-500 font-bold text-[9px] mt-2 italic"></p>
       </div>
             </div>
+        <div id="section-nouveautes" class="mb-8 px-2 mt-2 hidden">
+      <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 flex items-center gap-2">
+        <i class="fas fa-sparkles text-orange-500"></i> Fraîchement arrivés
+      </h3>
+      <div id="carrousel-nouveautes" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1">
+        </div>
+        </div>
     </section>
         <section id="boutique" class="px-4 mt-8">
         <div id="vue-rayons">
@@ -358,6 +365,31 @@ function securiserTexte(texte) {
                         </div>
                     </div>`;
                 }).join('');
+                    // ------------------ SECTION NOUVEAUTÉS (Sécurisé) ------------------
+    // On filtre pour ne garder que les vrais articles (pas la vidéo, pas l'annonce) qui ont le statut 'ok'
+    const vraisArticles = articles.filter(p => p.nom !== "VIDEO_PUB" && cleanTxt(p.nom) !== "annonce" && cleanTxt(p.statut) === "ok");
+    
+    // On prend les 6 derniers articles du tableau et on les inverse pour avoir le plus récent en premier
+    const dernieresNouveautes = vraisArticles.slice(-6).reverse(); 
+
+    if(dernieresNouveautes.length > 0) {
+        document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => {
+            const escNom = p.nom.replace(/'/g, "\\'");
+            return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 pb-2 relative">
+                <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-full z-10">${p.prix} F</div>
+                <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover cursor-pointer">
+                <div class="p-3">
+                    <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${securiserTexte(p.nom)}</h4>
+                    <p class="text-blue-600 text-[8px] font-bold">${securiserTexte(p.quartier || 'Bouaflé')}</p>
+                    <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white py-1.5 rounded-xl text-[9px] font-black flex items-center justify-center gap-1"><i class="fas fa-plus-circle"></i> AJOUTER</button>
+                </div>
+            </div>`;
+        }).join('');
+        // On affiche la section uniquement s'il y a des articles
+        document.getElementById('section-nouveautes').classList.remove('hidden');
+    }
+    // -------------------------------------------------------------------
+                
             } catch (e) { 
                 console.error("Erreur :", e);
                 alert("Impossible de charger les données. Veuillez vérifier votre connexion internet et réessayer.");
