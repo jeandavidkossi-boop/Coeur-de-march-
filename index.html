@@ -311,7 +311,18 @@
         const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
         const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
         let articles = []; 
-        let panier = [];
+        // --- NOUVEAU : On charge le panier depuis la mémoire au démarrage ---
+    let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
+    
+    setTimeout(() => {
+        if (panier.length > 0) {
+            const btn = document.getElementById('btn-panier-flottant');
+            const count = document.getElementById('count-panier');
+            if (btn) { btn.style.display = 'flex'; btn.classList.add('scale-100'); }
+            if (count) count.innerText = panier.length;
+        }
+    }, 500);
+    // --------------------------------------------------------------------
         const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 // Fonction pour sécuriser le texte et empêcher le piratage
 function securiserTexte(texte) {
@@ -463,16 +474,21 @@ function securiserTexte(texte) {
             document.getElementById('vue-produits').classList.add('hidden');
         }
 
-        function ajouterAuPanier(n, p) {
-            panier.push({ nom: n, prix: p });
-            const btn = document.getElementById('btn-panier-flottant');
-            const count = document.getElementById('count-panier');
-            if(btn) {
-                btn.style.display = 'flex';
-                setTimeout(() => btn.classList.add('scale-100'), 10);
-            }
-            if(count) count.innerText = panier.length;
+            function ajouterAuPanier(n, p) {
+        panier.push({ nom: n, prix: p });
+        
+        // --- NOUVEAU : On sauvegarde dans la mémoire du téléphone ---
+        localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+        // ------------------------------------------------------------
+        
+        const btn = document.getElementById('btn-panier-flottant');
+        const count = document.getElementById('count-panier');
+        if(btn) {
+            btn.style.display = 'flex';
+            setTimeout(() => btn.classList.add('scale-100'), 10);
         }
+        if(count) count.innerText = panier.length;
+            }
 
         function ouvrirPanier() {
             document.getElementById('modalPanier').style.display = 'flex';
@@ -487,16 +503,21 @@ function securiserTexte(texte) {
             document.getElementById('totalPanier').innerText = t.toLocaleString() + " F";
         }
 
-        function supprimerDuPanier(i) {
-            panier.splice(i, 1);
-            if (panier.length === 0) {
-                document.getElementById('modalPanier').style.display = 'none';
-                document.getElementById('btn-panier-flottant').style.display = 'none';
-            } else {
-                ouvrirPanier();
-                document.getElementById('count-panier').innerText = panier.length;
-            }
+            function supprimerDuPanier(i) {
+        panier.splice(i, 1);
+        
+        // --- NOUVEAU : On met à jour la mémoire du téléphone ---
+        localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+        // -------------------------------------------------------
+        
+        if (panier.length === 0) {
+            document.getElementById('modalPanier').style.display = 'none';
+            document.getElementById('btn-panier-flottant').style.display = 'none';
+        } else {
+            ouvrirPanier();
+            document.getElementById('count-panier').innerText = panier.length;
         }
+            }
 
         function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
         function fermerModale(id) { document.getElementById(id).style.display = 'none'; }
