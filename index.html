@@ -503,16 +503,33 @@ function securiserTexte(texte) {
         function ouvrirEspaceMarchand() { document.getElementById('modalVendre').style.display = 'flex'; }
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
         
-        function envoyerPanierWhatsApp() {
-            let m = "Bonjour Cœur de Marché, voici ma commande :\n\n";
-            let t = 0;
-            panier.forEach(i => {
-                m += "- " + i.nom + " (" + i.prix + " F)\n";
-                t += parseInt(i.prix.toString().replace(/\s/g, ''));
-            });
-            m += "\n*Total : " + t.toLocaleString() + " F*";
-            window.location.href = "https://wa.me/2250576326645?text=" + encodeURIComponent(m);
-                        }
+            function envoyerPanierWhatsApp() {
+        let m = "Bonjour Cœur de Marché, voici ma commande :\n\n";
+        let t = 0;
+        panier.forEach(i => {
+            m += "- " + i.nom + " (" + i.prix + " F)\n";
+            t += parseInt(i.prix.toString().replace(/\s/g, ''));
+        });
+        m += "\n*Total : " + t.toLocaleString() + " F*";
+        
+        // 1. On prépare le lien WhatsApp
+        const lienWhatsapp = "https://wa.me/2250576326645?text=" + encodeURIComponent(m);
+        
+        // 2. On VIDE le panier (Le correctif que vous avez demandé)
+        panier = [];
+        
+        // 3. On sauvegarde ce panier vide dans la mémoire (Pour le futur Panier Intelligent)
+        localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+        
+        // 4. On nettoie l'affichage
+        document.getElementById('count-panier').innerText = "0";
+        document.getElementById('btn-panier-flottant').style.display = 'none';
+        document.getElementById('modalPanier').style.display = 'none';
+        
+        // 5. On envoie le client sur WhatsApp !
+        window.location.href = lienWhatsapp;
+            }
+            
            function rechercherProduit(trierParPrix = false) {
         const s = cleanTxt(document.getElementById('inputRecherche').value);
         if (s.length > 1) {
