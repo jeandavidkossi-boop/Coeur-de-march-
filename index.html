@@ -22,10 +22,11 @@
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
       appId: "4a658cad-ad08-46cb-bc43-c92e57b962bf",
+      serviceWorkerParam: { scope: "/Coeur-de-march-/" },
+      serviceWorkerPath: "OneSignalSDKWorker.js",
     });
   });
 </script>
-    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f9fafb; scroll-behavior: smooth; }
