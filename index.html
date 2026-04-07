@@ -356,21 +356,48 @@
             <i class="fas fa-question-circle text-xl"></i><span class="text-[8px]">Aide</span>
         </button>
     </nav>
-        <script>
-        const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
+    <script>
+        const urlScript = "https://script.google.com/macros/s/AKfycbx6DPL8H6X_KVsChwlZ_XPVMzSDXVn5D1u56bx36O5e3XHf1z_YGgJg/exec";
         const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
-        let articles = []; 
+        let articles = [];
+        
         // --- NOUVEAU : On charge le panier depuis la mémoire au démarrage ---
-    let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
-    
-    setTimeout(() => {
-        if (panier.length > 0) {
-            const btn = document.getElementById('btn-panier-flottant');
-            const count = document.getElementById('count-panier');
-            if (btn) { btn.style.display = 'flex'; btn.classList.add('scale-100'); }
-            if (count) count.innerText = panier.length;
+        let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
+
+        // --- DÉBUT DE L'AJOUT POUR LE CARROUSEL À LA UNE ---
+        let intervalCarrouselUne;
+        const delaiDefilementUne = 4000; // 4 secondes
+
+        function demarrerCarrouselUne() {
+            arreterCarrouselUne(); // Sécurité
+            intervalCarrouselUne = setInterval(() => {
+                const carrousel = document.getElementById('carrousel-une'); 
+                if (!carrousel || carrousel.children.length <= 1) return;
+
+                const scrollAmount = carrousel.children[0].offsetWidth + 16; 
+                const maxScroll = carrousel.scrollWidth - carrousel.clientWidth;
+
+                if (carrousel.scrollLeft >= maxScroll - 5) { 
+                    carrousel.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    carrousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }, delaiDefilementUne);
         }
-    }, 500);
+
+        function arreterCarrouselUne() {
+            clearInterval(intervalCarrouselUne);
+        }
+        // --- FIN DE L'AJOUT ---
+
+        setTimeout(() => {
+            if (panier.length > 0) {
+                const btn = document.getElementById('btn-panier-flottant');
+                const count = document.getElementById('count-panier');
+                if (btn) { btn.style.display = 'flex'; btn.classList.add('scale-100'); }
+                if (count) count.innerText = panier.length;
+            }
+        }, 500);
     // --------------------------------------------------------------------
         const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 // Fonction pour sécuriser le texte et empêcher le piratage
@@ -410,21 +437,37 @@ function securiserTexte(texte) {
         document.getElementById('section-video').classList.remove('hidden');
     }
     // --------------------------------------------------------
-                
-                const cert = articles.filter(p => cleanTxt(p.certifie) === "oui" && cleanTxt(p.statut) === "ok");
-                document.getElementById('carrousel-une').innerHTML = cert.map(p => {
-                    const escNom = p.nom.replace(/'/g, "\\'");
-                    return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex flex-col mr-4 relative">
-                        <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-lg z-10">${p.prix} F</div>
-                        <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover" onerror="this.src='1769121566036.png'">
-                        <div class="p-3">
-                           <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${securiserTexte(p.nom)}</h4>
-                           <p class="text-blue-600 text-[8px] font-bold">${securiserTexte(p.quartier || 'Bouaflé')}</p>
+                 const cert = articles.filter(p => cleanTxt(p.certifie) === "oui" && cleanTxt(p.statut) === "ok");
+                const carrouselUne = document.getElementById('carrousel-une');
 
-                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white text-[8px] font-black py-2 rounded-xl">AJOUTER</button>
+                carrouselUne.innerHTML = cert.map(p => {
+                    const escNom = p.nom.replace(/'/g, "\\'");
+                    return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 pb-2 relative">
+                        <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-full z-10 shadow-md"><i class="fas fa-star"></i> VIP</div>
+                        <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover cursor-pointer">
+                        <div class="p-3">
+                            <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${securiserTexte(p.nom)}</h4>
+                            <p class="text-blue-600 text-[8px] font-bold">${securiserTexte(p.quartier || 'Bouaflé')}</p>
+                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white text-[10px] font-black py-2 rounded-xl flex items-center justify-center gap-1 shadow-md"><i class="fas fa-plus"></i> PANIER</button>
                         </div>
                     </div>`;
                 }).join('');
+
+                // --- NOUVEAU : Lancement du carrousel et gestion du toucher ---
+                if (cert.length > 1) {
+                    demarrerCarrouselUne(); // Lance le défilement
+
+                    // Pause quand on touche (sur téléphone)
+                    carrouselUne.addEventListener('touchstart', arreterCarrouselUne, {passive: true});
+                    // Reprise quand on lâche
+                    carrouselUne.addEventListener('touchend', demarrerCarrouselUne);
+
+                    // Pause/Reprise pour la souris (sur ordinateur)
+                    carrouselUne.addEventListener('mouseenter', arreterCarrouselUne);
+                    carrouselUne.addEventListener('mouseleave', demarrerCarrouselUne);
+                }
+                // --------------------------------------------------------------
+                
                     // ------------------ SECTION NOUVEAUTÉS (Sécurisé) ------------------
     // On filtre pour ne garder que les vrais articles (pas la vidéo, pas l'annonce) qui ont le statut 'ok'
     const vraisArticles = articles.filter(p => p.nom !== "VIDEO_PUB" && cleanTxt(p.nom) !== "annonce" && cleanTxt(p.statut) === "ok");
