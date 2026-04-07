@@ -55,6 +55,15 @@
     </style>
 </head>
     <body class="pb-32 text-gray-900 bg-white" onload="chargerDonnees()">
+        <div id="notif-classe" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[9999] hidden cursor-pointer" onclick="this.classList.add('hidden')">
+    <div class="bg-purple-900 text-white px-6 py-3 rounded-full shadow-2xl flex flex-col items-center gap-1 border-2 border-orange-400 animate-pulse">
+        <div class="flex items-center gap-2">
+            <i class="fas fa-info-circle text-orange-400"></i>
+            <span id="texte-notif" class="text-[10px] font-black uppercase tracking-widest">MISE À JOUR DU MARCHÉ...</span>
+        </div>
+        <span id="debug-info" class="text-[6px] opacity-40 font-mono lowercase tracking-tighter"></span>
+    </div>
+        </div>
     <div id="loader" class="fixed inset-0 bg-white z-[5000] flex flex-col items-center justify-center">
         <div class="w-16 h-16 border-4 border-gray-200 border-t-purple-900 rounded-full animate-spin mb-4"></div>
         <p class="text-purple-900 font-black text-xs animate-pulse">Chargement du marché...</p>
@@ -409,7 +418,7 @@
         actualiserAffichageProgressif()
             } catch (e) {
                 console.error("Erreur :", e);
-                alert("Erreur technique : " + e.message);
+                afficherMessage("MISE À JOUR DU MARCHÉ EN COURS...", e.message);
             } finally {
                 if(loader) loader.style.display = 'none';
             }
@@ -688,6 +697,30 @@
             const tPartage = encodeURIComponent(`🛒 *COMMANDE CŒUR DE MARCHÉ*\n\nProduit : *${p.nom}*\nPrix : *${p.prix}*\n\nLien : ${appLink}?p=${encodeURIComponent(p.nom)}`);
             document.getElementById('p-detail-btn-wa').href = `https://wa.me/2250576326645?text=${tPartage}`;
             document.getElementById('modalProduit').style.display = 'flex';
+        }
+            
+        function afficherMessage(texteMarketing, erreurReelle = "") {
+    const notif = document.getElementById('notif-classe');
+    const label = document.getElementById('texte-notif');
+    const debug = document.getElementById('debug-info');
+    
+    if (!notif || !label) return;
+
+    // On affiche le message propre pour le client
+    label.innerText = texteMarketing;
+    
+    // On met l'erreur technique en tout petit pour TOI
+    if (debug && erreurReelle) {
+        debug.innerText = erreurReelle.substring(0, 40);
+    }
+
+    // On montre la bulle
+    notif.classList.remove('hidden');
+
+    // Elle disparaît seule après 20 secondes si on ne clique pas
+    setTimeout(() => {
+        notif.classList.add('hidden');
+    }, 20000);
         }
             
       function genererCarteProduit(p) {
