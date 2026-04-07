@@ -315,7 +315,8 @@
         const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
         const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
         let articles = [];
-        
+                let articlesAffiches = 10;
+        const pasChargement = 10;
         let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
 
         setTimeout(() => {
@@ -377,26 +378,28 @@
                         </div>
                     </div>`;
                 }).join('');
+        const vraisArticles = articles.filter(p => p.nom !== "VIDEO_PUB" && cleanTxt(p.certifie) !== "oui");
+        const dernieresNouveautes = vraisArticles.slice(-6).reverse();
+        
+        // On enregistre tous les articles pour le chargement progressif
+        window.tousLesArticlesVrais = vraisArticles; 
 
-                const vraisArticles = articles.filter(p => p.nom !== "VIDEO_PUB" && cleanTxt(p.nom) !== "annonce" && cleanTxt(p.statut) === "ok");
-                const dernieresNouveautes = vraisArticles.slice(-6).reverse();
+        if(dernieresNouveautes.length > 0) {
+            document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => {
+                const escNom = p.nom.replace(/'/g, "\\'");
+                return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">
+                    <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-32 object-cover">
+                    <div class="p-3">
+                        <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
+                        <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white py-2 rounded-xl text-[9px] font-black italic">${p.prix} F</button>
+                    </div>
+                </div>`;
+            }).join('');
+            document.getElementById('section-nouveautes').classList.remove('hidden');
+        }
 
-                if(dernieresNouveautes.length > 0) {
-                    document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => {
-                        const escNom = p.nom.replace(/'/g, "\\'");
-                        return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 pb-2 relative">
-                            <div class="absolute top-2 right-2 bg-green-500 text-white text-[9px] font-black px-2 py-1 rounded-full z-10 shadow-md">NEW</div>
-                            <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover cursor-pointer">
-                            <div class="p-3">
-                                <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${securiserTexte(p.nom)}</h4>
-                                <p class="text-blue-600 text-[8px] font-bold">${securiserTexte(p.quartier || 'Bouaflé')}</p>
-                                <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white text-[10px] font-black py-2 rounded-xl flex items-center justify-center gap-1 shadow-md"><i class="fas fa-plus"></i> PANIER</button>
-                            </div>
-                        </div>`;
-                    }).join('');
-                    document.getElementById('section-nouveautes').classList.remove('hidden');
-                }
-
+        // On affiche les 10 premiers produits
+        actualiserAffichageProgressif()
             } catch (e) {
                 console.error("Erreur :", e);
                 alert("Erreur technique : " + e.message);
@@ -469,7 +472,25 @@
             document.getElementById('vue-rayons').classList.remove('hidden');
             document.getElementById('vue-produits').classList.add('hidden');
         }
+        function actualiserAffichageProgressif() {
+            const liste = document.getElementById('liste-produits');
+            if (!liste) return;
+            const affiches = window.articlesAffiches || 10;
+            const visibles = window.tousLesArticlesVrais ? window.tousLesArticlesVrais.slice(0, affiches) : [];
+            
+            let html = visibles.map(p => genererCarteProduit(p)).join('');
+            
+            if (window.tousLesArticlesVrais && window.tousLesArticlesVrais.length > affiches) {
+                html += `<button onclick="chargerPlus()" class="w-full py-5 mt-4 bg-purple-100 text-purple-900 font-black rounded-3xl text-[10px] uppercase italic border-2 border-purple-200">Afficher plus de produits...</button>`;
+            }
+            liste.innerHTML = html;
+        }
 
+        function chargerPlus() {
+            window.articlesAffiches = (window.articlesAffiches || 10) + 10;
+            actualiserAffichageProgressif();
+        }
+            
         function ajouterAuPanier(n, p) {
             panier.push({ nom: n, prix: p });
             localStorage.setItem('panier_bouafle', JSON.stringify(panier));
