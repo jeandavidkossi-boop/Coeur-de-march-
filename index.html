@@ -364,20 +364,20 @@
         // --- NOUVEAU : On charge le panier depuis la mémoire au démarrage ---
         let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
 
-        // --- DÉBUT DE L'AJOUT POUR LE CARROUSEL À LA UNE ---
+        // --- DEBUT DE L'AJOUT POUR LE CARROUSEL A LA UNE ---
         let intervalCarrouselUne;
         const delaiDefilementUne = 4000; // 4 secondes
 
         function demarrerCarrouselUne() {
             arreterCarrouselUne(); // Sécurité
             intervalCarrouselUne = setInterval(() => {
-                const carrousel = document.getElementById('carrousel-une'); 
+                const carrousel = document.getElementById('carrousel-une');
                 if (!carrousel || carrousel.children.length <= 1) return;
 
-                const scrollAmount = carrousel.children[0].offsetWidth + 16; 
+                const scrollAmount = carrousel.children[0].offsetWidth + 16;
                 const maxScroll = carrousel.scrollWidth - carrousel.clientWidth;
 
-                if (carrousel.scrollLeft >= maxScroll - 5) { 
+                if (carrousel.scrollLeft >= maxScroll - 5) {
                     carrousel.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
                     carrousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
@@ -385,10 +385,11 @@
             }, delaiDefilementUne);
         }
 
-        function arreterCarrouselUne() {
+        function arraterCarrouselUne() {
             clearInterval(intervalCarrouselUne);
         }
         // --- FIN DE L'AJOUT ---
+        
 
         setTimeout(() => {
             if (panier.length > 0) {
@@ -453,10 +454,10 @@ function securiserTexte(texte) {
                     </div>`;
                 }).join('');
 
-                // --- NOUVEAU : Lancement du carrousel et gestion du toucher ---
+                                // --- NOUVEAU : Lancement du carrousel et gestion du toucher ---
                 if (cert.length > 1) {
                     demarrerCarrouselUne(); // Lance le défilement
-
+                    
                     // Pause quand on touche (sur téléphone)
                     carrouselUne.addEventListener('touchstart', arreterCarrouselUne, {passive: true});
                     // Reprise quand on lâche
@@ -466,6 +467,7 @@ function securiserTexte(texte) {
                     carrouselUne.addEventListener('mouseenter', arreterCarrouselUne);
                     carrouselUne.addEventListener('mouseleave', demarrerCarrouselUne);
                 }
+                
                 // --------------------------------------------------------------
                 
                     // ------------------ SECTION NOUVEAUTÉS (Sécurisé) ------------------
