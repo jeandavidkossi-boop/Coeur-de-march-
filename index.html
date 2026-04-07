@@ -329,12 +329,18 @@
         const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 
         function securiserTexte(texte) {
-            if (!texte) return "";
-            return texte.toString().replace(/[&<>"']/g, function(caractere) {
-                return { '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' }[caractere];
-            });
+    if (!texte) return "";
+    return texte.toString().replace(/[&<>"']/g, function(caractere) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[caractere];
+    });
         }
-
+            
         async function chargerDonnees() {
             const loader = document.getElementById('loader');
             try {
