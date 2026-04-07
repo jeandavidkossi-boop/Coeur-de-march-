@@ -394,7 +394,7 @@
                     carUne.addEventListener('touchend', demarrerCarrouselUne);
                                 }
                 
-        const vraisArticles = articles.filter(p => p.nom !== "VIDEO_PUB" && cleanTxt(p.certifie) !== "oui");
+        const vraisArticles = articles.filter(p => p.nom !== "VIDEO_PUB" && p.nom !== "ANNONCE" && cleanTxt(p.certifie) !== "oui");
         const dernieresNouveautes = vraisArticles.slice(-6).reverse();
         
         // On enregistre tous les articles pour le chargement progressif
