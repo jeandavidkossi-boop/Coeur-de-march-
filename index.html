@@ -439,8 +439,7 @@
             document.getElementById('vue-produits').classList.remove('hidden');
             
             let filtres = articles.filter(p => cleanTxt(p.rayon) === cleanTxt(nomRayon) && cleanTxt(p.statut) === "ok");
-            
-            
+        
             if (trierParPrix === true) {
                 filtres.sort((a, b) => {
                     let prixA = parseInt(a.prix.toString().replace(/\s/g, '')) || 0;
