@@ -493,10 +493,11 @@ function securiserTexte(texte) {
     }
     // -------------------------------------------------------------------
                 
-            } catch (e) { 
-                console.error("Erreur :", e);
-                alert("Impossible de charger les données. Veuillez vérifier votre connexion internet et réessayer.");
-            } finally {
+                } catch (e) {
+        console.error("Erreur :", e);
+        alert("Erreur technique : " + e.message);
+    } finally {
+                
                 if(loader) loader.style.display = 'none';
             }
         }
