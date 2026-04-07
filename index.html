@@ -54,7 +54,7 @@
         .cat-mode .bubble-icon  { background-color: #fef3c7; color: #d97706; }
     </style>
 </head>
-<body class="pb-32 text-gray-900 bg-purple-900" onload="chargerDonnees()">
+    <body class="pb-32 text-gray-900 bg-white" onload="chargerDonnees()">
     <div id="loader" class="fixed inset-0 bg-white z-[5000] flex flex-col items-center justify-center">
         <div class="w-16 h-16 border-4 border-gray-200 border-t-purple-900 rounded-full animate-spin mb-4"></div>
         <p class="text-purple-900 font-black text-xs animate-pulse">Chargement du marché...</p>
@@ -378,6 +378,13 @@
                         </div>
                     </div>`;
                 }).join('');
+                                if (cert.length > 1) {
+                    demarrerCarrouselUne();
+                    const carUne = document.getElementById('carrousel-une');
+                    carUne.addEventListener('touchstart', arreterCarrouselUne, {passive: true});
+                    carUne.addEventListener('touchend', demarrerCarrouselUne);
+                                }
+                
         const vraisArticles = articles.filter(p => p.nom !== "VIDEO_PUB" && cleanTxt(p.certifie) !== "oui");
         const dernieresNouveautes = vraisArticles.slice(-6).reverse();
         
@@ -552,7 +559,22 @@
             
             window.location.href = lienWhatsapp;
         }
-
+        let intervalCarrouselUne;
+        function demarrerCarrouselUne() {
+            arreterCarrouselUne();
+            intervalCarrouselUne = setInterval(() => {
+                const c = document.getElementById('carrousel-une');
+                if (!c || c.children.length <= 1) return;
+                const step = c.children[0].offsetWidth + 16;
+                if (c.scrollLeft >= (c.scrollWidth - c.clientWidth) - 5) {
+                    c.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    c.scrollBy({ left: step, behavior: 'smooth' });
+                }
+            }, 4000);
+        }
+        function arreterCarrouselUne() { clearInterval(intervalCarrouselUne); }
+                
         function rechercherProduit(trierParPrix = false) {
             const s = cleanTxt(document.getElementById('inputRecherche').value);
             if (s.length > 1) {
