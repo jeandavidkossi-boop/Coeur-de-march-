@@ -374,7 +374,7 @@
                     document.getElementById('section-video').classList.remove('hidden');
                 }
 
-                const cert = articles.filter(p => cleanTxt(p.certifie) === "oui" && cleanTxt(p.statut) === "ok");
+                const cert = articles.filter(p => cleanTxt(p.certifie) == "oui" && cleanTxt(p.statut) == "ok" && cleanTxt(p.nom) !== "annonce");
                 document.getElementById('carrousel-une').innerHTML = cert.map(p => {
                     const escNom = p.nom.replace(/'/g, "\\'");
                     return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 pb-2 relative">
@@ -394,7 +394,7 @@
                     carUne.addEventListener('touchend', demarrerCarrouselUne);
                                 }
                 
-        const vraisArticles = articles.filter(p => p.nom !== "VIDEO_PUB" && p.nom !== "ANNONCE" && cleanTxt(p.certifie) !== "oui");
+        const vraisArticles = articles.filter(p => cleanTxt(p.nom) !== "video_pub" && cleanTxt(p.nom) !== "annonce" && cleanTxt(p.certifie) !== "oui");
         const dernieresNouveautes = vraisArticles.slice(-6).reverse();
         
         // On enregistre tous les articles pour le chargement progressif
