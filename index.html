@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coeur de Marche Bouafle</title>
-        <meta name="description" content="Le premier marché numérique de Bouaflé. Retrouvez vos produits vivriers, mode et services locaux directement sur votre téléphone.">
+    <meta name="description" content="Le premier marché numérique de Bouaflé. Retrouvez vos produits vivriers, mode et services locaux directement sur votre téléphone.">
     <meta property="og:title" content="Cœur de Marché Bouaflé">
     <meta property="og:description" content="Votre marché réinventé dans la Marahoué. Commandez facilement sur WhatsApp !">
     <meta property="og:image" content="https://jeandavidkossi-boop.github.io/Coeur-de-march-/1769121566036.png">
@@ -17,52 +17,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "4a658cad-ad08-46cb-bc43-c92e57b962bf",
-      serviceWorkerParam: { scope: "/Coeur-de-march-/" },
-      serviceWorkerPath: "OneSignalSDKWorker.js",
-    });
-  });
-</script>
+    <script>
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+          appId: "4a658cad-ad08-46cb-bc43-c92e57b962bf",
+          serviceWorkerParam: { scope: "/Coeur-de-march-/" },
+          serviceWorkerPath: "OneSignalSDKWorker.js",
+        });
+      });
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f9fafb; scroll-behavior: smooth; }
-                .modal-background {
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0,0,0,0.8); 
-            z-index: 2000; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 16px;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background: white;
-            width: 100%;
-            max-width: 400px;
-            border-radius: 40px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        .pack-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 15px;
-            padding: 12px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
+        .modal-background { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 16px; backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); }
+        .modal-content { background: white; width: 100%; max-width: 400px; border-radius: 40px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        .pack-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 15px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         section { display: none; }
         section.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -72,13 +42,11 @@
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
         #modalZoom { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
         #modalZoom img { max-width: 90%; max-height: 80vh; border-radius: 15px; border: 3px solid white; }
-        
         .category-container { display: flex; justify-content: space-around; gap: 0.5rem; margin-bottom: 2rem; margin-top: -1rem; }
         .bubble-cat { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; cursor: pointer; text-align: center; }
         .bubble-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s ease; }
         .bubble-cat:hover .bubble-icon { transform: scale(1.1); }
         .bubble-label { font-size: 8px; font-weight: 900; color: #4b5563; text-transform: uppercase; }
-
         .cat-vivrier .bubble-icon { background-color: #d1fae5; color: #059669; }
         .cat-beaute .bubble-icon { background-color: #fce7f3; color: #db2777; }
         .cat-resto .bubble-icon { background-color: #e0f2fe; color: #0284c7; }
@@ -86,12 +54,11 @@
     </style>
 </head>
 <body class="pb-32 text-gray-900" onload="chargerDonnees()">
-        <div id="loader" class="fixed inset-0 bg-white z-[5000] flex flex-col items-center justify-center">
+    <div id="loader" class="fixed inset-0 bg-white z-[5000] flex flex-col items-center justify-center">
         <div class="w-16 h-16 border-4 border-gray-200 border-t-purple-900 rounded-full animate-spin mb-4"></div>
         <p class="text-purple-900 font-black text-xs animate-pulse">Chargement du marché...</p>
-        </div>
+    </div>
     <div id="modalZoom" onclick="this.style.display='none'"><img id="imgZoomed" src=""></div>
-    
     <div id="modalPanier" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; padding: 16px;">
         <div class="bg-white w-full max-w-md rounded-[30px] overflow-hidden flex flex-col max-h-[80vh]">
             <div class="bg-purple-900 p-6 text-white flex justify-between items-center text-sm font-black italic">
@@ -104,156 +71,142 @@
             </div>
         </div>
     </div>
-
-    <div id="modalVendre" class="modal-background">
-    <div class="modal-content">
-        <div class="bg-purple-900 p-6 text-white flex justify-between items-center text-sm font-black italic">
-            <span>🚀 DEVENIR MARCHAND</span>
-            <button onclick="fermerModale('modalVendre')"><i class="fas fa-times text-xl"></i></button>
-        </div>
-        <div class="p-6 overflow-y-auto max-h-[60vh]">
-        <div class="space-y-5 mt-6 mb-4">
-
-  <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm">
-    <h3 class="text-xl font-bold text-gray-800 text-center">Découverte</h3>
-    <p class="text-sm text-gray-500 text-center mb-3">Testez le marché sans risque</p>
-    <div class="text-center font-extrabold text-3xl text-gray-800 mb-4">0 FCFA <span class="text-sm font-normal text-gray-500">/mois</span></div>
-    <ul class="text-sm text-gray-600 space-y-2 mb-5">
-      <li class="flex items-center">✅ Jusqu'à 3 articles en ligne</li>
-      <li class="flex items-center">✅ Affichage standard</li>
-    </ul>
-    <a href="https://wa.me/2250576326645?text=Salut%20C%C5%93ur%20de%20March%C3%A9%20!%20Je%20souhaite%20m'inscrire%20en%20tant%20que%20vendeur%20avec%20le%20Pack%20D%C3%A9couverte%20(Gratuit)." target="_blank" class="block text-center w-full bg-gray-100 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-200 transition">
-      Commencer gratuitement
-    </a>
-  </div>
-
-  <div class="border-2 border-green-500 rounded-xl p-5 bg-green-50 shadow-md relative mt-6">
-    <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs font-extrabold px-3 py-1 rounded-full shadow">RECOMMANDÉ</span>
-
-    <h3 class="text-xl font-bold text-green-800 text-center mt-2">Marchand Pro</h3>
-    <p class="text-sm text-green-600 text-center mb-3">Vendez plus vite, tous les jours</p>
-    <div class="text-center font-extrabold text-3xl text-green-800 mb-4">3 000 FCFA <span class="text-sm font-normal text-green-600">/mois</span></div>
-    <ul class="text-sm text-gray-800 space-y-2 mb-5 font-medium">
-      <li class="flex items-center">🔥 Jusqu'à 20 articles en ligne</li>
-      <li class="flex items-center">🔥 Badge "Vendeur Vérifié"</li>
-      <li class="flex items-center">🔥 Positionnement prioritaire</li>
-      <li class="flex items-center">🔥 Bouton WhatsApp direct</li>
-    </ul>
-    <a href="https://wa.me/2250576326645?text=Salut%20C%C5%93ur%20de%20March%C3%A9%20!%20Je%20souhaite%20booster%20mes%20ventes%20et%20prendre%20le%20Pack%20MARCHAND%20PRO%20%C3%A0%203000%20FCFA." target="_blank" class="block text-center w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 shadow-lg transition">
-      Devenir Pro
-    </a>
-  </div>
-
-  <div class="border border-gray-700 rounded-xl p-5 bg-gray-900 shadow-xl relative mt-6">
-    <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-gray-900 text-xs font-extrabold px-3 py-1 rounded-full shadow">👑 VIP</span>
-
-    <h3 class="text-xl font-bold text-yellow-400 text-center mt-2">Partenaire VIP</h3>
-    <p class="text-sm text-gray-400 text-center mb-3">Dominez le marché</p>
-    <div class="text-center font-extrabold text-3xl text-white mb-4">10 000 FCFA <span class="text-sm font-normal text-gray-400">/mois</span></div>
-    <ul class="text-sm text-gray-200 space-y-2 mb-5">
-      <li class="flex items-center">⭐ Articles illimités</li>
-      <li class="flex items-center">⭐ Place garantie "À la Une"</li>
-      <li class="flex items-center">⭐ Promotion WhatsApp officielle</li>
-      <li class="flex items-center">⭐ Cœur de Marché TV (Vidéo)</li>
-    </ul>
-    <a href="https://wa.me/2250576326645?text=Salut%20C%C5%93ur%20de%20March%C3%A9%20!%20Je%20veux%20dominer%20le%20march%C3%A9%20et%20souscrire%20au%20Pack%20PARTENAIRE%20VIP%20%C3%A0%2010000%20FCFA." target="_blank" class="block text-center w-full bg-yellow-400 text-gray-900 font-bold py-3 rounded-lg hover:bg-yellow-500 shadow-[0_0_15px_rgba(250,204,21,0.3)] transition">
-      Devenir VIP
-    </a>
-  </div>
-  </div>
- </div>
-    </div>
-    </div>
-    <div id="modalProduit" class="modal-background" style="display:none; z-index: 3000;">
-    <div class="bg-white w-full max-w-md rounded-t-[40px] mt-auto overflow-hidden shadow-2xl flex flex-col" style="max-height: 90vh;">
-        <div class="relative h-72 w-full bg-gray-100">
-            <img id="p-detail-img" src="" class="w-full h-full object-cover">
-            <button onclick="document.getElementById('modalProduit').style.display='none'" class="absolute top-6 right-6 bg-white/80 w-10 h-10 rounded-full flex items-center justify-center text-purple-900 shadow-lg">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-        </div>
-        <div class="p-8 overflow-y-auto pb-24">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <h2 id="p-detail-nom" class="text-xl font-black text-purple-900 uppercase leading-tight"></h2>
-                    <p id="p-detail-vendeur" class="text-blue-600 font-bold text-[10px] mt-1 italic"></p>
+        <div id="modalVendre" class="modal-background">
+        <div class="modal-content">
+            <div class="bg-purple-900 p-6 text-white flex justify-between items-center text-sm font-black italic">
+                <span>🚀 DEVENIR MARCHAND</span>
+                <button onclick="fermerModale('modalVendre')"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[60vh]">
+                <div class="space-y-5 mt-6 mb-4">
+                    <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm">
+                        <h3 class="text-xl font-bold text-gray-800 text-center">Découverte</h3>
+                        <p class="text-sm text-gray-500 text-center mb-3">Testez le marché sans risque</p>
+                        <div class="text-center font-extrabold text-3xl text-gray-800 mb-4">0 FCFA <span class="text-sm font-normal text-gray-500">/mois</span></div>
+                        <ul class="text-sm text-gray-600 space-y-2 mb-5">
+                            <li class="flex items-center">✅ Jusqu'à 3 articles en ligne</li>
+                            <li class="flex items-center">✅ Affichage standard</li>
+                        </ul>
+                        <a href="https://wa.me/2250576326645?text=Salut%20C%C5%93ur%20de%20March%C3%A9%20!%20Je%20souhaite%20m'inscrire%20en%20tant%20que%20vendeur%20avec%20le%20Pack%20D%C3%A9couverte%20(Gratuit)." target="_blank" class="block text-center w-full bg-gray-100 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-200 transition">
+                            Commencer gratuitement
+                        </a>
+                    </div>
+                    <div class="border-2 border-green-500 rounded-xl p-5 bg-green-50 shadow-md relative mt-6">
+                        <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs font-extrabold px-3 py-1 rounded-full shadow">RECOMMANDÉ</span>
+                        <h3 class="text-xl font-bold text-green-800 text-center mt-2">Marchand Pro</h3>
+                        <p class="text-sm text-green-600 text-center mb-3">Vendez plus vite, tous les jours</p>
+                        <div class="text-center font-extrabold text-3xl text-green-800 mb-4">3 000 FCFA <span class="text-sm font-normal text-green-600">/mois</span></div>
+                        <ul class="text-sm text-gray-800 space-y-2 mb-5 font-medium">
+                            <li class="flex items-center">🔥 Jusqu'à 20 articles en ligne</li>
+                            <li class="flex items-center">🔥 Badge "Vendeur Vérifié"</li>
+                            <li class="flex items-center">🔥 Positionnement prioritaire</li>
+                            <li class="flex items-center">🔥 Bouton WhatsApp direct</li>
+                        </ul>
+                        <a href="https://wa.me/2250576326645?text=Salut%20C%C5%93ur%20de%20March%C3%A9%20!%20Je%20souhaite%20booster%20mes%20ventes%20et%20prendre%20le%20Pack%20MARCHAND%20PRO%20%C3%A0%203000%20FCFA." target="_blank" class="block text-center w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 shadow-lg transition">
+                            Devenir Pro
+                        </a>
+                    </div>
+                    <div class="border border-gray-700 rounded-xl p-5 bg-gray-900 shadow-xl relative mt-6">
+                        <span class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-gray-900 text-xs font-extrabold px-3 py-1 rounded-full shadow">👑 VIP</span>
+                        <h3 class="text-xl font-bold text-yellow-400 text-center mt-2">Partenaire VIP</h3>
+                        <p class="text-sm text-gray-400 text-center mb-3">Dominez le marché</p>
+                        <div class="text-center font-extrabold text-3xl text-white mb-4">10 000 FCFA <span class="text-sm font-normal text-gray-400">/mois</span></div>
+                        <ul class="text-sm text-gray-200 space-y-2 mb-5">
+                            <li class="flex items-center">⭐ Articles illimités</li>
+                            <li class="flex items-center">⭐ Place garantie "À la Une"</li>
+                            <li class="flex items-center">⭐ Promotion WhatsApp officielle</li>
+                            <li class="flex items-center">⭐ Cœur de Marché TV (Vidéo)</li>
+                        </ul>
+                        <a href="https://wa.me/2250576326645?text=Salut%20C%C5%93ur%20de%20March%C3%A9%20!%20Je%20veux%20dominer%20le%20march%C3%A9%20et%20souscrire%20au%20Pack%20PARTENAIRE%20VIP%20%C3%A0%2010000%20FCFA." target="_blank" class="block text-center w-full bg-yellow-400 text-gray-900 font-bold py-3 rounded-lg hover:bg-yellow-500 shadow-[0_0_15px_rgba(250,204,21,0.3)] transition">
+                            Devenir VIP
+                        </a>
+                    </div>
                 </div>
-                <div id="p-detail-prix" class="bg-orange-600 text-white px-4 py-2 rounded-2xl font-black text-sm"></div>
             </div>
-            <hr class="border-gray-100 my-4">
-            <h4 class="text-gray-400 font-black text-[10px] uppercase mb-2">Description</h4>
-            <p id="p-detail-desc" class="text-gray-600 text-[11px] leading-relaxed"></p>
-            <div class="fixed bottom-0 left-0 right-0 p-6 bg-white border-t flex gap-3">
-                <button id="p-detail-btn-panier" class="flex-1 bg-purple-900 text-white h-14 rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-2">
-                    <i class="fas fa-shopping-basket"></i> AJOUTER AU PANIER
+        </div>
+        </div>
+            <div id="modalProduit" class="modal-background" style="display:none; z-index: 3000;">
+        <div class="bg-white w-full max-w-md rounded-t-[40px] mt-auto overflow-hidden shadow-2xl flex flex-col" style="max-height: 90vh;">
+            <div class="relative h-72 w-full bg-gray-100">
+                <img id="p-detail-img" src="" class="w-full h-full object-cover">
+                <button onclick="document.getElementById('modalProduit').style.display='none'" class="absolute top-6 right-6 bg-white/80 w-10 h-10 rounded-full flex items-center justify-center text-purple-900 shadow-lg">
+                    <i class="fas fa-times text-xl"></i>
                 </button>
-                <a id="p-detail-btn-wa" href="#" class="bg-green-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center">
-                    <i class="fab fa-whatsapp text-2xl"></i>
-                </a>
+            </div>
+            <div class="p-8 overflow-y-auto pb-24">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h2 id="p-detail-nom" class="text-xl font-black text-purple-900 uppercase leading-tight"></h2>
+                        <p id="p-detail-vendeur" class="text-blue-600 font-bold text-[10px] mt-1 italic"></p>
+                    </div>
+                    <div id="p-detail-prix" class="bg-orange-600 text-white px-4 py-2 rounded-2xl font-black text-sm"></div>
+                </div>
+                <hr class="border-gray-100 my-4">
+                <h4 class="text-gray-400 font-black text-[10px] uppercase mb-2">Description</h4>
+                <p id="p-detail-desc" class="text-gray-600 text-[11px] leading-relaxed"></p>
+                <div class="fixed bottom-0 left-0 right-0 p-6 bg-white border-t flex gap-3">
+                    <button id="p-detail-btn-panier" class="flex-1 bg-purple-900 text-white h-14 rounded-2xl font-black text-[10px] uppercase flex items-center justify-center gap-2">
+                        <i class="fas fa-shopping-basket"></i> AJOUTER AU PANIER
+                    </button>
+                    <a id="p-detail-btn-wa" href="#" class="bg-green-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center">
+                        <i class="fab fa-whatsapp text-2xl"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
-    </div>
+
     <div id="modalAide" class="modal-background" style="display:none; z-index: 3000;">
-  <div class="modal-content bg-gray-50 rounded-t-[40px] overflow-hidden">
-    
-    <div class="bg-purple-900 p-5 text-white flex justify-between items-center text-sm font-black italic">
-      <span>🐘 L'ESPRIT CŒUR DE MARCHÉ</span>
-      <button onclick="fermerModale('modalAide')"><i class="fas fa-times text-xl"></i></button>
-    </div>
-
-    <div class="p-5 overflow-y-auto max-h-[75vh] space-y-6">
-
-      <div class="text-center border-b border-gray-200 pb-4">
-        <h3 class="text-xl font-black text-purple-900 mb-2 uppercase italic">Notre Mission</h3>
-        <p class="text-sm text-gray-700 leading-relaxed font-medium">
-          Cœur de Marché est né d'une volonté : <span class="text-purple-900 font-bold">digitaliser la Marahoué sans laisser personne derrière.</span> Nous sommes ici pour transformer chaque boutique de Bouaflé en une puissance numérique, permettant aux habitants d'acheter avec dignité et aux commerçants de prospérer sans limites.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 gap-4">
-        <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-orange-500">
-          <h4 class="font-black text-orange-600 mb-1 text-sm uppercase italic">🚀 Pourquoi utiliser l'App ?</h4>
-          <p class="text-[11px] text-gray-600">Gagnez du temps et de l'énergie. Ne parcourez plus la ville sous le soleil. Tout le marché est là, trié, certifié et accessible en un clic.</p>
+        <div class="modal-content bg-gray-50 rounded-t-[40px] overflow-hidden">
+            <div class="bg-purple-900 p-5 text-white flex justify-between items-center text-sm font-black italic">
+                <span>🐘 L'ESPRIT CŒUR DE MARCHÉ</span>
+                <button onclick="fermerModale('modalAide')"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto max-h-[75vh] space-y-6">
+                <div class="text-center border-b border-gray-200 pb-4">
+                    <h3 class="text-xl font-black text-purple-900 mb-2 uppercase italic">Notre Mission</h3>
+                    <p class="text-sm text-gray-700 leading-relaxed font-medium">
+                        Cœur de Marché est né d'une volonté : <span class="text-purple-900 font-bold">digitaliser la Marahoué sans laisser personne derrière.</span> Nous sommes ici pour transformer chaque boutique de Bouaflé en une puissance numérique, permettant aux habitants d'acheter avec dignité et aux commerçants de prospérer sans limites.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-orange-500">
+                        <h4 class="font-black text-orange-600 mb-1 text-sm uppercase italic">🚀 Pourquoi utiliser l'App ?</h4>
+                        <p class="text-[11px] text-gray-600">Gagnez du temps et de l'énergie. Ne parcourez plus la ville sous le soleil. Tout le marché est là, trié, certifié et accessible en un clic.</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-green-500">
+                        <h4 class="font-black text-green-600 mb-1 text-sm uppercase italic">💰 Boostez votre Visibilité</h4>
+                        <p class="text-[11px] text-gray-600">Marchands, ne soyez plus invisibles ! Cœur de Marché vous offre la vitrine que vous méritez. Passez au niveau supérieur avec nos outils de promotion.</p>
+                    </div>
+                </div>
+                <div class="bg-purple-50 p-5 rounded-[30px] border border-purple-100">
+                    <h4 class="font-black text-purple-900 mb-3 text-center text-xs uppercase italic">📲 Installez l'App sur votre écran</h4>
+                    <div class="flex justify-around text-center text-[10px] font-bold text-gray-700">
+                        <div><i class="fas fa-ellipsis-v text-purple-900 text-lg mb-1"></i><br>1. Menu Chrome</div>
+                        <div><i class="fas fa-plus-square text-purple-900 text-lg mb-1"></i><br>2. "Ajouter à..."</div>
+                        <div><i class="fas fa-mobile text-purple-900 text-lg mb-1"></i><br>3. Terminé !</div>
+                    </div>
+                </div>
+                <button onclick="fermerModale('modalAide'); document.getElementById('modalVendre').style.display='flex';" class="w-full bg-purple-900 text-white font-black py-4 rounded-2xl shadow-lg hover:scale-95 transition-transform uppercase italic tracking-widest text-xs">
+                    Découvrir nos solutions Marchands
+                </button>
+                <p class="text-center text-[10px] font-bold text-gray-400 italic">Cœur de Marché — Propulsé par la Marahoué</p>
+            </div>
         </div>
-        
-        <div class="bg-white p-4 rounded-2xl shadow-sm border-l-4 border-green-500">
-          <h4 class="font-black text-green-600 mb-1 text-sm uppercase italic">💰 Boostez votre Visibilité</h4>
-          <p class="text-[11px] text-gray-600">Marchands, ne soyez plus invisibles ! Cœur de Marché vous offre la vitrine que vous méritez. Passez au niveau supérieur avec nos outils de promotion.</p>
-        </div>
-      </div>
-
-      <div class="bg-purple-50 p-5 rounded-[30px] border border-purple-100">
-        <h4 class="font-black text-purple-900 mb-3 text-center text-xs uppercase italic">📲 Installez l'App sur votre écran</h4>
-        <div class="flex justify-around text-center text-[10px] font-bold text-gray-700">
-          <div><i class="fas fa-ellipsis-v text-purple-900 text-lg mb-1"></i><br>1. Menu Chrome</div>
-          <div><i class="fas fa-plus-square text-purple-900 text-lg mb-1"></i><br>2. "Ajouter à..."</div>
-          <div><i class="fas fa-mobile text-purple-900 text-lg mb-1"></i><br>3. Terminé !</div>
-        </div>
-      </div>
-
-      <button onclick="fermerModale('modalAide'); document.getElementById('modalVendre').style.display='flex';" class="w-full bg-purple-900 text-white font-black py-4 rounded-2xl shadow-lg hover:scale-95 transition-transform uppercase italic tracking-widest text-xs">
-        Découvrir nos solutions Marchands
-      </button>
-
-      <p class="text-center text-[10px] font-bold text-gray-400 italic">Cœur de Marché — Propulsé par la Marahoué</p>
-
-    </div>
-  </div>
     </div>
     
     <div id="btn-panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-24 right-6 bg-orange-600 text-white rounded-full shadow-2xl z-[3000] flex items-center justify-center transition-all duration-300 scale-0" style="display: none; width: 65px; height: 65px;">
         <i class="fas fa-shopping-basket text-2xl"></i>
         <span id="count-panier" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] w-6 h-6 rounded-full flex items-center justify-center font-black border-2 border-white">0</span>
     </div>
-     <header id="en-tete-app" class="bg-purple-900 pt-8 rounded-b-[40px] shadow-2xl text-center">
-    <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center border-2 border-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.5)]">
-        <img src="https://jeandavidkossi-boop.github.io/Coeur-de-march-/1769121566036.png" class="w-full h-full object-contain rounded-xl" onerror="this.src='https://via.placeholder.com/64'">
-    </div>
-    <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Coeur de Marche</h1>
-    <p class="text-orange-400 text-[10px] font-bold uppercase italic mb-4">Bouafle - Marahoue</p>
-    <div class="marquee-container"><span class="marquee-text" id="texteBandeAnnonce">Cœur de Marché Bouaflé vous souhaite la bienvenue...</span></div>
-     </header>
+        <header id="en-tete-app" class="bg-purple-900 pt-8 rounded-b-[40px] shadow-2xl text-center">
+        <div class="w-16 h-16 bg-white rounded-2xl mx-auto mb-2 flex items-center justify-center border-2 border-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.5)]">
+            <img src="https://jeandavidkossi-boop.github.io/Coeur-de-march-/1769121566036.png" class="w-full h-full object-contain rounded-xl" onerror="this.src='https://via.placeholder.com/64'">
+        </div>
+        <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Coeur de Marche</h1>
+        <p class="text-orange-400 text-[10px] font-bold uppercase italic mb-4">Bouafle - Marahoue</p>
+        <div class="marquee-container"><span class="marquee-text" id="texteBandeAnnonce">Cœur de Marché Bouaflé vous souhaite la bienvenue...</span></div>
+    </header>
     
     <section id="accueil" class="active px-4 mt-6">
         <div class="bg-white p-5 rounded-[30px] shadow-xl border border-gray-100 mb-4 flex gap-2">
@@ -288,108 +241,81 @@
             </h3>
             <div id="carrousel-une" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1"></div>
         </div>
-            <div id="section-video" class="mb-8 px-2 mt-6 hidden">
-      <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 flex items-center gap-2">
-        <i class="fas fa-video text-orange-500"></i> Cœur de Marché TV
-      </h3>
-      
-      <div class="bg-white p-2 rounded-3xl shadow-lg border border-purple-100">
-        <div class="relative w-full overflow-hidden rounded-2xl bg-gray-200" style="padding-top: 56.25%;">
-          <iframe id="player-video" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-        <p id="titre-video" class="text-center text-gray-500 font-bold text-[9px] mt-2 italic"></p>
-      </div>
+
+        <div id="section-video" class="mb-8 px-2 mt-6 hidden">
+            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 flex items-center gap-2">
+                <i class="fas fa-video text-orange-500"></i> Cœur de Marché TV
+            </h3>
+            <div class="bg-white p-2 rounded-3xl shadow-lg border border-purple-100">
+                <div class="relative w-full overflow-hidden rounded-2xl bg-gray-200" style="padding-top: 56.25%;">
+                    <iframe id="player-video" class="absolute top-0 left-0 w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <p id="titre-video" class="text-center text-gray-500 font-bold text-[9px] mt-2 italic"></p>
             </div>
-        <div id="section-nouveautes" class="mb-8 px-2 mt-2 hidden">
-      <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 flex items-center gap-2">
-        <i class="fas fa-sparkles text-orange-500"></i> Fraîchement arrivés
-      </h3>
-      <div id="carrousel-nouveautes" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1">
         </div>
+
+        <div id="section-nouveautes" class="mb-8 px-2 mt-2 hidden">
+            <h3 class="text-purple-900 font-black text-[10px] uppercase mb-3 flex items-center gap-2">
+                <i class="fas fa-sparkles text-orange-500"></i> Fraîchement arrivés
+            </h3>
+            <div id="carrousel-nouveautes" class="flex gap-4 overflow-x-auto no-scrollbar pb-2 px-1"></div>
         </div>
     </section>
-        <section id="boutique" class="px-4 mt-8">
+
+    <section id="boutique" class="px-4 mt-8">
         <div id="vue-rayons">
-            <h2 class="text-purple-900 font-black text-xl mb-6 uppercase italic text-center underline decoration-orange-500 underline-offset-4">Nos Marches</h2>
+            <h2 class="text-purple-900 font-black text-xl mb-6 uppercase italic text-center underline decoration-orange-500 decoration-4 underline-offset-4">Nos Rayons</h2>
             <div class="grid grid-cols-2 gap-3 pb-12">
-                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-500 flex flex-col items-center"><i class="fas fa-scissors text-orange-600 mb-2"></i><p class="text-[8px] font-black uppercase">Mercerie</p></button>
-                <button onclick="ouvrirRayon('Beaute')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-pink-500 flex flex-col items-center"><i class="fas fa-magic text-pink-600 mb-2"></i><p class="text-[8px] font-black uppercase">Beaute</p></button>
-                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-500 flex flex-col items-center"><i class="fas fa-leaf text-green-600 mb-2"></i><p class="text-[8px] font-black uppercase">Vivrier</p></button>
-                <button onclick="ouvrirRayon('Mode')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-500 flex flex-col items-center"><i class="fas fa-tshirt text-blue-600 mb-2"></i><p class="text-[8px] font-black uppercase">Mode</p></button>
-                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-500 flex flex-col items-center"><i class="fas fa-shopping-basket text-red-600 mb-2"></i><p class="text-[8px] font-black uppercase">Alimentation</p></button>
-                <button onclick="ouvrirRayon('Resto')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-400 flex flex-col items-center"><i class="fas fa-utensils text-orange-400 mb-2"></i><p class="text-[8px] font-black uppercase">Resto</p></button>
-                <button onclick="ouvrirRayon('Electromenager')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-gray-500 flex flex-col items-center"><i class="fas fa-plug text-gray-600 mb-2"></i><p class="text-[8px] font-black uppercase">Electro.</p></button>
-                <button onclick="ouvrirRayon('Electronique')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-indigo-500 flex flex-col items-center"><i class="fas fa-laptop text-indigo-600 mb-2"></i><p class="text-[8px] font-black uppercase">Electronique</p></button>
-                <button onclick="ouvrirRayon('Sante')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-400 flex flex-col items-center"><i class="fas fa-heartbeat text-red-400 mb-2"></i><p class="text-[8px] font-black uppercase">Sante</p></button>
-                <button onclick="ouvrirRayon('Immobilier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-yellow-800 flex flex-col items-center"><i class="fas fa-home text-yellow-800 mb-2"></i><p class="text-[8px] font-black uppercase">Immo.</p></button>
-                <button onclick="ouvrirRayon('Agricole')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-700 flex flex-col items-center"><i class="fas fa-tractor text-green-700 mb-2"></i><p class="text-[8px] font-black uppercase">Agricole</p></button>
-                <button onclick="ouvrirRayon('Elevage')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-900 flex flex-col items-center"><i class="fas fa-paw text-orange-900 mb-2"></i><p class="text-[8px] font-black uppercase">Elevage</p></button>
-                <button onclick="ouvrirRayon('Transport')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-600 flex flex-col items-center"><i class="fas fa-motorcycle text-blue-600 mb-2"></i><p class="text-[8px] font-black uppercase">Transport</p></button>
-                <button onclick="ouvrirRayon('Services')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-purple-500 flex flex-col items-center"><i class="fas fa-concierge-bell text-purple-500 mb-2"></i><p class="text-[8px] font-black uppercase">Services</p></button>
+                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-500 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-cut text-2xl text-orange-500"></i>Mercerie</button>
+                <button onclick="ouvrirRayon('Beaute')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-pink-500 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-magic text-2xl text-pink-500"></i>Beauté</button>
+                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-500 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-leaf text-2xl text-green-500"></i>Vivrier</button>
+                <button onclick="ouvrirRayon('Mode')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-500 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-tshirt text-2xl text-blue-500"></i>Mode</button>
+                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-500 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-shopping-basket text-2xl text-red-500"></i>Alimentation</button>
+                <button onclick="ouvrirRayon('Resto')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-400 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-utensils text-2xl text-orange-400"></i>Resto</button>
+                <button onclick="ouvrirRayon('Electromenager')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-gray-600 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-blender text-2xl text-gray-600"></i>Electroménager</button>
+                <button onclick="ouvrirRayon('Electronique')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-purple-500 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-laptop text-2xl text-purple-500"></i>Electronique</button>
+                <button onclick="ouvrirRayon('Sante')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-red-400 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-heartbeat text-2xl text-red-400"></i>Santé</button>
+                <button onclick="ouvrirRayon('Immobilier')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-yellow-600 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-home text-2xl text-yellow-600"></i>Immobilier</button>
+                <button onclick="ouvrirRayon('Agricole')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-green-700 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-tractor text-2xl text-green-700"></i>Agricole</button>
+                <button onclick="ouvrirRayon('Elevage')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-orange-700 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-paw text-2xl text-orange-700"></i>Elevage</button>
+                <button onclick="ouvrirRayon('Transport')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-blue-400 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-car text-2xl text-blue-400"></i>Transport</button>
+                <button onclick="ouvrirRayon('Services')" class="bg-white p-4 rounded-3xl shadow-lg border-b-4 border-purple-700 flex flex-col items-center justify-center gap-2 font-black text-xs uppercase text-gray-800"><i class="fas fa-handshake text-2xl text-purple-700"></i>Services</button>
             </div>
         </div>
         <div id="vue-produits" class="hidden">
-            <button onclick="retourRayons()" class="mb-4 text-orange-600 font-black text-[10px] uppercase flex items-center gap-2"><i class="fas fa-chevron-left"></i> Retour</button>
+            <button onclick="retourRayons()" class="mb-6 text-orange-600 font-black text-[10px] uppercase flex items-center gap-2 bg-orange-50 px-4 py-2 rounded-full"><i class="fas fa-arrow-left"></i> Retour aux Rayons</button>
             <span id="compteur-articles" class="text-[9px] font-bold text-gray-400 ml-2"></span>
             <div id="liste-produits" class="space-y-4 pb-20"></div>
         </div>
     </section>
-<button id="btnRemonter" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
-    class="fixed bottom-48 right-6 bg-purple-900 text-white w-12 h-12 rounded-full shadow-2xl z-[2500] flex items-center justify-center transition-all duration-300 scale-0 opacity-0 border-2 border-white">
-    <i class="fas fa-arrow-up"></i>
-</button>
-    
-    <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-full shadow-2xl p-3 flex justify-around items-center z-[90]">
+
+    <button id="btnRemonter" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="fixed bottom-48 right-6 bg-purple-900 text-white w-12 h-12 rounded-full shadow-2xl z-[2500] flex items-center justify-center opacity-0 scale-0 transition-all duration-300">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-full shadow-2xl p-3 flex justify-around items-center z-[900] border border-gray-100">
         <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center">
-            <i class="fas fa-home text-xl"></i><span class="text-[8px]">Accueil</span>
+            <i class="fas fa-home text-xl"></i> <span class="text-[8px] font-bold mt-1">Accueil</span>
         </button>
-        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center">
-            <i class="fas fa-store text-xl"></i><span class="text-[8px]">Boutique</span>
+        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center transition-colors">
+            <i class="fas fa-store text-xl"></i> <span class="text-[8px] font-bold mt-1">Boutique</span>
         </button>
-        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg">
+        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-lg shadow-green-500/40 -mt-8 border-4 border-[#f9fafb]">
             <i class="fab fa-whatsapp text-2xl"></i>
         </a>
-        <button onclick="ouvrirEspaceMarchand()" class="text-gray-400 flex flex-col items-center">
-            <i class="fas fa-store text-xl"></i><span class="text-[8px]">Vendre</span>
+        <button onclick="ouvrirEspaceMarchand()" class="text-gray-400 flex flex-col items-center transition-colors">
+            <i class="fas fa-store-alt text-xl"></i> <span class="text-[8px] font-bold mt-1">Vendre</span>
         </button>
-        <button onclick="ouvrirAide()" class="text-gray-400 flex flex-col items-center">
-            <i class="fas fa-question-circle text-xl"></i><span class="text-[8px]">Aide</span>
+        <button onclick="ouvrirAide()" class="text-gray-400 flex flex-col items-center transition-colors">
+            <i class="fas fa-question-circle text-xl"></i> <span class="text-[8px] font-bold mt-1">Aide</span>
         </button>
-    </nav>
-    <script>
+                    </nav>
+        <script>
         const urlScript = "https://script.google.com/macros/s/AKfycbx6DPL8H6X_KVsChwlZ_XPVMzSDXVn5D1u56bx36O5e3XHf1z_YGgJg/exec";
         const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
         let articles = [];
         
-        // --- NOUVEAU : On charge le panier depuis la mémoire au démarrage ---
         let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
-
-        // --- DEBUT DE L'AJOUT POUR LE CARROUSEL A LA UNE ---
-        let intervalCarrouselUne;
-        const delaiDefilementUne = 4000; // 4 secondes
-
-        function demarrerCarrouselUne() {
-            arreterCarrouselUne(); // Sécurité
-            intervalCarrouselUne = setInterval(() => {
-                const carrousel = document.getElementById('carrousel-une');
-                if (!carrousel || carrousel.children.length <= 1) return;
-
-                const scrollAmount = carrousel.children[0].offsetWidth + 16;
-                const maxScroll = carrousel.scrollWidth - carrousel.clientWidth;
-
-                if (carrousel.scrollLeft >= maxScroll - 5) {
-                    carrousel.scrollTo({ left: 0, behavior: 'smooth' });
-                } else {
-                    carrousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-                }
-            }, delaiDefilementUne);
-        }
-
-        function arraterCarrouselUne() {
-            clearInterval(intervalCarrouselUne);
-        }
-        // --- FIN DE L'AJOUT ---
-        
 
         setTimeout(() => {
             if (panier.length > 0) {
@@ -399,49 +325,40 @@
                 if (count) count.innerText = panier.length;
             }
         }, 500);
-    // --------------------------------------------------------------------
+
         const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-// Fonction pour sécuriser le texte et empêcher le piratage
-function securiserTexte(texte) {
-  if (!texte) return "";
-  return texte.toString().replace(/[&<>'"]/g, function(caractere) {
-    return {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      "'": '&#39;',
-      '"': '&quot;'
-    }[caractere];
-  });
-}
-            
+
+        function securiserTexte(texte) {
+            if (!texte) return "";
+            return texte.toString().replace(/[&<>"']/g, function(caractere) {
+                return { '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' }[caractere];
+            });
+        }
+
         async function chargerDonnees() {
             const loader = document.getElementById('loader');
             try {
                 if(loader) loader.style.display = 'flex';
                 
-                const r = await fetch(urlScript); 
+                const r = await fetch(urlScript);
                 articles = await r.json();
                 
                 verifierLienPartage();
-                
+
                 const ann = articles.find(p => cleanTxt(p.nom) === "annonce");
                 if(ann) document.getElementById('texteBandeAnnonce').innerText = ann.description;
-    // ------------------ COEUR DE MARCHE TV ------------------
-    const videoData = articles.find(p => p.nom === "VIDEO_PUB" || cleanTxt(p.nom) === "video_pub");
-    if (videoData && videoData.description && videoData.description.length > 5) {
-        let lien = videoData.description;
-        let videoId = lien.includes('v=') ? lien.split('v=')[1].substring(0, 11) : lien.split('/').pop().substring(0, 11);
-        
-        document.getElementById('player-video').src = "https://www.youtube.com/embed/" + videoId;
-        document.getElementById('titre-video').innerText = videoData.details || "Reportage exclusif";
-        document.getElementById('section-video').classList.remove('hidden');
-    }
-    // --------------------------------------------------------
-                 const cert = articles.filter(p => cleanTxt(p.certifie) === "oui" && cleanTxt(p.statut) === "ok");
-                const carrouselUne = document.getElementById('carrousel-une');
 
-                carrouselUne.innerHTML = cert.map(p => {
+                const videoData = articles.find(p => p.nom === "VIDEO_PUB" || cleanTxt(p.nom) === "video_pub");
+                if (videoData && videoData.description && videoData.description.length > 5) {
+                    let lien = videoData.description;
+                    let videoId = lien.includes('v=') ? lien.split('v=')[1].substring(0, 11) : lien.split('/').pop().substring(0, 11);
+                    document.getElementById('player-video').src = "https://www.youtube.com/embed/" + videoId;
+                    document.getElementById('titre-video').innerText = videoData.details || "Reportage exclusif";
+                    document.getElementById('section-video').classList.remove('hidden');
+                }
+
+                const cert = articles.filter(p => cleanTxt(p.certifie) === "oui" && cleanTxt(p.statut) === "ok");
+                document.getElementById('carrousel-une').innerHTML = cert.map(p => {
                     const escNom = p.nom.replace(/'/g, "\\'");
                     return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 pb-2 relative">
                         <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-full z-10 shadow-md"><i class="fas fa-star"></i> VIP</div>
@@ -454,105 +371,81 @@ function securiserTexte(texte) {
                     </div>`;
                 }).join('');
 
-                                // --- NOUVEAU : Lancement du carrousel et gestion du toucher ---
-                if (cert.length > 1) {
-                    demarrerCarrouselUne(); // Lance le défilement
-                    
-                    // Pause quand on touche (sur téléphone)
-                    carrouselUne.addEventListener('touchstart', arreterCarrouselUne, {passive: true});
-                    // Reprise quand on lâche
-                    carrouselUne.addEventListener('touchend', demarrerCarrouselUne);
+                const vraisArticles = articles.filter(p => p.nom !== "VIDEO_PUB" && cleanTxt(p.nom) !== "annonce" && cleanTxt(p.statut) === "ok");
+                const dernieresNouveautes = vraisArticles.slice(-6).reverse();
 
-                    // Pause/Reprise pour la souris (sur ordinateur)
-                    carrouselUne.addEventListener('mouseenter', arreterCarrouselUne);
-                    carrouselUne.addEventListener('mouseleave', demarrerCarrouselUne);
+                if(dernieresNouveautes.length > 0) {
+                    document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => {
+                        const escNom = p.nom.replace(/'/g, "\\'");
+                        return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 pb-2 relative">
+                            <div class="absolute top-2 right-2 bg-green-500 text-white text-[9px] font-black px-2 py-1 rounded-full z-10 shadow-md">NEW</div>
+                            <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover cursor-pointer">
+                            <div class="p-3">
+                                <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${securiserTexte(p.nom)}</h4>
+                                <p class="text-blue-600 text-[8px] font-bold">${securiserTexte(p.quartier || 'Bouaflé')}</p>
+                                <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white text-[10px] font-black py-2 rounded-xl flex items-center justify-center gap-1 shadow-md"><i class="fas fa-plus"></i> PANIER</button>
+                            </div>
+                        </div>`;
+                    }).join('');
+                    document.getElementById('section-nouveautes').classList.remove('hidden');
                 }
-                
-                // --------------------------------------------------------------
-                
-                    // ------------------ SECTION NOUVEAUTÉS (Sécurisé) ------------------
-    // On filtre pour ne garder que les vrais articles (pas la vidéo, pas l'annonce) qui ont le statut 'ok'
-    const vraisArticles = articles.filter(p => p.nom !== "VIDEO_PUB" && cleanTxt(p.nom) !== "annonce" && cleanTxt(p.statut) === "ok");
-    
-    // On prend les 6 derniers articles du tableau et on les inverse pour avoir le plus récent en premier
-    const dernieresNouveautes = vraisArticles.slice(-6).reverse(); 
 
-    if(dernieresNouveautes.length > 0) {
-        document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => {
-            const escNom = p.nom.replace(/'/g, "\\'");
-            return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 pb-2 relative">
-                <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-full z-10">${p.prix} F</div>
-                <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover cursor-pointer">
-                <div class="p-3">
-                    <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${securiserTexte(p.nom)}</h4>
-                    <p class="text-blue-600 text-[8px] font-bold">${securiserTexte(p.quartier || 'Bouaflé')}</p>
-                    <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white py-1.5 rounded-xl text-[9px] font-black flex items-center justify-center gap-1"><i class="fas fa-plus-circle"></i> AJOUTER</button>
-                </div>
-            </div>`;
-        }).join('');
-        // On affiche la section uniquement s'il y a des articles
-        document.getElementById('section-nouveautes').classList.remove('hidden');
-    }
-    // -------------------------------------------------------------------
-                
-                } catch (e) {
-        console.error("Erreur :", e);
-        alert("Erreur technique : " + e.message);
-    } finally {
-                
+            } catch (e) {
+                console.error("Erreur :", e);
+                alert("Erreur technique : " + e.message);
+            } finally {
                 if(loader) loader.style.display = 'none';
             }
         }
-
-        function switchTab(id) {
+                 function switchTab(id) {
             document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(id); 
+            const target = document.getElementById(id);
             if(target) target.classList.add('active');
             if(id === 'boutique') retourRayons();
-            document.getElementById('btn-accueil').className = id === 'accueil' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center';
-            document.getElementById('btn-boutique').className = id === 'boutique' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center';
+            document.getElementById('btn-accueil').className = id === 'accueil' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center transition-colors';
+            document.getElementById('btn-boutique').className = id === 'boutique' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center transition-colors';
         }
 
-        function ouvrirRayonDepuisAccueil(n) { switchTab('boutique'); ouvrirRayon(n); }
+        function ouvrirRayonDepuisAccueil(r) { switchTab('boutique'); ouvrirRayon(r); }
 
-            function ouvrirRayon(nomRayon, trierParPrix = false) {
-        document.getElementById('vue-rayons').classList.add('hidden');
-        document.getElementById('vue-produits').classList.remove('hidden');
-        
-        let filtres = articles.filter(p => cleanTxt(p.rayon) === cleanTxt(nomRayon) && cleanTxt(p.statut) === "ok");
-        
-        // --- LOGIQUE DE TRI ---
-        if (trierParPrix === true) {
-            filtres.sort((a, b) => {
-                let prixA = parseInt(a.prix.toString().replace(/\s/g, '')) || 0;
-                let prixB = parseInt(b.prix.toString().replace(/\s/g, '')) || 0;
-                return prixA - prixB; // Trie du plus petit prix au plus grand
-            });
-        }
-        
-        // --- AFFICHAGE DU BOUTON DE TRI ---
-        const escNomRayon = nomRayon.replace(/'/g, "\\'");
-        document.getElementById('compteur-articles').innerHTML = filtres.length + " article(s) " + 
-            `<button onclick="ouvrirRayon('${escNomRayon}', true)" class="ml-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[10px] font-black border border-orange-200 shadow-sm"><i class="fas fa-sort-amount-down-alt"></i> Moins chers d'abord</button>`;
+        function ouvrirRayon(nomRayon, trierParPrix = false) {
+            document.getElementById('vue-rayons').classList.add('hidden');
+            document.getElementById('vue-produits').classList.remove('hidden');
             
-        document.getElementById('liste-produits').innerHTML = filtres.length === 0 ? '<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé</p>' :
-                    
-                filtres.map(p => {
+            let filtres = articles.filter(p => cleanTxt(p.rayon) === cleanTxt(nomRayon) && cleanTxt(p.statut) === "ok");
+            
+            if (trierParPrix === true) {
+                filtres.sort((a, b) => {
+                    let prixA = parseInt(a.prix.toString().replace(/\s/g, '')) || 0;
+                    let prixB = parseInt(b.prix.toString().replace(/\s/g, '')) || 0;
+                    return prixA - prixB; 
+                });
+            }
+            
+            const escNomRayon = nomRayon.replace(/'/g, "\\'");
+            document.getElementById('compteur-articles').innerHTML = filtres.length + " article(s) " + `<button onclick="ouvrirRayon('${escNomRayon}', true)" class="ml-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[9px] shadow-sm"><i class="fas fa-sort-amount-down"></i> Prix croissant</button>`;
+            
+            const listeProduits = document.getElementById('liste-produits');
+
+            if (filtres.length === 0) {
+                listeProduits.innerHTML = `<p class="text-center p-10 text-gray-400 text-[10px]">Rayon vide pour le moment.</p>`;
+            } else {
+                listeProduits.innerHTML = filtres.map(p => {
                     const escNom = p.nom.replace(/'/g, "\\'");
-                    const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\nProduit : *" + p.nom + "*\nPrix : *" + p.prix + " F*\nQuartier : _" + (p.quartier || "Bouaflé") + "_\n\nLien direct : " + appLink + "?p=" + encodeURIComponent(p.nom));
+                    const tPartage = encodeURIComponent(`🛒 *COMMANDE CŒUR DE MARCHÉ*\n\nProduit : *${p.nom}*\nPrix : *${p.prix}*\n\nLien : ${appLink}?p=${encodeURIComponent(p.nom)}`);
                     
-                    return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
+                    return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 relative">
                         <div class="flex gap-4">
-                            <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-md">
+                            <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-md cursor-pointer border border-gray-50">
                             <div class="flex-1">
-                        <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1 flex items-center gap-1">${securiserTexte(p.nom)}</h4>
-                        <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
-                        <p class="text-blue-600 font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${securiserTexte(p.quartier)}</p>
-                        <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${securiserTexte(p.description || '')}</p>
+                                <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1 flex items-center gap-1">${securiserTexte(p.nom)}</h4>
+                                <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
+                                <p class="text-blue-600 font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${securiserTexte(p.quartier || 'Bouaflé')}</p>
+                                <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${securiserTexte(p.description || '')}</p>
                             </div>
                         </div>
                         <div class="flex gap-2 border-t pt-4">
-                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white h-10 rounded-xl text-[8px] font-black flex-1 uppercase flex items-center justify-center gap-2">
+                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white h-10 flex-1 rounded-xl font-black text-[10px] shadow-md flex items-center justify-center gap-2">
                                 <i class="fas fa-plus-circle"></i> PANIER
                             </button>
                             <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fab fa-whatsapp text-lg"></i></a>
@@ -561,6 +454,7 @@ function securiserTexte(texte) {
                         </div>
                     </div>`;
                 }).join('');
+            }
             window.scrollTo(0,0);
         }
 
@@ -569,127 +463,109 @@ function securiserTexte(texte) {
             document.getElementById('vue-produits').classList.add('hidden');
         }
 
-            function ajouterAuPanier(n, p) {
-        panier.push({ nom: n, prix: p });
-        
-        // --- NOUVEAU : On sauvegarde dans la mémoire du téléphone ---
-        localStorage.setItem('panier_bouafle', JSON.stringify(panier));
-        // ------------------------------------------------------------
-        
-        const btn = document.getElementById('btn-panier-flottant');
-        const count = document.getElementById('count-panier');
-        if(btn) {
-            btn.style.display = 'flex';
-            setTimeout(() => btn.classList.add('scale-100'), 10);
-        }
-        if(count) count.innerText = panier.length;
+        function ajouterAuPanier(n, p) {
+            panier.push({ nom: n, prix: p });
+            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+            
+            const btn = document.getElementById('btn-panier-flottant');
+            const count = document.getElementById('count-panier');
+            if(btn) {
+                btn.style.display = 'flex';
+                setTimeout(() => btn.classList.add('scale-100'), 10);
             }
+            if(count) count.innerText = panier.length;
+        }
 
         function ouvrirPanier() {
             document.getElementById('modalPanier').style.display = 'flex';
             let t = 0;
             document.getElementById('contenuPanier').innerHTML = panier.map((item, i) => {
-                t += parseInt(item.prix.toString().replace(/\s/g, ''));
-                      return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2">
-            <span class="text-[10px] font-black text-purple-900 uppercase">${securiserTexte(item.nom)}</span>
-            <button onclick="supprimerDuPanier(${i})" class="text-red-500"><i class="fas fa-trash"></i></button>
-        </div>`;
+                t += parseInt(item.prix.toString().replace(/\s/g, '')) || 0;
+                return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2">
+                    <span class="text-[10px] font-black text-purple-900 uppercase">${securiserTexte(item.nom)}</span>
+                    <button onclick="supprimerDuPanier(${i})" class="text-red-500"><i class="fas fa-trash"></i></button>
+                </div>`;
             }).join('');
             document.getElementById('totalPanier').innerText = t.toLocaleString() + " F";
         }
 
-            function supprimerDuPanier(i) {
-        panier.splice(i, 1);
-        
-        // --- NOUVEAU : On met à jour la mémoire du téléphone ---
-        localStorage.setItem('panier_bouafle', JSON.stringify(panier));
-        // -------------------------------------------------------
-        
-        if (panier.length === 0) {
-            document.getElementById('modalPanier').style.display = 'none';
-            document.getElementById('btn-panier-flottant').style.display = 'none';
-        } else {
-            ouvrirPanier();
-            document.getElementById('count-panier').innerText = panier.length;
-        }
+        function supprimerDuPanier(i) {
+            panier.splice(i, 1);
+            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+            if (panier.length === 0) {
+                document.getElementById('modalPanier').style.display = 'none';
+                document.getElementById('btn-panier-flottant').style.display = 'none';
+            } else {
+                ouvrirPanier();
+                document.getElementById('count-panier').innerText = panier.length;
             }
+        }
 
         function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
         function fermerModale(id) { document.getElementById(id).style.display = 'none'; }
         function ouvrirEspaceMarchand() { document.getElementById('modalVendre').style.display = 'flex'; }
         function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
-        
-            function envoyerPanierWhatsApp() {
-        let m = "Bonjour Cœur de Marché, voici ma commande :\n\n";
-        let t = 0;
-        panier.forEach(i => {
-            m += "- " + i.nom + " (" + i.prix + " F)\n";
-            t += parseInt(i.prix.toString().replace(/\s/g, ''));
-        });
-        m += "\n*Total : " + t.toLocaleString() + " F*";
-        
-        // 1. On prépare le lien WhatsApp
-        const lienWhatsapp = "https://wa.me/2250576326645?text=" + encodeURIComponent(m);
-        
-        // 2. On VIDE le panier (Le correctif que vous avez demandé)
-        panier = [];
-        
-        // 3. On sauvegarde ce panier vide dans la mémoire (Pour le futur Panier Intelligent)
-        localStorage.setItem('panier_bouafle', JSON.stringify(panier));
-        
-        // 4. On nettoie l'affichage
-        document.getElementById('count-panier').innerText = "0";
-        document.getElementById('btn-panier-flottant').style.display = 'none';
-        document.getElementById('modalPanier').style.display = 'none';
-        
-        // 5. On envoie le client sur WhatsApp !
-        window.location.href = lienWhatsapp;
-            }
+
+        function envoyerPanierWhatsApp() {
+            let m = "Bonjour Cœur de Marché, voici ma commande :\n\n";
+            let t = 0;
+            panier.forEach((i) => {
+                m += "- " + i.nom + " (" + i.prix + " F)\n";
+                t += parseInt(i.prix.toString().replace(/\s/g, ''));
+            });
+            m += "\n*Total : " + t.toLocaleString() + " F*";
+            const lienWhatsapp = "https://wa.me/2250576326645?text=" + encodeURIComponent(m);
             
-           function rechercherProduit(trierParPrix = false) {
-        const s = cleanTxt(document.getElementById('inputRecherche').value);
-        if (s.length > 1) {
-            switchTab('boutique');
-            document.getElementById('vue-rayons').classList.add('hidden');
-            document.getElementById('vue-produits').classList.remove('hidden');
+            panier = [];
+            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+            document.getElementById('count-panier').innerText = "0";
+            document.getElementById('btn-panier-flottant').style.display = 'none';
+            document.getElementById('modalPanier').style.display = 'none';
+            
+            window.location.href = lienWhatsapp;
+        }
 
-            // On cherche le texte et on vérifie que l'article a le statut 'ok'
-            let f = articles.filter(p => (cleanTxt(p.nom).includes(s) || cleanTxt(p.rayon).includes(s)) && cleanTxt(p.statut) === "ok");
+        function rechercherProduit(trierParPrix = false) {
+            const s = cleanTxt(document.getElementById('inputRecherche').value);
+            if (s.length > 1) {
+                switchTab('boutique');
+                document.getElementById('vue-rayons').classList.add('hidden');
+                document.getElementById('vue-produits').classList.remove('hidden');
 
-            // --- LOGIQUE DE TRI POUR LA RECHERCHE ---
-            if (trierParPrix === true) {
-                f.sort((a, b) => {
-                    let prixA = parseInt(a.prix.toString().replace(/\s/g, '')) || 0;
-                    let prixB = parseInt(b.prix.toString().replace(/\s/g, '')) || 0;
-                    return prixA - prixB;
-                });
-            }
+                let f = articles.filter(p => (cleanTxt(p.nom).includes(s) || cleanTxt(p.rayon).includes(s)) && cleanTxt(p.statut) === "ok");
 
-            // --- AFFICHAGE DU BOUTON DANS LES RÉSULTATS DE RECHERCHE ---
-            document.getElementById('compteur-articles').innerHTML = f.length + " résultat(s) pour '" + s + "' " + 
-                `<button onclick="rechercherProduit(true)" class="ml-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[10px] font-black border border-orange-200 shadow-sm"><i class="fas fa-sort-amount-down-alt"></i> Moins chers d'abord</button>`;
-                    
-                const listeProduits = document.getElementById('liste-produits');
+                if (trierParPrix === true) {
+                    f.sort((a, b) => {
+                        let prixA = parseInt(a.prix.toString().replace(/\s/g, '')) || 0;
+                        let prixB = parseInt(b.prix.toString().replace(/\s/g, '')) || 0;
+                        return prixA - prixB; 
+                    });
+                }
+
+                document.getElementById('compteur-articles').innerHTML = f.length + " résultat(s) pour '" + s + "' " + 
+                    `<button onclick="rechercherProduit(true)" class="ml-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[9px] shadow-sm"><i class="fas fa-sort-amount-down"></i> Prix croissant</button>`;
                 
+                const listeProduits = document.getElementById('liste-produits');
+
                 if (f.length === 0) {
-                    listeProduits.innerHTML = `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé pour "${s}".</p>`;
+                    listeProduits.innerHTML = `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé.</p>`;
                 } else {
                     listeProduits.innerHTML = f.map(p => {
                         const escNom = p.nom.replace(/'/g, "\\'");
-                        const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\nProduit : *" + p.nom + "*\nPrix : *" + p.prix + " F*\nQuartier : _" + (p.quartier || "Bouaflé") + "_\n\nLien direct : " + appLink + "?p=" + encodeURIComponent(p.nom));
+                        const tPartage = encodeURIComponent(`🛒 *COMMANDE CŒUR DE MARCHÉ*\n\nProduit : *${p.nom}*\nPrix : *${p.prix}*\n\nLien : ${appLink}?p=${encodeURIComponent(p.nom)}`);
                         
-                        return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 mb-4">
+                        return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 relative">
                             <div class="flex gap-4">
-                                <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-sm border border-gray-50">
+                                <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-md cursor-pointer border border-gray-50">
                                 <div class="flex-1">
-                                <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${securiserTexte(p.nom)}</h4>
-                                 <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
-                                <p class="text-blue-600 font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${securiserTexte(p.quartier)}</p>
-                                <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${securiserTexte(p.description || '')}</p>
+                                    <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1 flex items-center gap-1">${securiserTexte(p.nom)}</h4>
+                                    <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
+                                    <p class="text-blue-600 font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${securiserTexte(p.quartier || 'Bouaflé')}</p>
+                                    <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${securiserTexte(p.description || '')}</p>
                                 </div>
                             </div>
                             <div class="flex gap-2 border-t pt-4">
-                                <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white h-10 rounded-xl text-[8px] font-black flex-1 uppercase flex items-center justify-center gap-2">
+                                <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white h-10 flex-1 rounded-xl font-black text-[10px] shadow-md flex items-center justify-center gap-2">
                                     <i class="fas fa-plus-circle"></i> PANIER
                                 </button>
                                 <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fab fa-whatsapp text-lg"></i></a>
@@ -707,30 +583,23 @@ function securiserTexte(texte) {
             recognition.lang = 'fr-FR';
             const icon = document.getElementById('iconMicro');
             
-            recognition.onstart = () => {
-                icon.className = "fas fa-spinner fa-spin"; 
-            };
-
+            recognition.onstart = () => { icon.className = "fas fa-spinner fa-spin"; };
             recognition.onresult = (event) => {
                 const parole = event.results[0][0].transcript;
                 document.getElementById('inputRecherche').value = parole;
-                rechercherProduit(); 
+                rechercherProduit();
             };
-
-            recognition.onend = () => {
-                icon.className = "fas fa-microphone"; 
-            };
-
+            recognition.onend = () => { icon.className = "fas fa-microphone"; };
             recognition.start();
         }
 
         function verifierLienPartage() {
             const urlParams = new URLSearchParams(window.location.search);
-            const p = urlParams.get('p'); 
+            const p = urlParams.get('p');
             if (p) {
                 const nomNettoye = decodeURIComponent(p);
                 document.getElementById('inputRecherche').value = nomNettoye;
-                rechercherProduit(); 
+                rechercherProduit();
             }
         }
 
@@ -748,27 +617,28 @@ function securiserTexte(texte) {
         });
 
         function ouvrirAide() { document.getElementById('modalAide').style.display = 'flex'; }
-        
+
         function commanderPack(nomPack, intention) {
             const numeroWhatsApp = "2250576326645";
-            const message = `Bonjour Cœur de Marché, je suis marchand à Bouaflé.\n\nJe suis intéressé par le *${nomPack}*.\n_${intention}_\n\nQuelles sont les étapes pour commencer ?`;
+            const message = `Bonjour Cœur de Marché, je suis marchand à Bouaflé.\n\nje suis intéressé par le *${nomPack}*`;
             window.location.href = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(message)}`;
         }
-                    
+
         function voirPlus(nom) {
             const p = articles.find(item => item.nom === nom);
             if (!p) return;
-            document.getElementById('p-detail-img').src = p.image;
-            document.getElementById('p-detail-nom').innerHTML = `${securiserTexte(p.nom)} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-check-circle text-green-500 ml-1"></i>' : ''}`;
-            document.getElementById('p-detail-prix').innerText = p.prix + " F";
-            document.getElementById('p-detail-vendeur').innerText = "📍 " + (p.vendeur || "Boutique") + " - " + (p.quartier || "Bouaflé");
-            document.getElementById('p-detail-desc').innerText = p.description || "Aucune description disponible.";
-            document.getElementById('p-detail-btn-panier').onclick = () => { ajouterAuPanier(p.nom, p.prix); document.getElementById('modalProduit').style.display='none'; };
-            const tPartage = encodeURIComponent("📦 *COMMANDE COEUR DE MARCHÉ*\n\nProduit : *" + p.nom + "*\nPrix : *" + p.prix + " F*");
-            document.getElementById('p-detail-btn-wa').href = "https://wa.me/2250576326645?text=" + tPartage;
-            document.getElementById('modalProduit').style.display = 'flex';
-                               }
             
-        </script>
+            document.getElementById('p-detail-img').src = p.image;
+            document.getElementById('p-detail-nom').innerHTML = `${securiserTexte(p.nom)} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-star text-orange-500 text-sm"></i>' : ''}`;
+            document.getElementById('p-detail-prix').innerText = p.prix + " F";
+            document.getElementById('p-detail-vendeur').innerText = `📍 ` + (p.vendeur || "Boutique") + " - " + (p.quartier || "Bouaflé");
+            document.getElementById('p-detail-desc').innerHTML = p.description ? securiserTexte(p.description).replace(/\n/g, '<br>') : "Aucune description disponible.";
+            document.getElementById('p-detail-btn-panier').onclick = () => { ajouterAuPanier(p.nom, p.prix); document.getElementById('modalProduit').style.display = 'none'; };
+            
+            const tPartage = encodeURIComponent(`🛒 *COMMANDE CŒUR DE MARCHÉ*\n\nProduit : *${p.nom}*\nPrix : *${p.prix}*\n\nLien : ${appLink}?p=${encodeURIComponent(p.nom)}`);
+            document.getElementById('p-detail-btn-wa').href = `https://wa.me/2250576326645?text=${tPartage}`;
+            document.getElementById('modalProduit').style.display = 'flex';
+        }
+    </script>
 </body>
 </html>
