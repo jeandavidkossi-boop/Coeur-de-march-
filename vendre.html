@@ -20,7 +20,7 @@
 <body>
 
 <div class="login-card">
-    <img src="https://jeandavidkossi-boop.github.io/Coeur-de-march-/logo.png" alt="Logo" class="logo">
+    <img src="IMG_20260218_162430.jpg" alt="Logo Cœur de Marché" class="logo">
     <h2 id="form-title">Connexion Marchand</h2>
     
     <input type="email" id="email" placeholder="Votre E-mail" required>
@@ -32,6 +32,10 @@
     <span class="switch-btn" id="switch-link" onclick="basculerMode()">Pas encore de boutique ? Créer mon compte gratuitement</span>
     
     <a href="index.html" style="display:block; margin-top: 20px; font-size: 0.8rem; color: #666;">Retour au marché</a>
+    <div id="message-succes" style="display: none; background: #FAF5FF; border: 2px solid #6A1B9A; color: #6A1B9A; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: center;">
+        <h3 style="margin: 0 0 5px 0; font-size: 16px; color: #FF9800;">🎉 Félicitations !</h3>
+        <p style="margin: 0; font-size: 14px; font-weight: bold;">Boutique créée avec succès ! Bienvenue à Bouaflé.</p>
+    </div>
 </div>
 
 <script type="module">
@@ -67,11 +71,18 @@
 
         if(modeInscription) {
             createUserWithEmailAndPassword(auth, email, password)
-                .then(() => alert("Boutique créée avec succès ! Bienvenue à Bouaflé."))
+                        .then(() => {
+                    document.getElementById('message-succes').style.display = 'block';
+                    document.getElementById('error-msg').style.display = 'none';
+                })
                 .catch(err => { errorMsg.innerText = "Erreur : " + err.message; errorMsg.style.display = 'block'; });
         } else {
             signInWithEmailAndPassword(auth, email, password)
-                .then(() => alert("Connexion réussie !"))
+                                .then(() => {
+                    document.getElementById('message-succes').innerHTML = "<h3 style='margin: 0 0 5px 0; font-size: 16px; color: #FF9800;'>✅ Succès !</h3><p style='margin: 0; font-size: 14px; font-weight: bold;'>Connexion réussie au marché !</p>";
+                    document.getElementById('message-succes').style.display = 'block';
+                    document.getElementById('error-msg').style.display = 'none';
+                })
                 .catch(err => { errorMsg.innerText = "Email ou mot de passe incorrect."; errorMsg.style.display = 'block'; });
         }
     };
