@@ -71,9 +71,10 @@
 
         if(modeInscription) {
             createUserWithEmailAndPassword(auth, email, password)
-                        .then(() => {
+                                        .then(() => {
                     document.getElementById('message-succes').style.display = 'block';
                     document.getElementById('error-msg').style.display = 'none';
+                    setTimeout(() => { window.location.href = "bureau.html"; }, 1500);
                 })
                 .catch(err => { errorMsg.innerText = "Erreur : " + err.message; errorMsg.style.display = 'block'; });
         } else {
@@ -82,6 +83,7 @@
                     document.getElementById('message-succes').innerHTML = "<h3 style='margin: 0 0 5px 0; font-size: 16px; color: #FF9800;'>✅ Succès !</h3><p style='margin: 0; font-size: 14px; font-weight: bold;'>Connexion réussie au marché !</p>";
                     document.getElementById('message-succes').style.display = 'block';
                     document.getElementById('error-msg').style.display = 'none';
+                    setTimeout(() => { window.location.href = "bureau.html"; }, 1500);
                 })
                 .catch(err => { errorMsg.innerText = "Email ou mot de passe incorrect."; errorMsg.style.display = 'block'; });
         }
