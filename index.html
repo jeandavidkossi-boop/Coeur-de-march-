@@ -320,7 +320,7 @@
             <i class="fas fa-question-circle text-xl"></i> <span class="text-[8px] font-bold mt-1">Aide</span>
         </button>
                     </nav>
-        <script>
+        <script type="module">
         const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
         const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
         let articles = [];
@@ -747,6 +747,29 @@
               </div>
             </div>`;
       }
-    </script>
+
+// --- CONNEXION AU COFFRE-FORT FIREBASE ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCIsoV6DNP6v7Nm79R7r5hUrB4a-0U6vi0",
+  authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
+  projectId: "coeur-de-marche-a3f31",
+  storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
+  messagingSenderId: "463834578884",
+  appId: "1:463834578884:web:64083245392e5e98322e91"
+};
+
+// Initialisation des moteurs
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
+
+  console.log("Cœur de Marché est maintenant relié à Google Firebase !");
+</script>
 </body>
 </html>
