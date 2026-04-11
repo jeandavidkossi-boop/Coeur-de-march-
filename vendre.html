@@ -42,14 +42,13 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-    // Ta config Firebase
     const firebaseConfig = {
-        apiKey: "AIzaSyCIsoV6DNP6v7Nm79R7r5hUrB4a-0U6vi0",
+        apiKey: "AIzaSyCisoVGDN76v7Nm79R7rShUrB4a-OU6vi0",
         authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
         projectId: "coeur-de-marche-a3f31",
         storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
         messagingSenderId: "463834578884",
-        appId: "1:463834578884:web:64083245392e5e98322e91"
+        appId: "1:463834578884:web:6d0832d5392e1e98322e91"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -61,34 +60,55 @@
         modeInscription = !modeInscription;
         document.getElementById('form-title').innerText = modeInscription ? "Créer ma Boutique" : "Connexion Marchand";
         document.getElementById('main-btn').innerText = modeInscription ? "Créer mon compte" : "Se connecter";
-        document.getElementById('switch-link').innerText = modeInscription ? "Déjà une boutique ? Se connecter" : "Pas encore de boutique ? Créer mon compte gratuitement";
+        document.getElementById('switch-link').innerText = modeInscription ? "Déjà une boutique ? Se connecter" : "Pas encore de boutique ? Créer mon compte gratuit";
     };
 
     window.gererAuth = function() {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const errorMsg = document.getElementById('error-msg');
+        const successMsg = document.getElementById('message-succes');
+        const btn = document.getElementById('main-btn');
 
-        if(modeInscription) {
+        // SÉCURITÉ : Vérifie si les champs sont vides
+        if (!email || !password) {
+            errorMsg.innerText = "⚠️ Veuillez remplir tous les champs.";
+            errorMsg.style.display = 'block';
+            return;
+        }
+
+        // Animation du bouton
+        const texteOriginal = btn.innerText;
+        btn.innerText = "Patientez...";
+
+        if (modeInscription) {
             createUserWithEmailAndPassword(auth, email, password)
-                                        .then(() => {
-                    document.getElementById('message-succes').style.display = 'block';
-                    document.getElementById('error-msg').style.display = 'none';
+                .then(() => {
+                    successMsg.style.display = 'block';
+                    errorMsg.style.display = 'none';
                     setTimeout(() => { window.location.href = "bureau.html"; }, 1500);
                 })
-                .catch(err => { errorMsg.innerText = "Erreur : " + err.message; errorMsg.style.display = 'block'; });
+                .catch(err => { 
+                    errorMsg.innerText = "Erreur : " + err.message; 
+                    errorMsg.style.display = 'block'; 
+                    btn.innerText = texteOriginal;
+                });
         } else {
             signInWithEmailAndPassword(auth, email, password)
-                                .then(() => {
-                    document.getElementById('message-succes').innerHTML = "<h3 style='margin: 0 0 5px 0; font-size: 16px; color: #FF9800;'>✅ Succès !</h3><p style='margin: 0; font-size: 14px; font-weight: bold;'>Connexion réussie au marché !</p>";
-                    document.getElementById('message-succes').style.display = 'block';
-                    document.getElementById('error-msg').style.display = 'none';
+                .then(() => {
+                    successMsg.innerHTML = "<h3 style='margin: 0 0 5px 0; font-size: 16px; color: #FF9800;'>✅ Succès !</h3><p style='margin: 0; font-size: 14px; font-weight: bold;'>Connexion réussie !</p>";
+                    successMsg.style.display = 'block';
+                    errorMsg.style.display = 'none';
                     setTimeout(() => { window.location.href = "bureau.html"; }, 1500);
                 })
-                .catch(err => { errorMsg.innerText = "Email ou mot de passe incorrect."; errorMsg.style.display = 'block'; });
+                .catch(err => { 
+                    errorMsg.innerText = "Email ou mot de passe incorrect."; 
+                    errorMsg.style.display = 'block'; 
+                    btn.innerText = texteOriginal;
+                });
         }
     };
-</script>
-
+                        </script>
+    
 </body>
 </html>
