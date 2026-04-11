@@ -321,463 +321,246 @@
             <i class="fas fa-question-circle text-xl"></i> <span class="text-[8px] font-bold mt-1">Aide</span>
         </button>
                     </nav>
-        <script type="module">
-              // On rend les fonctions disponibles pour le site
-    window.chargerDonnees = chargerDonnees;
+       <script type="module">
+  // 1. IMPORTATION DE FIREBASE
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCisoV6DNP6v7Nm79R7r6hUrB4a-0U6vi0",
+    authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
+    projectId: "coeur-de-marche-a3f31",
+    storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
+    messagingSenderId: "463834578884",
+    appId: "1:463834578884:web:64083245392e5e98322e91"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 2. VARIABLES GLOBALES
+  window.articles = []; 
+  window.tousLesArticlesVrais = [];
+  let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
+
+  // Rendre les fonctions accessibles
+  window.chargerDonnees = chargerDonnees;
+  window.ajouterAuPanier = ajouterAuPanier;
+  window.ouvrirPanier = ouvrirPanier;
+  window.fermerPanier = fermerPanier;
+  window.envoyerPanierWhatsApp = envoyerPanierWhatsApp;
+  window.supprimerDuPanier = supprimerDuPanier;
   window.switchTab = switchTab;
-  window.ouvrirEspaceMarchand = ouvrirEspaceMarchand;
-  window.ouvrirAide = ouvrirAide;
-            
-        const urlScript = "https://script.google.com/macros/s/AKfycbx6OPL8H6X_KVsCWwIZjXPWMzSdxVnS01b56bx36O5m3XWf1z_YGgJgDBx3I98PExc/exec";
-        const appLink = "https://jeandavidkossi-boop.github.io/Coeur-de-march-/";
-        let articles = [];
-                let articlesAffiches = 10;
-        const pasChargement = 10;
-        let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
+  window.ouvrirRayon = ouvrirRayon;
+  window.rechercherProduit = rechercherProduit;
+  window.lancerMicro = lancerMicro;
 
-        setTimeout(() => {
-            if (panier.length > 0) {
-                const btn = document.getElementById('btn-panier-flottant');
-                const count = document.getElementById('count-panier');
-                if (btn) { btn.style.display = 'flex'; btn.classList.add('scale-100'); }
-                if (count) count.innerText = panier.length;
-            }
-        }, 500);
+  // Fonction pour nettoyer le texte (pour la recherche)
+  const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 
-        const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  // 3. LE CŒUR DU SYSTÈME : CHARGEMENT + TRI MARKETING
+  async function chargerDonnees() {
+    const loader = document.getElementById('loader');
+    if (loader) loader.style.display = 'flex';
 
-        function securiserTexte(texte) {
-    if (!texte) return "";
-    return texte.toString().replace(/[&<>"']/g, function(caractere) {
-        return {
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        }[caractere];
-    });
-        }
-            
-        async function chargerDonnees() {
-            const loader = document.getElementById('loader');
-            try {
-                if(loader) loader.style.display = 'flex';
-                
-                const r = await fetch(urlScript);
-                articles = await r.json();
-                
-                verifierLienPartage();
+    try {
+      const querySnapshot = await getDocs(collection(db, "produits"));
+      window.articles = [];
 
-                const ann = articles.find(p => cleanTxt(p.nom) === "annonce");
-                if(ann) document.getElementById('texteBandeAnnonce').innerText = ann.description;
+      querySnapshot.forEach((doc) => {
+        window.articles.push({ id: doc.id, ...doc.data() });
+      });
 
-                const videoData = articles.find(p => p.nom === "VIDEO_PUB" || cleanTxt(p.nom) === "video_pub");
-                if (videoData && videoData.description && videoData.description.length > 5) {
-                    let lien = videoData.description;
-                    let videoId = lien.includes('v=') ? lien.split('v=')[1].substring(0, 11) : lien.split('/').pop().substring(0, 11);
-                    document.getElementById('player-video').src = "https://www.youtube.com/embed/" + videoId;
-                    document.getElementById('titre-video').innerText = videoData.details || "Reportage exclusif";
-                    document.getElementById('section-video').classList.remove('hidden');
-                }
+      // --- TA STRATÉGIE MARKETING REPREND VIE ICI --- //
 
-                const cert = articles.filter(p => cleanTxt(p.certifie) == "oui" && cleanTxt(p.statut) == "ok" && cleanTxt(p.nom) !== "annonce");
-                document.getElementById('carrousel-une').innerHTML = cert.map(p => {
-                    const escNom = p.nom.replace(/'/g, "\\'");
-                    return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 pb-2 relative">
-                        <div class="absolute top-2 right-2 bg-orange-600 text-white text-[9px] font-black px-2 py-1 rounded-full z-10 shadow-md"><i class="fas fa-star"></i> VIP</div>
-                        <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-28 object-cover cursor-pointer">
-                        <div class="p-3">
-                            <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${securiserTexte(p.nom)}</h4>
-                            <p class="text-blue-600 text-[8px] font-bold">${securiserTexte(p.quartier || 'Bouaflé')}</p>
-                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white text-[10px] font-black py-2 rounded-xl flex items-center justify-center gap-1 shadow-md"><i class="fas fa-plus"></i> PANIER</button>
-                        </div>
-                    </div>`;
-                }).join('');
-                                if (cert.length > 1) {
-                    demarrerCarrouselUne();
-                    const carUne = document.getElementById('carrousel-une');
-                    carUne.addEventListener('touchstart', arreterCarrouselUne, {passive: true});
-                    carUne.addEventListener('touchend', demarrerCarrouselUne);
-                                }
-                
-        const vraisArticles = articles.filter(p => cleanTxt(p.nom) !== "video_pub" && cleanTxt(p.nom) !== "annonce" && cleanTxt(p.certifie) !== "oui");
-        const dernieresNouveautes = vraisArticles.slice(-6).reverse();
-        
-        // On enregistre tous les articles pour le chargement progressif
-        window.tousLesArticlesVrais = vraisArticles; 
-
-        if(dernieresNouveautes.length > 0) {
-            document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => {
-                const escNom = p.nom.replace(/'/g, "\\'");
-                return `<div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100">
-                    <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-full h-32 object-cover">
-                    <div class="p-3">
-                        <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
-                        <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="w-full mt-2 bg-purple-900 text-white py-2 rounded-xl text-[9px] font-black italic">${p.prix} F</button>
-                    </div>
-                </div>`;
-            }).join('');
-            document.getElementById('section-nouveautes').classList.remove('hidden');
-        }
-
-        // On affiche les 10 premiers produits
-        actualiserAffichageProgressif()
-            } catch (e) {
-                console.error("Erreur :", e);
-                afficherMessage("MISE À JOUR DU MARCHÉ EN COURS...", e.message);
-            } finally {
-                if(loader) loader.style.display = 'none';
-            }
-        }
-                 function switchTab(id) {
-            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(id);
-            if(target) target.classList.add('active');
-            if(id === 'boutique') retourRayons();
-            document.getElementById('btn-accueil').className = id === 'accueil' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center transition-colors';
-            document.getElementById('btn-boutique').className = id === 'boutique' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center transition-colors';
-        }
-
-        function ouvrirRayonDepuisAccueil(r) { switchTab('boutique'); ouvrirRayon(r); }
-
-        function ouvrirRayon(nomRayon, trierParPrix = false) {
-            document.getElementById('vue-rayons').classList.add('hidden');
-            document.getElementById('vue-produits').classList.remove('hidden');
-            
-            let filtres = articles.filter(p => cleanTxt(p.rayon) === cleanTxt(nomRayon) && cleanTxt(p.statut) === "ok");
-        
-            if (trierParPrix === true) {
-                filtres.sort((a, b) => {
-                    let prixA = parseInt(a.prix.toString().replace(/\s/g, '')) || 0;
-                    let prixB = parseInt(b.prix.toString().replace(/\s/g, '')) || 0;
-                    return prixA - prixB; 
-                });
-            }
-            
-            const escNomRayon = nomRayon.replace(/'/g, "\\'");
-            document.getElementById('compteur-articles').innerHTML = filtres.length + " article(s) " + `<button onclick="ouvrirRayon('${escNomRayon}', true)" class="ml-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[9px] shadow-sm"><i class="fas fa-sort-amount-down"></i> Prix croissant</button>`;
-            
-            const listeProduits = document.getElementById('liste-produits');
-
-            if (filtres.length === 0) {
-                listeProduits.innerHTML = `<p class="text-center p-10 text-gray-400 text-[10px]">Rayon vide pour le moment.</p>`;
-            } else {
-                listeProduits.innerHTML = filtres.map(p => {
-                    const escNom = p.nom.replace(/'/g, "\\'");
-                    const tPartage = encodeURIComponent(`🛒 *COMMANDE CŒUR DE MARCHÉ*\n\nProduit : *${p.nom}*\nPrix : *${p.prix}*\n\nLien : ${appLink}?p=${encodeURIComponent(p.nom)}`);
-                    
-                    return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 relative">
-                        <div class="flex gap-4">
-                            <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-md cursor-pointer border border-gray-50">
-                            <div class="flex-1">
-                                <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1 flex items-center gap-1">${securiserTexte(p.nom)}</h4>
-                                <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
-                                <p class="text-blue-600 font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${securiserTexte(p.quartier || 'Bouaflé')}</p>
-                                <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${securiserTexte(p.description || '')}</p>
-                            </div>
-                        </div>
-                        <div class="flex gap-2 border-t pt-4">
-                            <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white h-10 flex-1 rounded-xl font-black text-[10px] shadow-md flex items-center justify-center gap-2">
-                                <i class="fas fa-plus-circle"></i> PANIER
-                            </button>
-                            <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fab fa-whatsapp text-lg"></i></a>
-                            <a href="tel:0576326645" class="bg-orange-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-phone-alt"></i></a>
-                            <button onclick="window.open('https://wa.me/?text=${tPartage}')" class="bg-blue-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-share-alt"></i></button>
-                        </div>
-                    </div>`;
-                }).join('');
-            }
-            window.scrollTo(0,0);
-        }
-
-        function retourRayons() {
-            document.getElementById('vue-rayons').classList.remove('hidden');
-            document.getElementById('vue-produits').classList.add('hidden');
-        }
-        function actualiserAffichageProgressif() {
-            const liste = document.getElementById('liste-produits');
-            if (!liste) return;
-            const affiches = window.articlesAffiches || 10;
-            const visibles = window.tousLesArticlesVrais ? window.tousLesArticlesVrais.slice(0, affiches) : [];
-            
-            let html = visibles.map(p => genererCarteProduit(p)).join('');
-            
-            if (window.tousLesArticlesVrais && window.tousLesArticlesVrais.length > affiches) {
-                html += `<button onclick="chargerPlus()" class="w-full py-5 mt-4 bg-purple-100 text-purple-900 font-black rounded-3xl text-[10px] uppercase italic border-2 border-purple-200">Afficher plus de produits...</button>`;
-            }
-            liste.innerHTML = html;
-        }
-
-        function chargerPlus() {
-            window.articlesAffiches = (window.articlesAffiches || 10) + 10;
-            actualiserAffichageProgressif();
-        }
-            
-        function ajouterAuPanier(n, p) {
-            panier.push({ nom: n, prix: p });
-            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
-            
-            const btn = document.getElementById('btn-panier-flottant');
-            const count = document.getElementById('count-panier');
-            if(btn) {
-                btn.style.display = 'flex';
-                setTimeout(() => btn.classList.add('scale-100'), 10);
-            }
-            if(count) count.innerText = panier.length;
-        }
-
-        function ouvrirPanier() {
-            document.getElementById('modalPanier').style.display = 'flex';
-            let t = 0;
-            document.getElementById('contenuPanier').innerHTML = panier.map((item, i) => {
-                t += parseInt(item.prix.toString().replace(/\s/g, '')) || 0;
-                return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2">
-                    <span class="text-[10px] font-black text-purple-900 uppercase">${securiserTexte(item.nom)}</span>
-                    <button onclick="supprimerDuPanier(${i})" class="text-red-500"><i class="fas fa-trash"></i></button>
-                </div>`;
-            }).join('');
-            document.getElementById('totalPanier').innerText = t.toLocaleString() + " F";
-        }
-
-        function supprimerDuPanier(i) {
-            panier.splice(i, 1);
-            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
-            if (panier.length === 0) {
-                document.getElementById('modalPanier').style.display = 'none';
-                document.getElementById('btn-panier-flottant').style.display = 'none';
-            } else {
-                ouvrirPanier();
-                document.getElementById('count-panier').innerText = panier.length;
-            }
-        }
-
-        function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
-        function fermerModale(id) { document.getElementById(id).style.display = 'none'; }
-        function ouvrirEspaceMarchand() { document.getElementById('modalVendre').style.display = 'flex'; }
-        function zoom(src) { document.getElementById('imgZoomed').src = src; document.getElementById('modalZoom').style.display = 'flex'; }
-
-        function envoyerPanierWhatsApp() {
-            let m = "Bonjour Cœur de Marché, voici ma commande :\n\n";
-            let t = 0;
-            panier.forEach((i) => {
-                m += "- " + i.nom + " (" + i.prix + " F)\n";
-                t += parseInt(i.prix.toString().replace(/\s/g, ''));
-            });
-            m += "\n*Total : " + t.toLocaleString() + " F*";
-            const lienWhatsapp = "https://wa.me/2250576326645?text=" + encodeURIComponent(m);
-            
-            panier = [];
-            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
-            document.getElementById('count-panier').innerText = "0";
-            document.getElementById('btn-panier-flottant').style.display = 'none';
-            document.getElementById('modalPanier').style.display = 'none';
-            
-            window.location.href = lienWhatsapp;
-        }
-        let intervalCarrouselUne;
-        function demarrerCarrouselUne() {
-            arreterCarrouselUne();
-            intervalCarrouselUne = setInterval(() => {
-                const c = document.getElementById('carrousel-une');
-                if (!c || c.children.length <= 1) return;
-                const step = c.children[0].offsetWidth + 16;
-                if (c.scrollLeft >= (c.scrollWidth - c.clientWidth) - 5) {
-                    c.scrollTo({ left: 0, behavior: 'smooth' });
-                } else {
-                    c.scrollBy({ left: step, behavior: 'smooth' });
-                }
-            }, 4000);
-        }
-        function arreterCarrouselUne() { clearInterval(intervalCarrouselUne); }
-                
-        function rechercherProduit(trierParPrix = false) {
-            const s = cleanTxt(document.getElementById('inputRecherche').value);
-            if (s.length > 1) {
-                switchTab('boutique');
-                document.getElementById('vue-rayons').classList.add('hidden');
-                document.getElementById('vue-produits').classList.remove('hidden');
-
-                let f = articles.filter(p => (cleanTxt(p.nom).includes(s) || cleanTxt(p.rayon).includes(s)) && cleanTxt(p.statut) === "ok");
-
-                if (trierParPrix === true) {
-                    f.sort((a, b) => {
-                        let prixA = parseInt(a.prix.toString().replace(/\s/g, '')) || 0;
-                        let prixB = parseInt(b.prix.toString().replace(/\s/g, '')) || 0;
-                        return prixA - prixB; 
-                    });
-                }
-
-                document.getElementById('compteur-articles').innerHTML = f.length + " résultat(s) pour '" + s + "' " + 
-                    `<button onclick="rechercherProduit(true)" class="ml-4 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-[9px] shadow-sm"><i class="fas fa-sort-amount-down"></i> Prix croissant</button>`;
-                
-                const listeProduits = document.getElementById('liste-produits');
-
-                if (f.length === 0) {
-                    listeProduits.innerHTML = `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé.</p>`;
-                } else {
-                    listeProduits.innerHTML = f.map(p => {
-                        const escNom = p.nom.replace(/'/g, "\\'");
-                        const tPartage = encodeURIComponent(`🛒 *COMMANDE CŒUR DE MARCHÉ*\n\nProduit : *${p.nom}*\nPrix : *${p.prix}*\n\nLien : ${appLink}?p=${encodeURIComponent(p.nom)}`);
-                        
-                        return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 flex flex-col gap-4 relative">
-                            <div class="flex gap-4">
-                                <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 rounded-2xl object-cover shadow-md cursor-pointer border border-gray-50">
-                                <div class="flex-1">
-                                    <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1 flex items-center gap-1">${securiserTexte(p.nom)}</h4>
-                                    <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
-                                    <p class="text-blue-600 font-bold italic mb-1"><i class="fas fa-map-marker-alt"></i> ${securiserTexte(p.quartier || 'Bouaflé')}</p>
-                                    <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${securiserTexte(p.description || '')}</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-2 border-t pt-4">
-                                <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white h-10 flex-1 rounded-xl font-black text-[10px] shadow-md flex items-center justify-center gap-2">
-                                    <i class="fas fa-plus-circle"></i> PANIER
-                                </button>
-                                <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fab fa-whatsapp text-lg"></i></a>
-                                <a href="tel:0576326645" class="bg-orange-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-phone-alt"></i></a>
-                                <button onclick="window.open('https://wa.me/?text=${tPartage}')" class="bg-blue-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fas fa-share-alt"></i></button>
-                            </div>
-                        </div>`;
-                    }).join('');
-                }
-            }
-        }
-
-        function lancerMicro() {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'fr-FR';
-            const icon = document.getElementById('iconMicro');
-            
-            recognition.onstart = () => { icon.className = "fas fa-spinner fa-spin"; };
-            recognition.onresult = (event) => {
-                const parole = event.results[0][0].transcript;
-                document.getElementById('inputRecherche').value = parole;
-                rechercherProduit();
-            };
-            recognition.onend = () => { icon.className = "fas fa-microphone"; };
-            recognition.start();
-        }
-
-        function verifierLienPartage() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const p = urlParams.get('p');
-            if (p) {
-                const nomNettoye = decodeURIComponent(p);
-                document.getElementById('inputRecherche').value = nomNettoye;
-                rechercherProduit();
-            }
-        }
-
-        window.addEventListener('scroll', function() {
-            const btn = document.getElementById('btnRemonter');
-            if (btn) {
-                if (window.scrollY > 300) {
-                    btn.classList.remove('scale-0', 'opacity-0');
-                    btn.classList.add('scale-100', 'opacity-100');
-                } else {
-                    btn.classList.remove('scale-100', 'opacity-100');
-                    btn.classList.add('scale-0', 'opacity-0');
-                }
-            }
-        });
-
-        function ouvrirAide() { document.getElementById('modalAide').style.display = 'flex'; }
-
-        function commanderPack(nomPack, intention) {
-            const numeroWhatsApp = "2250576326645";
-            const message = `Bonjour Cœur de Marché, je suis marchand à Bouaflé.\n\nje suis intéressé par le *${nomPack}*`;
-            window.location.href = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(message)}`;
-        }
-
-        function voirPlus(nom) {
-            const p = articles.find(item => item.nom === nom);
-            if (!p) return;
-            
-            document.getElementById('p-detail-img').src = p.image;
-            document.getElementById('p-detail-nom').innerHTML = `${securiserTexte(p.nom)} ${cleanTxt(p.certifie) === 'oui' ? '<i class="fas fa-star text-orange-500 text-sm"></i>' : ''}`;
-            document.getElementById('p-detail-prix').innerText = p.prix + " F";
-            document.getElementById('p-detail-vendeur').innerText = `📍 ` + (p.vendeur || "Boutique") + " - " + (p.quartier || "Bouaflé");
-            document.getElementById('p-detail-desc').innerHTML = p.description ? securiserTexte(p.description).replace(/\n/g, '<br>') : "Aucune description disponible.";
-            document.getElementById('p-detail-btn-panier').onclick = () => { ajouterAuPanier(p.nom, p.prix); document.getElementById('modalProduit').style.display = 'none'; };
-            
-            const tPartage = encodeURIComponent(`🛒 *COMMANDE CŒUR DE MARCHÉ*\n\nProduit : *${p.nom}*\nPrix : *${p.prix}*\n\nLien : ${appLink}?p=${encodeURIComponent(p.nom)}`);
-            document.getElementById('p-detail-btn-wa').href = `https://wa.me/2250576326645?text=${tPartage}`;
-            document.getElementById('modalProduit').style.display = 'flex';
-        }
-            
-        function afficherMessage(texteMarketing, erreurReelle = "") {
-    const notif = document.getElementById('notif-classe');
-    const label = document.getElementById('texte-notif');
-    const debug = document.getElementById('debug-info');
-    
-    if (!notif || !label) return;
-
-    // On affiche le message propre pour le client
-    label.innerText = texteMarketing;
-    
-    // On met l'erreur technique en tout petit pour TOI
-    if (debug && erreurReelle) {
-        debug.innerText = erreurReelle.substring(0, 40);
-    }
-
-    // On montre la bulle
-    notif.classList.remove('hidden');
-
-    // Elle disparaît seule après 20 secondes si on ne clique pas
-    setTimeout(() => {
-        notif.classList.add('hidden');
-    }, 20000);
-        }
-            
-      function genererCarteProduit(p) {
-            const escNom = p.nom.replace(/'/g, "\\'");
-            const tPartage = encodeURIComponent("🛒 COMMANDE CŒUR DE MARCHÉ\n\nProduit : " + p.nom + "\nPrix : " + p.prix + " F");
-            
-            return `<div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 mb-4">
-                <div class="flex gap-4">
-                    <img src="${p.image}" loading="lazy" onclick="voirPlus('${escNom}')" class="w-24 h-24 object-cover rounded-2xl shadow-md">
-                    <div class="flex-1">
-                        <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1 leading-tight">${p.nom}</h4>
-                        <p class="text-orange-600 font-black text-sm mb-1">${p.prix} F</p>
-                        <p class="text-blue-600 font-bold italic mb-1 text-[8px]"><i class="fas fa-map-marker-alt"></i> ${securiserTexte(p.quartier || 'Bouaflé')}</p>
-                        <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${securiserTexte(p.vendeur)}</p>
-                    </div>
-                </div>
-                <div class="flex gap-2 border-t pt-4 mt-4">
-                    <button onclick="ajouterAuPanier('${escNom}', '${p.prix}')" class="bg-purple-900 text-white flex-1 h-11 rounded-xl font-black text-[9px] italic flex items-center justify-center gap-2">
-                        <i class="fas fa-plus-circle"></i> PANIER
-                    </button>
-                    <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-11 h-11 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/20">
-                        <i class="fab fa-whatsapp text-lg"></i>
-                    </a>
-              </div>
-            </div>`;
+      // A. La Vidéo Publicitaire (Sous les projecteurs)
+      const videoData = window.articles.find(p => cleanTxt(p.nom) === "video_pub");
+      if (videoData && videoData.description && videoData.description.length > 5) {
+        let lien = videoData.description;
+        let videoId = lien.includes('v=') ? lien.split('v=')[1].substring(0, 11) : lien.split('/').pop().substring(0, 11);
+        document.getElementById('player-video').src = "https://www.youtube.com/embed/" + videoId;
+        document.getElementById('section-video').classList.remove('hidden');
       }
 
-// --- CONNEXION AU COFFRE-FORT FIREBASE ---
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+      // B. À La Une (Les marchands qui paient le placement)
+      const cert = window.articles.filter(p => cleanTxt(p.certifie) === "oui" && cleanTxt(p.statut) === "ok");
+      if (cert.length > 0) {
+        document.getElementById('carrousel-une').innerHTML = cert.map(p => genererCarteProduit(p, true)).join('');
+      }
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCIsoV6DNP6v7Nm79R7r5hUrB4a-0U6vi0",
-  authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
-  projectId: "coeur-de-marche-a3f31",
-  storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
-  messagingSenderId: "463834578884",
-  appId: "1:463834578884:web:64083245392e5e98322e91"
-};
+      // C. Les vrais articles (sans les pubs) et les Nouveautés
+      window.tousLesArticlesVrais = window.articles.filter(p => cleanTxt(p.nom) !== "video_pub" && cleanTxt(p.nom) !== "annonce" && cleanTxt(p.statut) === "ok");
+      
+      const dernieresNouveautes = window.tousLesArticlesVrais.slice(-6).reverse(); // Prend les 6 derniers
+      if (dernieresNouveautes.length > 0) {
+        document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => genererCarteProduit(p, true)).join('');
+        document.getElementById('section-nouveautes').classList.remove('hidden');
+      }
 
-// Initialisation des moteurs
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const storage = getStorage(app);
+      // Affichage de tous les produits en bas
+      actualiserAffichageProgressif(window.tousLesArticlesVrais);
+      mettreAJourCompteurPanier();
 
-console.log("Cœur de Marché est maintenant relié à Google Firebase !");
-</script>
+    } catch (erreur) {
+      console.error("Erreur de connexion :", erreur);
+    } finally {
+      if (loader) loader.style.display = 'none';
+    }
+  }
+
+  // 4. LA RECHERCHE INTELLIGENTE (Texte et Micro)
+  function rechercherProduit() {
+    const s = cleanTxt(document.getElementById('inputRecherche').value);
+    if (s.length > 1) {
+      switchTab('boutique');
+      document.getElementById('vue-rayons').classList.add('hidden');
+      document.getElementById('vue-produits').classList.remove('hidden');
+
+      let f = window.tousLesArticlesVrais.filter(p => cleanTxt(p.nom).includes(s) || cleanTxt(p.rayon).includes(s) || cleanTxt(p.description).includes(s));
+      
+      const listeProduits = document.getElementById('liste-produits');
+      if (f.length === 0) {
+        listeProduits.innerHTML = '<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé pour "'+s+'"</p>';
+      } else {
+        listeProduits.innerHTML = f.map(p => genererCarteProduit(p)).join('');
+      }
+    }
+  }
+
+  function lancerMicro() {
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'fr-FR';
+    const icon = document.getElementById('iconMicro');
+
+    recognition.onstart = () => { icon.className = "fas fa-spinner fa-spin"; };
+    
+    recognition.onresult = (event) => {
+      const parole = event.results[0][0].transcript;
+      document.getElementById('inputRecherche').value = parole;
+      rechercherProduit();
+    };
+    
+    recognition.onend = () => { icon.className = "fas fa-microphone"; };
+    recognition.start();
+  }
+
+  // 5. GÉNÉRATEUR DE CARTES
+  function genererCarteProduit(p, formatMini = false) {
+    const escNom = (p.nom || "").replace(/'/g, "\\'");
+    const prix = p.prix || 0;
+    const image = p.imageUrl || "https://via.placeholder.com/150";
+    const desc = p.description || "";
+    const tPartage = encodeURIComponent(`🛒 COMMANDE CŒUR DE MARCHÉ\n\nProduit: ${p.nom}\nPrix: ${prix} FCFA`);
+    
+    // Si formatMini est vrai (pour les carrousels), on fait une carte plus petite
+    if(formatMini) {
+       return `
+        <div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex-shrink-0">
+          <img src="${image}" loading="lazy" class="w-full h-32 object-cover">
+          <div class="p-4">
+            <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
+            <p class="text-orange-600 font-bold text-sm mb-2">${prix} F</p>
+            <button onclick="ajouterAuPanier('${escNom}', ${prix})" class="w-full bg-purple-900 text-white rounded-xl py-2 text-[10px] font-bold"><i class="fas fa-plus"></i> PANIER</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // Format normal pour la liste de produits
+    return `
+      <div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 mb-4">
+        <div class="flex gap-4">
+          <img src="${image}" loading="lazy" class="w-24 h-24 rounded-2xl object-cover border border-gray-200">
+          <div class="flex-1">
+            <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
+            <p class="text-orange-600 font-black text-sm mb-1">${prix} F</p>
+            <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${desc}</p>
+          </div>
+        </div>
+        <div class="flex gap-2 border-t pt-4 mt-4">
+          <button onclick="ajouterAuPanier('${escNom}', ${prix})" class="bg-purple-900 text-white flex-1 py-2 rounded-xl font-black text-[10px]">
+            <i class="fas fa-plus-circle"></i> PANIER
+          </button>
+          <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center">
+            <i class="fab fa-whatsapp text-lg"></i>
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  function actualiserAffichageProgressif(listeArticles) {
+    const conteneurListe = document.getElementById('liste-produits');
+    if (!conteneurListe) return;
+    conteneurListe.innerHTML = listeArticles.map(p => genererCarteProduit(p)).join('');
+  }
+
+  // Fonctions de Panier et Navigation (Identiques à celles que j'avais nettoyées)
+  function ajouterAuPanier(nom, prix) {
+    panier.push({ nom: nom, prix: prix });
+    localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+    mettreAJourCompteurPanier();
+    alert(nom + " ajouté au panier !");
+  }
+
+  function mettreAJourCompteurPanier() {
+    const btn = document.getElementById('btn-panier-flottant');
+    const count = document.getElementById('count-panier');
+    if (btn && count) {
+      if (panier.length > 0) { btn.style.display = 'flex'; count.innerText = panier.length; } 
+      else { btn.style.display = 'none'; }
+    }
+  }
+
+  function ouvrirPanier() {
+    document.getElementById('modalPanier').style.display = 'flex';
+    let total = 0;
+    document.getElementById('contenuPanier').innerHTML = panier.map((item, index) => {
+      total += parseInt(item.prix);
+      return `
+        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2 border border-gray-200">
+          <span class="text-[10px] font-black text-purple-900 uppercase">${item.nom}</span>
+          <div class="flex items-center gap-3">
+             <span class="text-orange-600 font-bold text-[10px]">${item.prix} F</span>
+             <button onclick="supprimerDuPanier(${index})" class="text-red-500"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+      `;
+    }).join('');
+    document.getElementById('totalPanier').innerText = total.toLocaleString() + " F";
+  }
+
+  function supprimerDuPanier(index) {
+    panier.splice(index, 1);
+    localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+    ouvrirPanier(); mettreAJourCompteurPanier();
+  }
+
+  function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
+
+  function envoyerPanierWhatsApp() {
+    if (panier.length === 0) return;
+    let message = "*🛒 Bonjour Cœur de Marché, voici ma commande :*\n\n";
+    let total = 0;
+    panier.forEach((item) => { message += `- ${item.nom} (${item.prix} F)\n`; total += parseInt(item.prix); });
+    message += `\n*Total : ${total.toLocaleString()} F*\n`;
+    const lien = "https://wa.me/2250576326645?text=" + encodeURIComponent(message);
+    panier = []; localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+    window.location.href = lien;
+  }
+
+  function switchTab(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(id);
+    if(target) target.classList.add('active');
+  }
+
+  function ouvrirRayon(nomRayon) {
+    switchTab('boutique');
+    alert("Ouverture du rayon : " + nomRayon);
+  }
+      </script>
+        
 </body>
 </html>
 
