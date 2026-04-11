@@ -91,14 +91,22 @@
     let emailVendeur = "inconnu";
 
     // Vérification de sécurité : on s'assure que le vendeur est bien connecté
-    onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, (user) => {
         if (user) {
-            emailVendeur = user.email; // On garde son email pour savoir à qui appartient l'article
+            // Firebase a confirmé que tu es connecté
+            emailVendeur = user.email;
+            console.log("Vendeur identifié : " + emailVendeur);
         } else {
-            // S'il n'est pas connecté, on le renvoie à la porte d'entrée
-            window.location.href = "vendre.html"; 
+            // On attend 2 secondes avant de chasser l'utilisateur. 
+            // Ça laisse le temps à la session de se charger sur les téléphones un peu lents.
+            setTimeout(() => {
+                if (!auth.currentUser) {
+                    window.location.href = "vendre.html";
+                }
+            }, 2000);
         }
     });
+    
 
     // 4. La fonction principale (Activée au clic du bouton)
     window.ajouterProduit = async function() {
