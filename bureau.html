@@ -65,6 +65,101 @@
     
     <a href="index.html" class="logout">Fermer mon bureau (Retour à l'accueil)</a>
 </div>
+<script type="module">
+    // 1. Importation des outils Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+    // 2. Tes clés secrètes Cœur de Marché
+    const firebaseConfig = {
+        apiKey: "AIzaSyCisoVGDN76v7Nm79R7rShUrB4a-OU6vi0",
+        authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
+        projectId: "coeur-de-marche-a3f31",
+        storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
+        messagingSenderId: "463834578884",
+        appId: "1:463834578884:web:6d0832d5392e1e98322e91"
+    };
+
+    // 3. Démarrage du moteur
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    let emailVendeur = "inconnu";
+
+    // Vérification de sécurité : on s'assure que le vendeur est bien connecté
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            emailVendeur = user.email; // On garde son email pour savoir à qui appartient l'article
+        } else {
+            // S'il n'est pas connecté, on le renvoie à la porte d'entrée
+            window.location.href = "vendre.html"; 
+        }
+    });
+
+    // 4. La fonction principale (Activée au clic du bouton)
+    window.ajouterProduit = async function() {
+        const nom = document.getElementById('nomArticle').value;
+        const prix = document.getElementById('prixArticle').value;
+        const cat = document.getElementById('catArticle').value;
+        const photoInput = document.getElementById('photoArticle');
+        const bouton = document.querySelector('button');
+
+        // Vérification anti-erreur : a-t-il tout rempli ?
+        if (!nom || !prix || photoInput.files.length === 0) {
+            alert("⚠️ Veuillez remplir le nom, le prix et ajouter une photo !");
+            return;
+        }
+
+        const photoFile = photoInput.files[0];
+
+        // On change le bouton pour faire patienter le vendeur
+        bouton.innerText = "⏳ Envoi en cours sur le marché...";
+        bouton.disabled = true;
+        bouton.style.backgroundColor = "#ccc"; // Devient gris
+
+        try {
+            // ÉTAPE A : Envoi de la photo dans Firebase Storage
+            const nomFichierUnique = "produits/" + Date.now() + "_" + photoFile.name;
+            const imageRef = ref(storage, nomFichierUnique);
+            await uploadBytes(imageRef, photoFile);
+            const lienImage = await getDownloadURL(imageRef); // On récupère le lien magique
+
+            // ÉTAPE B : Envoi des textes dans Firestore (La base de données)
+            await addDoc(collection(db, "produits"), {
+                nom: nom,
+                prix: Number(prix),
+                categorie: cat,
+                image: lienImage,
+                vendeur: emailVendeur,
+                dateAjout: serverTimestamp() // Pour trier les nouveautés
+            });
+
+            // SUCCÈS !
+            alert("✅ Produit mis en vente avec succès !");
+
+            // On vide le formulaire pour le prochain article
+            document.getElementById('nomArticle').value = "";
+            document.getElementById('prixArticle').value = "";
+            document.getElementById('photoArticle').value = "";
+            
+            // On remet le bouton à la normale
+            bouton.innerText = "Mettre en vente sur le marché";
+            bouton.disabled = false;
+            bouton.style.backgroundColor = "#FF9800"; // Redevient orange
+
+        } catch (error) {
+            console.error("Erreur détaillée :", error);
+            alert("❌ Une erreur est survenue pendant l'envoi. Veuillez réessayer.");
+            bouton.innerText = "Mettre en vente sur le marché";
+            bouton.disabled = false;
+            bouton.style.backgroundColor = "#FF9800";
+        }
+    };
+        </script>
 
 </body>
   </html>
