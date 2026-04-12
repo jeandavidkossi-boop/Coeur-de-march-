@@ -68,25 +68,24 @@
 <script type="module">
     // 1. Importation des outils Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-
     // 2. Tes clés secrètes Cœur de Marché
         const firebaseConfig = {
-  apiKey: "AIzaSyCIsoV6DNP6v7Nm79R7r5hUrB4a-0U6vi0",
-  authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
-  projectId: "coeur-de-marche-a3f31",
-  storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
-  messagingSenderId: "463834578884",
-  appId: "1:463834578884:web:64083245392e5e98322e91"
+    apiKey: "AIzaSyCIsoV6DNP6v7m79R7r5hUrB4a-EU6uVI0",
+    authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
+    databaseURL: "https://coeur-de-marche-a3f31-default-rtdb.europe-west1.firebasedatabase.app/",
+    projectId: "coeur-de-marche-a3f31",
+    storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
+    messagingSenderId: "463834578884",
+    appId: "1:463834578884:web:6d103245392e5e98322e0f"
 };
     
     // 3. Démarrage du moteur
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
+    const db = getDatabase(app);
 
     let emailVendeur = "inconnu";
 
@@ -136,39 +135,40 @@
             await uploadBytes(imageRef, photoFile);
             const lienImage = await getDownloadURL(imageRef); // On récupère le lien magique
 
-            // ÉTAPE B : Envoi des textes dans Firestore (La base de données)
-            await addDoc(collection(db, "produits"), {
-                nom: nom,
-                prix: Number(prix),
-                categorie: cat,
-                image: lienImage,
-                vendeur: emailVendeur,
-                dateAjout: serverTimestamp() // Pour trier les nouveautés
-            });
+                    // ÉTAPE B : Envoi des textes dans Realtime Database (La base gratuite)
+        const produitsRef = ref(db, 'produits');
+        const nouveauProduitRef = push(produitsRef);
+        await set(nouveauProduitRef, {
+            nom: nom,
+            prix: Number(prix),
+            categorie: cat,
+            image: lienImage,
+            vendeur: emailVendeur,
+            dateAjout: Date.now()
+        });
 
-            // SUCCÈS !
-            alert("✅ Produit mis en vente avec succès !");
+        // SUCCÈS !
+        alert("✅ Produit mis en vente avec succès !");
 
-            // On vide le formulaire pour le prochain article
-            document.getElementById('nomArticle').value = "";
-            document.getElementById('prixArticle').value = "";
-            document.getElementById('photoArticle').value = "";
-            
-            // On remet le bouton à la normale
-            bouton.innerText = "Mettre en vente sur le marché";
-            bouton.disabled = false;
-            bouton.style.backgroundColor = "#FF9800"; // Redevient orange
+        // On vide le formulaire pour le prochain article
+        document.getElementById('nomArticle').value = "";
+        document.getElementById('prixArticle').value = "";
+        document.getElementById('photoArticle').value = "";
 
-        } catch (error) {
-            console.error("Erreur détaillée :", error);
-            alert("❌ Une erreur est survenue pendant l'envoi. Veuillez réessayer.");
-            bouton.innerText = "Mettre en vente sur le marché";
-            bouton.disabled = false;
-            bouton.style.backgroundColor = "#FF9800";
-        }
-    };
-        </script>
+        // On remet le bouton à la normale
+        bouton.innerText = "Mettre en vente sur le marché";
+        bouton.disabled = false;
+        bouton.style.backgroundColor = "#FF9800";
+
+    } catch (error) {
+        console.error("Erreur détaillée :", error);
+        alert("❌ Une erreur est survenue pendant l'envoi. Veuillez réessayer.");
+        bouton.innerText = "Mettre en vente sur le marché";
+        bouton.disabled = false;
+        bouton.style.backgroundColor = "#FF9800";
+    }
+};
+</script>
 
 </body>
-  </html>
-  
+</html>
