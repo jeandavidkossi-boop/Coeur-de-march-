@@ -324,20 +324,20 @@
        <script type="module">
   // 1. IMPORTATION DE FIREBASE
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+           
   const firebaseConfig = {
-    apiKey: "AIzaSyCisoV6DNP6v7Nm79R7r6hUrB4a-0U6vi0",
+    apiKey: "AIzaSyCIsoV6DNP6v7m79R7r5hUrB4a-EU6uVI0",
     authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
+    databaseURL: "https://coeur-de-marche-a3f31-default-rtdb.europe-west1.firebasedatabase.app/",
     projectId: "coeur-de-marche-a3f31",
     storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
     messagingSenderId: "463834578884",
-    appId: "1:463834578884:web:64083245392e5e98322e91"
-  };
-
+    appId: "1:463834578884:web:6d103245392e5e98322e0f"
+};          
   const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
+  const db = getDatabase(app);
+           
   // 2. VARIABLES GLOBALES
   window.articles = []; 
   window.tousLesArticlesVrais = [];
@@ -359,55 +359,54 @@
   const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 
   // 3. LE CŒUR DU SYSTÈME : CHARGEMENT + TRI MARKETING
-  async function chargerDonnees() {
+  function chargerDonnees() {
     const loader = document.getElementById('loader');
     if (loader) loader.style.display = 'flex';
 
-    try {
-      const querySnapshot = await getDocs(collection(db, "produits"));
-      window.articles = [];
+    const produitsRef = ref(db, 'produits');
 
-      querySnapshot.forEach((doc) => {
-        window.articles.push({ id: doc.id, ...doc.data() });
-      });
+    // onValue écoute la base en temps réel !
+    onValue(produitsRef, (snapshot) => {
+        const data = snapshot.val();
+        window.articles = [];
 
-      // --- TA STRATÉGIE MARKETING REPREND VIE ICI --- //
+        if (data) {
+            // On transforme l'objet de la base en liste (tableau)
+            Object.keys(data).forEach(id => {
+                window.articles.push({ id: id, ...data[id] });
+            });
+        }
 
-      // A. La Vidéo Publicitaire (Sous les projecteurs)
-      const videoData = window.articles.find(p => cleanTxt(p.nom) === "video_pub");
-      if (videoData && videoData.description && videoData.description.length > 5) {
-        let lien = videoData.description;
-        let videoId = lien.includes('v=') ? lien.split('v=')[1].substring(0, 11) : lien.split('/').pop().substring(0, 11);
-        document.getElementById('player-video').src = "https://www.youtube.com/embed/" + videoId;
-        document.getElementById('section-video').classList.remove('hidden');
-      }
+        // --- TA STRATÉGIE MARKETING REPREND ICI ---
+        
+        // A. La Vidéo Publicitaire
+        const videoData = window.articles.find(p => cleanTxt(p.nom) === "video_pub");
+        if (videoData && videoData.description && videoData.description.length > 5) {
+            let lien = videoData.description;
+            let videoId = lien.includes('v=') ? lien.split('v=')[1].substring(0, 11) : lien.split('/').pop().substring(0, 11);
+            document.getElementById('player-video').src = "https://www.youtube.com/embed/" + videoId;
+            document.getElementById('section-video').classList.remove('hidden');
+        }
 
-      // B. À La Une (Les marchands qui paient le placement)
-      const cert = window.articles.filter(p => cleanTxt(p.certifie) === "oui" && cleanTxt(p.statut) === "ok");
-      if (cert.length > 0) {
-        document.getElementById('carrousel-une').innerHTML = cert.map(p => genererCarteProduit(p, true)).join('');
-      }
+        // C. Les vrais articles (sans les pubs)
+        window.tousLesArticlesVrais = window.articles.filter(p => cleanTxt(p.nom) !== "video_pub" && cleanTxt(p.nom) !== "");
 
-      // C. Les vrais articles (sans les pubs) et les Nouveautés
-      window.tousLesArticlesVrais = window.articles.filter(p => cleanTxt(p.nom) !== "video_pub" && cleanTxt(p.nom) !== "annonce" && cleanTxt(p.statut) === "ok");
-      
-      const dernieresNouveautes = window.tousLesArticlesVrais.slice(-6).reverse(); // Prend les 6 derniers
-      if (dernieresNouveautes.length > 0) {
-        document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => genererCarteProduit(p, true)).join('');
-        document.getElementById('section-nouveautes').classList.remove('hidden');
-      }
+        const dernieresNouveautes = window.tousLesArticlesVrais.slice(-6).reverse();
+        if (dernieresNouveautes.length > 0) {
+            document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => genererCarteProduit(p, true)).join('');
+            document.getElementById('section-nouveautes').classList.remove('hidden');
+        }
 
-      // Affichage de tous les produits en bas
-      actualiserAffichageProgressif(window.tousLesArticlesVrais);
-      mettreAJourCompteurPanier();
+        actualiserAffichageProgressif(window.tousLesArticlesVrais);
+        mettreAjourCompteurPanier();
 
-    } catch (erreur) {
-      console.error("Erreur de connexion :", erreur);
-    } finally {
-      if (loader) loader.style.display = 'none';
-    }
+        if (loader) loader.style.display = 'none';
+    }, (error) => {
+        console.error("Erreur de connexion :", error);
+        if (loader) loader.style.display = 'none';
+    });
   }
-
+           
   // 4. LA RECHERCHE INTELLIGENTE (Texte et Micro)
   function rechercherProduit() {
     const s = cleanTxt(document.getElementById('inputRecherche').value);
