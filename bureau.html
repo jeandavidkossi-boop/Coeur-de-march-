@@ -3,26 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mon Bureau - Cœur de Marché</title>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Bureau - Cœur de Marché</title>
+    
+    <style>
+        body { margin: 0; font-family: sans-serif; background-color: #f1f5f9; }
+        #chargement { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .btn-rouge { background: #dc2626; color: white; font-weight: 900; padding: 18px 25px; border-radius: 15px; border: none; font-size: 13px; text-transform: uppercase; margin-top: 25px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); cursor: pointer; animation: pulse 2s infinite;}
+        .statut-box { color: #ea580c; border: 2px solid #fed7aa; background: #fff7ed; padding: 15px; border-radius: 10px; font-weight: bold; font-size: 13px; text-align: center; max-width: 300px; width: 100%;}
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    </style>
 </head>
-<body class="bg-slate-100 font-sans min-h-screen pb-10">
+<body>
 
-    <div id="chargement" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center p-4">
-        <img src="1769121566036.png" class="w-16 h-16 rounded-full mb-4 animate-bounce opacity-80">
-        <h2 class="text-purple-900 font-black uppercase text-lg tracking-widest text-center mb-2">Ouverture...</h2>
+    <div id="chargement">
+        <img src="1769121566036.png" style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid #e2e8f0; margin-bottom: 20px;">
+        <h2 style="color: #4c1d95; font-weight: 900; text-transform: uppercase; margin-bottom: 15px; font-size: 22px;">Ouverture...</h2>
         
-        <p id="statut" class="text-orange-600 font-bold text-xs text-center border-2 border-orange-200 bg-orange-50 p-3 rounded-lg w-full max-w-[300px]">
-            1. Connexion au réseau...
+        <p id="statut" class="statut-box">
+            1. Connexion au réseau en cours...
         </p>
         
-        <button id="btnForcer" onclick="forcerEntree()" style="display:none;" class="mt-8 bg-red-600 text-white font-black py-4 px-6 rounded-2xl shadow-xl uppercase text-xs active:scale-95 animate-pulse">
-            ⚠️ FORCER L'ENTRÉE DU BUREAU
+        <button id="btnForcer" onclick="forcerEntree()" class="btn-rouge" style="display:none;">
+            ⚠️ Forcer l'entrée du bureau
         </button>
     </div>
 
-    <div id="contenuBureau" style="display: none;">
+    <script>
+        // Fonction pour casser la porte
+        function forcerEntree() {
+            document.getElementById('chargement').style.display = 'none';
+            document.getElementById('contenuBureau').style.display = 'block';
+            document.getElementById('emailMarchand').innerText = "Mode Bas Débit";
+        }
+
+        // Au bout de 4 secondes, ON AFFICHE LE BOUTON ROUGE QUOI QU'IL ARRIVE
+        setTimeout(function() {
+            var btn = document.getElementById('btnForcer');
+            var txt = document.getElementById('statut');
+            if(btn && txt) {
+                btn.style.display = 'block';
+                txt.innerText = "⚠️ Le réseau bloque. Utilisez le bouton rouge ci-dessous !";
+            }
+        }, 4000);
+    </script>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <div id="contenuBureau" style="display: none;" class="pb-10">
         
         <div class="bg-[#4c1d95] text-white p-6 rounded-b-[40px] shadow-lg mb-8">
             <div class="flex items-center justify-between">
@@ -33,7 +61,7 @@
                         <p id="emailMarchand" class="text-[10px] text-orange-300 font-bold tracking-widest">Connecté</p>
                     </div>
                 </div>
-                <button onclick="deconnexion()" class="text-white opacity-80 hover:opacity-100 text-[10px] uppercase font-black bg-purple-800 px-4 py-2 rounded-xl shadow-inner active:scale-95">
+                <button onclick="deconnexion()" class="text-white opacity-80 hover:opacity-100 text-[10px] uppercase font-black bg-purple-800 px-4 py-2 rounded-xl shadow-inner active:scale-95 border-none cursor-pointer">
                     Quitter
                 </button>
             </div>
@@ -60,6 +88,18 @@
                             <option value="Mode">👕 Mode & Chaussures</option>
                             <option value="Mercerie">✂️ Mercerie & Couture</option>
                             <option value="Alimentation">🛒 Alimentation (Gros & Détail)</option>
+                            <option value="Vivrier">🥕 Marché Vivrier (Frais)</option>
+                            <option value="Resto">🥘 Restaurants & Maquis</option>
+                            <option value="Sante">💊 Santé, Hygiène & Parapharmacie</option>
+                            <option value="Beaute">💄 Beauté & Cosmétique</option>
+                            <option value="Bebe">🍼 Univers Bébé & Maternité</option>
+                            <option value="Electronique">💻 Téléphones & Électroménager</option>
+                            <option value="Maison">🏠 Maison, Déco & Ameublement</option>
+                            <option value="Vaisselle">🍽️ Vaisselle & Ustensiles</option>
+                            <option value="Librairie">📚 Librairie & Fournitures</option>
+                            <option value="Quincaillerie">🧱 Quincaillerie & Construction</option>
+                            <option value="Agricole">🚜 Agriculture, Élevage & Intrants</option>
+                            <option value="Pieces">⚙️ Pièces Détachées (Moto/Auto)</option>
                         </select>
                     </div>
 
@@ -73,7 +113,7 @@
                         <input type="file" id="photoArticle" accept="image/*" capture="environment" class="w-full p-3 rounded-2xl bg-gray-50 border-2 border-gray-100 text-sm font-bold text-gray-600 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:uppercase file:bg-orange-100 file:text-orange-700">
                     </div>
 
-                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full bg-[#f97316] text-white font-black py-5 rounded-2xl shadow-lg uppercase tracking-widest mt-6 transition-all active:scale-95 text-sm">
+                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full bg-[#f97316] text-white font-black py-5 rounded-2xl shadow-lg uppercase tracking-widest mt-6 transition-all active:scale-95 text-sm border-none cursor-pointer">
                         Valider l'article
                     </button>
                 </form>
@@ -82,80 +122,41 @@
     </div>
 
     <script>
-        const statut = document.getElementById('statut');
-        const btnForcer = document.getElementById('btnForcer');
         let supabase;
-        let emailVendeurActuel = "mode_test@coeurdemarche.com";
 
-        // FONCTION DE FORÇAGE (Ouvre la porte manuellement)
-        function forcerEntree() {
-            document.getElementById('chargement').style.display = 'none';
-            document.getElementById('contenuBureau').style.display = 'block';
-            document.getElementById('emailMarchand').innerText = "Vendeur (Forcé)";
-        }
-
-        // LE SAUVEUR : Au bout de 4 secondes maximum, le bouton rouge DOIT apparaître
-        setTimeout(() => {
-            btnForcer.style.display = 'block';
-            if (statut.innerText.includes("Interrogation")) {
-                statut.innerText = "⚠️ Le réseau bloque la réponse. Cliquez sur le bouton rouge !";
-            }
-        }, 4000);
-
-        async function lancerLeSysteme() {
+        // Cette fonction s'exécute automatiquement quand les moteurs sont enfin téléchargés
+        window.onload = async function() {
             try {
-                statut.innerText = "1.5 Vérification du moteur interne...";
-
-                if (typeof window.supabase === 'undefined') {
-                    throw new Error("Moteur non téléchargé (Réseau faible).");
-                }
-
+                document.getElementById('statut').innerText = "1.5 Moteurs chargés. Vérification...";
+                
                 const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
                 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
                 supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-                statut.innerText = "2. Interrogation de Supabase...";
-                
-                // On met une limite stricte de 3 secondes pour Supabase (Sinon on passe à l'erreur)
-                const checkSession = supabase.auth.getSession();
-                const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000));
-                
-                const { data, error } = await Promise.race([checkSession, timeout]);
+                const { data, error } = await supabase.auth.getSession();
                 
                 if (error) throw error;
 
                 if (data && data.session) {
-                    statut.innerText = "✅ Connecté ! Bienvenue.";
-                    emailVendeurActuel = data.session.user.email;
-                    document.getElementById('emailMarchand').innerText = emailVendeurActuel;
-                    
-                    setTimeout(() => {
-                        document.getElementById('chargement').style.display = 'none';
-                        document.getElementById('contenuBureau').style.display = 'block';
-                    }, 500);
+                    // C'EST TOUT BON ! ON OUVRE.
+                    document.getElementById('emailMarchand').innerText = data.session.user.email;
+                    forcerEntree(); 
                 } else {
-                    statut.innerText = "⚠️ Non connecté. Retour...";
-                    setTimeout(() => {
-                        window.location.replace("vendre.html");
-                    }, 1500);
+                    window.location.replace("vendre.html");
                 }
             } catch (err) {
-                statut.innerText = "❌ ERREUR : " + err.message;
-                btnForcer.style.display = 'block'; // Le bouton rouge apparaît
+                document.getElementById('statut').innerText = "❌ Connexion lente. Utilisez le bouton rouge.";
             }
-        }
-
-        setTimeout(lancerLeSysteme, 1000);
+        };
 
         async function deconnexion() {
             if(supabase) await supabase.auth.signOut();
             window.location.replace("vendre.html");
         }
 
-        async function ajouterProduit() {
-            alert("L'interface du bureau est prête et fonctionne !");
+        function ajouterProduit() {
+            alert("L'interface du bureau fonctionne parfaitement, M. Jean-David !");
         }
     </script>
 </body>
 </html>
-
