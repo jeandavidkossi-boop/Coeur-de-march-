@@ -17,8 +17,8 @@
             1. Connexion au réseau...
         </p>
         
-        <button id="btnForcer" onclick="forcerEntree()" style="display:none;" class="mt-8 bg-red-600 text-white font-black py-4 px-6 rounded-2xl shadow-xl uppercase text-xs active:scale-95">
-            ⚠️ Entrer sans connexion réseau
+        <button id="btnForcer" onclick="forcerEntree()" style="display:none;" class="mt-8 bg-red-600 text-white font-black py-4 px-6 rounded-2xl shadow-xl uppercase text-xs active:scale-95 animate-pulse">
+            ⚠️ FORCER L'ENTRÉE DU BUREAU
         </button>
     </div>
 
@@ -87,31 +87,40 @@
         let supabase;
         let emailVendeurActuel = "mode_test@coeurdemarche.com";
 
-        // FONCTION DE SECOURS (Si ça bloque, tu cliques sur le bouton rouge)
+        // FONCTION DE FORÇAGE (Ouvre la porte manuellement)
         function forcerEntree() {
             document.getElementById('chargement').style.display = 'none';
             document.getElementById('contenuBureau').style.display = 'block';
             document.getElementById('emailMarchand').innerText = "Vendeur (Forcé)";
         }
 
+        // LE SAUVEUR : Au bout de 4 secondes maximum, le bouton rouge DOIT apparaître
+        setTimeout(() => {
+            btnForcer.style.display = 'block';
+            if (statut.innerText.includes("Interrogation")) {
+                statut.innerText = "⚠️ Le réseau bloque la réponse. Cliquez sur le bouton rouge !";
+            }
+        }, 4000);
+
         async function lancerLeSysteme() {
             try {
                 statut.innerText = "1.5 Vérification du moteur interne...";
 
-                // Si le réseau bloque le moteur Supabase, on déclenche une erreur propre
                 if (typeof window.supabase === 'undefined') {
-                    throw new Error("Le réseau empêche le chargement de Supabase.");
+                    throw new Error("Moteur non téléchargé (Réseau faible).");
                 }
 
-                // Initialisation du moteur
                 const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
                 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
                 supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
                 statut.innerText = "2. Interrogation de Supabase...";
                 
-                // Vérification de la session
-                const { data, error } = await supabase.auth.getSession();
+                // On met une limite stricte de 3 secondes pour Supabase (Sinon on passe à l'erreur)
+                const checkSession = supabase.auth.getSession();
+                const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 3000));
+                
+                const { data, error } = await Promise.race([checkSession, timeout]);
                 
                 if (error) throw error;
 
@@ -120,7 +129,6 @@
                     emailVendeurActuel = data.session.user.email;
                     document.getElementById('emailMarchand').innerText = emailVendeurActuel;
                     
-                    // On ouvre la porte
                     setTimeout(() => {
                         document.getElementById('chargement').style.display = 'none';
                         document.getElementById('contenuBureau').style.display = 'block';
@@ -132,13 +140,11 @@
                     }, 1500);
                 }
             } catch (err) {
-                // Si ça crashe à cause du réseau, on affiche le bouton rouge
                 statut.innerText = "❌ ERREUR : " + err.message;
-                btnForcer.style.display = 'block';
+                btnForcer.style.display = 'block'; // Le bouton rouge apparaît
             }
         }
 
-        // On laisse une seconde au téléphone pour bien télécharger le code avant de lancer
         setTimeout(lancerLeSysteme, 1000);
 
         async function deconnexion() {
@@ -152,3 +158,4 @@
     </script>
 </body>
 </html>
+
