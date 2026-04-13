@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mon Bureau - Cœur de Marché</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-100 font-sans min-h-screen pb-10">
@@ -12,12 +12,13 @@
     <div id="chargement" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center p-4">
         <img src="1769121566036.png" class="w-16 h-16 rounded-full mb-4 animate-bounce opacity-80">
         <h2 class="text-purple-900 font-black uppercase text-lg tracking-widest text-center mb-2">Ouverture...</h2>
+        
         <p id="statut" class="text-orange-600 font-bold text-xs text-center border-2 border-orange-200 bg-orange-50 p-3 rounded-lg w-full max-w-[300px]">
-            1. Lancement du système...
+            1. Connexion au réseau...
         </p>
         
         <button id="btnForcer" onclick="forcerEntree()" style="display:none;" class="mt-8 bg-red-600 text-white font-black py-4 px-6 rounded-2xl shadow-xl uppercase text-xs active:scale-95">
-            ⚠️ Forcer l'entrée dans le bureau
+            ⚠️ Entrer sans connexion réseau
         </button>
     </div>
 
@@ -81,74 +82,72 @@
     </div>
 
     <script>
-        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-        let emailVendeurActuel = "mode_test@coeurdemarche.com";
         const statut = document.getElementById('statut');
         const btnForcer = document.getElementById('btnForcer');
+        let supabase;
+        let emailVendeurActuel = "mode_test@coeurdemarche.com";
 
-        // FONCTION DE SECOURS MANUELLE
+        // FONCTION DE SECOURS (Si ça bloque, tu cliques sur le bouton rouge)
         function forcerEntree() {
             document.getElementById('chargement').style.display = 'none';
             document.getElementById('contenuBureau').style.display = 'block';
-            document.getElementById('emailMarchand').innerText = "Forcé (Hors Ligne)";
+            document.getElementById('emailMarchand').innerText = "Vendeur (Forcé)";
         }
 
-        async function analyserAcces() {
+        async function lancerLeSysteme() {
             try {
-                statut.innerText = "2. Interrogation de Supabase...";
-                
-                // On met un délai maximum. Si Supabase ne répond pas en 3 secondes, on affiche l'erreur
-                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("Délai dépassé")), 3000));
-                
-                const { data, error } = await Promise.race([
-                    supabase.auth.getSession(),
-                    timeoutPromise
-                ]);
-                
-                if (error) {
-                    statut.innerText = "❌ Erreur réseau : " + error.message;
-                    btnForcer.style.display = 'block'; // On affiche le bouton rouge
-                    return;
+                statut.innerText = "1.5 Vérification du moteur interne...";
+
+                // Si le réseau bloque le moteur Supabase, on déclenche une erreur propre
+                if (typeof window.supabase === 'undefined') {
+                    throw new Error("Le réseau empêche le chargement de Supabase.");
                 }
 
+                // Initialisation du moteur
+                const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+                const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+                statut.innerText = "2. Interrogation de Supabase...";
+                
+                // Vérification de la session
+                const { data, error } = await supabase.auth.getSession();
+                
+                if (error) throw error;
+
                 if (data && data.session) {
-                    statut.innerText = "✅ Connecté ! Ouverture des portes...";
+                    statut.innerText = "✅ Connecté ! Bienvenue.";
                     emailVendeurActuel = data.session.user.email;
                     document.getElementById('emailMarchand').innerText = emailVendeurActuel;
                     
-                    // On ouvre après 1 petite seconde pour que tu voies le succès
+                    // On ouvre la porte
                     setTimeout(() => {
                         document.getElementById('chargement').style.display = 'none';
                         document.getElementById('contenuBureau').style.display = 'block';
-                    }, 1000);
+                    }, 500);
                 } else {
-                    statut.innerText = "⚠️ Aucune session trouvée. Retour à la connexion...";
+                    statut.innerText = "⚠️ Non connecté. Retour...";
                     setTimeout(() => {
                         window.location.replace("vendre.html");
-                    }, 2000);
+                    }, 1500);
                 }
             } catch (err) {
-                statut.innerText = "💥 Crash du système : " + err.message;
-                btnForcer.style.display = 'block'; // On affiche le bouton rouge
+                // Si ça crashe à cause du réseau, on affiche le bouton rouge
+                statut.innerText = "❌ ERREUR : " + err.message;
+                btnForcer.style.display = 'block';
             }
         }
 
-        // On lance l'analyse dès que le code est lu
-        analyserAcces();
+        // On laisse une seconde au téléphone pour bien télécharger le code avant de lancer
+        setTimeout(lancerLeSysteme, 1000);
 
         async function deconnexion() {
-            statut.innerText = "Déconnexion en cours...";
-            document.getElementById('chargement').style.display = 'flex';
-            document.getElementById('contenuBureau').style.display = 'none';
-            await supabase.auth.signOut();
+            if(supabase) await supabase.auth.signOut();
             window.location.replace("vendre.html");
         }
 
         async function ajouterProduit() {
-            alert("Mode test : L'interface est ouverte ! Le système de photo sera activé une fois la connexion réseau stabilisée.");
+            alert("L'interface du bureau est prête et fonctionne !");
         }
     </script>
 </body>
