@@ -321,245 +321,234 @@
             <i class="fas fa-question-circle text-xl"></i> <span class="text-[8px] font-bold mt-1">Aide</span>
         </button>
                     </nav>
-       <script type="module">
-  // 1. IMPORTATION DE FIREBASE
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-           
-  const firebaseConfig = {
-    apiKey: "AIzaSyCIsoV6DNP6v7m79R7r5hUrB4a-EU6uVI0",
-    authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
-    databaseURL: "https://coeur-de-marche-a3f31-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "coeur-de-marche-a3f31",
-    storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
-    messagingSenderId: "463834578884",
-    appId: "1:463834578884:web:6d103245392e5e98322e0f"
-};          
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-           
-  // 2. VARIABLES GLOBALES
-  window.articles = []; 
-  window.tousLesArticlesVrais = [];
-  let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
+           <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // CONFIGURATION SUPABASE (Remplace l'ancien Firebase)
+        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+        const supabaseKey = 'Sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-  // Rendre les fonctions accessibles
-  window.chargerDonnees = chargerDonnees;
-  window.ajouterAuPanier = ajouterAuPanier;
-  window.ouvrirPanier = ouvrirPanier;
-  window.fermerPanier = fermerPanier;
-  window.envoyerPanierWhatsApp = envoyerPanierWhatsApp;
-  window.supprimerDuPanier = supprimerDuPanier;
-  window.switchTab = switchTab;
-  window.ouvrirRayon = ouvrirRayon;
-  window.rechercherProduit = rechercherProduit;
-  window.lancerMicro = lancerMicro;
-
-  // Fonction pour nettoyer le texte (pour la recherche)
-  const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-
-  // 3. LE CŒUR DU SYSTÈME : CHARGEMENT + TRI MARKETING
-  function chargerDonnees() {
-    const loader = document.getElementById('loader');
-    if (loader) loader.style.display = 'flex';
-
-    const produitsRef = ref(db, 'produits');
-
-    // onValue écoute la base en temps réel !
-    onValue(produitsRef, (snapshot) => {
-        const data = snapshot.val();
+        // 2. VARIABLES GLOBALES
         window.articles = [];
+        window.tousLesArticlesVrais = [];
+        let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
 
-        if (data) {
-            // On transforme l'objet de la base en liste (tableau)
-            Object.keys(data).forEach(id => {
-                window.articles.push({ id: id, ...data[id] });
-            });
+        // Rendre les fonctions accessibles au HTML
+        window.chargerDonnees = chargerDonnees;
+        window.ajouterAuPanier = ajouterAuPanier;
+        window.ouvrirPanier = ouvrirPanier;
+        window.fermerPanier = fermerPanier;
+        window.envoyerPanierWhatsApp = envoyerPanierWhatsApp;
+        window.supprimerDuPanier = supprimerDuPanier;
+        window.switchTab = switchTab;
+        window.ouvrirRayon = ouvrirRayon;
+        window.rechercherProduit = rechercherProduit;
+        window.lancerMicro = lancerMicro;
+
+        const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+        // 3. LE COEUR DU SYSTÈME : CHARGEMENT DEPUIS L'ENTREPÔT
+        async function chargerDonnees() {
+            const loader = document.getElementById('loader');
+            if (loader) loader.style.display = 'flex';
+
+            try {
+                // On récupère tous les produits, du plus récent au plus ancien
+                const { data, error } = await supabase
+                    .from('produits')
+                    .select('*')
+                    .order('dateAjout', { ascending: false });
+
+                if (error) throw error;
+
+                window.articles = data || [];
+
+                // A. La Vidéo Publicitaire
+                const videoData = window.articles.find(p => cleanTxt(p.nom) === "video_pub");
+                if (videoData && videoData.description && videoData.description.length > 5) {
+                    let lien = videoData.description;
+                    let videoId = lien.includes('v=') ? lien.split('v=')[1].substring(0, 11) : lien.split('/').pop().substring(0, 11);
+                    document.getElementById('player-video').src = "https://www.youtube.com/embed/" + videoId;
+                    document.getElementById('section-video').classList.remove('hidden');
+                }
+
+                // C. Les vrais articles (sans les pubs)
+                window.tousLesArticlesVrais = window.articles.filter(p => cleanTxt(p.nom) !== "video_pub" && cleanTxt(p.nom) !== "");
+
+                // Nouveautés (les 6 premiers)
+                const dernieresNouveautes = window.tousLesArticlesVrais.slice(0, 6);
+                if (dernieresNouveautes.length > 0) {
+                    document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => genererCarteProduit(p, true)).join('');
+                    document.getElementById('section-nouveautes').classList.remove('hidden');
+                }
+
+                actualiserAffichageProgressif(window.tousLesArticlesVrais);
+                mettreAjourCompteurPanier();
+
+                if (loader) loader.style.display = 'none';
+
+            } catch (error) {
+                console.error("Erreur de connexion : ", error);
+                if (loader) loader.style.display = 'none';
+            }
         }
 
-        // --- TA STRATÉGIE MARKETING REPREND ICI ---
-        
-        // A. La Vidéo Publicitaire
-        const videoData = window.articles.find(p => cleanTxt(p.nom) === "video_pub");
-        if (videoData && videoData.description && videoData.description.length > 5) {
-            let lien = videoData.description;
-            let videoId = lien.includes('v=') ? lien.split('v=')[1].substring(0, 11) : lien.split('/').pop().substring(0, 11);
-            document.getElementById('player-video').src = "https://www.youtube.com/embed/" + videoId;
-            document.getElementById('section-video').classList.remove('hidden');
+        // 4. LA RECHERCHE INTELLIGENTE
+        function rechercherProduit() {
+            const s = cleanTxt(document.getElementById('inputRecherche').value);
+            if (s.length > 1) {
+                switchTab('boutique');
+                document.getElementById('vue-rayons').classList.add('hidden');
+                document.getElementById('vue-produits').classList.remove('hidden');
+                
+                // Recherche dans le nom, la catégorie ET la nouvelle description !
+                let f = window.tousLesArticlesVrais.filter(p => cleanTxt(p.nom).includes(s) || cleanTxt(p.categorie).includes(s) || cleanTxt(p.description).includes(s));
+                
+                const listeProduits = document.getElementById('liste-produits');
+                if (f.length === 0) {
+                    listeProduits.innerHTML = `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé pour "${s}"</p>`;
+                } else {
+                    listeProduits.innerHTML = f.map(p => genererCarteProduit(p)).join('');
+                }
+            }
         }
 
-        // C. Les vrais articles (sans les pubs)
-        window.tousLesArticlesVrais = window.articles.filter(p => cleanTxt(p.nom) !== "video_pub" && cleanTxt(p.nom) !== "");
+        function lancerMicro() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'fr-FR';
+            const icon = document.getElementById('iconMicro');
 
-        const dernieresNouveautes = window.tousLesArticlesVrais.slice(-6).reverse();
-        if (dernieresNouveautes.length > 0) {
-            document.getElementById('carrousel-nouveautes').innerHTML = dernieresNouveautes.map(p => genererCarteProduit(p, true)).join('');
-            document.getElementById('section-nouveautes').classList.remove('hidden');
+            recognition.onstart = () => { icon.className = "fas fa-spinner fa-spin"; };
+
+            recognition.onresult = (event) => {
+                const parole = event.results[0][0].transcript;
+                document.getElementById('inputRecherche').value = parole;
+                rechercherProduit();
+            };
+
+            recognition.onend = () => { icon.className = "fas fa-microphone"; };
+            recognition.start();
         }
 
-        actualiserAffichageProgressif(window.tousLesArticlesVrais);
-        mettreAjourCompteurPanier();
+        // 5. GÉNÉRATEUR DE CARTES
+        function genererCarteProduit(p, formatMini = false) {
+            const escNom = (p.nom || "").replace(/'/g, "\\'");
+            const prix = p.prix || 0;
+            const image = p.image || "https://via.placeholder.com/150"; 
+            const desc = p.description || "";
+            const tPartage = encodeURIComponent(`🛒 COMMANDE COEUR DE MARCHÉ\n\nProduit: ${p.nom}\nPrix: ${prix} FCFA`);
 
-        if (loader) loader.style.display = 'none';
-    }, (error) => {
-        console.error("Erreur de connexion :", error);
-        if (loader) loader.style.display = 'none';
-    });
-  }
-           
-  // 4. LA RECHERCHE INTELLIGENTE (Texte et Micro)
-  function rechercherProduit() {
-    const s = cleanTxt(document.getElementById('inputRecherche').value);
-    if (s.length > 1) {
-      switchTab('boutique');
-      document.getElementById('vue-rayons').classList.add('hidden');
-      document.getElementById('vue-produits').classList.remove('hidden');
+            if(formatMini) {
+                return `
+                <div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex-shrink-0">
+                    <img src="${image}" loading="lazy" class="w-full h-32 object-cover">
+                    <div class="p-4">
+                        <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
+                        <p class="text-orange-600 font-bold text-sm mb-2">${prix} F</p>
+                        <button onclick="ajouterAuPanier('${escNom}', ${prix})" class="w-full bg-purple-900 text-white rounded-xl py-2 text-xs font-bold shadow-md"><i class="fas fa-plus-circle"></i> PANIER</button>
+                    </div>
+                </div>
+                `;
+            }
 
-      let f = window.tousLesArticlesVrais.filter(p => cleanTxt(p.nom).includes(s) || cleanTxt(p.rayon).includes(s) || cleanTxt(p.description).includes(s));
-      
-      const listeProduits = document.getElementById('liste-produits');
-      if (f.length === 0) {
-        listeProduits.innerHTML = '<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit trouvé pour "'+s+'"</p>';
-      } else {
-        listeProduits.innerHTML = f.map(p => genererCarteProduit(p)).join('');
-      }
-    }
-  }
+            return `
+            <div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 mb-4">
+                <div class="flex gap-4">
+                    <img src="${image}" loading="lazy" class="w-24 h-24 rounded-2xl object-cover border border-gray-200">
+                    <div class="flex-1">
+                        <h4 class="font-black uppercase text-purple-900 text-[12px] mb-1">${p.nom}</h4>
+                        <p class="text-orange-600 font-black text-sm mb-1">${prix} F</p>
+                        <p class="text-gray-500 text-[10px] leading-tight line-clamp-2">${desc}</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 border-t pt-4 mt-4">
+                    <button onclick="ajouterAuPanier('${escNom}', ${prix})" class="bg-purple-900 text-white flex-1 py-2 rounded-xl text-xs font-bold shadow-md"><i class="fas fa-plus-circle"></i> PANIER</button>
+                    <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center shadow-md"><i class="fab fa-whatsapp text-lg"></i></a>
+                </div>
+            </div>
+            `;
+        }
 
-  function lancerMicro() {
-    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-    recognition.lang = 'fr-FR';
-    const icon = document.getElementById('iconMicro');
+        function actualiserAffichageProgressif(listeArticles) {
+            const conteneurListe = document.getElementById('liste-produits');
+            if (!conteneurListe) return;
+            conteneurListe.innerHTML = listeArticles.map(p => genererCarteProduit(p)).join('');
+        }
 
-    recognition.onstart = () => { icon.className = "fas fa-spinner fa-spin"; };
-    
-    recognition.onresult = (event) => {
-      const parole = event.results[0][0].transcript;
-      document.getElementById('inputRecherche').value = parole;
-      rechercherProduit();
-    };
-    
-    recognition.onend = () => { icon.className = "fas fa-microphone"; };
-    recognition.start();
-  }
+        // 6. PANIER ET NAVIGATION (Totalement préservé)
+        function ajouterAuPanier(nom, prix) {
+            panier.push({ nom: nom, prix: prix });
+            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+            mettreAjourCompteurPanier();
+            alert(nom + " ajouté au panier !");
+        }
 
-  // 5. GÉNÉRATEUR DE CARTES
-  function genererCarteProduit(p, formatMini = false) {
-    const escNom = (p.nom || "").replace(/'/g, "\\'");
-    const prix = p.prix || 0;
-    const image = p.imageUrl || "https://via.placeholder.com/150";
-    const desc = p.description || "";
-    const tPartage = encodeURIComponent(`🛒 COMMANDE CŒUR DE MARCHÉ\n\nProduit: ${p.nom}\nPrix: ${prix} FCFA`);
-    
-    // Si formatMini est vrai (pour les carrousels), on fait une carte plus petite
-    if(formatMini) {
-       return `
-        <div class="min-w-[160px] bg-white rounded-3xl shadow-lg overflow-hidden border border-gray-100 flex-shrink-0">
-          <img src="${image}" loading="lazy" class="w-full h-32 object-cover">
-          <div class="p-4">
-            <h4 class="text-purple-900 text-[10px] font-black uppercase truncate">${p.nom}</h4>
-            <p class="text-orange-600 font-bold text-sm mb-2">${prix} F</p>
-            <button onclick="ajouterAuPanier('${escNom}', ${prix})" class="w-full bg-purple-900 text-white rounded-xl py-2 text-[10px] font-bold"><i class="fas fa-plus"></i> PANIER</button>
-          </div>
-        </div>
-      `;
-    }
+        function mettreAjourCompteurPanier() {
+            const btn = document.getElementById('btn-panier-flottant');
+            const count = document.getElementById('count-panier');
+            if (btn && count) {
+                if (panier.length > 0) { btn.style.display = 'flex'; count.innerText = panier.length; }
+                else { btn.style.display = 'none'; }
+            }
+        }
 
-    // Format normal pour la liste de produits
-    return `
-      <div class="bg-white rounded-[30px] shadow-lg p-5 border border-gray-100 mb-4">
-        <div class="flex gap-4">
-          <img src="${image}" loading="lazy" class="w-24 h-24 rounded-2xl object-cover border border-gray-200">
-          <div class="flex-1">
-            <h4 class="font-black uppercase text-purple-900 text-[10px] mb-1">${p.nom}</h4>
-            <p class="text-orange-600 font-black text-sm mb-1">${prix} F</p>
-            <p class="text-gray-500 text-[8px] leading-tight line-clamp-2">${desc}</p>
-          </div>
-        </div>
-        <div class="flex gap-2 border-t pt-4 mt-4">
-          <button onclick="ajouterAuPanier('${escNom}', ${prix})" class="bg-purple-900 text-white flex-1 py-2 rounded-xl font-black text-[10px]">
-            <i class="fas fa-plus-circle"></i> PANIER
-          </button>
-          <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-10 h-10 rounded-xl flex items-center justify-center">
-            <i class="fab fa-whatsapp text-lg"></i>
-          </a>
-        </div>
-      </div>
-    `;
-  }
+        function ouvrirPanier() {
+            document.getElementById('modalPanier').style.display = 'flex';
+            let total = 0;
+            document.getElementById('contenuPanier').innerHTML = panier.map((item, index) => {
+                total += parseInt(item.prix);
+                return `
+                <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2 border border-gray-200">
+                    <span class="text-[10px] font-black text-purple-900 uppercase">${item.nom}</span>
+                    <div class="flex items-center gap-3">
+                        <span class="text-orange-600 font-bold text-[10px]">${item.prix} F</span>
+                        <button onclick="supprimerDuPanier(${index})" class="text-red-500"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            document.getElementById('totalPanier').innerText = total.toLocaleString() + " F";
+        }
 
-  function actualiserAffichageProgressif(listeArticles) {
-    const conteneurListe = document.getElementById('liste-produits');
-    if (!conteneurListe) return;
-    conteneurListe.innerHTML = listeArticles.map(p => genererCarteProduit(p)).join('');
-  }
+        function supprimerDuPanier(index) {
+            panier.splice(index, 1);
+            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+            ouvrirPanier(); mettreAjourCompteurPanier();
+        }
 
-  // Fonctions de Panier et Navigation (Identiques à celles que j'avais nettoyées)
-  function ajouterAuPanier(nom, prix) {
-    panier.push({ nom: nom, prix: prix });
-    localStorage.setItem('panier_bouafle', JSON.stringify(panier));
-    mettreAJourCompteurPanier();
-    alert(nom + " ajouté au panier !");
-  }
+        function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
 
-  function mettreAJourCompteurPanier() {
-    const btn = document.getElementById('btn-panier-flottant');
-    const count = document.getElementById('count-panier');
-    if (btn && count) {
-      if (panier.length > 0) { btn.style.display = 'flex'; count.innerText = panier.length; } 
-      else { btn.style.display = 'none'; }
-    }
-  }
+        function envoyerPanierWhatsApp() {
+            if (panier.length === 0) return;
+            let message = "*🛒 Bonjour Cœur de Marché, voici ma commande :*\n\n";
+            let total = 0;
+            panier.forEach((item) => { message += `- ${item.nom} (${item.prix} F)\n`; total += parseInt(item.prix); });
+            message += `\n*Total : ${total.toLocaleString()} F*\n`;
+            const lien = "https://wa.me/2250576326645?text=" + encodeURIComponent(message);
+            panier = []; localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+            window.location.href = lien;
+        }
 
-  function ouvrirPanier() {
-    document.getElementById('modalPanier').style.display = 'flex';
-    let total = 0;
-    document.getElementById('contenuPanier').innerHTML = panier.map((item, index) => {
-      total += parseInt(item.prix);
-      return `
-        <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl mb-2 border border-gray-200">
-          <span class="text-[10px] font-black text-purple-900 uppercase">${item.nom}</span>
-          <div class="flex items-center gap-3">
-             <span class="text-orange-600 font-bold text-[10px]">${item.prix} F</span>
-             <button onclick="supprimerDuPanier(${index})" class="text-red-500"><i class="fas fa-trash"></i></button>
-          </div>
-        </div>
-      `;
-    }).join('');
-    document.getElementById('totalPanier').innerText = total.toLocaleString() + " F";
-  }
+        function switchTab(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(id);
+            if(target) target.classList.add('active');
+        }
 
-  function supprimerDuPanier(index) {
-    panier.splice(index, 1);
-    localStorage.setItem('panier_bouafle', JSON.stringify(panier));
-    ouvrirPanier(); mettreAJourCompteurPanier();
-  }
-
-  function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
-
-  function envoyerPanierWhatsApp() {
-    if (panier.length === 0) return;
-    let message = "*🛒 Bonjour Cœur de Marché, voici ma commande :*\n\n";
-    let total = 0;
-    panier.forEach((item) => { message += `- ${item.nom} (${item.prix} F)\n`; total += parseInt(item.prix); });
-    message += `\n*Total : ${total.toLocaleString()} F*\n`;
-    const lien = "https://wa.me/2250576326645?text=" + encodeURIComponent(message);
-    panier = []; localStorage.setItem('panier_bouafle', JSON.stringify(panier));
-    window.location.href = lien;
-  }
-
-  function switchTab(id) {
-    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-    const target = document.getElementById(id);
-    if(target) target.classList.add('active');
-  }
-
-  function ouvrirRayon(nomRayon) {
-    switchTab('boutique');
-    alert("Ouverture du rayon : " + nomRayon);
-  }
-      </script>
-        
+        function ouvrirRayon(nomRayon) {
+            switchTab('boutique');
+            document.getElementById('vue-rayons').classList.add('hidden');
+            document.getElementById('vue-produits').classList.remove('hidden');
+            
+            let f = window.tousLesArticlesVrais.filter(p => cleanTxt(p.categorie).includes(cleanTxt(nomRayon)));
+            
+            const listeProduits = document.getElementById('liste-produits');
+            if (f.length === 0) {
+                listeProduits.innerHTML = `<p class="text-center p-10 text-gray-400 text-[10px]">Aucun produit dans ce rayon.</p>`;
+            } else {
+                listeProduits.innerHTML = f.map(p => genererCarteProduit(p)).join('');
+            }
+        }
+    </script>
 </body>
 </html>
-
