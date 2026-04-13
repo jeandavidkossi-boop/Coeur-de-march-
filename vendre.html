@@ -2,67 +2,46 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Pro - Cœur de Marché</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PRO - Cœur de Marché</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <style>
-        :root { --primary: #4c1d95; --secondary: #f97316; }
-        body { background: #0f172a; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; overflow-x: hidden; }
-        .main-card { background: white; border-radius: 40px; width: 100%; max-width: 420px; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
-        .input-group { position: relative; margin-bottom: 15px; }
-        .input-field { width: 100%; padding: 16px 20px; border-radius: 18px; background: #f8fafc; border: 2px solid #e2e8f0; font-weight: 600; transition: 0.3s; font-size: 14px; }
-        .input-field:focus { border-color: var(--secondary); background: white; outline: none; box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1); }
-        .btn-main { width: 100%; padding: 18px; border-radius: 20px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; transition: 0.4s; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
-        .mode-switch { cursor: pointer; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; transition: 0.3s; }
+        body { background-color: #0f172a; margin: 0; font-family: sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+        .card { background: white; border-radius: 30px; padding: 30px; width: 90%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); border-top: 10px solid #f97316; }
+        input { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 15px; border: 2px solid #e2e8f0; font-weight: bold; -webkit-appearance: none; }
+        button { cursor: pointer; transition: 0.2s; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="main-card p-8 shadow-2xl animate__animated animate__fadeInUp mx-4">
-        <div class="text-center mb-8">
-            <div class="relative inline-block">
-                <img src="1769121566036.png" id="logo" class="w-24 h-24 rounded-full border-4 border-white shadow-xl mb-4 transition-transform duration-500">
-                <div id="badge" class="absolute bottom-4 right-0 w-6 h-6 bg-green-500 border-4 border-white rounded-full"></div>
-            </div>
-            <h1 id="titre" class="text-2xl font-black text-slate-800 uppercase leading-none">Connexion</h1>
-            <p id="soustitre" class="text-slate-400 text-[10px] font-bold mt-2 uppercase tracking-widest">Partenaire Cœur de Marché</p>
+    <div class="card">
+        <div class="text-center mb-6">
+            <img src="1769121566036.png" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-gray-200">
+            <h1 id="monTitre" class="text-2xl font-black text-purple-900 uppercase">Connexion</h1>
         </div>
 
-        <div id="formContent" class="space-y-2">
-            
-            <div id="extraFields" class="hidden animate__animated">
-                <div class="input-group">
-                    <input type="text" id="nomBoutique" placeholder="NOM DE LA BOUTIQUE" class="input-field">
-                </div>
-                <div class="input-group">
-                    <input type="text" id="nomProprio" placeholder="NOM DU PROPRIÉTAIRE" class="input-field">
-                </div>
-                <div class="input-group">
-                    <input type="tel" id="telephone" placeholder="NUMÉRO WHATSAPP" class="input-field">
-                </div>
-            </div>
+        <div id="champsExtra" class="hidden">
+            <input type="text" id="nomBoutique" placeholder="NOM DE LA BOUTIQUE">
+            <input type="text" id="nomProprio" placeholder="NOM DU PROPRIÉTAIRE">
+            <input type="tel" id="tel" placeholder="TÉLÉPHONE">
+        </div>
 
-            <div class="input-group">
-                <input type="email" id="email" placeholder="EMAIL PROFESSIONNEL" class="input-field">
-            </div>
-            <div class="input-group">
-                <input type="password" id="password" placeholder="MOT DE PASSE" class="input-field">
-            </div>
+        <input type="email" id="email" placeholder="VOTRE EMAIL">
+        <input type="password" id="pass" placeholder="MOT DE PASSE">
 
-            <button onclick="executerAction()" id="mainBtn" class="btn-main bg-[#4c1d95] text-white mt-4 active:scale-95">
-                Accéder au bureau
+        <button onclick="valider()" id="btnPrincipal" class="w-full bg-purple-900 text-white font-black py-4 rounded-2xl shadow-lg uppercase mt-4">
+            Se connecter
+        </button>
+
+        <div class="text-center mt-6">
+            <button onclick="basculer()" id="btnSwitch" class="text-orange-600 font-black text-[11px] uppercase tracking-tighter p-4">
+                Pas encore de boutique ? Créer mon espace
             </button>
-
-            <div class="text-center pt-6">
-                <span id="switchText" onclick="toggleMode()" class="mode-switch text-orange-500 hover:text-orange-600">
-                    Pas encore de boutique ? Créer mon espace
-                </span>
-            </div>
         </div>
 
-        <div id="status" class="text-center text-[10px] font-bold mt-6 hidden uppercase tracking-widest"></div>
+        <p id="info" class="text-center text-[10px] font-bold mt-4 uppercase text-red-500"></p>
     </div>
 
     <script>
@@ -70,84 +49,59 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        let isRegisterMode = false;
+        let isRegister = false;
 
-        function toggleMode() {
-            isRegisterMode = !isRegisterMode;
-            const extra = document.getElementById('extraFields');
-            const titre = document.getElementById('titre');
-            const mainBtn = document.getElementById('mainBtn');
-            const switchText = document.getElementById('switchText');
-            const logo = document.getElementById('logo');
+        // CETTE FONCTION EST LE MOTEUR
+        function basculer() {
+            console.log("Clic détecté");
+            isRegister = !isRegister;
+            const extra = document.getElementById('champsExtra');
+            const titre = document.getElementById('monTitre');
+            const btnP = document.getElementById('btnPrincipal');
+            const btnS = document.getElementById('btnSwitch');
 
-            if(isRegisterMode) {
+            if(isRegister) {
                 extra.classList.remove('hidden');
-                extra.classList.add('animate__fadeInDown');
-                titre.innerText = "Création Boutique";
-                mainBtn.innerText = "Ouvrir ma boutique";
-                mainBtn.style.backgroundColor = "#f97316";
-                switchText.innerText = "Déjà partenaire ? Se connecter";
-                logo.style.transform = "scale(1.1) rotate(5deg)";
+                titre.innerText = "Créer Boutique";
+                btnP.innerText = "Ouvrir ma boutique";
+                btnP.style.backgroundColor = "#f97316";
+                btnS.innerText = "Déjà inscrit ? Se connecter";
             } else {
                 extra.classList.add('hidden');
                 titre.innerText = "Connexion";
-                mainBtn.innerText = "Accéder au bureau";
-                mainBtn.style.backgroundColor = "#4c1d95";
-                switchText.innerText = "Pas encore de boutique ? Créer mon espace";
-                logo.style.transform = "scale(1) rotate(0deg)";
+                btnP.innerText = "Se connecter";
+                btnP.style.backgroundColor = "#4c1d95";
+                btnS.innerText = "Pas encore de boutique ? Créer mon espace";
             }
         }
 
-        async function executerAction() {
+        async function valider() {
             const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            const status = document.getElementById('status');
-            const btn = document.getElementById('mainBtn');
+            const password = document.getElementById('pass').value;
+            const btn = document.getElementById('btnPrincipal');
+            const info = document.getElementById('info');
 
-            if (!email || !pass) {
-                showStatus("Veuillez remplir les champs", "text-red-500");
-                return;
-            }
+            if(!email || !password) { alert("Remplissez les champs !"); return; }
 
+            btn.innerText = "CHARGEMENT...";
             btn.disabled = true;
-            btn.innerText = "Traitement en cours...";
-            status.classList.remove('hidden');
 
             try {
-                if (isRegisterMode) {
-                    const { data, error } = await supabase.auth.signUp({ 
-                        email, 
-                        password: pass,
-                        options: {
-                            data: {
-                                shop_name: document.getElementById('nomBoutique').value,
-                                owner_name: document.getElementById('nomProprio').value,
-                                phone: document.getElementById('telephone').value
-                            }
-                        }
-                    });
-                    if (error) throw error;
-                    showStatus("Compte créé avec succès !", "text-green-500");
-                    setTimeout(() => toggleMode(), 1500);
+                if(isRegister) {
+                    const { error } = await supabase.auth.signUp({ email, password });
+                    if(error) throw error;
+                    alert("Succès ! Connectez-vous maintenant.");
+                    basculer();
                 } else {
-                    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-                    if (error) throw error;
-                    
-                    showStatus("Authentification réussie...", "text-green-500");
-                    window.location.replace("bureau.html");
+                    const { error } = await supabase.auth.signInWithPassword({ email, password });
+                    if(error) throw error;
+                    window.location.href = "bureau.html";
                 }
-            } catch (err) {
-                showStatus(err.message, "text-red-500");
+            } catch(e) {
+                alert("Erreur : " + e.message);
                 btn.disabled = false;
-                btn.innerText = isRegisterMode ? "Ouvrir ma boutique" : "Accéder au bureau";
+                btn.innerText = isRegister ? "Ouvrir ma boutique" : "Se connecter";
             }
-        }
-
-        function showStatus(msg, colorClass) {
-            const status = document.getElementById('status');
-            status.innerText = msg;
-            status.className = `text-center text-[10px] font-bold mt-6 uppercase tracking-widest ${colorClass}`;
-            status.classList.remove('hidden');
         }
     </script>
 </body>
