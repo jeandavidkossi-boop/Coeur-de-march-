@@ -9,8 +9,16 @@
 </head>
 <body class="bg-slate-100 font-sans min-h-screen pb-10">
 
-    <div id="chargement" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
-        <p class="text-purple-900 font-bold animate-pulse">Vérification de votre accès...</p>
+    <div id="chargement" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center p-4">
+        <img src="1769121566036.png" class="w-16 h-16 rounded-full mb-4 animate-bounce opacity-80">
+        <p class="text-purple-900 font-black uppercase text-sm tracking-widest text-center">Vérification de votre accès...</p>
+        
+        <div id="secours" style="display: none;" class="mt-8 text-center animate-pulse">
+            <p class="text-red-500 text-[10px] font-bold uppercase mb-3">Le réseau semble lent</p>
+            <button onclick="window.location.replace('vendre.html')" class="bg-orange-500 text-white font-black py-3 px-6 rounded-xl shadow-lg uppercase text-xs">
+                Retourner à la connexion
+            </button>
+        </div>
     </div>
 
     <div id="contenuBureau" style="display: none;">
@@ -21,10 +29,10 @@
                     <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-white bg-white object-cover">
                     <div>
                         <h1 class="font-black text-lg leading-tight uppercase">Mon Bureau</h1>
-                        <p id="emailMarchand" class="text-[10px] text-orange-300 font-bold">Chargement...</p>
+                        <p id="emailMarchand" class="text-[10px] text-orange-300 font-bold tracking-widest">Chargement...</p>
                     </div>
                 </div>
-                <button onclick="deconnexion()" class="text-white opacity-80 hover:opacity-100 text-sm font-bold bg-purple-800 px-3 py-2 rounded-lg">
+                <button onclick="deconnexion()" class="text-white opacity-80 hover:opacity-100 text-[10px] uppercase font-black bg-purple-800 px-4 py-2 rounded-xl shadow-inner active:scale-95">
                     Quitter
                 </button>
             </div>
@@ -32,7 +40,7 @@
 
         <div class="max-w-md mx-auto px-4">
             <div class="bg-white p-6 rounded-[30px] shadow-xl border-t-8 border-[#f97316]">
-                <h2 class="text-xl font-black text-gray-800 mb-6 text-center">Ajouter un article</h2>
+                <h2 class="text-lg font-black text-gray-800 mb-6 text-center uppercase">Mettre un article en vente</h2>
 
                 <form id="formAjout" class="space-y-4">
                     <div>
@@ -73,11 +81,11 @@
 
                     <div>
                         <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Photo de l'article</label>
-                        <input type="file" id="photoArticle" accept="image/*" capture="environment" class="w-full p-3 rounded-2xl bg-gray-50 border-2 border-gray-100 text-sm font-bold text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-orange-100 file:text-orange-700 hover:file:bg-orange-200">
+                        <input type="file" id="photoArticle" accept="image/*" capture="environment" class="w-full p-3 rounded-2xl bg-gray-50 border-2 border-gray-100 text-sm font-bold text-gray-600 file:mr-4 file:py-3 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:uppercase file:bg-orange-100 file:text-orange-700">
                     </div>
 
-                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full bg-[#f97316] hover:bg-orange-600 text-white font-black py-4 rounded-2xl shadow-lg uppercase tracking-widest mt-6 transition-all active:scale-95">
-                        Mettre en vente
+                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full bg-[#f97316] text-white font-black py-5 rounded-2xl shadow-lg uppercase tracking-widest mt-6 transition-all active:scale-95 text-sm">
+                        Valider l'article
                     </button>
                 </form>
             </div>
@@ -85,40 +93,50 @@
     </div>
 
     <script>
-        // CONFIGURATION SUPABASE UNIQUE
         const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         let emailVendeurActuel = "";
 
-        // LE NOUVEAU VIGILE SUPABASE (Vérifie la connexion au démarrage)
+        // CHRONOMÈTRE DE SÉCURITÉ : Affiche le bouton de secours après 4 secondes
+        const chronoSecours = setTimeout(() => {
+            const btnSecours = document.getElementById('secours');
+            if (btnSecours) btnSecours.style.display = 'block';
+        }, 4000);
+
         async function verifierAcces() {
-            const { data: { session }, error } = await supabase.auth.getSession();
-            
-            if (!session) {
-                // Pas de badge Supabase ? On retourne à l'entrée !
+            try {
+                const { data, error } = await supabase.auth.getSession();
+                
+                if (error) throw error; // S'il y a une erreur réseau, ça l'attrape
+
+                if (data && data.session) {
+                    // CONNEXION RÉUSSIE
+                    clearTimeout(chronoSecours); // On coupe le chrono de secours
+                    emailVendeurActuel = data.session.user.email;
+                    document.getElementById('emailMarchand').innerText = emailVendeurActuel;
+                    
+                    document.getElementById('chargement').style.display = 'none';
+                    document.getElementById('contenuBureau').style.display = 'block';
+                } else {
+                    // PAS CONNECTÉ : Redirection forcée
+                    window.location.replace("vendre.html");
+                }
+            } catch (err) {
+                // EN CAS DE BUG SILENCIEUX, ON RENVOIE À L'ENTRÉE
+                console.error("Erreur de session:", err);
                 window.location.replace("vendre.html");
-            } else {
-                // Accès autorisé
-                emailVendeurActuel = session.user.email;
-                document.getElementById('emailMarchand').innerText = emailVendeurActuel;
-                // On cache l'écran de chargement et on montre le bureau
-                document.getElementById('chargement').style.display = 'none';
-                document.getElementById('contenuBureau').style.display = 'block';
             }
         }
 
-        // Lancer le vigile dès que la page s'ouvre
         document.addEventListener('DOMContentLoaded', verifierAcces);
 
-        // FONCTION DE DÉCONNEXION
         async function deconnexion() {
             await supabase.auth.signOut();
             window.location.replace("vendre.html");
         }
 
-        // FONCTION POUR AJOUTER UN PRODUIT
         async function ajouterProduit() {
             const nom = document.getElementById('nomArticle').value;
             const prix = document.getElementById('prixArticle').value;
@@ -128,34 +146,31 @@
             const btn = document.getElementById('btnSubmit');
 
             if (!nom || !prix || photoInput.files.length === 0) {
-                alert("⚠️ Veuillez remplir le nom, le prix et ajouter une photo !");
+                alert("⚠️ Attention : Nom, Prix et Photo sont obligatoires !");
                 return;
             }
 
             btn.disabled = true;
-            btn.innerText = "⏳ ENVOI EN COURS...";
+            btn.innerText = "⏳ ENREGISTREMENT EN COURS...";
             btn.classList.add('opacity-50');
 
             try {
-                // 1. Préparer l'image
                 const photoFile = photoInput.files[0];
                 const nomFichierUnique = Date.now() + '_' + photoFile.name;
 
-                // 2. Envoyer l'image dans le seau 'images' de Supabase
+                // 1. Envoi de l'image
                 const { data: uploadData, error: uploadError } = await supabase.storage
                     .from('images')
                     .upload(nomFichierUnique, photoFile);
-
                 if (uploadError) throw uploadError;
 
-                // 3. Récupérer le lien public de l'image
+                // 2. Récupération de l'URL
                 const { data: urlData } = supabase.storage
                     .from('images')
                     .getPublicUrl(nomFichierUnique);
-                
                 const lienImage = urlData.publicUrl;
 
-                // 4. Enregistrer toutes les infos dans la table 'produits'
+                // 3. Envoi dans la base de données
                 const { error: insertError } = await supabase
                     .from('produits')
                     .insert([{
@@ -167,19 +182,16 @@
                         vendeur: emailVendeurActuel,
                         dateAjout: new Date().toISOString()
                     }]);
-
                 if (insertError) throw insertError;
 
-                alert("✅ MAGNIFIQUE ! Produit mis en vente avec succès.");
-                
-                // Vider le formulaire pour le prochain article
+                alert("✅ MAGNIFIQUE ! L'article est en ligne.");
                 document.getElementById('formAjout').reset();
 
             } catch (error) {
-                alert("❌ Erreur lors de l'envoi : " + error.message);
+                alert("❌ ERREUR : " + error.message);
             } finally {
                 btn.disabled = false;
-                btn.innerText = "METTRE EN VENTE";
+                btn.innerText = "VALIDER L'ARTICLE";
                 btn.classList.remove('opacity-50');
             }
         }
