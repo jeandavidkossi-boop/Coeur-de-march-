@@ -101,8 +101,8 @@
 
     <script>
         // --- CONFIGURATION SUPABASE ---
-        // Pense à remplacer ces valeurs par tes vraies clés si elles ont changé
-        const supabaseUrl = 'https://xxhsxxhizgnwcmsltjtq.supabase.co'; 
+                // --- CONFIGURATION SUPABASE ---
+        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co'; 
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -138,10 +138,10 @@
                 } else {
                     window.location.replace("vendre.html");
                 }
-            } catch (err) {
-                console.log("Mode forcé activé (Erreur ou Hors-ligne)");
-                // Optionnel: Décommenter la ligne suivante pour tester l'interface hors connexion
-                // forcerEntree();
+                      } catch (err) {
+                console.log("Erreur de session :", err);
+                alert("⚠️ Problème de connexion au réseau. Redirection...");
+                window.location.replace("vendre.html");
             }
         };
 
