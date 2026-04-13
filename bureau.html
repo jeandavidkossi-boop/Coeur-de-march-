@@ -2,174 +2,187 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Mon Bureau - Cœur de Marché</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f4f4f9; margin: 0; padding: 0; }
-        .header { background-color: #EA1D2C; color: white; padding: 15px; text-align: center; }
-        .header img { width: 50px; margin-bottom: 5px; }
-        .container { padding: 20px; max-width: 500px; margin: auto; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h2 { color: #FF6600; text-align: center; font-size: 1.2rem; margin-top: 0; }
-        label { font-weight: bold; font-size: 0.9rem; color: #333; margin-top: 15px; display: block; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background-color: #FF9800; border: none; color: white; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 20px; }
-        .logout { text-align: center; margin-top: 20px; display: block; color: #EA1D2C; text-decoration: underline; font-weight: bold; }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-slate-100 font-sans min-h-screen pb-10">
 
-<div class="header">
-    <img src="IMG_20260218_162430.jpg" alt="Logo" style="border-radius: 50%;">
-    <h1 style="margin: 0;">Mon Bureau Marchand</h1>
-</div>
-
-<div class="container">
-    <div class="card">
-        <h2>Ajouter un article</h2>
-
-        <label>Nom de l'article</label>
-        <input type="text" id="nomArticle" placeholder="Ex: Chaussures Nike pointure 42">
-
-        <label>Prix (FCFA)</label>
-        <input type="number" id="prixArticle" placeholder="Ex: 5000">
-
-        <label>Catégorie de votre produit</label>
-        <select id="catArticle">
-            <option value="Alimentation">🛒 Alimentation (Gros & Détail)</option>
-            <option value="Vivrier">🥕 Marché Vivrier (Frais)</option>
-            <option value="Resto">🍲 Restaurants & Maquis</option>
-            <option value="Sante">💊 Santé, Hygiène & Parapharmacie</option>
-            <option value="Mode">👕 Mode & Chaussures</option>
-            <option value="Mercerie">✂️ Mercerie, Tissus & Couture</option>
-            <option value="Beaute">💄 Beauté & Cosmétique</option>
-            <option value="Bebe">👶 Univers Bébé & Maternité</option>
-            <option value="Electronique">💻 Téléphones & Électroménager</option>
-            <option value="Maison">🏠 Maison, Déco & Ameublement</option>
-            <option value="Vaisselle">🍽️ Vaisselle & Ustensiles</option>
-            <option value="Librairie">📚 Librairie & Fournitures</option>
-            <option value="Quincaillerie">🧱 Quincaillerie & Construction</option>
-            <option value="Agricole">🚜 Agriculture, Élevage & Intrants</option>
-            <option value="Pieces">⚙️ Pièces Détachées (Moto/Auto)</option>
-        </select>
-
-        <label>Description de l'article</label>
-        <textarea id="descriptionArticle" rows="3" placeholder="Ex: Très bonne qualité, disponible en plusieurs couleurs..."></textarea>
-
-        <label>Photo de l'article (Prendre une photo)</label>
-        <input type="file" id="photoArticle" accept="image/*" capture="environment">
-
-        <button onclick="ajouterProduit()">Mettre en vente sur le marché</button>
+    <div id="chargement" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
+        <p class="text-purple-900 font-bold animate-pulse">Vérification de votre accès...</p>
     </div>
-    
-    <a href="index.html" class="logout">Fermer mon bureau (Retour à l'accueil)</a>
-</div>
 
-<script type="module">
-    // 1. On garde l'authentification Firebase pour savoir quel marchand se connecte
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    <div id="contenuBureau" style="display: none;">
+        
+        <div class="bg-[#4c1d95] text-white p-6 rounded-b-[40px] shadow-lg mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-white bg-white object-cover">
+                    <div>
+                        <h1 class="font-black text-lg leading-tight uppercase">Mon Bureau</h1>
+                        <p id="emailMarchand" class="text-[10px] text-orange-300 font-bold">Chargement...</p>
+                    </div>
+                </div>
+                <button onclick="deconnexion()" class="text-white opacity-80 hover:opacity-100 text-sm font-bold bg-purple-800 px-3 py-2 rounded-lg">
+                    Quitter
+                </button>
+            </div>
+        </div>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCTsoV6DNP6v2mTM97rSHUrB4a-EUGUVTQ",
-        authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
-        projectId: "coeur-de-marche-a3f31",
-        storageBucket: "coeur-de-marche-a3f31.appspot.com",
-        messagingSenderId: "463834578884",
-        appId: "1:463834578884:web:6d103245302e5a08322e0f"
-    };
+        <div class="max-w-md mx-auto px-4">
+            <div class="bg-white p-6 rounded-[30px] shadow-xl border-t-8 border-[#f97316]">
+                <h2 class="text-xl font-black text-gray-800 mb-6 text-center">Ajouter un article</h2>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    let emailVendeur = "inconnu";
+                <form id="formAjout" class="space-y-4">
+                    <div>
+                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Nom de l'article</label>
+                        <input type="text" id="nomArticle" placeholder="Ex: Chaussures Nike pointure 42" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none font-bold text-sm">
+                    </div>
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            emailVendeur = user.email;
-        } else {
-            setTimeout(() => {
-                if (!auth.currentUser) {
-                    window.location.href = "vendre.html";
-                }
-            }, 2000);
+                    <div>
+                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Prix (FCFA)</label>
+                        <input type="number" id="prixArticle" placeholder="Ex: 5000" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none font-bold text-sm">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Catégorie du produit</label>
+                        <select id="catArticle" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none font-bold text-sm text-gray-700">
+                            <option value="Alimentation">🛒 Alimentation (Gros & Détail)</option>
+                            <option value="Vivrier">🥕 Marché Vivrier (Frais)</option>
+                            <option value="Resto">🥘 Restaurants & Maquis</option>
+                            <option value="Sante">💊 Santé, Hygiène & Parapharmacie</option>
+                            <option value="Mode">👕 Mode & Chaussures</option>
+                            <option value="Mercerie">✂️ Mercerie, Tissus & Couture</option>
+                            <option value="Beaute">💄 Beauté & Cosmétique</option>
+                            <option value="Bebe">🍼 Univers Bébé & Maternité</option>
+                            <option value="Electronique">💻 Téléphones & Électroménager</option>
+                            <option value="Maison">🏠 Maison, Déco & Ameublement</option>
+                            <option value="Vaisselle">🍽️ Vaisselle & Ustensiles</option>
+                            <option value="Librairie">📚 Librairie & Fournitures</option>
+                            <option value="Quincaillerie">🧱 Quincaillerie & Construction</option>
+                            <option value="Agricole">🚜 Agriculture, Élevage & Intrants</option>
+                            <option value="Pieces">⚙️ Pièces Détachées (Moto/Auto)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Description</label>
+                        <textarea id="descriptionArticle" rows="3" placeholder="Ex: Très bonne qualité..." class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none font-bold text-sm"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Photo de l'article</label>
+                        <input type="file" id="photoArticle" accept="image/*" capture="environment" class="w-full p-3 rounded-2xl bg-gray-50 border-2 border-gray-100 text-sm font-bold text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-orange-100 file:text-orange-700 hover:file:bg-orange-200">
+                    </div>
+
+                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full bg-[#f97316] hover:bg-orange-600 text-white font-black py-4 rounded-2xl shadow-lg uppercase tracking-widest mt-6 transition-all active:scale-95">
+                        Mettre en vente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURATION SUPABASE UNIQUE
+        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        let emailVendeurActuel = "";
+
+        // LE NOUVEAU VIGILE SUPABASE (Vérifie la connexion au démarrage)
+        async function verifierAcces() {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            
+            if (!session) {
+                // Pas de badge Supabase ? On retourne à l'entrée !
+                window.location.replace("vendre.html");
+            } else {
+                // Accès autorisé
+                emailVendeurActuel = session.user.email;
+                document.getElementById('emailMarchand').innerText = emailVendeurActuel;
+                // On cache l'écran de chargement et on montre le bureau
+                document.getElementById('chargement').style.display = 'none';
+                document.getElementById('contenuBureau').style.display = 'block';
+            }
         }
-    });
 
-    // 2. NOUVEAU MOTEUR SUPABASE
-    const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // Lancer le vigile dès que la page s'ouvre
+        document.addEventListener('DOMContentLoaded', verifierAcces);
 
-    // 3. Fonction pour envoyer le produit
-    window.ajouterProduit = async function() {
-        const nom = document.getElementById('nomArticle').value;
-        const prix = document.getElementById('prixArticle').value;
-        const cat = document.getElementById('catArticle').value;
-        const desc = document.getElementById('descriptionArticle').value;
-        const photoInput = document.getElementById('photoArticle');
-        const bouton = document.querySelector('button');
-
-        if (!nom || !prix || photoInput.files.length === 0) {
-            alert("⚠️ Veuillez remplir le nom, le prix et ajouter une photo !");
-            return;
+        // FONCTION DE DÉCONNEXION
+        async function deconnexion() {
+            await supabase.auth.signOut();
+            window.location.replace("vendre.html");
         }
 
-        const photoFile = photoInput.files[0];
-        bouton.innerText = "⏳ Envoi en cours sur le marché...";
-        bouton.disabled = true;
-        bouton.style.backgroundColor = "#ccc";
+        // FONCTION POUR AJOUTER UN PRODUIT
+        async function ajouterProduit() {
+            const nom = document.getElementById('nomArticle').value;
+            const prix = document.getElementById('prixArticle').value;
+            const cat = document.getElementById('catArticle').value;
+            const desc = document.getElementById('descriptionArticle').value;
+            const photoInput = document.getElementById('photoArticle');
+            const btn = document.getElementById('btnSubmit');
 
-        try {
-            // A. Envoi de la photo
-            const nomFichierUnique = Date.now() + '_' + photoFile.name;
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('images')
-                .upload(nomFichierUnique, photoFile);
+            if (!nom || !prix || photoInput.files.length === 0) {
+                alert("⚠️ Veuillez remplir le nom, le prix et ajouter une photo !");
+                return;
+            }
 
-            if (uploadError) throw uploadError;
+            btn.disabled = true;
+            btn.innerText = "⏳ ENVOI EN COURS...";
+            btn.classList.add('opacity-50');
 
-            // B. Récupération du lien
-            const { data: urlData } = supabase.storage
-                .from('images')
-                .getPublicUrl(nomFichierUnique);
-            const lienImage = urlData.publicUrl;
+            try {
+                // 1. Préparer l'image
+                const photoFile = photoInput.files[0];
+                const nomFichierUnique = Date.now() + '_' + photoFile.name;
 
-            // C. Enregistrement des informations
-            const { error: insertError } = await supabase
-                .from('produits')
-                .insert([{ 
-                        nom: nom, 
-                        prix: Number(prix), 
-                        categorie: cat, 
+                // 2. Envoyer l'image dans le seau 'images' de Supabase
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('images')
+                    .upload(nomFichierUnique, photoFile);
+
+                if (uploadError) throw uploadError;
+
+                // 3. Récupérer le lien public de l'image
+                const { data: urlData } = supabase.storage
+                    .from('images')
+                    .getPublicUrl(nomFichierUnique);
+                
+                const lienImage = urlData.publicUrl;
+
+                // 4. Enregistrer toutes les infos dans la table 'produits'
+                const { error: insertError } = await supabase
+                    .from('produits')
+                    .insert([{
+                        nom: nom,
+                        prix: Number(prix),
+                        categorie: cat,
                         description: desc,
-                        image: lienImage, 
-                        vendeur: emailVendeur, 
-                        dateAjout: Date.now() 
-                }]);
+                        image: lienImage,
+                        vendeur: emailVendeurActuel,
+                        dateAjout: new Date().toISOString()
+                    }]);
 
-            if (insertError) throw insertError;
+                if (insertError) throw insertError;
 
-            alert("✅ Produit mis en vente avec succès !");
+                alert("✅ MAGNIFIQUE ! Produit mis en vente avec succès.");
+                
+                // Vider le formulaire pour le prochain article
+                document.getElementById('formAjout').reset();
 
-            // On vide le formulaire
-            document.getElementById('nomArticle').value = "";
-            document.getElementById('prixArticle').value = "";
-            document.getElementById('descriptionArticle').value = "";
-            photoInput.value = "";
-
-            bouton.innerText = "Mettre en vente sur le marché";
-            bouton.disabled = false;
-            bouton.style.backgroundColor = "#FF9800";
-
-        } catch (error) {
-            alert("❌ Erreur lors de l'envoi : " + error.message);
-            bouton.innerText = "Mettre en vente sur le marché";
-            bouton.disabled = false;
-            bouton.style.backgroundColor = "#FF9800";
+            } catch (error) {
+                alert("❌ Erreur lors de l'envoi : " + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "METTRE EN VENTE";
+                btn.classList.remove('opacity-50');
+            }
         }
-    };
-</script>
+    </script>
 </body>
 </html>
