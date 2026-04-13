@@ -3,111 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Marchand - Cœur de Marché Bouaflé</title>
+    <title>Connexion Marchand - Cœur de Marché</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: 'Poppins', sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-card { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        .logo { width: 80px; margin-bottom: 1rem; }
-        h2 { color: #6A1B9A; margin-bottom: 1.5rem; }
+        body { font-family: 'Poppins', sans-serif; background: #f4f4f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        img { width: 80px; border-radius: 50%; margin-bottom: 10px; }
+        h2 { color: #EA1D2C; margin-bottom: 20px; }
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #FF9800; border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        button:hover { background-color: #e68a00; }
-        .switch-btn { color: #6A1B9A; font-size: 0.9rem; cursor: pointer; text-decoration: underline; margin-top: 15px; display: block; }
-        .error { color: red; font-size: 0.8rem; margin-top: 10px; display: none; }
+        button { width: 100%; padding: 15px; background: #FF9800; border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .toggle { margin-top: 15px; font-size: 0.9rem; color: #666; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
 
-<div class="login-card">
-    <img src="1769121566036.png" alt="Logo Cœur de Marché" class="logo">
-    <h2 id="form-title">Connexion Marchand</h2>
-    
-    <input type="email" id="email" placeholder="Votre E-mail" required>
-    <input type="password" id="password" placeholder="Mot de passe" required>
-    
-    <button id="main-btn" onclick="gererAuth()">Se connecter</button>
-    <p id="error-msg" class="error"></p>
+<div class="card">
+    <img src="IMG_20260218_162430.jpg" alt="Logo">
+    <h2 id="titre">Connexion Marchand</h2>
 
-    <span class="switch-btn" id="switch-link" onclick="basculerMode()">Pas encore de boutique ? Créer mon compte gratuitement</span>
-    
-    <a href="index.html" style="display:block; margin-top: 20px; font-size: 0.8rem; color: #666;">Retour au marché</a>
-    <div id="message-succes" style="display: none; background: #FAF5FF; border: 2px solid #6A1B9A; color: #6A1B9A; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: center;">
-        <h3 style="margin: 0 0 5px 0; font-size: 16px; color: #FF9800;">🎉 Félicitations !</h3>
-        <p style="margin: 0; font-size: 14px; font-weight: bold;">Boutique créée avec succès ! Bienvenue à Bouaflé.</p>
+    <div id="form-inscription" style="display: none;">
+        <input type="text" id="nomBoutique" placeholder="Nom de la Boutique (ex: Nina Fashion)">
+        <input type="text" id="nomProprio" placeholder="Nom du propriétaire">
+        <input type="text" id="tel" placeholder="N° de téléphone">
     </div>
+
+    <input type="email" id="email" placeholder="Votre Email">
+    <input type="password" id="pass" placeholder="Mot de passe">
+
+    <button id="btnAction" onclick="gererAuth()">Se connecter</button>
+    <p class="toggle" id="btnToggle" onclick="basculer()">Pas encore inscrit ? Créer un compte</p>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-         const firebaseConfig = {
-        apiKey: "AIzaSyCIsoV6DNP6v7m79R7r5hUrB4a-EU6uVI0",
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCTsoV6DNP6v2mTM97rSHUrB4a-EUGUVTQ",
         authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
-        databaseURL: "https://coeur-de-marche-a3f31-default-rtdb.europe-west1.firebasedatabase.app/",
         projectId: "coeur-de-marche-a3f31",
-        storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
-        messagingSenderId: "463834578884",
-        appId: "1:463834578884:web:6d103245392e5e98322e0f"
+        appId: "1:463834578884:web:6d103245302e5a08322e0f"
     };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    // CONFIGURATION SUPABASE
+    const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+    const supabaseKey = 'Sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
     let modeInscription = false;
 
-    window.basculerMode = function() {
+    window.basculer = function() {
         modeInscription = !modeInscription;
-        document.getElementById('form-title').innerText = modeInscription ? "Créer ma Boutique" : "Connexion Marchand";
-        document.getElementById('main-btn').innerText = modeInscription ? "Créer mon compte" : "Se connecter";
-        document.getElementById('switch-link').innerText = modeInscription ? "Déjà une boutique ? Se connecter" : "Pas encore de boutique ? Créer mon compte gratuit";
+        document.getElementById('form-inscription').style.display = modeInscription ? 'block' : 'none';
+        document.getElementById('titre').innerText = modeInscription ? 'Créer mon compte' : 'Connexion Marchand';
+        document.getElementById('btnAction').innerText = modeInscription ? "S'inscrire" : 'Se connecter';
+        document.getElementById('btnToggle').innerText = modeInscription ? 'Déjà inscrit ? Se connecter' : 'Pas encore inscrit ? Créer un compte';
     };
 
-    window.gererAuth = function() {
+    window.gererAuth = async function() {
         const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const errorMsg = document.getElementById('error-msg');
-        const successMsg = document.getElementById('message-succes');
-        const btn = document.getElementById('main-btn');
+        const pass = document.getElementById('pass').value;
+        const btn = document.getElementById('btnAction');
 
-        // SÉCURITÉ : Vérifie si les champs sont vides
-        if (!email || !password) {
-            errorMsg.innerText = "⚠️ Veuillez remplir tous les champs.";
-            errorMsg.style.display = 'block';
-            return;
-        }
-
-        // Animation du bouton
-        const texteOriginal = btn.innerText;
+        if (!email || !pass) { alert("Remplissez tous les champs !"); return; }
+        btn.disabled = true;
         btn.innerText = "Patientez...";
 
         if (modeInscription) {
-            createUserWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    successMsg.style.display = 'block';
-                    errorMsg.style.display = 'none';
-                    setTimeout(() => { window.location.href = "bureau.html"; }, 1500);
+            const boutique = document.getElementById('nomBoutique').value;
+            const proprio = document.getElementById('nomProprio').value;
+            const tel = document.getElementById('tel').value;
+
+            createUserWithEmailAndPassword(auth, email, pass)
+                .then(async (userCredential) => {
+                    const user = userCredential.user;
+                    // Enregistrement gratuit chez Supabase
+                    await supabase.from('vendeurs').insert([{
+                        id: user.uid,
+                        nom_boutique: boutique,
+                        proprietaire: proprio,
+                        telephone: tel,
+                        email: email,
+                        date_inscription: Date.now()
+                    }]);
+                    window.location.href = "bureau.html";
                 })
-                .catch(err => { 
-                    errorMsg.innerText = "Erreur : " + err.message; 
-                    errorMsg.style.display = 'block'; 
-                    btn.innerText = texteOriginal;
-                });
+                .catch(err => { alert("Erreur: " + err.message); btn.disabled = false; });
         } else {
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    successMsg.innerHTML = "<h3 style='margin: 0 0 5px 0; font-size: 16px; color: #FF9800;'>✅ Succès !</h3><p style='margin: 0; font-size: 14px; font-weight: bold;'>Connexion réussie !</p>";
-                    successMsg.style.display = 'block';
-                    errorMsg.style.display = 'none';
-                    setTimeout(() => { window.location.href = "bureau.html"; }, 1500);
-                })
-                .catch(err => { 
-                    errorMsg.innerText = "Email ou mot de passe incorrect."; 
-                    errorMsg.style.display = 'block'; 
-                    btn.innerText = texteOriginal;
-                });
+            signInWithEmailAndPassword(auth, email, pass)
+                .then(() => { window.location.href = "bureau.html"; })
+                .catch(err => { alert("Erreur: " + err.message); btn.disabled = false; });
         }
     };
-                        </script>
-    
+</script>
 </body>
 </html>
