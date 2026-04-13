@@ -5,45 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Espace Marchand - Cœur de Marché</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%); min-height: 100vh; font-family: sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        body { background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; margin: 0; }
+        .glass { background: rgba(255, 255, 255, 0.98); border-radius: 40px; padding: 2rem; width: 100%; max-width: 400px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border-top: 8px solid #f97316; }
+        .input-style { width: 100%; padding: 12px 20px; border-radius: 15px; background: #f3f4f6; border: 2px solid transparent; font-weight: bold; margin-bottom: 10px; transition: 0.3s; }
+        .input-style:focus { border-color: #f97316; background: white; outline: none; }
     </style>
 </head>
-<body class="flex items-center justify-center p-4">
+<body>
 
-    <div class="glass p-8 rounded-[40px] shadow-2xl w-full max-w-md border-t-4 border-orange-500 my-10">
+    <div class="glass mx-4">
         <div class="text-center mb-6">
-            <img src="1769121566036.png" alt="Logo Cœur de Marché" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-white shadow-md object-cover">
-            
-            <h1 id="titrePage" class="text-2xl font-black text-purple-900 uppercase">Connexion Marchand</h1>
-            <p id="sousTitre" class="text-gray-500 text-xs font-bold mt-1">Gérez votre boutique en direct</p>
+            <img src="1769121566036.png" alt="Logo" class="w-20 h-20 rounded-full mx-auto mb-3 border-4 border-white shadow-lg object-cover">
+            <h1 id="titrePage" class="text-xl font-black text-purple-900 uppercase">Connexion Marchand</h1>
+            <p id="sousTitre" class="text-gray-400 text-[10px] font-bold uppercase mt-1">Cœur de Marché Bouaflé</p>
         </div>
 
-        <div class="space-y-3">
-            <div id="zoneInscription" class="hidden space-y-3">
-                <input type="text" id="nomBoutique" placeholder="Nom de la Boutique" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-orange-500 text-sm font-bold">
-                <input type="text" id="nomProprio" placeholder="Nom du propriétaire" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-orange-500 text-sm font-bold">
-                <input type="tel" id="telephone" placeholder="N° de téléphone" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-orange-500 text-sm font-bold">
-            </div>
+        <div id="zoneInscription" style="display: none;">
+            <input type="text" id="nomBoutique" placeholder="NOM DE LA BOUTIQUE" class="input-style">
+            <input type="text" id="nomProprio" placeholder="NOM DU PROPRIÉTAIRE" class="input-style">
+        </div>
 
-            <input type="email" id="email" placeholder="Votre Email" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-purple-900 text-sm font-bold">
-            <input type="password" id="password" placeholder="Mot de passe" class="w-full p-4 rounded-2xl bg-gray-100 border-none focus:ring-2 focus:ring-purple-900 text-sm font-bold">
-            
-            <button onclick="gererAction()" id="btnAction" class="w-full bg-purple-900 text-white font-black py-4 rounded-2xl shadow-xl active:scale-95 transition-all mt-2 uppercase text-sm">
-                Se connecter
+        <input type="email" id="email" placeholder="VOTRE EMAIL" class="input-style">
+        <input type="password" id="password" placeholder="MOT DE PASSE" class="input-style">
+        
+        <button onclick="gererAction()" id="btnAction" class="w-full bg-purple-900 text-white font-black py-4 rounded-2xl shadow-xl active:scale-95 transition-all mt-2 uppercase text-sm">
+            Se connecter
+        </button>
+
+        <div class="text-center mt-6">
+            <button onclick="basculer()" id="btnBasculer" class="text-orange-600 text-[10px] font-black uppercase tracking-tighter">
+                Pas encore de boutique ? Créer mon espace
             </button>
-
-            <div class="text-center mt-6">
-                <button onclick="basculer()" id="btnBasculer" class="text-purple-900 text-[10px] font-black uppercase tracking-widest hover:text-orange-600 transition-colors">
-                    Pas encore de boutique ? Créer mon espace
-                </button>
-            </div>
-
-            <p id="message" class="text-center text-[10px] font-black mt-4 uppercase"></p>
         </div>
+
+        <p id="message" class="text-center text-[10px] font-black mt-4 uppercase text-red-600"></p>
     </div>
 
     <script>
@@ -61,54 +58,49 @@
             const btnB = document.getElementById('btnBasculer');
 
             if(modeInscription) {
-                zone.classList.remove('hidden');
+                zone.style.display = 'block';
                 titre.innerText = "Créer ma Boutique";
-                btn.innerText = "S'inscrire";
+                btn.innerText = "Ouvrir ma boutique";
                 btnB.innerText = "Déjà inscrit ? Se connecter";
-                btn.classList.replace('bg-purple-900', 'bg-orange-500');
+                btn.style.backgroundColor = "#f97316";
             } else {
-                zone.classList.add('hidden');
+                zone.style.display = 'none';
                 titre.innerText = "Connexion Marchand";
                 btn.innerText = "Se connecter";
                 btnB.innerText = "Pas encore de boutique ? Créer mon espace";
-                btn.classList.replace('bg-orange-500', 'bg-purple-900');
+                btn.style.backgroundColor = "#4c1d95";
             }
         }
 
         async function gererAction() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
-            const msg = document.getElementById('message');
             const btn = document.getElementById('btnAction');
+            const msg = document.getElementById('message');
 
-            if (!email || !pass) { alert("Remplissez les champs !"); return; }
-            
+            if (!email || !pass) { alert("Remplissez tout !"); return; }
+
             btn.disabled = true;
-            btn.innerText = "Chargement...";
+            btn.innerText = "VÉRIFICATION...";
 
-            if (modeInscription) {
-                // INSCRIPTION SUPABASE
-                const { data, error } = await supabase.auth.signUp({ email, password: pass });
-                if (error) {
-                    msg.innerText = "Erreur : " + error.message;
-                    msg.className = "text-center text-[10px] font-black mt-4 text-red-600 uppercase";
-                } else {
-                    msg.innerText = "Boutique créée ! Connectez-vous.";
-                    msg.className = "text-center text-[10px] font-black mt-4 text-green-600 uppercase";
+            try {
+                if (modeInscription) {
+                    const { error } = await supabase.auth.signUp({ email, password: pass });
+                    if (error) throw error;
+                    alert("Compte créé ! Connectez-vous maintenant.");
                     basculer();
-                }
-            } else {
-                // CONNEXION SUPABASE
-                const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-                if (error) {
-                    msg.innerText = "Accès refusé. Vérifiez vos codes.";
-                    msg.className = "text-center text-[10px] font-black mt-4 text-red-600 uppercase";
                 } else {
-                    window.location.href = "bureau.html";
+                    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+                    if (error) throw error;
+                    
+                    // LA BASCULE AUTOMATIQUE ICI :
+                    window.location.replace("bureau.html");
                 }
+            } catch (err) {
+                msg.innerText = "ERREUR : " + err.message;
+                btn.disabled = false;
+                btn.innerText = modeInscription ? "Ouvrir ma boutique" : "Se connecter";
             }
-            btn.disabled = false;
-            btn.innerText = modeInscription ? "S'inscrire" : "Se connecter";
         }
     </script>
 </body>
