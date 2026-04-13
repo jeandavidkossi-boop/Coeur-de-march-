@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bureau - Cœur de Marché</title>
-    
     <style>
         body { margin: 0; font-family: sans-serif; background-color: #f1f5f9; }
         #chargement { position: fixed; inset: 0; background: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
@@ -18,31 +17,24 @@
     <div id="chargement">
         <img src="1769121566036.png" style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid #e2e8f0; margin-bottom: 20px;">
         <h2 style="color: #4c1d95; font-weight: 900; text-transform: uppercase; margin-bottom: 15px; font-size: 22px;">Ouverture...</h2>
-        
-        <p id="statut" class="statut-box">
-            1. Connexion au réseau en cours...
-        </p>
-        
+        <p id="statut" class="statut-box">1. Connexion au réseau en cours...</p>
         <button id="btnForcer" onclick="forcerEntree()" class="btn-rouge" style="display:none;">
             ⚠️ Forcer l'entrée du bureau
         </button>
     </div>
 
     <script>
-        // Fonction pour casser la porte
         function forcerEntree() {
             document.getElementById('chargement').style.display = 'none';
             document.getElementById('contenuBureau').style.display = 'block';
             document.getElementById('emailMarchand').innerText = "Mode Bas Débit";
         }
-
-        // Au bout de 4 secondes, ON AFFICHE LE BOUTON ROUGE QUOI QU'IL ARRIVE
         setTimeout(function() {
             var btn = document.getElementById('btnForcer');
             var txt = document.getElementById('statut');
             if(btn && txt) {
                 btn.style.display = 'block';
-                txt.innerText = "⚠️ Le réseau bloque. Utilisez le bouton rouge ci-dessous !";
+                txt.innerText = "⚠️ Le réseau bloque. Utilisez le bouton rouge !";
             }
         }, 4000);
     </script>
@@ -51,7 +43,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <div id="contenuBureau" style="display: none;" class="pb-10">
-        
         <div class="bg-[#4c1d95] text-white p-6 rounded-b-[40px] shadow-lg mb-8">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
@@ -125,7 +116,6 @@
         let supabase;
         let emailVendeurActuel = "mode_bas_debit@coeurdemarche.com";
 
-        // Initialisation dès que la page est prête
         window.onload = async function() {
             try {
                 const txtStatut = document.getElementById('statut');
@@ -147,7 +137,7 @@
                     window.location.replace("vendre.html");
                 }
             } catch (err) {
-                // Le bouton rouge gère déjà le forçage
+                console.log("Mode forcé activé");
             }
         };
 
@@ -156,43 +146,47 @@
             window.location.replace("vendre.html");
         }
 
-        // LE VRAI MOTEUR D'ENREGISTREMENT DES ARTICLES
         async function ajouterProduit() {
-            const nom = document.getElementById('nomArticle').value;
-            const prix = document.getElementById('prixArticle').value;
-            const cat = document.getElementById('catArticle').value;
-            const desc = document.getElementById('descriptionArticle').value;
-            const photoInput = document.getElementById('photoArticle');
             const btn = document.getElementById('btnSubmit');
-
-            if (!nom || !prix || photoInput.files.length === 0) {
-                alert("⚠️ Attention : Le nom, le prix et la photo sont obligatoires pour vendre !");
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerText = "⏳ ENREGISTREMENT EN COURS...";
-            btn.style.opacity = "0.6";
-
+            
             try {
+                const nom = document.getElementById('nomArticle').value;
+                const prix = document.getElementById('prixArticle').value;
+                const cat = document.getElementById('catArticle').value;
+                const desc = document.getElementById('descriptionArticle').value;
+                const photoInput = document.getElementById('photoArticle');
+
+                if (!nom || !prix || photoInput.files.length === 0) {
+                    alert("⚠️ Attention : Le nom, le prix et la photo sont obligatoires pour vendre !");
+                    return;
+                }
+
+                // Changement visuel : le bouton devient gris pour montrer qu'il travaille
+                btn.disabled = true;
+                btn.innerText = "⏳ ENREGISTREMENT EN COURS...";
+                btn.style.backgroundColor = "#9ca3af"; 
+
                 if (!supabase) {
-                    throw new Error("Le réseau est trop faible pour envoyer l'article. Réessayez quand la connexion sera meilleure.");
+                    throw new Error("Le moteur n'est pas connecté. Vérifiez votre réseau.");
                 }
 
                 const photoFile = photoInput.files[0];
                 const nomFichierUnique = Date.now() + '_' + photoFile.name.replace(/[^a-zA-Z0-9.]/g, "_");
 
+                // 1. UPLOAD IMAGE
                 const { data: uploadData, error: uploadError } = await supabase.storage
                     .from('images')
                     .upload(nomFichierUnique, photoFile);
                 
                 if (uploadError) throw uploadError;
 
+                // 2. RECUPERER L'URL DE L'IMAGE
                 const { data: urlData } = supabase.storage
                     .from('images')
                     .getPublicUrl(nomFichierUnique);
                 const lienImage = urlData.publicUrl;
 
+                // 3. INSERER EN BASE DE DONNEES
                 const { error: insertError } = await supabase
                     .from('produits')
                     .insert([{
@@ -211,11 +205,12 @@
                 document.getElementById('formAjout').reset();
 
             } catch (error) {
-                alert("❌ ERREUR LORS DE L'ENVOI : " + error.message);
+                alert("❌ ERREUR : " + error.message);
             } finally {
+                // Retour à la normale
                 btn.disabled = false;
                 btn.innerText = "VALIDER L'ARTICLE";
-                btn.style.opacity = "1";
+                btn.style.backgroundColor = "#f97316";
             }
         }
     </script>
