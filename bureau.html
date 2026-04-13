@@ -10,22 +10,11 @@
     
     <style>
         body { background-color: #f3f4f6; }
-        /* Animation de chargement locale */
-        .loader { border-top-color: #ef4444; animation: spinner 1s linear infinite; }
-        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="font-sans text-gray-800 antialiased">
 
-    <div id="chargement" class="fixed inset-0 bg-white z-50 flex flex-col items-center justify-center">
-        <div class="w-16 h-16 border-4 border-gray-200 border-t-red-600 rounded-full loader mb-4"></div>
-        <p id="statut" class="text-gray-500 font-medium">Connexion au réseau en cours...</p>
-        <button id="btnForcer" onclick="forcerEntree()" class="hidden mt-6 bg-red-600 text-white px-6 py-2 rounded-full font-bold shadow-lg">
-            ⚠️ Forcer l'entrée du bureau
-        </button>
-    </div>
-
-    <div id="contenuBureau" class="hidden pb-10 max-w-md mx-auto">
+    <div id="contenuBureau" class="pb-10 max-w-md mx-auto">
         
         <div class="bg-gray-900 text-white p-6 rounded-b-[40px] shadow-lg mb-8">
             <div class="flex items-center justify-between">
@@ -35,7 +24,7 @@
                     </div>
                     <div>
                         <h1 class="font-black text-lg leading-tight uppercase">Mon Bureau</h1>
-                        <p id="emailMarchand" class="text-[10px] text-orange-300 font-bold tracking-widest">Connecté</p>
+                        <p id="emailMarchand" class="text-[10px] text-orange-300 font-bold tracking-widest">Vérification...</p>
                     </div>
                 </div>
                 <button onclick="deconnexion()" class="text-white opacity-80 hover:opacity-100 text-[10px] uppercase font-black">
@@ -101,30 +90,11 @@
 
     <script>
         // --- CONFIGURATION SUPABASE ---
-                // --- CONFIGURATION SUPABASE ---
         const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co'; 
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw'; 
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        let emailVendeurActuel = "mode_bas_debit@coeurdemarche.com";
-
-        // --- GESTION DE L'AFFICHAGE ---
-        function forcerEntree() {
-            document.getElementById('chargement').style.display = 'none';
-            document.getElementById('contenuBureau').style.display = 'block';
-            document.getElementById('emailMarchand').innerText = emailVendeurActuel;
-        }
-
-        // Affichage du bouton de forçage si le réseau est lent
-        setTimeout(() => {
-            const btnForcer = document.getElementById('btnForcer');
-            const statut = document.getElementById('statut');
-            if (btnForcer && statut) {
-                btnForcer.classList.remove('hidden');
-                statut.innerText = "⚠️ Le réseau bloque. Utilisez le bouton rouge !";
-                statut.classList.add('text-red-500');
-            }
-        }, 4000);
+        let emailVendeurActuel = "";
 
         // --- INITIALISATION DE LA SESSION ---
         window.onload = async function() {
@@ -134,13 +104,14 @@
 
                 if (data && data.session) {
                     emailVendeurActuel = data.session.user.email;
-                    forcerEntree();
+                    document.getElementById('emailMarchand').innerText = emailVendeurActuel;
                 } else {
+                    // S'il n'y a pas de session, on renvoie vers la page de login
                     window.location.replace("vendre.html");
                 }
-                      } catch (err) {
+            } catch (err) {
                 console.log("Erreur de session :", err);
-                alert("⚠️ Problème de connexion au réseau. Redirection...");
+                alert("⚠️ Problème de connexion. Redirection vers l'accueil...");
                 window.location.replace("vendre.html");
             }
         };
@@ -173,10 +144,10 @@
             btn.classList.replace('hover:bg-orange-600', 'bg-gray-400');
 
             try {
-                if (!supabase) throw new Error("Le moteur n'est pas connecté. Vérifiez votre réseau.");
+                if (!supabase) throw new Error("Le système n'est pas connecté. Vérifiez votre réseau.");
 
                 const photoFile = photoInput.files[0];
-                // Nettoyage du nom du fichier pour éviter les erreurs d'URL
+                // Nettoyage du nom du fichier
                 const nomNettoye = photoFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
                 const nomFichierUnique = `${Date.now()}_${nomNettoye}`;
 
@@ -226,3 +197,4 @@
     </script>
 </body>
 </html>
+
