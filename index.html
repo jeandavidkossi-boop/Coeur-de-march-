@@ -321,17 +321,23 @@
             <i class="fas fa-question-circle text-xl"></i> <span class="text-[8px] font-bold mt-1">Aide</span>
         </button>
                     </nav>
-           <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // CONFIGURATION SUPABASE (Remplace l'ancien Firebase)
-        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const supabaseKey = 'Sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-        // 2. VARIABLES GLOBALES
+        // 2. VARIABLES GLOBALES & SÉCURITÉ PANIER (Empêche le blocage)
         window.articles = [];
         window.tousLesArticlesVrais = [];
-        let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
+        let panier = [];
+        
+        // On sécurise la mémoire du téléphone
+        try {
+            let p = localStorage.getItem('panier_bouafle');
+            if (p && p !== "undefined") {
+                panier = JSON.parse(p);
+            }
+        } catch(e) {
+            console.log("Ancienne mémoire effacée");
+            panier = [];
+        }
 
         // Rendre les fonctions accessibles au HTML
         window.chargerDonnees = chargerDonnees;
@@ -353,7 +359,18 @@
             if (loader) loader.style.display = 'flex';
 
             try {
-                // On récupère tous les produits, du plus récent au plus ancien
+                // SÉCURITÉ : Vérification du moteur
+                if (!window.supabase) {
+                    throw new Error("Le réseau a bloqué le chargement du moteur Supabase.");
+                }
+
+                // CONFIGURATION SUPABASE
+                const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+                const supabaseKey = 'Sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO';
+                
+                const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+                // On récupère tous les produits
                 const { data, error } = await supabase
                     .from('produits')
                     .select('*')
@@ -388,8 +405,16 @@
                 if (loader) loader.style.display = 'none';
 
             } catch (error) {
-                console.error("Erreur de connexion : ", error);
+                // EN CAS DE PROBLÈME : On arrête de tourner dans le vide !
                 if (loader) loader.style.display = 'none';
+                
+                const conteneurListe = document.getElementById('liste-produits');
+                if (conteneurListe) {
+                    switchTab('boutique');
+                    document.getElementById('vue-rayons').classList.add('hidden');
+                    document.getElementById('vue-produits').classList.remove('hidden');
+                    conteneurListe.innerHTML = `<div class="bg-white p-5 rounded-2xl shadow-lg border border-red-500 m-4"><p class="text-center text-red-600 font-bold">Impossible de charger le marché.</p><p class="text-center text-xs text-gray-500 mt-2">Erreur technique : ${error.message}</p></div>`;
+                }
             }
         }
 
@@ -401,7 +426,6 @@
                 document.getElementById('vue-rayons').classList.add('hidden');
                 document.getElementById('vue-produits').classList.remove('hidden');
                 
-                // Recherche dans le nom, la catégorie ET la nouvelle description !
                 let f = window.tousLesArticlesVrais.filter(p => cleanTxt(p.nom).includes(s) || cleanTxt(p.categorie).includes(s) || cleanTxt(p.description).includes(s));
                 
                 const listeProduits = document.getElementById('liste-produits');
@@ -475,7 +499,7 @@
             conteneurListe.innerHTML = listeArticles.map(p => genererCarteProduit(p)).join('');
         }
 
-        // 6. PANIER ET NAVIGATION (Totalement préservé)
+        // 6. PANIER ET NAVIGATION
         function ajouterAuPanier(nom, prix) {
             panier.push({ nom: nom, prix: prix });
             localStorage.setItem('panier_bouafle', JSON.stringify(panier));
@@ -550,5 +574,3 @@
             }
         }
     </script>
-</body>
-</html>
