@@ -123,11 +123,13 @@
 
     <script>
         let supabase;
+        let emailVendeurActuel = "mode_bas_debit@coeurdemarche.com";
 
-        // Cette fonction s'exécute automatiquement quand les moteurs sont enfin téléchargés
+        // Initialisation dès que la page est prête
         window.onload = async function() {
             try {
-                document.getElementById('statut').innerText = "1.5 Moteurs chargés. Vérification...";
+                const txtStatut = document.getElementById('statut');
+                if(txtStatut) txtStatut.innerText = "1.5 Moteurs chargés. Vérification...";
                 
                 const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
                 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
@@ -138,14 +140,14 @@
                 if (error) throw error;
 
                 if (data && data.session) {
-                    // C'EST TOUT BON ! ON OUVRE.
-                    document.getElementById('emailMarchand').innerText = data.session.user.email;
+                    emailVendeurActuel = data.session.user.email;
+                    document.getElementById('emailMarchand').innerText = emailVendeurActuel;
                     forcerEntree(); 
                 } else {
                     window.location.replace("vendre.html");
                 }
             } catch (err) {
-                document.getElementById('statut').innerText = "❌ Connexion lente. Utilisez le bouton rouge.";
+                // Le bouton rouge gère déjà le forçage
             }
         };
 
@@ -154,8 +156,67 @@
             window.location.replace("vendre.html");
         }
 
-        function ajouterProduit() {
-            alert("L'interface du bureau fonctionne parfaitement, M. Jean-David !");
+        // LE VRAI MOTEUR D'ENREGISTREMENT DES ARTICLES
+        async function ajouterProduit() {
+            const nom = document.getElementById('nomArticle').value;
+            const prix = document.getElementById('prixArticle').value;
+            const cat = document.getElementById('catArticle').value;
+            const desc = document.getElementById('descriptionArticle').value;
+            const photoInput = document.getElementById('photoArticle');
+            const btn = document.getElementById('btnSubmit');
+
+            if (!nom || !prix || photoInput.files.length === 0) {
+                alert("⚠️ Attention : Le nom, le prix et la photo sont obligatoires pour vendre !");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "⏳ ENREGISTREMENT EN COURS...";
+            btn.style.opacity = "0.6";
+
+            try {
+                if (!supabase) {
+                    throw new Error("Le réseau est trop faible pour envoyer l'article. Réessayez quand la connexion sera meilleure.");
+                }
+
+                const photoFile = photoInput.files[0];
+                const nomFichierUnique = Date.now() + '_' + photoFile.name.replace(/[^a-zA-Z0-9.]/g, "_");
+
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('images')
+                    .upload(nomFichierUnique, photoFile);
+                
+                if (uploadError) throw uploadError;
+
+                const { data: urlData } = supabase.storage
+                    .from('images')
+                    .getPublicUrl(nomFichierUnique);
+                const lienImage = urlData.publicUrl;
+
+                const { error: insertError } = await supabase
+                    .from('produits')
+                    .insert([{
+                        nom: nom,
+                        prix: Number(prix),
+                        categorie: cat,
+                        description: desc,
+                        image: lienImage,
+                        vendeur: emailVendeurActuel,
+                        dateAjout: new Date().toISOString()
+                    }]);
+                
+                if (insertError) throw insertError;
+
+                alert("✅ MAGNIFIQUE ! L'article est en ligne sur Cœur de Marché.");
+                document.getElementById('formAjout').reset();
+
+            } catch (error) {
+                alert("❌ ERREUR LORS DE L'ENVOI : " + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "VALIDER L'ARTICLE";
+                btn.style.opacity = "1";
+            }
         }
     </script>
 </body>
