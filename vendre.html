@@ -29,9 +29,9 @@
             </button>
 
             <div class="text-center mt-6">
-                <div onclick="basculer()" id="btnS" class="text-[#f97316] font-black text-[11px] uppercase p-4 cursor-pointer">
+                <button type="button" onclick="basculer()" id="btnS" class="text-[#f97316] font-black text-[11px] uppercase p-4 w-full text-center bg-transparent border-none">
                     Pas encore de boutique ? Créer mon espace
-                </div>
+                </button>
             </div>
         </div>
         <p id="message" class="text-center text-[10px] font-black mt-4 uppercase text-red-600"></p>
@@ -78,26 +78,19 @@
 
             try {
                 if(isRegister) {
-                    // TENTATIVE D'INSCRIPTION
                     const { data, error } = await supabase.auth.signUp({ 
                         email: email, 
                         password: pass 
                     });
-                    
                     if(error) throw error;
-                    
-                    alert("✅ Boutique créée avec succès ! Connectez-vous maintenant.");
-                    basculer(); // On revient à la connexion
+                    alert("✅ Boutique créée ! Connectez-vous maintenant.");
+                    basculer(); 
                 } else {
-                    // TENTATIVE DE CONNEXION
                     const { data, error } = await supabase.auth.signInWithPassword({ 
                         email: email, 
                         password: pass 
                     });
-
                     if(error) throw error;
-                    
-                    // REDIRECTION FORCÉE
                     window.location.href = "bureau.html";
                 }
             } catch (err) {
@@ -110,4 +103,3 @@
     </script>
 </body>
 </html>
-
