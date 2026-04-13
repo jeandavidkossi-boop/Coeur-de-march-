@@ -5,57 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Bureau - Cœur de Marché</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Poppins', sans-serif; background-color: #f4f4f9; margin: 0; padding: 0; }
-        .header { background-color: #6A1B9A; color: white; padding: 15px; text-align: center; }
+        .header { background-color: #EA1D2C; color: white; padding: 15px; text-align: center; }
         .header img { width: 50px; margin-bottom: 5px; }
         .container { padding: 20px; max-width: 500px; margin: auto; }
         .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        h2 { color: #FF9800; text-align: center; font-size: 1.2rem; margin-top: 0; }
+        h2 { color: #FF6600; text-align: center; font-size: 1.2rem; margin-top: 0; }
         label { font-weight: bold; font-size: 0.9rem; color: #333; margin-top: 15px; display: block; }
-        input, select { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        button { width: 100%; padding: 15px; background-color: #FF9800; border: none; color: white; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 6px rgba(255,152,0,0.3); }
-        .logout { text-align: center; margin-top: 20px; display: block; color: #6A1B9A; text-decoration: underline; font-size: 0.9rem; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background-color: #FF9800; border: none; color: white; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 20px; }
+        .logout { text-align: center; margin-top: 20px; display: block; color: #EA1D2C; text-decoration: underline; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="header">
     <img src="IMG_20260218_162430.jpg" alt="Logo" style="border-radius: 50%;">
-    <h3 style="margin: 0;">Mon Bureau Marchand</h3>
+    <h1 style="margin: 0;">Mon Bureau Marchand</h1>
 </div>
 
 <div class="container">
     <div class="card">
         <h2>Ajouter un article</h2>
-        
+
         <label>Nom de l'article</label>
         <input type="text" id="nomArticle" placeholder="Ex: Chaussures Nike pointure 42">
 
         <label>Prix (FCFA)</label>
         <input type="number" id="prixArticle" placeholder="Ex: 5000">
 
-                <label>Catégorie de votre produit</label>
+        <label>Catégorie de votre produit</label>
         <select id="catArticle">
             <option value="Alimentation">🛒 Alimentation (Gros & Détail)</option>
-            <option value="Vivrier">🥬 Marché Vivrier (Frais)</option>
-            <option value="Resto">🍽️ Restaurants & Maquis</option>
+            <option value="Vivrier">🥕 Marché Vivrier (Frais)</option>
+            <option value="Resto">🍲 Restaurants & Maquis</option>
             <option value="Sante">💊 Santé, Hygiène & Parapharmacie</option>
-            
             <option value="Mode">👕 Mode & Chaussures</option>
             <option value="Mercerie">✂️ Mercerie, Tissus & Couture</option>
             <option value="Beaute">💄 Beauté & Cosmétique</option>
             <option value="Bebe">👶 Univers Bébé & Maternité</option>
-            
             <option value="Electronique">💻 Téléphones & Électroménager</option>
-            <option value="Maison">🛋️ Maison, Déco & Ameublement</option>
+            <option value="Maison">🏠 Maison, Déco & Ameublement</option>
             <option value="Vaisselle">🍽️ Vaisselle & Ustensiles</option>
             <option value="Librairie">📚 Librairie & Fournitures</option>
-            
             <option value="Quincaillerie">🧱 Quincaillerie & Construction</option>
             <option value="Agricole">🚜 Agriculture, Élevage & Intrants</option>
             <option value="Pieces">⚙️ Pièces Détachées (Moto/Auto)</option>
         </select>
+
+        <label>Description de l'article</label>
+        <textarea id="descriptionArticle" rows="3" placeholder="Ex: Très bonne qualité, disponible en plusieurs couleurs..."></textarea>
 
         <label>Photo de l'article (Prendre une photo)</label>
         <input type="file" id="photoArticle" accept="image/*" capture="environment">
@@ -65,39 +66,29 @@
     
     <a href="index.html" class="logout">Fermer mon bureau (Retour à l'accueil)</a>
 </div>
+
 <script type="module">
-    // 1. Importation des outils Firebase
+    // 1. On garde l'authentification Firebase pour savoir quel marchand se connecte
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
-    // 2. Tes clés secrètes Cœur de Marché
-        const firebaseConfig = {
-    apiKey: "AIzaSyCIsoV6DNP6v7m79R7r5hUrB4a-EU6uVI0",
-    authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
-    databaseURL: "https://coeur-de-marche-a3f31-default-rtdb.europe-west1.firebasedatabase.app/",
-    projectId: "coeur-de-marche-a3f31",
-    storageBucket: "coeur-de-marche-a3f31.firebasestorage.app",
-    messagingSenderId: "463834578884",
-    appId: "1:463834578884:web:6d103245392e5e98322e0f"
-};
-    
-    // 3. Démarrage du moteur
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCTsoV6DNP6v2mTM97rSHUrB4a-EUGUVTQ",
+        authDomain: "coeur-de-marche-a3f31.firebaseapp.com",
+        projectId: "coeur-de-marche-a3f31",
+        storageBucket: "coeur-de-marche-a3f31.appspot.com",
+        messagingSenderId: "463834578884",
+        appId: "1:463834578884:web:6d103245302e5a08322e0f"
+    };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-    const db = getFirestore(app);
-    const db = getDatabase(app);
-
     let emailVendeur = "inconnu";
 
-    // Vérification de sécurité : on s'assure que le vendeur est bien connecté
-        onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, (user) => {
         if (user) {
-            // Firebase a confirmé que tu es connecté
             emailVendeur = user.email;
-            console.log("Vendeur identifié : " + emailVendeur);
         } else {
-            // On attend 2 secondes avant de chasser l'utilisateur. 
-            // Ça laisse le temps à la session de se charger sur les téléphones un peu lents.
             setTimeout(() => {
                 if (!auth.currentUser) {
                     window.location.href = "vendre.html";
@@ -105,70 +96,80 @@ import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/
             }, 2000);
         }
     });
-    
 
-    // 4. La fonction principale (Activée au clic du bouton)
+    // 2. NOUVEAU MOTEUR SUPABASE
+    const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+    const supabaseKey = 'Sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // 3. Fonction pour envoyer le produit
     window.ajouterProduit = async function() {
         const nom = document.getElementById('nomArticle').value;
         const prix = document.getElementById('prixArticle').value;
         const cat = document.getElementById('catArticle').value;
+        const desc = document.getElementById('descriptionArticle').value;
         const photoInput = document.getElementById('photoArticle');
         const bouton = document.querySelector('button');
 
-        // Vérification anti-erreur : a-t-il tout rempli ?
         if (!nom || !prix || photoInput.files.length === 0) {
             alert("⚠️ Veuillez remplir le nom, le prix et ajouter une photo !");
             return;
         }
 
         const photoFile = photoInput.files[0];
-
-        // On change le bouton pour faire patienter le vendeur
         bouton.innerText = "⏳ Envoi en cours sur le marché...";
         bouton.disabled = true;
-        bouton.style.backgroundColor = "#ccc"; // Devient gris
+        bouton.style.backgroundColor = "#ccc";
 
         try {
-            // ÉTAPE A : Envoi de la photo dans Firebase Storage
-            const nomFichierUnique = "produits/" + Date.now() + "_" + photoFile.name;
-            const imageRef = ref(storage, nomFichierUnique);
-            await uploadBytes(imageRef, photoFile);
-            const lienImage = await getDownloadURL(imageRef); // On récupère le lien magique
+            // A. Envoi de la photo
+            const nomFichierUnique = Date.now() + '_' + photoFile.name;
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('images')
+                .upload(nomFichierUnique, photoFile);
 
-                    // ÉTAPE B : Envoi des textes dans Realtime Database (La base gratuite)
-        const produitsRef = ref(db, 'produits');
-        const nouveauProduitRef = push(produitsRef);
-        await set(nouveauProduitRef, {
-            nom: nom,
-            prix: Number(prix),
-            categorie: cat,
-            image: lienImage,
-            vendeur: emailVendeur,
-            dateAjout: Date.now()
-        });
+            if (uploadError) throw uploadError;
 
-        // SUCCÈS !
-        alert("✅ Produit mis en vente avec succès !");
+            // B. Récupération du lien
+            const { data: urlData } = supabase.storage
+                .from('images')
+                .getPublicUrl(nomFichierUnique);
+            const lienImage = urlData.publicUrl;
 
-        // On vide le formulaire pour le prochain article
-        document.getElementById('nomArticle').value = "";
-        document.getElementById('prixArticle').value = "";
-        document.getElementById('photoArticle').value = "";
+            // C. Enregistrement des informations
+            const { error: insertError } = await supabase
+                .from('produits')
+                .insert([{ 
+                        nom: nom, 
+                        prix: Number(prix), 
+                        categorie: cat, 
+                        description: desc,
+                        image: lienImage, 
+                        vendeur: emailVendeur, 
+                        dateAjout: Date.now() 
+                }]);
 
-        // On remet le bouton à la normale
-        bouton.innerText = "Mettre en vente sur le marché";
-        bouton.disabled = false;
-        bouton.style.backgroundColor = "#FF9800";
+            if (insertError) throw insertError;
 
-    } catch (error) {
-        console.error("Erreur détaillée :", error);
-        alert("❌ Une erreur est survenue pendant l'envoi. Veuillez réessayer.");
-        bouton.innerText = "Mettre en vente sur le marché";
-        bouton.disabled = false;
-        bouton.style.backgroundColor = "#FF9800";
-    }
-};
+            alert("✅ Produit mis en vente avec succès !");
+
+            // On vide le formulaire
+            document.getElementById('nomArticle').value = "";
+            document.getElementById('prixArticle').value = "";
+            document.getElementById('descriptionArticle').value = "";
+            photoInput.value = "";
+
+            bouton.innerText = "Mettre en vente sur le marché";
+            bouton.disabled = false;
+            bouton.style.backgroundColor = "#FF9800";
+
+        } catch (error) {
+            alert("❌ Erreur lors de l'envoi : " + error.message);
+            bouton.innerText = "Mettre en vente sur le marché";
+            bouton.disabled = false;
+            bouton.style.backgroundColor = "#FF9800";
+        }
+    };
 </script>
-
 </body>
 </html>
