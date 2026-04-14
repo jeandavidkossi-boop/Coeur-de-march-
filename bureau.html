@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bureau - Cœur de Marché</title>
+    <title>Bureau - Cœur de Marché Bouaflé</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -24,7 +24,7 @@
 
     <div class="max-w-md mx-auto px-4">
         <div class="bg-white rounded-[30px] p-6 shadow-xl space-y-4 border border-gray-100">
-            <h2 class="text-center font-black text-gray-800 uppercase italic">Ajouter un produit</h2>
+            <h2 class="text-center font-black text-gray-800 uppercase italic border-b pb-2">Ajouter un produit</h2>
             
             <input type="text" id="nomP" placeholder="Nom de l'article" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 font-bold">
             
@@ -32,17 +32,17 @@
                 <input type="number" id="prixP" placeholder="Prix (FCFA)" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 font-bold">
                 <select id="catP" class="p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none font-bold text-sm">
                     <option value="Vivrier">Marché & Vivrier</option>
-<option value="Alimentation">Alimentation & Boissons</option>
-<option value="Habillement">Habillement & Beaux Pagnes</option>
-<option value="Mercerie">Mercerie & Couture</option>
-<option value="Maison">Maison & Vaisselle</option>
-<option value="Electronique">Électronique & Ménager</option>
-<option value="Construction">Construction & Quincaillerie</option>
-<option value="Motos">Motos & Mécanique</option>
-<option value="Agro">Agro-Élevage</option>
-<option value="Librairie">Librairie & École</option>
-<option value="Beaute">Beauté & Cosmétique</option>
-<option value="Evenementiel">Événementiel & Location</option>
+                    <option value="Alimentation">Alimentation & Boissons</option>
+                    <option value="Habillement">Habillement & Beaux Pagnes</option>
+                    <option value="Mercerie">Mercerie & Couture</option>
+                    <option value="Maison">Maison & Vaisselle</option>
+                    <option value="Electronique">Électronique & Ménager</option>
+                    <option value="Construction">Construction & Matériaux</option>
+                    <option value="Motos">Motos & Mécanique</option>
+                    <option value="Agro">Agro-Élevage</option>
+                    <option value="Librairie">Librairie & École</option>
+                    <option value="Beaute">Beauté & Cosmétique</option>
+                    <option value="Evenementiel">Événementiel & Services</option>
                 </select>
             </div>
 
@@ -71,7 +71,6 @@
         let userSession = null;
         let userData = null;
 
-        // Vérification connexion et récupération métadonnées
         async function checkUser() {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
@@ -81,10 +80,9 @@
             userSession = session.user;
             userData = userSession.user_metadata;
             
-            // Personnalisation du message de bienvenue
             const nomBoutique = userData.shop_name || "Ma Boutique";
             const nomProprio = userData.full_name || "Commerçant";
-            document.getElementById('bienvenue').innerText = `Propriétaire : ${nomProprio} | Boutique : ${nomBoutique}`;
+            document.getElementById('bienvenue').innerText = `${nomBoutique} (${nomProprio})`;
         }
         checkUser();
 
@@ -99,7 +97,6 @@
             }
         }
 
-        // Fonction de compression pour la symbiose et la performance
         async function compressImage(file) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -112,20 +109,15 @@
                         const MAX_WIDTH = 800;
                         let width = img.width;
                         let height = img.height;
-
                         if (width > MAX_WIDTH) {
                             height *= MAX_WIDTH / width;
                             width = MAX_WIDTH;
                         }
-
                         canvas.width = width;
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        
-                        canvas.toBlob((blob) => {
-                            resolve(blob);
-                        }, 'image/jpeg', 0.7); // Qualité 70% pour un poids plume
+                        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7);
                     };
                 };
             });
@@ -139,7 +131,7 @@
             const btn = document.getElementById('btnPublier');
 
             if (!nom || !prix || !fileInput.files[0]) {
-                alert("Veuillez remplir tous les champs et prendre une photo.");
+                alert("Erreur : Veuillez remplir tous les champs.");
                 return;
             }
 
@@ -147,11 +139,9 @@
             btn.innerText = "Chargement...";
 
             try {
-                // 1. Compression de l'image
                 const compressedBlob = await compressImage(fileInput.files[0]);
                 const fileName = `${Date.now()}_${userSession.id}.jpg`;
 
-                // 2. Upload vers Storage
                 const { data: storageData, error: storageError } = await supabase.storage
                     .from('images')
                     .upload(fileName, compressedBlob);
@@ -160,7 +150,6 @@
 
                 const publicUrl = `${supabaseUrl}/storage/v1/object/public/images/${fileName}`;
 
-                // 3. Insertion avec SYMBIOSSE des données vendeurs
                 const { error: dbError } = await supabase
                     .from('produits')
                     .insert([{
@@ -169,17 +158,17 @@
                         categorie: cat,
                         image_url: publicUrl,
                         vendeur_email: userSession.email,
-                        vendeur_nom: userData.shop_name,      // Nom de la boutique
-                        vendeur_tel: userData.telephone      // Numéro WhatsApp capturé à l'inscription
+                        vendeur_nom: userData.shop_name,
+                        vendeur_tel: userData.telephone
                     }]);
 
                 if (dbError) throw dbError;
 
-                alert("Produit ajouté avec succès !");
+                alert("Succès ! Votre article est en ligne à Bouaflé.");
                 location.reload();
 
             } catch (err) {
-                alert("Erreur : " + err.message);
+                alert("Erreur critique : " + err.message);
                 btn.disabled = false;
                 btn.innerText = "Mettre en vente";
             }
