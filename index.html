@@ -3,398 +3,266 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coeur de Marche Bouafle</title>
-    <meta name="description" content="Le premier marché numérique de Bouaflé">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Cœur de Marché Bouaflé</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; scroll-behavior: smooth; }
-        .modal-background { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 2000; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 100%; max-width: 400px; border-radius: 40px; overflow: hidden; }
-        section { display: none; }
-        section.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .marquee-container { background: #6b21a8; color: white; padding: 6px 0; overflow: hidden; white-space: nowrap; }
-        .marquee-text { display: inline-block; padding-left: 100%; animation: marquee 20s linear infinite; }
-        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
-        .category-container { display: flex; justify-content: space-around; gap: 0.5rem; margin-bottom: 2rem; margin-top: 1rem; }
-        .bubble-cat { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; cursor: pointer; text-align: center; }
-        .bubble-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .bubble-label { font-size: 8px; font-weight: 900; color: #4b5563; text-transform: uppercase; }
-        .cat-vivrier .bubble-icon { background-color: #d1fae5; color: #059669; }
-        .cat-beaute .bubble-icon { background-color: #fce7f3; color: #db2777; }
-        .cat-resto .bubble-icon { background-color: #e0f2fe; color: #0284c7; }
-        .cat-mode .bubble-icon { background-color: #fef3c7; color: #d97706; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .active-tab { color: #4c1d95; border-bottom: 3px solid #4c1d95; }
     </style>
 </head>
-<body class="pb-32 text-gray-900 bg-white" onload="chargerDonnees()">
+<body class="pb-24">
 
-    <div id="notif-classe" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[3000] hidden cursor-pointer">
-        <div class="bg-purple-900 text-white px-6 py-3 rounded-full shadow-2xl flex flex-col items-center gap-1 border-2 border-orange-500">
-            <span class="textu-notif text-[10px] font-black uppercase tracking-widest">AJOUTÉ AU PANIER</span>
+    <header class="p-4 bg-white sticky top-0 z-50 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-xl font-black text-purple-900 italic">Cœur de Marché</h1>
+            <span class="text-[10px] bg-orange-500 text-white px-2 py-1 rounded-full font-bold uppercase">Bouaflé</span>
         </div>
-    </div>
-
-    <div id="loader" class="fixed inset-0 bg-white z-[5000] flex flex-col items-center justify-center">
-        <div class="w-16 h-16 border-4 border-gray-200 border-t-purple-900 rounded-full animate-spin mb-4"></div>
-        <p class="text-purple-900 font-black text-xs animate-pulse">Chargement du marché...</p>
-    </div>
-
-    <div id="modalPanier" class="modal-background">
-        <div class="modal-content flex flex-col max-h-[80vh]">
-            <div class="bg-purple-900 p-6 text-white flex justify-between items-center font-black italic">
-                <span><i class="fas fa-shopping-basket"></i> MON PANIER</span>
-                <button onclick="fermerPanier()"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <div id="contenuPanier" class="p-6 overflow-y-auto flex-1 space-y-4"></div>
-            <div class="p-6 border-t border-gray-100 bg-gray-50">
-                <div class="flex justify-between items-center mb-4 text-purple-900 font-black">
-                    <span class="text-[10px] uppercase">Total</span>
-                    <span id="totalPanier" class="text-xl">0 F</span>
-                </div>
-                <button onclick="envoyerPanierWhatsApp()" class="w-full bg-green-500 text-white py-4 rounded-2xl font-black uppercase shadow-lg active:scale-95"><i class="fab fa-whatsapp mr-2"></i> Commander</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modalVendre" class="modal-background">
-        <div class="modal-content">
-            <div class="bg-purple-900 p-4 text-white flex justify-between items-center font-black italic">
-                <span>DEVENIR MARCHAND</span>
-                <button onclick="document.getElementById('modalVendre').style.display='none'"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <div class="p-6 overflow-y-auto max-h-[60vh]">
-                <div class="text-center mb-6">
-                    <h3 class="text-xl font-bold text-gray-800">Découverte</h3>
-                    <p class="text-gray-500 text-sm">Testez le marché sans risque</p>
-                    <p class="text-3xl font-extrabold text-gray-800 my-2">0 FCFA</p>
-                </div>
-                <a href="vendre.html" class="block w-full text-center bg-orange-500 text-white py-4 rounded-2xl font-black uppercase shadow-lg mb-4">Créer ma boutique</a>
-            </div>
-        </div>
-    </div>
-
-    <header id="en-tete-app" class="bg-purple-900 pt-8 rounded-b-[40px] shadow-2xl text-center overflow-hidden">
-        <div class="w-16 h-16 bg-white rounded-full mx-auto mb-2 flex items-center justify-center border-2 border-orange-500 shadow-lg overflow-hidden">
-            <img src="1769121566036.png" class="w-full h-full object-cover">
-        </div>
-        <h1 class="text-white text-xl font-black uppercase italic tracking-wider">Coeur de Marche</h1>
-        <p class="text-orange-400 text-[10px] font-bold uppercase italic mb-4">@Bouafle - Marahoué</p>
-        <div class="marquee-container">
-            <span class="marquee-text font-bold text-[10px] uppercase tracking-widest">Le grand marché de la Marahoué dans votre téléphone ! Mode, Vivrier, Électronique...</span>
+        <div class="relative">
+            <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher un article..." 
+                class="w-full p-4 bg-gray-100 rounded-2xl border-none focus:ring-2 focus:ring-purple-500 font-bold">
+            <button class="absolute right-4 top-4 text-gray-400"><i class="fas fa-search"></i></button>
         </div>
     </header>
-      <section id="accueil" class="active px-4 mt-6">
-        <div class="bg-white p-2 rounded-[30px] shadow-xl border border-gray-100 mb-6 flex gap-2">
-            <input type="text" id="inputRecherche" onkeyup="if(event.key==='Enter') rechercherProduit()" placeholder="Que cherchez-vous ?" class="flex-1 bg-transparent p-3 outline-none text-sm font-bold text-gray-700">
-            <button onclick="LancerMicro()" class="bg-purple-900 text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-md active:scale-95">
-                <i class="fas fa-microphone" id="iconMicro"></i>
+
+    <div class="p-4">
+        <h2 class="font-black text-gray-800 uppercase text-xs mb-3 tracking-widest">Nos Rayons</h2>
+        <div class="flex gap-4 overflow-x-auto hide-scroll pb-2">
+            <button onclick="ouvrirRayon('Vivrier')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-leaf text-xl"></i></div>
+                <span class="text-[10px] font-bold">Vivrier</span>
+            </button>
+            <button onclick="ouvrirRayon('Alimentation')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-utensils text-xl"></i></div>
+                <span class="text-[10px] font-bold">Alimentation</span>
+            </button>
+            <button onclick="ouvrirRayon('Habillement')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-tshirt text-xl"></i></div>
+                <span class="text-[10px] font-bold">Habillement</span>
+            </button>
+            <button onclick="ouvrirRayon('Mercerie')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-cut text-xl"></i></div>
+                <span class="text-[10px] font-bold">Mercerie</span>
+            </button>
+            <button onclick="ouvrirRayon('Maison')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-blender text-xl"></i></div>
+                <span class="text-[10px] font-bold">Maison</span>
+            </button>
+            <button onclick="ouvrirRayon('Construction')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-hammer text-xl"></i></div>
+                <span class="text-[10px] font-bold">Chantier</span>
+            </button>
+            <button onclick="ouvrirRayon('Motos')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-motorcycle text-xl"></i></div>
+                <span class="text-[10px] font-bold">Motos</span>
+            </button>
+            <button onclick="ouvrirRayon('Agro')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-seedling text-xl"></i></div>
+                <span class="text-[10px] font-bold">Agro</span>
+            </button>
+            <button onclick="ouvrirRayon('Librairie')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-book text-xl"></i></div>
+                <span class="text-[10px] font-bold">Librairie</span>
+            </button>
+            <button onclick="ouvrirRayon('Electronique')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-gray-100 text-gray-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-mobile-alt text-xl"></i></div>
+                <span class="text-[10px] font-bold">Électronique</span>
+            </button>
+            <button onclick="ouvrirRayon('Beaute')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-magic text-xl"></i></div>
+                <span class="text-[10px] font-bold">Beauté</span>
+            </button>
+            <button onclick="ouvrirRayon('Evenementiel')" class="flex-none text-center">
+                <div class="w-16 h-16 bg-cyan-100 text-cyan-600 rounded-2xl flex items-center justify-center mb-1 shadow-sm"><i class="fas fa-microphone text-xl"></i></div>
+                <span class="text-[10px] font-bold">Événements</span>
             </button>
         </div>
+    </div>
 
-        <div class="category-container px-2">
-            <div class="bubble-cat cat-vivrier" onclick="ouvrirRayon('Vivrier')">
-                <div class="bubble-icon"><i class="fas fa-leaf"></i></div>
-                <span class="bubble-label">VIVRIER</span>
+    <main class="px-4">
+        <div id="liste-produits" class="grid grid-cols-2 gap-4">
             </div>
-            <div class="bubble-cat cat-beaute" onclick="ouvrirRayon('Beaute')">
-                <div class="bubble-icon"><i class="fas fa-magic"></i></div>
-                <span class="bubble-label">BEAUTÉ</span>
-            </div>
-            <div class="bubble-cat cat-resto" onclick="ouvrirRayon('Resto')">
-                <div class="bubble-icon"><i class="fas fa-utensils"></i></div>
-                <span class="bubble-label">RESTO</span>
-            </div>
-            <div class="bubble-cat cat-mode" onclick="ouvrirRayon('Mode')">
-                <div class="bubble-icon"><i class="fas fa-tshirt"></i></div>
-                <span class="bubble-label">MODE</span>
-            </div>
-        </div>
+        <div id="loader" class="text-center py-10 text-gray-400 font-bold uppercase text-xs">Chargement du marché...</div>
+    </main>
 
-        <div class="text-center mt-8">
-            <button onclick="switchTab('boutique'); chargerDonnees();" class="bg-orange-500 text-white font-black py-4 px-8 rounded-full shadow-lg uppercase tracking-widest active:scale-95">
-                Visiter le Marché complet
-            </button>
-        </div>
-    </section>
-
-    <section id="boutique" class="px-4 mt-6">
-        <div id="vue-rayons">
-            <h2 class="text-purple-900 font-black text-xl mb-6 uppercase italic text-center underline decoration-orange-500 decoration-4 underline-offset-4">Nos Rayons</h2>
-            <div class="grid grid-cols-2 gap-3 pb-12">
-                <button onclick="ouvrirRayon('Mercerie')" class="bg-white p-4 rounded-3xl shadow-md border-b-4 border-gray-200 text-xs font-black uppercase text-gray-700 active:scale-95 text-left"><i class="fas fa-cut text-purple-900 mb-2 text-xl block"></i> Mercerie</button>
-                <button onclick="ouvrirRayon('Mode')" class="bg-white p-4 rounded-3xl shadow-md border-b-4 border-gray-200 text-xs font-black uppercase text-gray-700 active:scale-95 text-left"><i class="fas fa-tshirt text-orange-500 mb-2 text-xl block"></i> Mode</button>
-                <button onclick="ouvrirRayon('Vivrier')" class="bg-white p-4 rounded-3xl shadow-md border-b-4 border-gray-200 text-xs font-black uppercase text-gray-700 active:scale-95 text-left"><i class="fas fa-leaf text-green-500 mb-2 text-xl block"></i> Vivrier</button>
-                <button onclick="ouvrirRayon('Alimentation')" class="bg-white p-4 rounded-3xl shadow-md border-b-4 border-gray-200 text-xs font-black uppercase text-gray-700 active:scale-95 text-left"><i class="fas fa-box text-yellow-600 mb-2 text-xl block"></i> Alimentation</button>
-                <button onclick="ouvrirRayon('Electronique')" class="bg-white p-4 rounded-3xl shadow-md border-b-4 border-gray-200 text-xs font-black uppercase text-gray-700 active:scale-95 text-left"><i class="fas fa-mobile-alt text-blue-500 mb-2 text-xl block"></i> Électronique</button>
-                <button onclick="ouvrirRayon('Maison')" class="bg-white p-4 rounded-3xl shadow-md border-b-4 border-gray-200 text-xs font-black uppercase text-gray-700 active:scale-95 text-left"><i class="fas fa-home text-teal-600 mb-2 text-xl block"></i> Maison</button>
-            </div>
-        </div>
-
-        <div id="vue-produits" class="hidden">
-            <button onclick="retourRayons()" class="mb-6 text-orange-600 font-black text-[10px] uppercase flex items-center gap-2 bg-orange-50 py-2 px-4 rounded-full border border-orange-200"><i class="fas fa-arrow-left"></i> Retour aux rayons</button>
-            <div id="liste-produits" class="space-y-4 pb-20"></div>
-        </div>
-    </section>
-
-    <nav class="fixed bottom-6 left-6 right-6 bg-white rounded-full shadow-2xl p-3 flex justify-around items-center z-50 border border-gray-100">
-        <button onclick="switchTab('accueil')" id="btn-accueil" class="text-orange-600 flex flex-col items-center">
-            <i class="fas fa-home text-xl"></i><span class="text-[8px] font-bold mt-1">Accueil</span>
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 flex justify-around p-3 z-50">
+        <button onclick="window.location.reload()" class="flex flex-col items-center active-tab">
+            <i class="fas fa-home text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Marché</span>
         </button>
-        <button onclick="switchTab('boutique')" id="btn-boutique" class="text-gray-400 flex flex-col items-center">
-            <i class="fas fa-store text-xl"></i><span class="text-[8px] font-bold mt-1">Boutique</span>
+        <button onclick="ouvrirPanier()" class="flex flex-col items-center text-gray-400 relative">
+            <i class="fas fa-shopping-basket text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Mon Panier</span>
+            <div id="badge-panier" class="hidden absolute -top-1 -right-1 bg-orange-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</div>
         </button>
-        <a href="https://wa.me/2250576326645" class="bg-green-500 text-white w-12 h-12 rounded-full flex items-center justify-center -mt-8 shadow-lg shadow-green-200 border-4 border-white active:scale-95 transition-all">
-            <i class="fab fa-whatsapp text-2xl"></i>
-        </a>
-        <a href="vendre.html" class="text-gray-400 flex flex-col items-center">
-            <i class="fas fa-store-alt text-xl"></i><span class="text-[8px] font-bold mt-1">Vendre</span>
+        <a href="vendre.html" class="flex flex-col items-center text-gray-400">
+            <i class="fas fa-store text-lg"></i>
+            <span class="text-[10px] font-bold mt-1">Vendre</span>
         </a>
     </nav>
 
-    <div id="btn-panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-28 right-6 bg-orange-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-2xl z-40 hidden border-2 border-white cursor-pointer active:scale-95">
-        <i class="fas fa-shopping-basket text-2xl"></i>
-        <span id="count-panier" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] w-6 h-6 rounded-full flex items-center justify-center font-bold border-2 border-white">0</span>
+    <div id="modalPanier" class="fixed inset-0 bg-black/60 z-[60] hidden flex-col justify-end">
+        <div class="bg-white rounded-t-[40px] p-6 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-black text-xl uppercase italic text-purple-900">Mon Panier</h3>
+                <button onclick="fermerPanier()" class="bg-gray-100 p-2 rounded-full px-4 font-bold text-xs uppercase">Fermer</button>
+            </div>
+            <div id="contenuPanier" class="space-y-4 mb-6"></div>
+            <div class="border-t pt-4">
+                <div class="flex justify-between text-xl font-black mb-6">
+                    <span>TOTAL</span>
+                    <span id="totalPanier" class="text-orange-500">0 FCFA</span>
+                </div>
+                <button onclick="commanderWhatsApp()" class="w-full bg-green-500 text-white font-black py-4 rounded-2xl shadow-lg flex items-center justify-center gap-3 uppercase">
+                    <i class="fab fa-whatsapp text-2xl"></i> Commander sur WhatsApp
+                </button>
+            </div>
+        </div>
     </div>
-        <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-        window.articles = [];
-        window.tousLesArticlesVrais = [];
-        var panier = [];
-        var pageActuelle = 0;
-        var articlesParPage = 20; 
-        var chargementEnCours = false;
-        var toutEstCharge = false;
+        const supabaseUrl = 'https://szhsohizqwcsnxltjtq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHNvaGl6cXdjc254bHRqdHEiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTcxMTY1Njg0MWh2N2hpenF3Y3NueGx0anFudWd2N2c2I1';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        try {
-            var p = localStorage.getItem('panier_bouafle');
-            if (p && p !== "undefined") panier = JSON.parse(p);
-        } catch(e) {
-            panier = [];
-        }
+        let articlesLocaux = [];
+        let panier = JSON.parse(localStorage.getItem('panier_bouafle')) || [];
 
-        var supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        var supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-
-        if (!window.supabase) alert("❌ Erreur de bibliothèque Supabase. Vérifiez votre connexion.");
-        var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-        async function chargerDonnees() {
-            if (chargementEnCours || toutEstCharge) return;
-            chargementEnCours = true;
-
-            var loader = document.getElementById('loader');
-            if (pageActuelle === 0 && loader) loader.style.display = 'flex';
-
-            try {
-                var debut = pageActuelle * articlesParPage;
-                var fin = debut + articlesParPage - 1;
-
-                var result = await supabase
-                    .from('produits')
-                    .select('*')
-                    .order('dateAjout', { ascending: false })
-                    .range(debut, fin);
-
-                if (result.error) throw result.error;
-
-                if (result.data.length < articlesParPage) toutEstCharge = true;
-
-                window.articles = window.articles.concat(result.data);
-                window.tousLesArticlesVrais = window.articles;
-
-                if (document.getElementById('vue-produits').classList.contains('hidden') === false) {
-                    actualiserAffichageProgressif(window.tousLesArticlesVrais);
-                }
-                
-                mettreAjourCompteurPanier();
-                gererBoutonVoirPlus();
-                pageActuelle++;
-
-            } catch (error) {
+        // Charger les produits
+        async function chargerMarche() {
+            const { data, error } = await supabase.from('produits').select('*').order('created_at', { ascending: false });
+            if (error) {
                 console.error(error);
-                alert("⚠️ Problème de connexion au marché. Veuillez réessayer.");
-            } finally {
-                if (loader) loader.style.display = 'none';
-                chargementEnCours = false;
+                return;
+            }
+            articlesLocaux = data;
+            afficherProduits(data);
+            document.getElementById('loader').classList.add('hidden');
+            majBadgePanier();
+        }
+
+        function afficherProduits(liste) {
+            const container = document.getElementById('liste-produits');
+            container.innerHTML = '';
+
+            if (liste.length === 0) {
+                container.innerHTML = '<p class="col-span-2 text-center py-10 font-bold text-gray-400">Aucun article ici pour le moment.</p>';
+                return;
+            }
+
+            liste.forEach(p => {
+                const card = `
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 flex flex-col">
+                        <img src="${p.image_url}" class="w-full h-32 object-cover">
+                        <div class="p-3 flex-1 flex flex-col">
+                            <span class="text-[8px] font-black uppercase text-purple-400 mb-1">${p.vendeur_nom || 'Boutique'}</span>
+                            <h3 class="font-bold text-gray-800 text-xs truncate mb-1">${p.nom}</h3>
+                            <p class="text-orange-500 font-black text-sm mb-3">${p.prix.toLocaleString('fr-FR')} F</p>
+                            <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur_tel}')" 
+                                class="w-full bg-gray-900 text-white py-2 rounded-xl text-[10px] font-black uppercase mt-auto">
+                                + Ajouter
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', card);
+            });
+        }
+
+        function ajouterAuPanier(nom, prix, tel) {
+            panier.push({ nom, prix, tel });
+            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+            majBadgePanier();
+            
+            // Petit effet visuel
+            const badge = document.getElementById('badge-panier');
+            badge.classList.add('scale-125');
+            setTimeout(() => badge.classList.remove('scale-125'), 200);
+        }
+
+        function majBadgePanier() {
+            const badge = document.getElementById('badge-panier');
+            if (panier.length > 0) {
+                badge.innerText = panier.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
             }
         }
 
-        function gererBoutonVoirPlus() {
-            var ancienBtn = document.getElementById('btn-voir-plus');
-            if (ancienBtn) ancienBtn.remove();
-
-            if (!toutEstCharge) {
-                var vueProduits = document.getElementById('liste-produits');
-                if(vueProduits) {
-                    var divBtn = document.createElement('div');
-                    divBtn.id = 'btn-voir-plus';
-                    divBtn.className = 'w-full flex justify-center py-4 mt-4';
-                    divBtn.innerHTML = '<button onclick="chargerDonnees()" class="bg-purple-100 text-purple-900 font-bold py-3 px-6 rounded-full shadow text-xs uppercase border border-purple-200"><i class="fas fa-arrow-down mr-2"></i> Charger la suite</button>';
-                    vueProduits.appendChild(divBtn);
-                }
-            }
-        }
-
-        var cleanTxt = function(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim(); };
-
-        function switchTab(id) {
-            document.querySelectorAll('section').forEach(function(s) { s.classList.remove('active'); });
-            var target = document.getElementById(id);
-            if(target) target.classList.add('active');
-            
-            document.getElementById('btn-accueil').className = id === 'accueil' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center';
-            document.getElementById('btn-boutique').className = id === 'boutique' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center';
-        }
-
-        function ouvrirRayon(nomRayon) {
-            switchTab('boutique');
-            document.getElementById('vue-rayons').classList.add('hidden');
-            document.getElementById('vue-produits').classList.remove('hidden');
-
-            var f = window.tousLesArticlesVrais.filter(function(p) { return cleanTxt(p.categorie).includes(cleanTxt(nomRayon)); });
-            actualiserAffichageProgressif(f);
-            
-            var btn = document.getElementById('btn-voir-plus');
-            if(btn) btn.style.display = 'none';
-        }
-
-        function retourRayons() {
-            document.getElementById('vue-produits').classList.add('hidden');
-            document.getElementById('vue-rayons').classList.remove('hidden');
+        function ouvrirRayon(cat) {
+            const filtered = articlesLocaux.filter(a => a.categorie === cat);
+            afficherProduits(filtered);
+            window.scrollTo({ top: 400, behavior: 'smooth' });
         }
 
         function rechercherProduit() {
-            var s = cleanTxt(document.getElementById('inputRecherche').value);
-            if (s.length > 1) {
-                switchTab('boutique');
-                document.getElementById('vue-rayons').classList.add('hidden');
-                document.getElementById('vue-produits').classList.remove('hidden');
-
-                var f = window.tousLesArticlesVrais.filter(function(p) { 
-                    return cleanTxt(p.nom).includes(s) || cleanTxt(p.categorie).includes(s) || cleanTxt(p.description).includes(s); 
-                });
-                actualiserAffichageProgressif(f);
-                var btn = document.getElementById('btn-voir-plus');
-                if(btn) btn.style.display = 'none';
-            }
-        }
-
-        function LancerMicro() {
-            if(!window.SpeechRecognition && !window.webkitSpeechRecognition) return alert("Micro non supporté sur votre téléphone.");
-            var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'fr-FR';
-            var icon = document.getElementById('iconMicro');
-            recognition.onstart = function() { icon.className = "fas fa-spinner fa-spin"; };
-            recognition.onresult = function(event) {
-                document.getElementById('inputRecherche').value = event.results[0][0].transcript;
-                rechercherProduit();
-            };
-            recognition.onend = function() { icon.className = "fas fa-microphone"; };
-            recognition.start();
-        }
-
-        function actualiserAffichageProgressif(liste) {
-            var conteneur = document.getElementById('liste-produits');
-            if (!conteneur) return;
-            
-            if (liste.length === 0) {
-                conteneur.innerHTML = '<p class="text-center p-10 text-gray-400 text-xs font-bold uppercase">Aucun article ici pour le moment</p>';
-            } else {
-                conteneur.innerHTML = liste.map(function(p) { return genererCarteProduit(p); }).join('');
-            }
-        }
-
-        function genererCarteProduit(p) {
-            var prixFmt = (p.prix || 0).toLocaleString('fr-FR');
-            var image = p.image || "https://via.placeholder.com/150";
-            var nomEchappe = (p.nom || "").replace(/'/g, "\\'").replace(/"/g, '&quot;');
-            var tPartage = encodeURIComponent("🛒 COMMANDE CŒUR DE MARCHÉ\n\nProduit: " + p.nom + "\nPrix: " + prixFmt + " FCFA\n\nJe suis intéressé(e) !");
-
-            return '<div class="bg-white rounded-[20px] shadow-md p-3 border border-gray-100 flex gap-4">' +
-                '<img src="' + image + '" class="w-24 h-24 rounded-xl object-cover shadow-sm">' +
-                '<div class="flex-1 flex flex-col justify-between overflow-hidden">' +
-                    '<div>' +
-                        '<h4 class="font-black uppercase text-purple-900 text-[11px] leading-tight mb-1 truncate">' + p.nom + '</h4>' +
-                        '<p class="text-orange-600 font-black text-sm">' + prixFmt + ' FCFA</p>' +
-                    '</div>' +
-                    '<div class="flex gap-2 mt-2">' +
-                        '<button onclick="ajouterAuPanier(\'' + nomEchappe + '\', ' + p.prix + ')" class="bg-purple-900 text-white flex-1 py-2 rounded-lg text-[10px] font-bold uppercase active:scale-95 shadow-sm">' +
-                            '<i class="fas fa-cart-plus"></i> Panier' +
-                        '</button>' +
-                        '<a href="https://wa.me/2250576326645?text=' + tPartage + '" class="bg-green-500 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm active:scale-95">' +
-                            '<i class="fab fa-whatsapp"></i>' +
-                        '</a>' +
-                    '</div>' +
-                '</div>' +
-            '</div>';
-        }
-
-        function ajouterAuPanier(nom, prix) {
-            panier.push({ nom: nom, prix: prix });
-            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
-            mettreAjourCompteurPanier();
-            
-            var notif = document.getElementById('notif-classe');
-            if(notif) {
-                notif.style.display = "block";
-                setTimeout(function() { notif.style.display = "none"; }, 1500);
-            }
-        }
-
-        function mettreAjourCompteurPanier() {
-            var btn = document.getElementById('btn-panier-flottant');
-            var count = document.getElementById('count-panier');
-            if (btn && count) {
-                if (panier.length > 0) { 
-                    btn.style.display = 'flex'; 
-                    count.innerText = panier.length; 
-                } else { 
-                    btn.style.display = 'none'; 
-                }
-            }
+            const s = document.getElementById('inputRecherche').value.toLowerCase();
+            const filtered = articlesLocaux.filter(a => a.nom.toLowerCase().includes(s));
+            afficherProduits(filtered);
         }
 
         function ouvrirPanier() {
-            document.getElementById('modalPanier').style.display = 'flex';
-            var total = 0;
-            document.getElementById('contenuPanier').innerHTML = panier.map(function(item, index) {
-                total += parseInt(item.prix);
-                return '<div class="flex justify-between items-center bg-white p-3 rounded-xl mb-2 border border-gray-100 shadow-sm">' +
-                    '<span class="text-[10px] font-black text-purple-900 uppercase truncate pr-2 w-2/3">' + item.nom + '</span>' +
-                    '<div class="flex items-center gap-3 whitespace-nowrap">' +
-                        '<span class="text-orange-600 font-bold text-[10px]">' + item.prix + ' F</span>' +
-                        '<button onclick="supprimerDuPanier(' + index + ')" class="text-red-500 bg-red-50 w-6 h-6 rounded-full flex items-center justify-center"><i class="fas fa-trash text-[10px]"></i></button>' +
-                    '</div>' +
-                '</div>';
-            }).join('');
-            document.getElementById('totalPanier').innerText = total.toLocaleString('fr-FR') + " F";
+            const container = document.getElementById('contenuPanier');
+            const totalEl = document.getElementById('totalPanier');
+            container.innerHTML = '';
+            let total = 0;
+
+            panier.forEach((item, index) => {
+                total += parseInt(item.prix, 10) || 0;
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-2xl">
+                        <div>
+                            <p class="font-bold text-xs">${item.nom}</p>
+                            <p class="text-orange-500 font-black text-[10px]">${item.prix} F</p>
+                        </div>
+                        <button onclick="supprimerItem(${index})" class="text-red-500 p-2"><i class="fas fa-trash"></i></button>
+                    </div>
+                `);
+            });
+
+            totalEl.innerText = `${total.toLocaleString('fr-FR')} FCFA`;
+            document.getElementById('modalPanier').classList.remove('hidden');
+            document.getElementById('modalPanier').classList.add('flex');
         }
 
-        function supprimerDuPanier(index) {
+        function supprimerItem(index) {
             panier.splice(index, 1);
             localStorage.setItem('panier_bouafle', JSON.stringify(panier));
             ouvrirPanier();
-            mettreAjourCompteurPanier();
+            majBadgePanier();
         }
 
-        function fermerPanier() { document.getElementById('modalPanier').style.display = 'none'; }
+        function fermerPanier() {
+            document.getElementById('modalPanier').classList.add('hidden');
+            document.getElementById('modalPanier').classList.remove('flex');
+        }
 
-        function envoyerPanierWhatsApp() {
+        function commanderWhatsApp() {
             if (panier.length === 0) return;
-            var message = "🛒 *Bonjour Cœur de Marché, voici ma commande :*\n\n";
-            var total = 0;
-            panier.forEach(function(item) { 
-                message += "- " + item.nom + " (" + item.prix + " F)\n"; 
-                total += parseInt(item.prix); 
+            
+            // Pour faire simple et pro : on envoie la commande au premier vendeur du panier
+            // ou tu peux centraliser vers ton numéro. Ici, on prend le numéro du premier article.
+            const premierVendeur = panier[0].tel || "2250576326645"; 
+            let message = "Bonjour Cœur de Marché, voici ma commande :\n\n";
+            let total = 0;
+
+            panier.forEach(item => {
+                message += `- ${item.nom} (${item.prix} F)\n`;
+                total += parseInt(item.prix, 10);
             });
-            message += "\n*Total : " + total.toLocaleString('fr-FR') + " FCFA*\n";
-            window.location.href = "https://wa.me/2250576326645?text=" + encodeURIComponent(message);
-            panier = [];
-            localStorage.setItem('panier_bouafle', JSON.stringify(panier));
+
+            message += `\n*TOTAL : ${total} FCFA*`;
+            
+            const link = `https://wa.me/${premierVendeur}?text=${encodeURIComponent(message)}`;
+            window.open(link, '_blank');
         }
+
+        chargerMarche();
     </script>
 </body>
-</html>
+        </html>
+    
