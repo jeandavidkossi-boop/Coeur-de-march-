@@ -67,10 +67,10 @@
 
     <header class="header-bg text-center pt-8 px-6 relative">
         <div class="inline-block p-1 bg-white rounded-2xl mb-3 shadow-lg">
-            <img src="https://szhsohizqwcsnxltjtq.supabase.co/storage/v1/object/public/images/logo.png" class="w-16 h-16 rounded-xl" onerror="this.src='https://via.placeholder.com/80?text=LOGO'">
+            <img src="1769121566036.png" class="w-16 h-16 rounded-xl" onerror="this.src='https://via.placeholder.com/80?text=LOGO'">
         </div>
         <h1 class="text-white text-[26px] font-black italic uppercase tracking-tighter leading-none mb-1">COEUR DE MARCHE</h1>
-        <p class="text-orange-400 font-bold text-[10px] italic tracking-widest uppercase">Bouafle - Marahoue</p>
+        <p class="text-orange-400 font-bold text-[10px] italic tracking-widest uppercase">Bouaflé - Marahoué</p>
     </header>
 
     <div class="scrolling-banner">
@@ -112,7 +112,7 @@
                 <i class="fas fa-fire text-orange-500 text-lg"></i> A LA UNE
             </h2>
             <div id="liste-accueil" class="grid grid-cols-2 gap-4">
-                </div>
+            </div>
         </main>
     </div>
 
@@ -169,7 +169,7 @@
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-                 const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -177,27 +177,47 @@
         let panier = [];
 
         async function chargerAnnonce() {
-            const { data, error } = await supabase.from('annonces').select('message').limit(1).single();
-            
-            if (data && data.message) {
-                document.getElementById('texte-annonce').innerText = data.message;
-            } else {
-                document.getElementById('texte-annonce').innerText = "Bienvenue sur Cœur de Marché Bouaflé !";
+            try {
+                const { data, error } = await supabase.from('annonces').select('message').limit(1).single();
+                
+                if (error) {
+                    console.log("Erreur annonce :", error.message);
+                    document.getElementById('texte-annonce').innerText = "🚀 Bienvenue sur Cœur de Marché Bouaflé !";
+                    return;
+                }
+
+                if (data && data.message) {
+                    document.getElementById('texte-annonce').innerText = data.message;
+                } else {
+                    document.getElementById('texte-annonce').innerText = "🚀 Bienvenue sur Cœur de Marché Bouaflé !";
+                }
+            } catch (err) {
+                document.getElementById('texte-annonce').innerText = "🚀 Bienvenue sur Cœur de Marché Bouaflé !";
             }
         }
 
         async function init() {
             chargerAnnonce();
 
-            const { data } = await supabase.from('produits').select('*').order('created_at', { ascending: false });
-            if (data) { 
-                articles = data; 
-                afficherProduits(data, 'liste-accueil'); 
+            try {
+                const { data, error } = await supabase.from('produits').select('*').order('created_at', { ascending: false });
+                if (error) {
+                    console.error("Erreur Produits :", error.message);
+                    return;
+                }
+                if (data) { 
+                    articles = data; 
+                    afficherProduits(data, 'liste-accueil'); 
+                }
+            } catch (err) {
+                console.error("Erreur fatale :", err);
             }
         }
 
         function afficherProduits(liste, target) {
             const container = document.getElementById(target);
+            if (!container) return;
+            
             container.innerHTML = liste.map(p => `
                 <div class="bg-white rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col relative pb-3">
                     <div class="price-badge">${p.prix} F</div>
@@ -224,10 +244,11 @@
             if (panier.length === 0) return;
             let msg = "Bonjour Cœur de Marché, ma commande :\n\n";
             let total = 0;
-            panier.forEach(i => { msg += `- ${i.nom} (${i.prix} F)\n`; total += i.prix; });
+            panier.forEach(i => { msg += `- ${i.nom} (${i.prix} FCFA)\n`; total += i.prix; });
             msg += `\n*TOTAL : ${total} FCFA*`;
             window.open(`https://wa.me/${panier[0].tel || '2250576326645'}?text=${encodeURIComponent(msg)}`);
             panier = [];
+            document.getElementById('panier-count').innerText = '0';
             document.getElementById('panier-flottant').classList.remove('show');
         }
 
@@ -252,7 +273,12 @@
 
         function lancerMicro() {
             const icon = document.getElementById('iconMicro');
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Votre navigateur ne supporte pas la recherche vocale.");
+                return;
+            }
+            const recognition = new SpeechRecognition();
             recognition.lang = 'fr-FR';
             recognition.onstart = () => icon.className = "fas fa-spinner fa-spin";
             recognition.onresult = (e) => {
@@ -265,7 +291,7 @@
 
         function rechercherProduit() {
             const s = document.getElementById('inputRecherche').value.toLowerCase();
-            const filtered = articles.filter(a => a.nom.toLowerCase().includes(s));
+            const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
             const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil';
             afficherProduits(filtered, target);
         }
@@ -273,5 +299,5 @@
         init();
     </script>
 </body>
-    </html>
+                                                                     </html>
     
