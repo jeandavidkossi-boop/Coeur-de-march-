@@ -8,84 +8,137 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f9; overflow-x: hidden; }
-        .header-bg { background-color: #4c1d95; border-bottom-left-radius: 50px; border-bottom-right-radius: 50px; padding-bottom: 60px; }
-        .search-container { margin-top: -45px; }
-        .hide-scroll::-webkit-scrollbar { display: none; }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        .animate-marquee { display: inline-block; animation: marquee 25s linear infinite; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fd; overflow-x: hidden; }
+        
+        /* HEADER EXACT DE TA PHOTO */
+        .header-bg { background-color: #5b21b6; border-bottom-left-radius: 35px; border-bottom-right-radius: 35px; padding-bottom: 70px; }
+        
+        /* BARRE DE RECHERCHE CHEVAUCHÉE */
+        .search-container { margin-top: -35px; position: relative; z-index: 50; padding: 0 24px; }
+        .search-box { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); padding: 6px; display: flex; align-items: center; }
+        
+        /* BOUTON MICRO */
+        .mic-btn { background-color: #5b21b6; color: white; width: 45px; height: 45px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+        /* BADGE PRIX SUR L'IMAGE */
+        .price-badge { background-color: #f97316; color: white; position: absolute; top: 12px; right: 12px; padding: 4px 12px; border-radius: 10px; font-weight: 900; font-size: 12px; z-index: 10; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4); }
+
+        /* BOUTON AJOUTER */
+        .btn-ajouter { background-color: #5b21b6; color: white; width: 100%; padding: 12px 0; border-radius: 15px; font-weight: 900; font-size: 11px; text-transform: uppercase; margin-top: auto; }
+
+        /* BARRE DE NAVIGATION BASSE (Design Photo) */
+        .nav-bar { background: white; height: 75px; display: flex; justify-content: space-around; align-items: center; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; border-radius: 35px 35px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); padding: 0 15px; }
         .active-nav { color: #f97316 !important; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #9ca3af; font-size: 20px; }
+        .nav-text { font-size: 9px; font-weight: 900; text-transform: capitalize; margin-top: 4px; }
+        
+        /* GROS BOUTON WHATSAPP CENTRAL */
+        .wa-btn { background: #22c55e; width: 65px; height: 65px; border-radius: 50%; border: 6px solid #f8f9fd; margin-top: -45px; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3); }
+
+        /* PANIER FANTÔME */
         #panier-flottant { transition: all 0.4s ease; transform: translateY(150px); opacity: 0; }
-        #panier-flottant.visible { transform: translateY(0); opacity: 1; }
+        #panier-flottant.show { transform: translateY(0); opacity: 1; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="pb-32">
 
-    <header class="header-bg text-center p-6 pt-10 relative">
-        <div class="inline-block p-1 bg-white rounded-2xl shadow-xl mb-4">
+    <header class="header-bg text-center pt-8 px-6 relative">
+        <div class="inline-block p-1 bg-white rounded-2xl mb-3 shadow-lg">
             <img src="https://szhsohizqwcsnxltjtq.supabase.co/storage/v1/object/public/images/logo.png" class="w-16 h-16 rounded-xl" onerror="this.src='https://via.placeholder.com/80?text=LOGO'">
         </div>
-        <h1 class="text-white text-2xl font-black italic uppercase tracking-tighter leading-none">COEUR DE MARCHE</h1>
-        <p class="text-orange-400 font-bold text-[10px] italic uppercase tracking-widest">Bouaflé</p>
+        <h1 class="text-white text-[26px] font-black italic uppercase tracking-tighter leading-none mb-1">COEUR DE MARCHE</h1>
+        <p class="text-orange-400 font-bold text-[10px] italic tracking-widest uppercase">Bouafle - Marahoue</p>
     </header>
 
-    <div class="bg-orange-500 text-white py-2 overflow-hidden whitespace-nowrap z-40 relative">
-        <div class="animate-marquee font-black uppercase italic text-[10px] tracking-widest">
-             BOOSTEZ VOTRE VISIBILITÉ ICI • CONTACTEZ LE 05 76 32 66 45 • NINA FASHION : NOUVEL ARRIVAGE •
-        </div>
-    </div>
-
-    <div class="px-6 search-container relative z-50">
-        <div class="bg-white rounded-[25px] shadow-2xl p-2 flex items-center gap-2 border border-gray-100">
-            <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher à Bouaflé..." class="flex-1 p-3 px-4 outline-none font-bold text-gray-600 bg-transparent text-sm">
-            <button onclick="lancerMicro()" class="w-12 h-12 bg-purple-900 text-white rounded-[18px] flex items-center justify-center shadow-lg active:scale-90 transition">
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher..." class="flex-1 bg-transparent px-4 py-2 outline-none font-bold text-gray-500 text-sm">
+            <button onclick="lancerMicro()" class="mic-btn active:scale-95 transition">
                 <i id="iconMicro" class="fas fa-microphone"></i>
             </button>
         </div>
     </div>
 
-    <div id="section-accueil">
-        <section class="mt-8 px-4">
-            <h2 class="font-black text-purple-900 text-[11px] mb-4 flex items-center gap-2 italic uppercase"><i class="fas fa-play-circle text-orange-500"></i> Sous les projecteurs</h2>
-            <div id="video-list" class="flex gap-4 overflow-x-auto hide-scroll pb-2">
-                <div onclick="alert('Lancement du Vlog...')" class="flex-none w-20 h-20 border-2 border-orange-500 rounded-full p-1"><img src="https://via.placeholder.com/100?text=VLOG" class="rounded-full w-full h-full object-cover"></div>
-            </div>
-        </section>
-        <main id="liste-accueil" class="mt-8 px-4 grid grid-cols-2 gap-4">
-            </main>
-    </div>
-
-    <div id="section-boutique" class="hidden mt-8 px-4">
-        <h2 class="font-black text-purple-900 text-[11px] mb-6 flex items-center gap-2 italic uppercase"><i class="fas fa-store text-orange-500"></i> Nos Rayons</h2>
-        <div class="grid grid-cols-3 gap-4 mb-10">
-            <button onclick="filtrerParRayon('Vivrier')" class="flex flex-col items-center"><div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-leaf"></i></div><span class="text-[8px] font-black mt-1 uppercase">Vivrier</span></button>
-            <button onclick="filtrerParRayon('Alimentation')" class="flex flex-col items-center"><div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-utensils"></i></div><span class="text-[8px] font-black mt-1 uppercase">Alimentation</span></button>
-            <button onclick="filtrerParRayon('Habillement')" class="flex flex-col items-center"><div class="w-14 h-14 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-tshirt"></i></div><span class="text-[8px] font-black mt-1 uppercase">Habits</span></button>
-            <button onclick="filtrerParRayon('Mercerie')" class="flex flex-col items-center"><div class="w-14 h-14 bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-cut"></i></div><span class="text-[8px] font-black mt-1 uppercase">Mercerie</span></button>
-            <button onclick="filtrerParRayon('Maison')" class="flex flex-col items-center"><div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-blender"></i></div><span class="text-[8px] font-black mt-1 uppercase">Maison</span></button>
-            <button onclick="filtrerParRayon('Electronique')" class="flex flex-col items-center"><div class="w-14 h-14 bg-gray-100 text-gray-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-mobile-alt"></i></div><span class="text-[8px] font-black mt-1 uppercase">Électro</span></button>
-            <button onclick="filtrerParRayon('Construction')" class="flex flex-col items-center"><div class="w-14 h-14 bg-yellow-100 text-yellow-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-hammer"></i></div><span class="text-[8px] font-black mt-1 uppercase">Chantier</span></button>
-            <button onclick="filtrerParRayon('Motos')" class="flex flex-col items-center"><div class="w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-motorcycle"></i></div><span class="text-[8px] font-black mt-1 uppercase">Motos</span></button>
-            <button onclick="filtrerParRayon('Agro')" class="flex flex-col items-center"><div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-seedling"></i></div><span class="text-[8px] font-black mt-1 uppercase">Agro</span></button>
-            <button onclick="filtrerParRayon('Librairie')" class="flex flex-col items-center"><div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-book"></i></div><span class="text-[8px] font-black mt-1 uppercase">École</span></button>
-            <button onclick="filtrerParRayon('Beaute')" class="flex flex-col items-center"><div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-magic"></i></div><span class="text-[8px] font-black mt-1 uppercase">Beauté</span></button>
-            <button onclick="filtrerParRayon('Evenementiel')" class="flex flex-col items-center"><div class="w-14 h-14 bg-cyan-100 text-cyan-600 rounded-2xl flex items-center justify-center shadow-sm"><i class="fas fa-microphone"></i></div><span class="text-[8px] font-black mt-1 uppercase">Évents</span></button>
+    <div id="vue-accueil">
+        
+        <div class="flex justify-between px-8 mt-8">
+            <button onclick="filtrerAccueil('Vivrier')" class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-[#d1fae5] text-[#059669] rounded-full flex items-center justify-center text-3xl mb-2 shadow-sm"><i class="fas fa-leaf"></i></div>
+                <span class="text-[10px] font-black text-gray-800 uppercase">Vivrier</span>
+            </button>
+            <button onclick="filtrerAccueil('Beauté & Cosmétique')" class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-[#fce7f3] text-[#db2777] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-magic"></i></div>
+                <span class="text-[10px] font-black text-gray-800 uppercase">Beauté</span>
+            </button>
+            <button onclick="filtrerAccueil('Alimentation & Boissons')" class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-[#dbeafe] text-[#2563eb] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-utensils"></i></div>
+                <span class="text-[10px] font-black text-gray-800 uppercase">Resto</span>
+            </button>
+            <button onclick="filtrerAccueil('Habillement & Pagnes')" class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-[#ffedd5] text-[#d97706] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-tshirt"></i></div>
+                <span class="text-[10px] font-black text-gray-800 uppercase">Mode</span>
+            </button>
         </div>
-        <div id="liste-boutique" class="grid grid-cols-2 gap-4 pb-20">
-            </div>
+
+        <main class="mt-8 px-6">
+            <h2 class="font-black text-[#4c1d95] text-sm mb-4 flex items-center gap-2 uppercase">
+                <i class="fas fa-fire text-orange-500 text-lg"></i> A LA UNE
+            </h2>
+            <div id="liste-accueil" class="grid grid-cols-2 gap-4">
+                </div>
+        </main>
     </div>
 
-    <div id="panier-flottant" onclick="commanderPanier()" class="fixed bottom-24 right-6 bg-purple-900 text-white p-4 rounded-full shadow-2xl flex items-center gap-3 z-[60] border-2 border-white">
-        <div class="relative"><i class="fas fa-shopping-basket"></i><span id="count-panier" class="absolute -top-3 -right-3 bg-orange-500 text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black">0</span></div>
-        <span class="text-[10px] font-black uppercase">Commander</span>
+    <div id="vue-boutique" class="hidden mt-8 px-6">
+        <h2 class="font-black text-[#4c1d95] text-sm mb-6 flex items-center gap-2 uppercase">
+            <i class="fas fa-store text-orange-500"></i> Tous les rayons
+        </h2>
+        
+        <div class="grid grid-cols-4 gap-y-6 gap-x-2 text-center mb-8">
+            <div onclick="filtrerBoutique('Marché & Vivrier')"><div class="w-12 h-12 mx-auto bg-green-100 text-green-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-leaf"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Vivrier</span></div>
+            <div onclick="filtrerBoutique('Alimentation & Boissons')"><div class="w-12 h-12 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-utensils"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Aliment</span></div>
+            <div onclick="filtrerBoutique('Habillement & Pagnes')"><div class="w-12 h-12 mx-auto bg-purple-100 text-purple-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-tshirt"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Habits</span></div>
+            <div onclick="filtrerBoutique('Mercerie & Couture')"><div class="w-12 h-12 mx-auto bg-pink-100 text-pink-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-cut"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Mercerie</span></div>
+            <div onclick="filtrerBoutique('Maison & Vaisselle')"><div class="w-12 h-12 mx-auto bg-orange-100 text-orange-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-blender"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Maison</span></div>
+            <div onclick="filtrerBoutique('Électronique & Ménager')"><div class="w-12 h-12 mx-auto bg-gray-200 text-gray-700 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-tv"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Électro</span></div>
+            <div onclick="filtrerBoutique('Construction & Quincaillerie')"><div class="w-12 h-12 mx-auto bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-hammer"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Chantier</span></div>
+            <div onclick="filtrerBoutique('Motos & Mécanique')"><div class="w-12 h-12 mx-auto bg-red-100 text-red-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-motorcycle"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Motos</span></div>
+            <div onclick="filtrerBoutique('Agro-Élevage')"><div class="w-12 h-12 mx-auto bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-tractor"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Agro</span></div>
+            <div onclick="filtrerBoutique('Librairie & École')"><div class="w-12 h-12 mx-auto bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-book"></i></div><span class="text-[8px] font-black uppercase text-gray-700">École</span></div>
+            <div onclick="filtrerBoutique('Beauté & Cosmétique')"><div class="w-12 h-12 mx-auto bg-rose-100 text-rose-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-magic"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Beauté</span></div>
+            <div onclick="filtrerBoutique('Événementiel & Location')"><div class="w-12 h-12 mx-auto bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-glass-cheers"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Events</span></div>
+        </div>
+        
+        <div id="liste-boutique" class="grid grid-cols-2 gap-4 pb-10"></div>
     </div>
 
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t p-2 flex justify-between items-center px-6 z-50">
-        <button onclick="changerVue('accueil')" id="nav-accueil" class="flex flex-col items-center active-nav"><i class="fas fa-home text-lg"></i><span class="text-[8px] font-black mt-1 uppercase">Accueil</span></button>
-        <button onclick="changerVue('boutique')" id="nav-boutique" class="flex flex-col items-center text-gray-400"><i class="fas fa-store text-lg"></i><span class="text-[8px] font-black mt-1 uppercase">Boutique</span></button>
-        <button onclick="window.open('https://wa.me/2250576326645')" class="w-16 h-16 -mt-12 bg-green-500 text-white rounded-full flex items-center justify-center border-4 border-white text-3xl shadow-lg"><i class="fab fa-whatsapp"></i></button>
-        <a href="vendre.html" class="flex flex-col items-center text-gray-400"><i class="fas fa-user-tie text-lg"></i><span class="text-[8px] font-black mt-1 uppercase">Vendre</span></a>
-        <button onclick="alert('Coeur de Marché Bouaflé - Version 1.0')" class="flex flex-col items-center text-gray-400"><i class="fas fa-info-circle text-lg"></i><span class="text-[8px] font-black mt-1 uppercase">A propos</span></button>
+    <div id="panier-flottant" onclick="commanderWhatsApp()" class="fixed bottom-24 right-6 bg-[#5b21b6] text-white p-4 rounded-2xl shadow-2xl flex items-center gap-3 z-[60] cursor-pointer">
+        <div class="relative">
+            <i class="fas fa-shopping-basket text-xl"></i>
+            <span id="panier-count" class="absolute -top-3 -right-3 bg-orange-500 text-white text-[11px] w-6 h-6 rounded-full flex items-center justify-center font-black border-2 border-[#5b21b6]">0</span>
+        </div>
+        <span class="text-[11px] font-black uppercase">Commander</span>
+    </div>
+
+    <nav class="nav-bar">
+        <button onclick="changerVue('accueil')" id="nav-accueil" class="nav-item active-nav">
+            <i class="fas fa-home"></i><span class="nav-text">Accueil</span>
+        </button>
+        <button onclick="changerVue('boutique')" id="nav-boutique" class="nav-item">
+            <i class="fas fa-store"></i><span class="nav-text">Boutique</span>
+        </button>
+        
+        <button onclick="window.open('https://wa.me/2250576326645')" class="wa-btn active:scale-95 transition">
+            <i class="fab fa-whatsapp"></i>
+        </button>
+
+        <a href="vendre.html" class="nav-item">
+            <i class="fas fa-store-alt"></i><span class="nav-text">Vendre</span>
+        </a>
+        <button onclick="alert('Aide')" class="nav-item">
+            <i class="fas fa-question-circle"></i><span class="nav-text">Aide</span>
+        </button>
     </nav>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -99,58 +152,74 @@
 
         async function init() {
             const { data } = await supabase.from('produits').select('*').order('created_at', { ascending: false });
-            if (data) { articles = data; afficherProduits(data, 'liste-accueil'); }
+            if (data) { 
+                articles = data; 
+                afficherProduits(data, 'liste-accueil'); 
+            }
         }
 
-        function afficherProduits(liste, targetId) {
-            const container = document.getElementById(targetId);
+        // DESIGN DES CARTES EXACTEMENT COMME SUR TA PHOTO
+        function afficherProduits(liste, target) {
+            const container = document.getElementById(target);
             container.innerHTML = liste.map(p => `
-                <div class="bg-white rounded-[20px] overflow-hidden shadow-sm border border-gray-100 flex flex-col">
-                    <img src="${p.image_url}" class="w-full h-32 object-cover">
-                    <div class="p-3 flex-1 flex flex-col">
-                        <h3 class="font-black text-gray-800 text-[9px] uppercase truncate mb-1">${p.nom}</h3>
-                        <p class="text-orange-500 font-black text-xs mb-3">${p.prix} F</p>
-                        <button onclick="ajouterPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur_tel}')" class="w-full bg-purple-900 text-white py-2 rounded-xl text-[8px] font-black uppercase">+ AJOUTER</button>
+                <div class="bg-white rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col relative pb-3">
+                    <div class="price-badge">${p.prix} F</div>
+                    <img src="${p.image_url}" class="w-full h-36 object-cover rounded-t-[20px]">
+                    <div class="px-3 pt-3 flex-1 flex flex-col text-center">
+                        <h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3>
+                        <p class="text-blue-500 text-[9px] font-bold mb-3 truncate">Bouaflé</p>
+                        <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur_tel}')" 
+                            class="btn-ajouter active:scale-95 transition">
+                            AJOUTER
+                        </button>
                     </div>
                 </div>
             `).join('');
         }
 
+        function ajouterAuPanier(nom, prix, tel) {
+            panier.push({nom, prix, tel});
+            document.getElementById('panier-count').innerText = panier.length;
+            document.getElementById('panier-flottant').classList.add('show');
+        }
+
+        function commanderWhatsApp() {
+            if (panier.length === 0) return;
+            let msg = "Bonjour Cœur de Marché, ma commande :\n\n";
+            let total = 0;
+            panier.forEach(i => { msg += `- ${i.nom} (${i.prix} F)\n`; total += i.prix; });
+            msg += `\n*TOTAL : ${total} FCFA*`;
+            window.open(`https://wa.me/${panier[0].tel || '2250576326645'}?text=${encodeURIComponent(msg)}`);
+            panier = [];
+            document.getElementById('panier-flottant').classList.remove('show');
+        }
+
         function changerVue(vue) {
-            document.getElementById('section-accueil').classList.toggle('hidden', vue !== 'accueil');
-            document.getElementById('section-boutique').classList.toggle('hidden', vue !== 'boutique');
+            document.getElementById('vue-accueil').classList.toggle('hidden', vue !== 'accueil');
+            document.getElementById('vue-boutique').classList.toggle('hidden', vue !== 'boutique');
             document.getElementById('nav-accueil').classList.toggle('active-nav', vue === 'accueil');
             document.getElementById('nav-boutique').classList.toggle('active-nav', vue === 'boutique');
+            if(vue === 'accueil') afficherProduits(articles, 'liste-accueil');
         }
 
-        function filtrerParRayon(cat) {
+        function filtrerAccueil(cat) {
+            const filtered = articles.filter(a => a.categorie && a.categorie.includes(cat));
+            afficherProduits(filtered, 'liste-accueil');
+            window.scrollTo({ top: 400, behavior: 'smooth' });
+        }
+
+        function filtrerBoutique(cat) {
             const filtered = articles.filter(a => a.categorie === cat);
             afficherProduits(filtered, 'liste-boutique');
-        }
-
-        function ajouterPanier(nom, prix, tel) {
-            panier.push({ nom, prix, tel });
-            document.getElementById('count-panier').innerText = panier.length;
-            document.getElementById('panier-flottant').classList.add('visible');
-        }
-
-        function commanderPanier() {
-            if (panier.length === 0) return;
-            let msg = "Bonjour, je souhaite commander :\n";
-            panier.forEach(i => msg += `- ${i.nom} (${i.prix} F)\n`);
-            window.open(`https://wa.me/${panier[0].tel}?text=${encodeURIComponent(msg)}`);
-            panier = [];
-            document.getElementById('panier-flottant').classList.remove('visible');
         }
 
         function lancerMicro() {
             const icon = document.getElementById('iconMicro');
             const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = 'fr-FR';
-            recognition.onstart = () => icon.className = "fas fa-spinner fa-spin text-orange-500";
-            recognition.onresult = (e) => { 
-                const res = e.results[0][0].transcript;
-                document.getElementById('inputRecherche').value = res;
+            recognition.onstart = () => icon.className = "fas fa-spinner fa-spin";
+            recognition.onresult = (e) => {
+                document.getElementById('inputRecherche').value = e.results[0][0].transcript;
                 rechercherProduit();
             };
             recognition.onend = () => icon.className = "fas fa-microphone";
@@ -159,12 +228,12 @@
 
         function rechercherProduit() {
             const s = document.getElementById('inputRecherche').value.toLowerCase();
-            const res = articles.filter(a => a.nom.toLowerCase().includes(s));
-            afficherProduits(res, document.getElementById('section-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil');
+            const filtered = articles.filter(a => a.nom.toLowerCase().includes(s));
+            const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil';
+            afficherProduits(filtered, target);
         }
 
         init();
     </script>
 </body>
-            </html>
-            
+</html>
