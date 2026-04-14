@@ -158,51 +158,51 @@
         <i class="fas fa-shopping-basket text-2xl"></i>
         <span id="count-panier" class="absolute -top-1 -right-1 bg-purple-900 text-white text-[10px] w-6 h-6 rounded-full flex items-center justify-center font-bold border-2 border-white">0</span>
     </div>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
         window.articles = [];
         window.tousLesArticlesVrais = [];
-        let panier = [];
-        let pageActuelle = 0;
-        const articlesParPage = 20; 
-        let chargementEnCours = false;
-        let toutEstCharge = false;
+        var panier = [];
+        var pageActuelle = 0;
+        var articlesParPage = 20; 
+        var chargementEnCours = false;
+        var toutEstCharge = false;
 
         try {
-            let p = localStorage.getItem('panier_bouafle');
+            var p = localStorage.getItem('panier_bouafle');
             if (p && p !== "undefined") panier = JSON.parse(p);
         } catch(e) {
             panier = [];
         }
 
-        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+        var supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+        var supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
 
         if (!window.supabase) alert("❌ Erreur de bibliothèque Supabase. Vérifiez votre connexion.");
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        var supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         async function chargerDonnees() {
             if (chargementEnCours || toutEstCharge) return;
             chargementEnCours = true;
 
-            const loader = document.getElementById('loader');
+            var loader = document.getElementById('loader');
             if (pageActuelle === 0 && loader) loader.style.display = 'flex';
 
             try {
-                const debut = pageActuelle * articlesParPage;
-                const fin = debut + articlesParPage - 1;
+                var debut = pageActuelle * articlesParPage;
+                var fin = debut + articlesParPage - 1;
 
-                const { data, error } = await supabase
+                var result = await supabase
                     .from('produits')
                     .select('*')
                     .order('dateAjout', { ascending: false })
                     .range(debut, fin);
 
-                if (error) throw error;
+                if (result.error) throw result.error;
 
-                if (data.length < articlesParPage) toutEstCharge = true;
+                if (result.data.length < articlesParPage) toutEstCharge = true;
 
-                window.articles = [...window.articles, ...data];
+                window.articles = window.articles.concat(result.data);
                 window.tousLesArticlesVrais = window.articles;
 
                 if (document.getElementById('vue-produits').classList.contains('hidden') === false) {
@@ -223,25 +223,26 @@
         }
 
         function gererBoutonVoirPlus() {
-            let ancienBtn = document.getElementById('btn-voir-plus');
+            var ancienBtn = document.getElementById('btn-voir-plus');
             if (ancienBtn) ancienBtn.remove();
 
             if (!toutEstCharge) {
-                const vueProduits = document.getElementById('liste-produits');
+                var vueProduits = document.getElementById('liste-produits');
                 if(vueProduits) {
-                    const divBtn = document.createElement('div');
+                    var divBtn = document.createElement('div');
                     divBtn.id = 'btn-voir-plus';
                     divBtn.className = 'w-full flex justify-center py-4 mt-4';
-                    divBtn.innerHTML = `<button onclick="chargerDonnees()" class="bg-purple-100 text-purple-900 font-bold py-3 px-6 rounded-full shadow text-xs uppercase border border-purple-200"><i class="fas fa-arrow-down mr-2"></i> Charger plus d'articles</button>`;
+                    divBtn.innerHTML = '<button onclick="chargerDonnees()" class="bg-purple-100 text-purple-900 font-bold py-3 px-6 rounded-full shadow text-xs uppercase border border-purple-200"><i class="fas fa-arrow-down mr-2"></i> Charger la suite</button>';
                     vueProduits.appendChild(divBtn);
                 }
             }
         }
-               const cleanTxt = (t) => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+
+        var cleanTxt = function(t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim(); };
 
         function switchTab(id) {
-            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(id);
+            document.querySelectorAll('section').forEach(function(s) { s.classList.remove('active'); });
+            var target = document.getElementById(id);
             if(target) target.classList.add('active');
             
             document.getElementById('btn-accueil').className = id === 'accueil' ? 'text-orange-600 flex flex-col items-center' : 'text-gray-400 flex flex-col items-center';
@@ -253,10 +254,10 @@
             document.getElementById('vue-rayons').classList.add('hidden');
             document.getElementById('vue-produits').classList.remove('hidden');
 
-            let f = window.tousLesArticlesVrais.filter(p => cleanTxt(p.categorie).includes(cleanTxt(nomRayon)));
+            var f = window.tousLesArticlesVrais.filter(function(p) { return cleanTxt(p.categorie).includes(cleanTxt(nomRayon)); });
             actualiserAffichageProgressif(f);
             
-            let btn = document.getElementById('btn-voir-plus');
+            var btn = document.getElementById('btn-voir-plus');
             if(btn) btn.style.display = 'none';
         }
 
@@ -266,68 +267,69 @@
         }
 
         function rechercherProduit() {
-            const s = cleanTxt(document.getElementById('inputRecherche').value);
+            var s = cleanTxt(document.getElementById('inputRecherche').value);
             if (s.length > 1) {
                 switchTab('boutique');
                 document.getElementById('vue-rayons').classList.add('hidden');
                 document.getElementById('vue-produits').classList.remove('hidden');
 
-                let f = window.tousLesArticlesVrais.filter(p => cleanTxt(p.nom).includes(s) || cleanTxt(p.categorie).includes(s) || cleanTxt(p.description).includes(s));
+                var f = window.tousLesArticlesVrais.filter(function(p) { 
+                    return cleanTxt(p.nom).includes(s) || cleanTxt(p.categorie).includes(s) || cleanTxt(p.description).includes(s); 
+                });
                 actualiserAffichageProgressif(f);
-                let btn = document.getElementById('btn-voir-plus');
+                var btn = document.getElementById('btn-voir-plus');
                 if(btn) btn.style.display = 'none';
             }
         }
 
         function LancerMicro() {
             if(!window.SpeechRecognition && !window.webkitSpeechRecognition) return alert("Micro non supporté sur votre téléphone.");
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = 'fr-FR';
-            const icon = document.getElementById('iconMicro');
-            recognition.onstart = () => { icon.className = "fas fa-spinner fa-spin"; };
-            recognition.onresult = (event) => {
+            var icon = document.getElementById('iconMicro');
+            recognition.onstart = function() { icon.className = "fas fa-spinner fa-spin"; };
+            recognition.onresult = function(event) {
                 document.getElementById('inputRecherche').value = event.results[0][0].transcript;
                 rechercherProduit();
             };
-            recognition.onend = () => { icon.className = "fas fa-microphone"; };
+            recognition.onend = function() { icon.className = "fas fa-microphone"; };
             recognition.start();
         }
 
         function actualiserAffichageProgressif(liste) {
-            const conteneur = document.getElementById('liste-produits');
+            var conteneur = document.getElementById('liste-produits');
             if (!conteneur) return;
             
             if (liste.length === 0) {
-                conteneur.innerHTML = `<p class="text-center p-10 text-gray-400 text-xs font-bold uppercase">Aucun article ici pour le moment</p>`;
+                conteneur.innerHTML = '<p class="text-center p-10 text-gray-400 text-xs font-bold uppercase">Aucun article ici pour le moment</p>';
             } else {
-                conteneur.innerHTML = liste.map(p => genererCarteProduit(p)).join('');
+                conteneur.innerHTML = liste.map(function(p) { return genererCarteProduit(p); }).join('');
             }
         }
 
         function genererCarteProduit(p) {
-            const prixFmt = (p.prix || 0).toLocaleString('fr-FR');
-            const image = p.image || "https://via.placeholder.com/150";
-            const nomEchappe = (p.nom || "").replace(/'/g, "\\'").replace(/"/g, '&quot;');
-            const tPartage = encodeURIComponent(`🛒 COMMANDE CŒUR DE MARCHÉ\n\nProduit: ${p.nom}\nPrix: ${prixFmt} FCFA\n\nJe suis intéressé(e) !`);
+            var prixFmt = (p.prix || 0).toLocaleString('fr-FR');
+            var image = p.image || "https://via.placeholder.com/150";
+            var nomEchappe = (p.nom || "").replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            var tPartage = encodeURIComponent("🛒 COMMANDE CŒUR DE MARCHÉ\n\nProduit: " + p.nom + "\nPrix: " + prixFmt + " FCFA\n\nJe suis intéressé(e) !");
 
-            return `
-            <div class="bg-white rounded-[20px] shadow-md p-3 border border-gray-100 flex gap-4">
-                <img src="${image}" class="w-24 h-24 rounded-xl object-cover shadow-sm">
-                <div class="flex-1 flex flex-col justify-between overflow-hidden">
-                    <div>
-                        <h4 class="font-black uppercase text-purple-900 text-[11px] leading-tight mb-1 truncate">${p.nom}</h4>
-                        <p class="text-orange-600 font-black text-sm">${prixFmt} FCFA</p>
-                    </div>
-                    <div class="flex gap-2 mt-2">
-                        <button onclick="ajouterAuPanier('${nomEchappe}', ${p.prix})" class="bg-purple-900 text-white flex-1 py-2 rounded-lg text-[10px] font-bold uppercase active:scale-95 shadow-sm">
-                            <i class="fas fa-cart-plus"></i> Panier
-                        </button>
-                        <a href="https://wa.me/2250576326645?text=${tPartage}" class="bg-green-500 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm active:scale-95">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>`;
+            return '<div class="bg-white rounded-[20px] shadow-md p-3 border border-gray-100 flex gap-4">' +
+                '<img src="' + image + '" class="w-24 h-24 rounded-xl object-cover shadow-sm">' +
+                '<div class="flex-1 flex flex-col justify-between overflow-hidden">' +
+                    '<div>' +
+                        '<h4 class="font-black uppercase text-purple-900 text-[11px] leading-tight mb-1 truncate">' + p.nom + '</h4>' +
+                        '<p class="text-orange-600 font-black text-sm">' + prixFmt + ' FCFA</p>' +
+                    '</div>' +
+                    '<div class="flex gap-2 mt-2">' +
+                        '<button onclick="ajouterAuPanier(\'' + nomEchappe + '\', ' + p.prix + ')" class="bg-purple-900 text-white flex-1 py-2 rounded-lg text-[10px] font-bold uppercase active:scale-95 shadow-sm">' +
+                            '<i class="fas fa-cart-plus"></i> Panier' +
+                        '</button>' +
+                        '<a href="https://wa.me/2250576326645?text=' + tPartage + '" class="bg-green-500 text-white w-8 h-8 rounded-lg flex items-center justify-center shadow-sm active:scale-95">' +
+                            '<i class="fab fa-whatsapp"></i>' +
+                        '</a>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
         }
 
         function ajouterAuPanier(nom, prix) {
@@ -335,16 +337,16 @@
             localStorage.setItem('panier_bouafle', JSON.stringify(panier));
             mettreAjourCompteurPanier();
             
-            const notif = document.getElementById('notif-classe');
+            var notif = document.getElementById('notif-classe');
             if(notif) {
                 notif.style.display = "block";
-                setTimeout(() => notif.style.display = "none", 1500);
+                setTimeout(function() { notif.style.display = "none"; }, 1500);
             }
         }
 
         function mettreAjourCompteurPanier() {
-            const btn = document.getElementById('btn-panier-flottant');
-            const count = document.getElementById('count-panier');
+            var btn = document.getElementById('btn-panier-flottant');
+            var count = document.getElementById('count-panier');
             if (btn && count) {
                 if (panier.length > 0) { 
                     btn.style.display = 'flex'; 
@@ -357,17 +359,16 @@
 
         function ouvrirPanier() {
             document.getElementById('modalPanier').style.display = 'flex';
-            let total = 0;
-            document.getElementById('contenuPanier').innerHTML = panier.map((item, index) => {
+            var total = 0;
+            document.getElementById('contenuPanier').innerHTML = panier.map(function(item, index) {
                 total += parseInt(item.prix);
-                return `
-                <div class="flex justify-between items-center bg-white p-3 rounded-xl mb-2 border border-gray-100 shadow-sm">
-                    <span class="text-[10px] font-black text-purple-900 uppercase truncate pr-2 w-2/3">${item.nom}</span>
-                    <div class="flex items-center gap-3 whitespace-nowrap">
-                        <span class="text-orange-600 font-bold text-[10px]">${item.prix} F</span>
-                        <button onclick="supprimerDuPanier(${index})" class="text-red-500 bg-red-50 w-6 h-6 rounded-full flex items-center justify-center"><i class="fas fa-trash text-[10px]"></i></button>
-                    </div>
-                </div>`;
+                return '<div class="flex justify-between items-center bg-white p-3 rounded-xl mb-2 border border-gray-100 shadow-sm">' +
+                    '<span class="text-[10px] font-black text-purple-900 uppercase truncate pr-2 w-2/3">' + item.nom + '</span>' +
+                    '<div class="flex items-center gap-3 whitespace-nowrap">' +
+                        '<span class="text-orange-600 font-bold text-[10px]">' + item.prix + ' F</span>' +
+                        '<button onclick="supprimerDuPanier(' + index + ')" class="text-red-500 bg-red-50 w-6 h-6 rounded-full flex items-center justify-center"><i class="fas fa-trash text-[10px]"></i></button>' +
+                    '</div>' +
+                '</div>';
             }).join('');
             document.getElementById('totalPanier').innerText = total.toLocaleString('fr-FR') + " F";
         }
@@ -383,13 +384,13 @@
 
         function envoyerPanierWhatsApp() {
             if (panier.length === 0) return;
-            let message = "🛒 *Bonjour Cœur de Marché, voici ma commande :*\n\n";
-            let total = 0;
-            panier.forEach((item) => { 
-                message += `- ${item.nom} (${item.prix} F)\n`; 
+            var message = "🛒 *Bonjour Cœur de Marché, voici ma commande :*\n\n";
+            var total = 0;
+            panier.forEach(function(item) { 
+                message += "- " + item.nom + " (" + item.prix + " F)\n"; 
                 total += parseInt(item.prix); 
             });
-            message += `\n*Total : ${total.toLocaleString('fr-FR')} FCFA*\n`;
+            message += "\n*Total : " + total.toLocaleString('fr-FR') + " FCFA*\n";
             window.location.href = "https://wa.me/2250576326645?text=" + encodeURIComponent(message);
             panier = [];
             localStorage.setItem('panier_bouafle', JSON.stringify(panier));
