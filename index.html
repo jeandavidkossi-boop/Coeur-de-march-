@@ -167,137 +167,130 @@
         </button>
     </nav>
 
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        const ecran = document.getElementById('texte-annonce');
 
-        let articles = [];
-        let panier = [];
+        if (!window.supabase) {
+            ecran.innerText = "ERREUR : Le navigateur bloque le fichier Supabase.";
+        } else {
+            const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        async function chargerAnnonce() {
-            try {
-                const { data, error } = await supabase.from('annonces').select('message').limit(1).single();
+            let articles = [];
+            let panier = [];
+
+            async function init() {
+                ecran.innerText = "Tentative de connexion à la base...";
+
+                try {
+                    const { data: annonceData, error: annonceError } = await supabase.from('annonces').select('message').limit(1).single();
+
+                    if (annonceError) {
+                        ecran.innerText = "REFUS SUPABASE : " + annonceError.message;
+                    } else if (annonceData) {
+                        ecran.innerText = annonceData.message;
+                    } else {
+                        ecran.innerText = "LA TABLE EST VIDE.";
+                    }
+
+                    const { data: produitsData, error: produitsError } = await supabase.from('produits').select('*').order('created_at', { ascending: false });
+                    
+                    if (produitsData) {
+                        articles = produitsData;
+                        afficherProduits(articles, 'liste-accueil');
+                    }
+                } catch (err) {
+                    ecran.innerText = "CRASH CODE : " + err.message;
+                }
+            }
+
+            function afficherProduits(liste, target) {
+                const container = document.getElementById(target);
+                if (!container) return;
                 
-                if (error) {
-                    console.log("Erreur annonce :", error.message);
-                    document.getElementById('texte-annonce').innerText = "🚀 Bienvenue sur Cœur de Marché Bouaflé !";
-                    return;
-                }
-
-                if (data && data.message) {
-                    document.getElementById('texte-annonce').innerText = data.message;
-                } else {
-                    document.getElementById('texte-annonce').innerText = "🚀 Bienvenue sur Cœur de Marché Bouaflé !";
-                }
-            } catch (err) {
-                document.getElementById('texte-annonce').innerText = "🚀 Bienvenue sur Cœur de Marché Bouaflé !";
-            }
-        }
-
-        async function init() {
-            chargerAnnonce();
-
-            try {
-                const { data, error } = await supabase.from('produits').select('*').order('created_at', { ascending: false });
-                if (error) {
-                    console.error("Erreur Produits :", error.message);
-                    return;
-                }
-                if (data) { 
-                    articles = data; 
-                    afficherProduits(data, 'liste-accueil'); 
-                }
-            } catch (err) {
-                console.error("Erreur fatale :", err);
-            }
-        }
-
-        function afficherProduits(liste, target) {
-            const container = document.getElementById(target);
-            if (!container) return;
-            
-            container.innerHTML = liste.map(p => `
-                <div class="bg-white rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col relative pb-3">
-                    <div class="price-badge">${p.prix} F</div>
-                    <img src="${p.image_url}" class="w-full h-36 object-cover rounded-t-[20px]">
-                    <div class="px-3 pt-3 flex-1 flex flex-col text-center">
-                        <h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3>
-                        <p class="text-blue-500 text-[9px] font-bold mb-3 truncate">Bouaflé</p>
-                        <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur_tel}')" 
-                            class="btn-ajouter active:scale-95 transition">
-                            AJOUTER
-                        </button>
+                container.innerHTML = liste.map(p => `
+                    <div class="bg-white rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col relative pb-3">
+                        <div class="price-badge">${p.prix} F</div>
+                        <img src="${p.image_url}" class="w-full h-36 object-cover rounded-t-[20px]">
+                        <div class="px-3 pt-3 flex-1 flex flex-col text-center">
+                            <h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3>
+                            <p class="text-blue-500 text-[9px] font-bold mb-3 truncate">Bouaflé</p>
+                            <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur_tel}')" 
+                                class="btn-ajouter active:scale-95 transition">
+                                AJOUTER
+                            </button>
+                        </div>
                     </div>
-                </div>
-            `).join('');
-        }
-
-        function ajouterAuPanier(nom, prix, tel) {
-            panier.push({nom, prix, tel});
-            document.getElementById('panier-count').innerText = panier.length;
-            document.getElementById('panier-flottant').classList.add('show');
-        }
-
-        function commanderWhatsApp() {
-            if (panier.length === 0) return;
-            let msg = "Bonjour Cœur de Marché, ma commande :\n\n";
-            let total = 0;
-            panier.forEach(i => { msg += `- ${i.nom} (${i.prix} FCFA)\n`; total += i.prix; });
-            msg += `\n*TOTAL : ${total} FCFA*`;
-            window.open(`https://wa.me/${panier[0].tel || '2250576326645'}?text=${encodeURIComponent(msg)}`);
-            panier = [];
-            document.getElementById('panier-count').innerText = '0';
-            document.getElementById('panier-flottant').classList.remove('show');
-        }
-
-        function changerVue(vue) {
-            document.getElementById('vue-accueil').classList.toggle('hidden', vue !== 'accueil');
-            document.getElementById('vue-boutique').classList.toggle('hidden', vue !== 'boutique');
-            document.getElementById('nav-accueil').classList.toggle('active-nav', vue === 'accueil');
-            document.getElementById('nav-boutique').classList.toggle('active-nav', vue === 'boutique');
-            if(vue === 'accueil') afficherProduits(articles, 'liste-accueil');
-        }
-
-        function filtrerAccueil(cat) {
-            const filtered = articles.filter(a => a.categorie && a.categorie.includes(cat));
-            afficherProduits(filtered, 'liste-accueil');
-            window.scrollTo({ top: 400, behavior: 'smooth' });
-        }
-
-        function filtrerBoutique(cat) {
-            const filtered = articles.filter(a => a.categorie === cat);
-            afficherProduits(filtered, 'liste-boutique');
-        }
-
-        function lancerMicro() {
-            const icon = document.getElementById('iconMicro');
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Votre navigateur ne supporte pas la recherche vocale.");
-                return;
+                `).join('');
             }
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'fr-FR';
-            recognition.onstart = () => icon.className = "fas fa-spinner fa-spin";
-            recognition.onresult = (e) => {
-                document.getElementById('inputRecherche').value = e.results[0][0].transcript;
-                rechercherProduit();
-            };
-            recognition.onend = () => icon.className = "fas fa-microphone";
-            recognition.start();
-        }
 
-        function rechercherProduit() {
-            const s = document.getElementById('inputRecherche').value.toLowerCase();
-            const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
-            const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil';
-            afficherProduits(filtered, target);
-        }
+            function ajouterAuPanier(nom, prix, tel) {
+                panier.push({nom, prix, tel});
+                document.getElementById('panier-count').innerText = panier.length;
+                document.getElementById('panier-flottant').classList.add('show');
+            }
 
-        init();
+            function commanderWhatsApp() {
+                if (panier.length === 0) return;
+                let msg = "Bonjour Cœur de Marché, ma commande :\n\n";
+                let total = 0;
+                panier.forEach(i => { msg += `- ${i.nom} (${i.prix} F)\n`; total += i.prix; });
+                msg += `\n*TOTAL : ${total} FCFA*`;
+                window.open(`https://wa.me/${panier[0].tel || '2250576326645'}?text=${encodeURIComponent(msg)}`);
+                panier = [];
+                document.getElementById('panier-count').innerText = '0';
+                document.getElementById('panier-flottant').classList.remove('show');
+            }
+
+            function changerVue(vue) {
+                document.getElementById('vue-accueil').classList.toggle('hidden', vue !== 'accueil');
+                document.getElementById('vue-boutique').classList.toggle('hidden', vue !== 'boutique');
+                document.getElementById('nav-accueil').classList.toggle('active-nav', vue === 'accueil');
+                document.getElementById('nav-boutique').classList.toggle('active-nav', vue === 'boutique');
+                if(vue === 'accueil') afficherProduits(articles, 'liste-accueil');
+            }
+
+            function filtrerAccueil(cat) {
+                const filtered = articles.filter(a => a.categorie && a.categorie.includes(cat));
+                afficherProduits(filtered, 'liste-accueil');
+                window.scrollTo({ top: 400, behavior: 'smooth' });
+            }
+
+            function filtrerBoutique(cat) {
+                const filtered = articles.filter(a => a.categorie === cat);
+                afficherProduits(filtered, 'liste-boutique');
+            }
+
+            function lancerMicro() {
+                const icon = document.getElementById('iconMicro');
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition) {
+                    alert("Votre navigateur ne supporte pas la recherche vocale.");
+                    return;
+                }
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'fr-FR';
+                recognition.onstart = () => icon.className = "fas fa-spinner fa-spin";
+                recognition.onresult = (e) => {
+                    document.getElementById('inputRecherche').value = e.results[0][0].transcript;
+                    rechercherProduit();
+                };
+                recognition.onend = () => icon.className = "fas fa-microphone";
+                recognition.start();
+            }
+
+            function rechercherProduit() {
+                const s = document.getElementById('inputRecherche').value.toLowerCase();
+                const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
+                const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil';
+                afficherProduits(filtered, target);
+            }
+
+            init();
+        }
     </script>
 </body>
-                                                                     </html>
-    
+</html>                                                                                                                                                                                                                                                                                                               </html>
+            
