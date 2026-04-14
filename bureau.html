@@ -9,48 +9,48 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     
     <style>
-        body { background-color: #f9fafb; }
+        body { background-color: #f3f4f6; }
     </style>
 </head>
 <body class="font-sans text-gray-900 antialiased">
 
     <div id="contenuBureau" class="pb-10 max-w-md mx-auto">
         
-        <div class="bg-gradient-to-br from-blue-950 via-blue-900 to-purple-800 text-white p-6 rounded-b-[40px] shadow-lg mb-8 border-b-4 border-orange-500">
+        <div class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white p-6 rounded-b-[40px] shadow-lg mb-8">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <img src="https://szhxxohizqnwcmsltjtq.supabase.co/storage/v1/object/public/images/1769121566036.png" 
+                    <img src="1769121566036.png" 
                          alt="Logo" 
                          class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover bg-white">
                     <div>
                         <h1 class="font-black text-xl uppercase tracking-tight">Mon Bureau</h1>
-                        <p id="emailMarchand" class="text-[10px] text-orange-200 font-bold tracking-widest uppercase">Vérification...</p>
+                        <p id="emailMarchand" class="text-[10px] text-orange-300 font-bold tracking-widest uppercase">Vérification...</p>
                     </div>
                 </div>
-                <button onclick="deconnexion()" class="text-white opacity-80 text-[10px] uppercase font-black bg-blue-950/50 px-3 py-1 rounded-full">
+                <button onclick="deconnexion()" class="text-white opacity-80 hover:opacity-100 text-[10px] uppercase font-black bg-white/10 px-3 py-1 rounded-full">
                     Quitter
                 </button>
             </div>
         </div>
 
         <div class="px-4">
-            <div class="bg-white p-6 rounded-[30px] shadow-xl border-t-8 border-red-600">
+            <div class="bg-white p-6 rounded-[30px] shadow-xl border-t-8 border-red-500">
                 <h2 class="text-lg font-black text-gray-800 mb-6 text-center uppercase">Mettre un article en vente</h2>
 
                 <form id="formAjout" class="space-y-4">
                     <div>
-                        <label class="block text-[11px] font-black text-blue-950 uppercase mb-1 ml-2">Nom de l'article</label>
-                        <input type="text" id="nomArticle" placeholder="Ex: Chaussures Nike" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none" required>
+                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Nom de l'article</label>
+                        <input type="text" id="nomArticle" placeholder="Ex: Chaussures Nike" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 outline-none" required>
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-blue-950 uppercase mb-1 ml-2">Prix (FCFA)</label>
-                        <input type="number" id="prixArticle" placeholder="Ex: 5000" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none" required>
+                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Prix (FCFA)</label>
+                        <input type="number" id="prixArticle" placeholder="Ex: 5000" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 outline-none" required>
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-blue-950 uppercase mb-1 ml-2">Catégorie</label>
-                        <select id="catArticle" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none">
+                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Catégorie</label>
+                        <select id="catArticle" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 outline-none">
                             <option value="Mode">👕 Mode & Chaussures</option>
                             <option value="Mercerie">✂️ Mercerie & Couture</option>
                             <option value="Alimentation">🍲 Alimentation</option>
@@ -65,16 +65,16 @@
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-blue-950 uppercase mb-1 ml-2">Description</label>
-                        <textarea id="descriptionArticle" rows="3" placeholder="Infos sur le produit..." class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none"></textarea>
+                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Description</label>
+                        <textarea id="descriptionArticle" rows="3" placeholder="Infos sur le produit..." class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 outline-none"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-blue-950 uppercase mb-1 ml-2">Photo de l'article</label>
+                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Photo de l'article</label>
                         <input type="file" id="photoArticle" accept="image/*" capture="environment" class="w-full p-3 rounded-2xl bg-gray-50 border-2 border-gray-100" required>
                     </div>
 
-                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-2xl shadow-lg uppercase transition-all">
+                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full mt-4 bg-orange-500 text-white font-black py-4 rounded-2xl shadow-lg uppercase transition-all">
                         Valider l'article
                     </button>
                 </form>
@@ -121,6 +121,7 @@
 
             btn.disabled = true;
             btn.innerText = "⏳ ENREGISTREMENT...";
+            btn.classList.replace('bg-orange-500', 'bg-gray-400');
 
             try {
                 const photoFile = photoInput.files[0];
@@ -150,8 +151,10 @@
             } finally {
                 btn.disabled = false;
                 btn.innerText = "VALIDER L'ARTICLE";
+                btn.classList.replace('bg-gray-400', 'bg-orange-500');
             }
         }
     </script>
 </body>
 </html>
+
