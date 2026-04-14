@@ -86,7 +86,7 @@
         </div>
     </div>
 
-    <script>
+        <script>
         // --- CONFIGURATION SUPABASE ---
         const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co'; 
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw'; 
@@ -98,7 +98,9 @@
         window.onload = async function() {
             try {
                 const { data, error } = await supabase.auth.getSession();
-                if (data?.session) {
+                
+                // L'ERREUR ÉTAIT ICI : On utilise la méthode classique 100% compatible
+                if (data && data.session) {
                     emailVendeurActuel = data.session.user.email;
                     document.getElementById('emailMarchand').innerText = emailVendeurActuel;
                 } else {
@@ -110,7 +112,7 @@
         };
 
         async function deconnexion() {
-            await supabase.auth.signOut();
+            if(supabase) await supabase.auth.signOut();
             window.location.replace("vendre.html");
         }
 
@@ -121,28 +123,26 @@
             const prix = document.getElementById('prixArticle').value.trim();
             const photoInput = document.getElementById('photoArticle');
 
-            // Vérification simple
             if (!nom || !prix || photoInput.files.length === 0) {
                 alert("⚠️ Jean-David, le nom, le prix et la photo sont obligatoires !");
                 return;
             }
 
-            // État de chargement
             btn.disabled = true;
             btn.innerText = "⏳ ENREGISTREMENT...";
             btn.classList.replace('bg-orange-500', 'bg-gray-400');
 
             try {
                 const photoFile = photoInput.files[0];
-                const nomFichierUnique = `${Date.now()}_${photoFile.name.replace(/\s/g, '_')}`;
+                // Nettoyage ultra-sécurisé du nom de la photo
+                const nomNettoye = photoFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+                const nomFichierUnique = `${Date.now()}_${nomNettoye}`;
 
-                // 1. Upload de l'image
                 const { error: upError } = await supabase.storage.from('images').upload(nomFichierUnique, photoFile);
                 if (upError) throw new Error("Erreur Photo : " + upError.message);
 
                 const { data: urlData } = supabase.storage.from('images').getPublicUrl(nomFichierUnique);
 
-                // 2. Insertion dans la base
                 const { error: insError } = await supabase.from('produits').insert([{
                     nom: nom,
                     prix: Number(prix),
@@ -155,19 +155,16 @@
 
                 if (insError) throw new Error("Erreur Base : " + insError.message);
 
-                // 3. SUCCÈS : Confirmation et remise à zéro du formulaire
                 alert("✅ MAGNIFIQUE ! Ton article est maintenant en vente.");
                 document.getElementById('formAjout').reset();
 
             } catch (error) {
                 alert("❌ Oups ! " + error.message);
             } finally {
-                // Retour à l'état normal
                 btn.disabled = false;
-                btn.innerText = "Valider l'article";
+                btn.innerText = "VALIDER L'ARTICLE";
                 btn.classList.replace('bg-gray-400', 'bg-orange-500');
             }
         }
-    </script>
-</body>
-</html>
+        </script>
+        
