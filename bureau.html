@@ -9,78 +9,72 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     
     <style>
-        body { background-color: #f3f4f6; }
+        body { background-color: #f9fafb; }
     </style>
 </head>
-<body class="font-sans text-gray-800 antialiased">
+<body class="font-sans text-gray-900 antialiased">
 
     <div id="contenuBureau" class="pb-10 max-w-md mx-auto">
         
-        <div class="bg-gray-900 text-white p-6 rounded-b-[40px] shadow-lg mb-8">
+        <div class="bg-gradient-to-br from-blue-950 via-blue-900 to-purple-800 text-white p-6 rounded-b-[40px] shadow-lg mb-8 border-b-4 border-orange-500">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-full bg-white flex items-center justify-center overflow-hidden border-2 border-white text-gray-900 font-bold">
-                        CM
-                    </div>
+                    <img src="https://szhxxohizqnwcmsltjtq.supabase.co/storage/v1/object/public/images/1769121566036.png" 
+                         alt="Logo" 
+                         class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover bg-white">
                     <div>
-                        <h1 class="font-black text-lg leading-tight uppercase">Mon Bureau</h1>
-                        <p id="emailMarchand" class="text-[10px] text-orange-300 font-bold tracking-widest">Vérification...</p>
+                        <h1 class="font-black text-xl uppercase tracking-tight">Mon Bureau</h1>
+                        <p id="emailMarchand" class="text-[10px] text-orange-200 font-bold tracking-widest uppercase">Vérification...</p>
                     </div>
                 </div>
-                <button onclick="deconnexion()" class="text-white opacity-80 hover:opacity-100 text-[10px] uppercase font-black">
+                <button onclick="deconnexion()" class="text-white opacity-80 text-[10px] uppercase font-black bg-blue-950/50 px-3 py-1 rounded-full">
                     Quitter
                 </button>
             </div>
         </div>
 
         <div class="px-4">
-            <div class="bg-white p-6 rounded-[30px] shadow-xl border-t-8 border-red-500">
+            <div class="bg-white p-6 rounded-[30px] shadow-xl border-t-8 border-red-600">
                 <h2 class="text-lg font-black text-gray-800 mb-6 text-center uppercase">Mettre un article en vente</h2>
 
                 <form id="formAjout" class="space-y-4">
-                    
                     <div>
-                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Nom de l'article</label>
-                        <input type="text" id="nomArticle" placeholder="Ex: Chaussures Nike pointure 42" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-red-500 outline-none" required>
+                        <label class="block text-[11px] font-black text-blue-950 uppercase mb-1 ml-2">Nom de l'article</label>
+                        <input type="text" id="nomArticle" placeholder="Ex: Chaussures Nike" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none" required>
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Prix (FCFA)</label>
-                        <input type="number" id="prixArticle" placeholder="Ex: 5000" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-red-500 outline-none" required>
+                        <label class="block text-[11px] font-black text-blue-950 uppercase mb-1 ml-2">Prix (FCFA)</label>
+                        <input type="number" id="prixArticle" placeholder="Ex: 5000" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none" required>
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Catégorie du produit</label>
-                        <select id="catArticle" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-red-500 outline-none">
+                        <label class="block text-[11px] font-black text-blue-950 uppercase mb-1 ml-2">Catégorie</label>
+                        <select id="catArticle" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none">
                             <option value="Mode">👕 Mode & Chaussures</option>
                             <option value="Mercerie">✂️ Mercerie & Couture</option>
-                            <option value="Alimentation">🍲 Alimentation (Gros & Détail)</option>
-                            <option value="Vivrier">🍅 Marché Vivrier (Frais)</option>
+                            <option value="Alimentation">🍲 Alimentation</option>
+                            <option value="Vivrier">🍅 Marché Vivrier</option>
                             <option value="Resto">🍽️ Restaurants & Maquis</option>
-                            <option value="Sante">💊 Santé, Hygiène & Parapharmacie</option>
+                            <option value="Sante">💊 Santé & Hygiène</option>
                             <option value="Beaute">💄 Beauté & Cosmétique</option>
-                            <option value="Bebe">🍼 Univers Bébé & Maternité</option>
-                            <option value="Electronique">📱 Téléphones & Électroménager</option>
-                            <option value="Maison">🏠 Maison, Déco & Ameublement</option>
-                            <option value="Vaisselle">🍽️ Vaisselle & Ustensiles</option>
-                            <option value="Librairie">📚 Librairie & Fournitures</option>
-                            <option value="Quincaillerie">🛠️ Quincaillerie & Construction</option>
-                            <option value="Agricole">🚜 Agriculture, Élevage & Intrants</option>
-                            <option value="Pieces">⚙️ Pièces Détachées (Moto/Auto)</option>
+                            <option value="Electronique">📱 Électronique</option>
+                            <option value="Quincaillerie">🛠️ Quincaillerie</option>
+                            <option value="Agricole">🚜 Agriculture</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Description</label>
-                        <textarea id="descriptionArticle" rows="3" placeholder="Ex: Très bonne qualité..." class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-red-500 outline-none"></textarea>
+                        <label class="block text-[11px] font-black text-blue-950 uppercase mb-1 ml-2">Description</label>
+                        <textarea id="descriptionArticle" rows="3" placeholder="Infos sur le produit..." class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-orange-500 outline-none"></textarea>
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Photo de l'article</label>
+                        <label class="block text-[11px] font-black text-blue-950 uppercase mb-1 ml-2">Photo de l'article</label>
                         <input type="file" id="photoArticle" accept="image/*" capture="environment" class="w-full p-3 rounded-2xl bg-gray-50 border-2 border-gray-100" required>
                     </div>
 
-                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-2xl shadow-lg transition-colors uppercase">
+                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-2xl shadow-lg uppercase transition-all">
                         Valider l'article
                     </button>
                 </form>
@@ -89,112 +83,75 @@
     </div>
 
     <script>
-        // --- CONFIGURATION SUPABASE ---
         const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co'; 
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw'; 
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         let emailVendeurActuel = "";
 
-        // --- INITIALISATION DE LA SESSION ---
         window.onload = async function() {
             try {
                 const { data, error } = await supabase.auth.getSession();
-                if (error) throw error;
-
-                if (data && data.session) {
+                if (data?.session) {
                     emailVendeurActuel = data.session.user.email;
                     document.getElementById('emailMarchand').innerText = emailVendeurActuel;
                 } else {
-                    // S'il n'y a pas de session, on renvoie vers la page de login
                     window.location.replace("vendre.html");
                 }
             } catch (err) {
-                console.log("Erreur de session :", err);
-                alert("⚠️ Problème de connexion. Redirection vers l'accueil...");
                 window.location.replace("vendre.html");
             }
         };
 
-        // --- DÉCONNEXION ---
         async function deconnexion() {
-            if(supabase) await supabase.auth.signOut();
+            await supabase.auth.signOut();
             window.location.replace("vendre.html");
         }
 
-        // --- AJOUT DU PRODUIT ---
         async function ajouterProduit() {
             const btn = document.getElementById('btnSubmit');
             const nom = document.getElementById('nomArticle').value.trim();
             const prix = document.getElementById('prixArticle').value.trim();
-            const cat = document.getElementById('catArticle').value;
-            const desc = document.getElementById('descriptionArticle').value.trim();
             const photoInput = document.getElementById('photoArticle');
 
-            // 1. Validation des champs
             if (!nom || !prix || photoInput.files.length === 0) {
-                alert("⚠️ Attention : Le nom, le prix et la photo sont obligatoires pour vendre !");
+                alert("Remplissez les champs obligatoires !");
                 return;
             }
 
-            // 2. Mise à jour de l'interface utilisateur pendant l'envoi
             btn.disabled = true;
-            btn.innerText = "⏳ ENREGISTREMENT EN COURS...";
-            btn.classList.replace('bg-orange-500', 'bg-gray-400');
-            btn.classList.replace('hover:bg-orange-600', 'bg-gray-400');
+            btn.innerText = "⏳ ENREGISTREMENT...";
 
             try {
-                if (!supabase) throw new Error("Le système n'est pas connecté. Vérifiez votre réseau.");
-
                 const photoFile = photoInput.files[0];
-                // Nettoyage du nom du fichier
-                const nomNettoye = photoFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-                const nomFichierUnique = `${Date.now()}_${nomNettoye}`;
+                const nomFichierUnique = `${Date.now()}_${photoFile.name.replace(/\s/g, '_')}`;
 
-                // 3. Upload de l'image
-                const { data: uploadData, error: uploadError } = await supabase.storage
-                    .from('images')
-                    .upload(nomFichierUnique, photoFile);
+                const { error: upError } = await supabase.storage.from('images').upload(nomFichierUnique, photoFile);
+                if (upError) throw upError;
 
-                if (uploadError) throw uploadError;
+                const { data: urlData } = supabase.storage.from('images').getPublicUrl(nomFichierUnique);
 
-                // 4. Récupération de l'URL publique de l'image
-                const { data: urlData } = supabase.storage
-                    .from('images')
-                    .getPublicUrl(nomFichierUnique);
-                
-                const lienImage = urlData.publicUrl;
+                const { error: insError } = await supabase.from('produits').insert([{
+                    nom: nom,
+                    prix: Number(prix),
+                    categorie: document.getElementById('catArticle').value,
+                    description: document.getElementById('descriptionArticle').value,
+                    image: urlData.publicUrl,
+                    vendeur: emailVendeurActuel,
+                    dateAjout: new Date().toISOString()
+                }]);
 
-                // 5. Insertion dans la base de données
-                const { error: insertError } = await supabase
-                    .from('produits')
-                    .insert([{
-                        nom: nom,
-                        prix: Number(prix),
-                        categorie: cat,
-                        description: desc,
-                        image: lienImage,
-                        vendeur: emailVendeurActuel,
-                        dateAjout: new Date().toISOString()
-                    }]);
+                if (insError) throw insError;
 
-                if (insertError) throw insertError;
-
-                // 6. Succès
-                alert("✅ MAGNIFIQUE ! L'article est en ligne sur Cœur de Marché.");
+                alert("✅ Article ajouté !");
                 document.getElementById('formAjout').reset();
-
             } catch (error) {
-                alert("❌ ERREUR : " + error.message);
+                alert("❌ Erreur : " + error.message);
             } finally {
-                // 7. Retour à la normale du bouton
                 btn.disabled = false;
                 btn.innerText = "VALIDER L'ARTICLE";
-                btn.classList.replace('bg-gray-400', 'bg-orange-500');
-                btn.classList.replace('bg-gray-400', 'hover:bg-orange-600');
             }
         }
     </script>
 </body>
 </html>
-
