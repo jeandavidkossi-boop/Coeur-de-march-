@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Bureau - Cœur de Marché</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
     <style>
         body { background-color: #f3f4f6; }
-        /* Style pour adoucir les transitions */
         .transition-all { transition: all 0.3s ease; }
     </style>
 </head>
@@ -21,15 +18,13 @@
         <div class="bg-gradient-to-r from-purple-800 to-indigo-900 text-white p-6 rounded-b-[40px] shadow-lg mb-8 border-b-4 border-orange-500">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <img src="1769121566036.png" 
-                         alt="Logo Cœur de Marché" 
-                         class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover bg-white">
+                    <img src="1769121566036.png" alt="Logo Cœur de Marché" class="w-14 h-14 rounded-full border-2 border-white shadow-md object-cover bg-white">
                     <div>
                         <h1 class="font-black text-xl uppercase tracking-tight">Mon Bureau</h1>
                         <p id="emailMarchand" class="text-[10px] text-orange-300 font-bold tracking-widest uppercase">Vérification session...</p>
                     </div>
                 </div>
-                <button onclick="deconnexion()" class="text-white opacity-80 hover:opacity-100 text-[10px] uppercase font-black bg-white/10 px-3 py-1 rounded-full transition-all">
+                <button onclick="deconnexion()" class="text-white opacity-80 hover:opacity-100 text-[10px] uppercase font-black bg-white/10 px-3 py-2 rounded-full border border-white/20">
                     Quitter
                 </button>
             </div>
@@ -42,43 +37,43 @@
                 <form id="formAjout" class="space-y-4">
                     <div>
                         <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Nom de l'article</label>
-                        <input type="text" id="nomArticle" placeholder="Ex: Machine à coudre Singer" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-purple-500 outline-none transition-all" required>
+                        <input type="text" id="nomArticle" placeholder="Ex: Machine à coudre Singer" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-purple-500 focus:bg-white outline-none transition-all">
                     </div>
 
                     <div>
                         <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Prix (FCFA)</label>
-                        <input type="number" id="prixArticle" placeholder="Ex: 75000" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-purple-500 outline-none transition-all" required>
+                        <input type="number" id="prixArticle" placeholder="Ex: 75000" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-purple-500 focus:bg-white outline-none transition-all">
                     </div>
 
-                    <select id="catArticle" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-purple-500 outline-none transition-all appearance-none">
-    <option value="Mode">👕 Mode & Chaussures</option>
-    <option value="Mercerie">✂️ Mercerie & Couture</option>
-    <option value="Alimentation">🍲 Alimentation (Gros & Détail)</option>
-    <option value="Vivrier">🍅 Marché Vivrier (Frais)</option>
-    <option value="Resto">🍽️ Restaurants & Maquis</option>
-    <option value="Sante">💊 Santé, Hygiène & Parapharmacie</option>
-    <option value="Beaute">💄 Beauté & Cosmétique</option>
-    <option value="Bebe">🍼 Univers Bébé & Maternité</option>
-    <option value="Electronique">📱 Téléphones & Électroménager</option>
-    <option value="Maison">🏠 Maison, Déco & Ameublement</option>
-    <option value="Vaisselle">🍽️ Vaisselle & Ustensiles</option>
-    <option value="Librairie">📚 Librairie & Fournitures</option>
-    <option value="Quincaillerie">🛠️ Quincaillerie & Construction</option>
-    <option value="Agricole">🚜 Agriculture, Élevage & Intrants</option>
-    <option value="Pieces">⚙️ Pièces Détachées (Moto/Auto)</option>
+                    <select id="catArticle" class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-purple-500 outline-none">
+                        <option value="Mode">👕 Mode & Chaussures</option>
+                        <option value="Mercerie">✂️ Mercerie & Couture</option>
+                        <option value="Alimentation">📦 Alimentation (Gros & Détail)</option>
+                        <option value="Vivrier">🍎 Marché Vivrier (Frais)</option>
+                        <option value="Resto">🍲 Restaurants & Maquis</option>
+                        <option value="Sante">💊 Santé, Hygiène & Parapharmacie</option>
+                        <option value="Beaute">💄 Beauté & Cosmétique</option>
+                        <option value="Bebe">🍼 Univers Bébé & Maternité</option>
+                        <option value="Electronique">📱 Téléphones & Électroménager</option>
+                        <option value="Maison">🏠 Maison, Déco & Ameublement</option>
+                        <option value="Vaisselle">🍽️ Vaisselle & Ustensiles</option>
+                        <option value="Librairie">📚 Librairie & Fournitures</option>
+                        <option value="Quincaillerie">🔨 Quincaillerie & Construction</option>
+                        <option value="Agricole">🚜 Agriculture, Élevage & Intrants</option>
+                        <option value="Pieces">⚙️ Pièces Détachées (Moto/Auto)</option>
                     </select>
 
                     <div>
                         <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Description (Infos utiles)</label>
-                        <textarea id="descriptionArticle" rows="3" placeholder="Taille, couleur, état..." class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-purple-500 outline-none transition-all"></textarea>
+                        <textarea id="descriptionArticle" rows="3" placeholder="Taille, couleur, état..." class="w-full p-4 rounded-2xl bg-gray-50 border-2 border-gray-100 focus:border-purple-500 outline-none"></textarea>
                     </div>
 
                     <div>
                         <label class="block text-[11px] font-black text-purple-900 uppercase mb-1 ml-2">Photo de l'article</label>
-                        <input type="file" id="photoArticle" accept="image/*" capture="environment" class="w-full p-3 rounded-2xl bg-gray-50 border-2 border-gray-100 text-sm" required>
+                        <input type="file" id="photoArticle" accept="image/*" capture="environment" class="w-full p-3 rounded-2xl border-2 border-dashed border-gray-200 text-gray-500 text-xs">
                     </div>
 
-                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-black py-4 rounded-2xl shadow-lg uppercase transition-all tracking-wider">
+                    <button type="button" onclick="ajouterProduit()" id="btnSubmit" class="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-black py-5 rounded-[25px] shadow-lg shadow-orange-200 uppercase tracking-widest active:scale-95 transition-all">
                         Valider l'article
                     </button>
                 </form>
@@ -86,37 +81,31 @@
         </div>
     </div>
 
-        <script>
-        // --- CONFIGURATION SUPABASE ---
+    <script>
+        // CONFIGURATION SUPABASE
         const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co'; 
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw'; 
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         let emailVendeurActuel = "";
 
-        // --- GESTION DE LA SESSION ---
+        // GESTION DE LA SESSION
         window.onload = async function() {
-            try {
-                const { data, error } = await supabase.auth.getSession();
-                
-                // L'ERREUR ÉTAIT ICI : On utilise la méthode classique 100% compatible
-                if (data && data.session) {
-                    emailVendeurActuel = data.session.user.email;
-                    document.getElementById('emailMarchand').innerText = emailVendeurActuel;
-                } else {
-                    window.location.replace("vendre.html");
-                }
-            } catch (err) {
+            const { data, error } = await supabase.auth.getSession();
+            if (data && data.session) {
+                emailVendeurActuel = data.session.user.email;
+                document.getElementById('emailMarchand').innerText = emailVendeurActuel;
+            } else {
                 window.location.replace("vendre.html");
             }
         };
 
         async function deconnexion() {
-            if(supabase) await supabase.auth.signOut();
+            await supabase.auth.signOut();
             window.location.replace("vendre.html");
         }
 
-        // --- FONCTION AJOUTER PRODUIT ---
+        // FONCTION AJOUTER PRODUIT
         async function ajouterProduit() {
             const btn = document.getElementById('btnSubmit');
             const nom = document.getElementById('nomArticle').value.trim();
@@ -130,19 +119,21 @@
 
             btn.disabled = true;
             btn.innerText = "⏳ ENREGISTREMENT...";
-            btn.classList.replace('bg-orange-500', 'bg-gray-400');
+            btn.style.backgroundColor = "#9ca3af";
 
             try {
                 const photoFile = photoInput.files[0];
-                // Nettoyage ultra-sécurisé du nom de la photo
                 const nomNettoye = photoFile.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-                const nomFichierUnique = `${Date.now()}_${nomNettoye}`;
+                const nomFichierUnique = Date.now() + "_" + nomNettoye;
 
+                // 1. Upload de l'image
                 const { error: upError } = await supabase.storage.from('images').upload(nomFichierUnique, photoFile);
                 if (upError) throw new Error("Erreur Photo : " + upError.message);
 
+                // 2. Lien public
                 const { data: urlData } = supabase.storage.from('images').getPublicUrl(nomFichierUnique);
 
+                // 3. Insertion
                 const { error: insError } = await supabase.from('produits').insert([{
                     nom: nom,
                     prix: Number(prix),
@@ -162,9 +153,11 @@
                 alert("❌ Oups ! " + error.message);
             } finally {
                 btn.disabled = false;
-                btn.innerText = "VALIDER L'ARTICLE";
-                btn.classList.replace('bg-gray-400', 'bg-orange-500');
+                btn.innerText = "Valider l'article";
+                btn.style.backgroundColor = "#f97316";
             }
         }
-        </script>
-        
+    </script>
+</body>
+</html>
+
