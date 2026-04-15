@@ -2,182 +2,198 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bureau - Cœur de Marché Bouaflé</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mon Bureau - Coeur de Marché</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        .btn-gradient { background: linear-gradient(135deg, #4c1d95 0%, #7c3aed 100%); }
+        .bg-cdm-purple { background-color: #5b21b6; }
+        .text-cdm-orange { color: #f97316; }
     </style>
 </head>
 <body class="pb-24">
 
-    <div class="btn-gradient text-white p-6 rounded-b-[40px] shadow-lg mb-6">
-        <div class="flex justify-between items-center mb-4">
-            <h1 class="text-2xl font-black italic uppercase">Mon Bureau</h1>
-            <button onclick="deconnexion()" class="bg-white/20 p-3 rounded-2xl"><i class="fas fa-sign-out-alt"></i></button>
-        </div>
-        <p class="text-purple-100 font-bold" id="bienvenue">Chargement du profil...</p>
-    </div>
-
-    <div class="max-w-md mx-auto px-4">
-        <div class="bg-white rounded-[30px] p-6 shadow-xl space-y-4 border border-gray-100">
-            <h2 class="text-center font-black text-gray-800 uppercase italic border-b pb-2">Ajouter un produit</h2>
-            
-            <input type="text" id="nomP" placeholder="Nom de l'article" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 font-bold">
-            
-            <div class="flex gap-2">
-                <input type="number" id="prixP" placeholder="Prix (FCFA)" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-500 font-bold">
-                <select id="catP" class="p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none font-bold text-sm">
-                    <option value="Vivrier">Marché & Vivrier</option>
-                    <option value="Alimentation">Alimentation & Boissons</option>
-                    <option value="Habillement">Habillement & Beaux Pagnes</option>
-                    <option value="Mercerie">Mercerie & Couture</option>
-                    <option value="Maison">Maison & Vaisselle</option>
-                    <option value="Electronique">Électronique & Ménager</option>
-                    <option value="Construction">Construction & Matériaux</option>
-                    <option value="Motos">Motos & Mécanique</option>
-                    <option value="Agro">Agro-Élevage</option>
-                    <option value="Librairie">Librairie & École</option>
-                    <option value="Beaute">Beauté & Cosmétique</option>
-                    <option value="Evenementiel">Événementiel & Services</option>
-                </select>
+    <nav class="bg-cdm-purple text-white p-6 rounded-b-[35px] shadow-lg">
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center gap-3">
+                <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white shadow-sm" alt="Logo" onerror="this.src='https://via.placeholder.com/50?text=CDM'">
+                <div>
+                    <h1 class="text-lg font-black uppercase tracking-tighter">Coeur de Marché</h1>
+                    <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Bouaflé</p>
+                </div>
             </div>
-
-            <div id="previewContainer" class="hidden w-full h-48 rounded-2xl overflow-hidden border-2 border-dashed border-purple-200">
-                <img id="imgPreview" class="w-full h-full object-cover">
-            </div>
-
-            <label class="flex items-center justify-center gap-3 w-full p-4 bg-purple-50 text-purple-700 border-2 border-dashed border-purple-200 rounded-2xl cursor-pointer hover:bg-purple-100 transition">
-                <i class="fas fa-camera text-xl"></i>
-                <span class="font-black uppercase text-sm">Prendre une photo</span>
-                <input type="file" id="fileInput" accept="image/*" class="hidden" onchange="apercuImage(this)">
-            </label>
-
-            <button id="btnPublier" onclick="publierProduit()" class="w-full btn-gradient text-white font-black py-4 rounded-2xl shadow-lg transition transform active:scale-95 uppercase">
-                Mettre en vente
+            <button onclick="deconnecter()" class="bg-white/10 p-3 rounded-2xl active:scale-95 transition-all">
+                <i class="fas fa-power-off text-white"></i>
             </button>
         </div>
-    </div>
+        
+        <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/10">
+            <p class="text-[10px] uppercase font-black opacity-60 tracking-widest" id="nom-vendeur">Chargement...</p>
+            <p id="nom-boutique" class="text-2xl font-black uppercase tracking-tight text-white mt-1">Vérification...</p>
+        </div>
+    </nav>
 
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <main class="p-6 -mt-6">
+        <div class="bg-white rounded-[30px] shadow-xl p-7 border border-gray-100">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <h2 class="font-black text-gray-800 uppercase text-sm tracking-wide">Ajouter un article</h2>
+            </div>
+
+            <div class="space-y-5">
+                <div>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Désignation</label>
+                    <input type="text" id="pNom" placeholder="Ex: Pagne Baoulé, Manioc..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500">
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Prix de vente (FCFA)</label>
+                    <input type="number" id="pPrix" placeholder="0" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-black text-orange-600 focus:border-orange-500">
+                </div>
+                
+                <div>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Catégorie</label>
+                    <select id="pCat" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-500">
+                        <option value="Vivrier">Marché & Vivrier</option>
+                        <option value="Mode">Mode & Textiles</option>
+                        <option value="Cosmétique">Beauté & Cosmétique</option>
+                        <option value="Divers">Autres articles</option>
+                    </select>
+                </div>
+
+                <button onclick="document.getElementById('photoInput').click()" class="w-full py-8 border-2 border-dashed border-purple-100 rounded-2xl bg-purple-50/50 text-purple-600 flex flex-col items-center hover:bg-purple-50 transition-all">
+                    <i class="fas fa-camera text-3xl mb-2" id="iconPhoto"></i>
+                    <span id="btnPhotoText" class="font-black text-[10px] uppercase text-center px-4">Prendre une photo</span>
+                    <input type="file" id="photoInput" accept="image/*" class="hidden">
+                </button>
+
+                <button onclick="publierAnnonce()" id="btnPublier" class="w-full bg-orange-500 text-white font-black py-5 rounded-2xl shadow-lg shadow-orange-200 uppercase tracking-widest mt-4 active:scale-95 transition-all">
+                    Publier sur le marché
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabaseUrl = 'https://szhsohizqwcsnxltjtq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHNvaGl6cXdjc254bHRqdHEiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTcxMTY1Njg0MWh2N2hpenF3Y3NueGx0anFudWd2N2c2I1';
+        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        let userSession = null;
-        let userData = null;
+        let currentUser = null;
+        let selectedFile = null;
 
-        async function checkUser() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                window.location.replace("vendre.html");
+        // 1. VERIFIER SESSION ET AFFICHER LE NOM
+        async function verifierSession() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                window.location.href = "vendre.html";
                 return;
             }
-            userSession = session.user;
-            userData = userSession.user_metadata;
-            
-            const nomBoutique = userData.shop_name || "Ma Boutique";
-            const nomProprio = userData.full_name || "Commerçant";
-            document.getElementById('bienvenue').innerText = `${nomBoutique} (${nomProprio})`;
-        }
-        checkUser();
+            currentUser = user; 
 
-        function apercuImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    document.getElementById('imgPreview').src = e.target.result;
-                    document.getElementById('previewContainer').classList.remove('hidden');
-                };
-                reader.readAsDataURL(input.files[0]);
+            const { data: vendeur } = await supabase
+                .from('vendeurs')
+                .select('nom_boutique, proprietaire')
+                .eq('id', user.id)
+                .single();
+
+            if (vendeur) {
+                document.getElementById('nom-boutique').innerText = vendeur.nom_boutique;
+                document.getElementById('nom-vendeur').innerText = "Gérant : " + vendeur.proprietaire;
             }
         }
 
-        async function compressImage(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800;
-                        let width = img.width;
-                        let height = img.height;
-                        if (width > MAX_WIDTH) {
-                            height *= MAX_WIDTH / width;
-                            width = MAX_WIDTH;
-                        }
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        canvas.toBlob((blob) => resolve(blob), 'image/jpeg', 0.7);
-                    };
-                };
-            });
+        async function deconnecter() {
+            await supabase.auth.signOut();
+            window.location.href = "index.html";
         }
 
-        async function publierProduit() {
-            const nom = document.getElementById('nomP').value;
-            const prix = document.getElementById('prixP').value;
-            const cat = document.getElementById('catP').value;
-            const fileInput = document.getElementById('fileInput');
+        // 2. GERER LE CHOIX DE LA PHOTO
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            if(e.target.files.length > 0) {
+                selectedFile = e.target.files[0];
+                document.getElementById('btnPhotoText').innerText = "Image prête : " + selectedFile.name;
+                document.getElementById('btnPhotoText').className = "font-black text-[10px] uppercase text-green-600 mt-2";
+                document.getElementById('iconPhoto').className = "fas fa-check-circle text-3xl mb-2 text-green-500";
+            }
+        });
+
+        // 3. PUBLIER LE PRODUIT ET LA PHOTO
+        async function publierAnnonce() {
+            const nomProd = document.getElementById('pNom').value;
+            const prixProd = document.getElementById('pPrix').value;
+            const catProd = document.getElementById('pCat').value;
             const btn = document.getElementById('btnPublier');
 
-            if (!nom || !prix || !fileInput.files[0]) {
-                alert("Erreur : Veuillez remplir tous les champs.");
+            if (!nomProd || !prixProd) {
+                alert("Le nom et le prix sont obligatoires !");
+                return;
+            }
+            if (!selectedFile) {
+                alert("Vous devez ajouter une photo pour vendre un produit sur le marché !");
                 return;
             }
 
+            btn.innerText = "Envoi de la photo...";
             btn.disabled = true;
-            btn.innerText = "Chargement...";
 
             try {
-                const compressedBlob = await compressImage(fileInput.files[0]);
-                const fileName = `${Date.now()}_${userSession.id}.jpg`;
+                // Envoyer l'image dans ton dossier 'images'
+                const fileExt = selectedFile.name.split('.').pop();
+                const fileName = currentUser.id + "-" + Date.now() + "." + fileExt;
 
-                const { data: storageData, error: storageError } = await supabase.storage
+                const { error: uploadError } = await supabase.storage
                     .from('images')
-                    .upload(fileName, compressedBlob);
+                    .upload(fileName, selectedFile);
 
-                if (storageError) throw storageError;
+                if (uploadError) throw uploadError;
 
-                const publicUrl = `${supabaseUrl}/storage/v1/object/public/images/${fileName}`;
+                btn.innerText = "Enregistrement du produit...";
 
-                const { error: dbError } = await supabase
-                    .from('produits')
-                    .insert([{
-                        nom: nom,
-                        prix: parseInt(prix),
-                        categorie: cat,
-                        image_url: publicUrl,
-                        vendeur_email: userSession.email,
-                        vendeur_nom: userData.shop_name,
-                        vendeur_tel: userData.telephone
-                    }]);
+                // Récupérer l'adresse (URL) de l'image
+                const { data: { publicUrl } } = supabase.storage
+                    .from('images')
+                    .getPublicUrl(fileName);
+
+                // Sauvegarder dans la table 'produits'
+                const { error: dbError } = await supabase.from('produits').insert([
+                    {
+                        nom: nomProd,
+                        prix: prixProd,
+                        categorie: catProd,
+                        vendeur: currentUser.id,
+                        image: publicUrl
+                    }
+                ]);
 
                 if (dbError) throw dbError;
 
-                alert("Succès ! Votre article est en ligne à Bouaflé.");
-                location.reload();
+                alert("Félicitations ! L'article est publié sur le marché.");
 
-            } catch (err) {
-                alert("Erreur critique : " + err.message);
+                // Réinitialiser le formulaire
+                document.getElementById('pNom').value = "";
+                document.getElementById('pPrix').value = "";
+                selectedFile = null;
+                document.getElementById('photoInput').value = "";
+                document.getElementById('btnPhotoText').innerText = "Prendre une photo";
+                document.getElementById('btnPhotoText').className = "font-black text-[10px] uppercase text-center px-4";
+                document.getElementById('iconPhoto').className = "fas fa-camera text-3xl mb-2";
+
+            } catch (error) {
+                alert("Erreur : " + error.message);
+                console.log(error);
+            } finally {
+                btn.innerText = "Publier sur le marché";
                 btn.disabled = false;
-                btn.innerText = "Mettre en vente";
             }
         }
 
-        async function deconnexion() {
-            await supabase.auth.signOut();
-            window.location.replace("vendre.html");
-        }
+        window.onload = verifierSession;
     </script>
 </body>
 </html>
