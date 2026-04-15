@@ -9,24 +9,15 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; }
-        
-        /* Couleur violette Cœur de Marché */
         .bg-cdm-purple { background-color: #5b21b6; }
         .text-cdm-purple { color: #5b21b6; }
-        
-        /* Couleur orange Cœur de Marché */
         .bg-cdm-orange { background-color: #f97316; }
         .text-cdm-orange { color: #f97316; }
-
-        /* Animation d'apparition */
         .fade-in { animation: fadeIn 0.6s ease-out; }
         @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-cdm-purple min-h-screen flex items-center justify-center p-6 pb-20 relative overflow-x-hidden">
-
-    <div class="absolute -top-40 -right-40 w-96 h-96 bg-cdm-orange rounded-full opacity-20"></div>
-    <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-700 rounded-full opacity-30"></div>
 
     <div class="w-full max-w-md bg-white rounded-[40px] shadow-2xl p-10 border border-gray-100 relative z-10 fade-in">
         
@@ -34,12 +25,9 @@
             <div class="inline-block p-1 bg-white rounded-full mb-6 shadow-2xl transform rotate-3 border-4 border-cdm-orange">
                 <img src="1769121566036.png" class="w-24 h-24 rounded-full" onerror="this.src='https://via.placeholder.com/100?text=LOGO'">
             </div>
-            
             <h1 class="text-[32px] font-black tracking-tighter italic uppercase text-cdm-purple leading-none mb-1">COEUR DE MARCHE</h1>
             <p class="text-cdm-orange font-bold text-xs italic tracking-widest uppercase mb-4">Bouaflé - Marahoué</p>
-            
             <div class="w-16 h-1 bg-cdm-orange mx-auto rounded-full mb-6"></div>
-            
             <p class="text-gray-500 font-bold text-sm" id="form-titre">Espace Vendeur : Connectez-vous</p>
         </div>
 
@@ -83,33 +71,21 @@
         </div>
     </div>
 
-    <nav class="bg-white height-[65px] flex justify-around items-center fixed bottom-0 left-0 right-0 z-50 rounded-t-[30px] shadow-2xl border-t border-gray-100 px-8 py-2">
-        <a href="index.html" class="flex flex-col items-center text-gray-400">
-            <i class="fas fa-home text-lg"></i><span class="text-[9px] font-black uppercase mt-1">Accueil</span>
-        </a>
-        <a href="vendre.html" class="flex flex-col items-center text-cdm-orange">
-            <i class="fas fa-store-alt text-lg"></i><span class="text-[9px] font-black uppercase mt-1">Vendre</span>
-        </a>
-    </nav>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        
-        let supabase;
-        if (window.supabase) {
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        }
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         const btnAction = document.getElementById('btnAction');
         const extraFields = document.getElementById('extra-fields');
-        const formTitre = document.getElementById('form-titre');
+        const formTitre = document.getElementById('form-titre'); // Correction effectuée ici
         const switchConnexion = document.getElementById('switchConnexion');
         const switchInscription = document.getElementById('switchInscription');
 
         let isSignup = false;
 
+        // Fonction pour passer en mode INSCRIPTION
         switchInscription.onclick = () => {
             isSignup = true;
             extraFields.classList.remove('hidden');
@@ -121,6 +97,7 @@
             switchConnexion.classList.add('text-gray-400');
         };
 
+        // Fonction pour passer en mode CONNEXION
         switchConnexion.onclick = () => {
             isSignup = false;
             extraFields.classList.add('hidden');
@@ -132,26 +109,26 @@
             switchInscription.classList.add('text-gray-400');
         };
 
+        // Action du bouton principal (Connexion ou Inscription)
         btnAction.onclick = async () => {
-            if (!supabase) return alert("Le système n'est pas prêt.");
-
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const nomB = document.getElementById('nomB') ? document.getElementById('nomB').value : '';
-            const nomP = document.getElementById('nomP') ? document.getElementById('nomP').value : '';
-            const telephone = document.getElementById('telephone') ? document.getElementById('telephone').value : '';
 
             if (!email || !password) return alert("Email et mot de passe requis.");
 
-            btnAction.innerText = "Patientez...";
+            btnAction.innerText = "Chargement...";
 
             if (isSignup) {
+                const nomB = document.getElementById('nomB').value;
+                const nomP = document.getElementById('nomP').value;
+                const telephone = document.getElementById('telephone').value;
+
                 if (!nomB || !nomP || !telephone) {
                     btnAction.innerText = "Créer ma boutique";
                     return alert("Tous les champs sont requis.");
                 }
                 
-                const { data, error } = await supabase.auth.signUp({
+                const { error } = await supabase.auth.signUp({
                     email,
                     password,
                     options: { data: { shop_name: nomB, full_name: nomP, telephone: telephone } }
@@ -161,18 +138,18 @@
                     btnAction.innerText = "Créer ma boutique";
                     alert("Erreur : " + error.message);
                 } else {
-                    btnAction.innerText = "Créer ma boutique";
-                    alert("Compte créé avec succès ! Vous pouvez maintenant vous connecter.");
+                    alert("Succès ! Vous pouvez maintenant vous connecter.");
                     switchConnexion.click();
                 }
             } else {
-                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                const { error } = await supabase.auth.signInWithPassword({ email, password });
 
                 if (error) {
                     btnAction.innerText = "Se connecter";
-                    alert("Email ou mot de passe incorrect.");
+                    alert("Identifiants incorrects.");
                 } else {
-                    window.location.replace("bureau.html");
+                    // Redirection vers le bureau
+                    window.location.href = "bureau.html";
                 }
             }
         };
