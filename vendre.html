@@ -69,22 +69,14 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // 1. Initialisation Supabase
-        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
         let estEnInscription = false;
 
-        // 2. Fonctions Visuelles (Connexion / Inscription)
         function modeI() {
             estEnInscription = true;
             document.getElementById('champs-inscription').style.display = 'block';
             document.getElementById('form-titre').innerText = "Inscription nouveau vendeur";
             document.getElementById('btnAction').innerText = "Créer ma boutique";
-            
             document.getElementById('swInsc').className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
             document.getElementById('swConn').className = "text-gray-400 font-bold text-xs uppercase pb-1";
         }
@@ -94,22 +86,34 @@
             document.getElementById('champs-inscription').style.display = 'none';
             document.getElementById('form-titre').innerText = "Connectez-vous à votre boutique";
             document.getElementById('btnAction').innerText = "Se connecter";
-            
             document.getElementById('swConn').className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
             document.getElementById('swInsc').className = "text-gray-400 font-bold text-xs uppercase pb-1";
         }
+    </script>
 
-        // 3. Fonction Principale (Action vers la base de données)
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
         async function executerAction() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
             const btn = document.getElementById('btnAction');
 
-            // Vérification de base
+            // 1. Vérification de base
             if(!email || !pass) {
                 alert("L'email et le mot de passe sont obligatoires !");
                 return;
             }
+
+            // 2. Vérification anti-crash : on s'assure que Supabase est bien réveillé
+            if (typeof window.supabase === 'undefined') {
+                alert("Le système de base de données est en cours de chargement. Veuillez patienter une seconde et réessayer.");
+                return;
+            }
+
+            const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
             
             btn.innerText = "Traitement en cours...";
 
@@ -118,7 +122,7 @@
                 const nomP = document.getElementById('nomP').value;
                 const tel = document.getElementById('telephone').value;
 
-                // Vérification stricte des nouveaux champs
+                // Vérification stricte des champs obligatoires
                 if(!nomB || !nomP || !tel) {
                     alert("Veuillez remplir TOUTES les informations (Nom, Propriétaire, WhatsApp).");
                     btn.innerText = "Créer ma boutique";
@@ -136,7 +140,7 @@
                     btn.innerText = "Créer ma boutique";
                 } else if (data.user) {
                     
-                    // B. Envoi des informations dans la table "vendeurs"
+                    // B. Envoi des informations dans ta table "vendeurs"
                     const { error: dbError } = await supabase.from('vendeurs').insert([
                         { 
                             id: data.user.id, 
@@ -148,11 +152,11 @@
                     ]);
 
                     if(dbError) {
-                        alert("Erreur d'enregistrement : " + dbError.message);
+                        alert("Erreur d'enregistrement dans la table : " + dbError.message);
                         btn.innerText = "Créer ma boutique";
                     } else {
                         alert("Félicitations ! Votre boutique est créée. Connectez-vous maintenant.");
-                        modeC(); // Ramène l'utilisateur sur la page de connexion
+                        modeC(); 
                     }
                 }
             } else {
