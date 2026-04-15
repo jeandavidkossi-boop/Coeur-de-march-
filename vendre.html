@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vendre - Cœur de Marché</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -19,22 +19,22 @@
 
         <div class="space-y-4">
             <div id="champs-inscription" style="display: none;" class="space-y-4">
-                <input type="text" id="nomB" placeholder="Nom Boutique" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-orange-500">
-                <input type="text" id="nomP" placeholder="Votre Nom" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-orange-500">
-                <input type="tel" id="telephone" placeholder="WhatsApp" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-orange-500">
+                <input type="text" id="nomB" placeholder="Nom Boutique" class="w-full p-4 bg-gray-50 border rounded-xl outline-none">
+                <input type="text" id="nomP" placeholder="Votre Nom" class="w-full p-4 bg-gray-50 border rounded-xl outline-none">
+                <input type="tel" id="telephone" placeholder="WhatsApp" class="w-full p-4 bg-gray-50 border rounded-xl outline-none">
             </div>
 
-            <input type="email" id="email" placeholder="Email" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-orange-500">
-            <input type="password" id="password" placeholder="Mot de passe" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-orange-500">
+            <input type="email" id="email" placeholder="Email" class="w-full p-4 bg-gray-50 border rounded-xl outline-none">
+            <input type="password" id="password" placeholder="Mot de passe" class="w-full p-4 bg-gray-50 border rounded-xl outline-none">
             
-            <button id="btnAction" onclick="executerAction()" class="w-full bg-orange-500 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 uppercase">
+            <button id="btnAction" class="w-full bg-orange-500 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 uppercase">
                 Se connecter
             </button>
         </div>
 
         <div class="mt-8 flex justify-center gap-6 border-t pt-6">
-            <button id="swConn" onclick="modeC()" class="text-purple-900 font-bold text-xs border-b-2 border-orange-500 pb-1">CONNEXION</button>
-            <button id="swInsc" onclick="modeI()" class="text-gray-400 font-bold text-xs pb-1">CRÉER COMPTE</button>
+            <button id="swConn" class="text-purple-900 font-bold text-xs border-b-2 border-orange-500 pb-1">CONNEXION</button>
+            <button id="swInsc" class="text-gray-400 font-bold text-xs pb-1">CRÉER COMPTE</button>
         </div>
 
         <div class="mt-6 text-center">
@@ -43,57 +43,90 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
-        // On vérifie si Supabase charge bien
-        let supabase;
-        try {
-            const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        } catch(e) { console.error("Erreur chargement Supabase"); }
+        // --- LOGIQUE VISUELLE (Doit marcher même sans internet) ---
+        var estEnInscription = false;
+        var btnAction = document.getElementById('btnAction');
+        var champsInsc = document.getElementById('champs-inscription');
+        var titre = document.getElementById('form-titre');
+        var swConn = document.getElementById('swConn');
+        var swInsc = document.getElementById('swInsc');
 
-        let estEnInscription = false;
-
-        function modeI() {
+        swInsc.onclick = function() {
             estEnInscription = true;
-            document.getElementById('champs-inscription').style.display = 'block';
-            document.getElementById('form-titre').innerText = "Créer votre boutique";
-            document.getElementById('btnAction').innerText = "Créer ma boutique";
-            document.getElementById('swInsc').className = "text-purple-900 font-bold text-xs border-b-2 border-orange-500 pb-1";
-            document.getElementById('swConn').className = "text-gray-400 font-bold text-xs pb-1";
-        }
+            champsInsc.style.display = 'block';
+            titre.innerText = "Créer votre boutique";
+            btnAction.innerText = "Créer ma boutique";
+            swInsc.className = "text-purple-900 font-bold text-xs border-b-2 border-orange-500 pb-1";
+            swConn.className = "text-gray-400 font-bold text-xs pb-1";
+        };
 
-        function modeC() {
+        swConn.onclick = function() {
             estEnInscription = false;
-            document.getElementById('champs-inscription').style.display = 'none';
-            document.getElementById('form-titre').innerText = "Connexion Vendeur";
-            document.getElementById('btnAction').innerText = "Se connecter";
-            document.getElementById('swConn').className = "text-purple-900 font-bold text-xs border-b-2 border-orange-500 pb-1";
-            document.getElementById('swInsc').className = "text-gray-400 font-bold text-xs pb-1";
-        }
+            champsInsc.style.display = 'none';
+            titre.innerText = "Connexion Vendeur";
+            btnAction.innerText = "Se connecter";
+            swConn.className = "text-purple-900 font-bold text-xs border-b-2 border-orange-500 pb-1";
+            swInsc.className = "text-gray-400 font-bold text-xs pb-1";
+        };
 
-        async function executerAction() {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            if(!email || !pass) return alert("Remplissez tout !");
+        // --- LOGIQUE SUPABASE ---
+        var supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+        var supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+        var supabase;
 
-            if(!supabase) return alert("Le système de connexion ne charge pas. Vérifiez votre connexion internet.");
-
-            document.getElementById('btnAction').innerText = "Patientez...";
-
-            if(estEnInscription) {
-                const { error } = await supabase.auth.signUp({
-                    email, password: pass,
-                    options: { data: { shop_name: document.getElementById('nomB').value } }
-                });
-                if(error) { alert(error.message); document.getElementById('btnAction').innerText = "Créer ma boutique"; }
-                else { alert("Compte créé ! Connectez-vous."); modeC(); }
-            } else {
-                const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-                if(error) { alert("Erreur: " + error.message); document.getElementById('btnAction').innerText = "Se connecter"; }
-                else { window.location.href = "bureau.html"; }
+        window.onload = function() {
+            try {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            } catch (e) {
+                alert("Erreur de chargement du moteur de connexion. Vérifiez votre réseau.");
             }
-        }
+        };
+
+        btnAction.onclick = async function() {
+            var email = document.getElementById('email').value;
+            var pass = document.getElementById('password').value;
+
+            if (!email || !pass) {
+                alert("Veuillez entrer un email et un mot de passe.");
+                return;
+            }
+
+            if (!supabase) {
+                alert("Connexion impossible : le moteur Supabase n'est pas prêt.");
+                return;
+            }
+
+            btnAction.innerText = "Patientez...";
+
+            if (estEnInscription) {
+                var nomB = document.getElementById('nomB').value;
+                var { error } = await supabase.auth.signUp({
+                    email: email,
+                    password: pass,
+                    options: { data: { shop_name: nomB } }
+                });
+                if (error) {
+                    alert("Erreur Inscription : " + error.message);
+                    btnAction.innerText = "Créer ma boutique";
+                } else {
+                    alert("Compte créé ! Connectez-vous maintenant.");
+                    swConn.onclick();
+                }
+            } else {
+                var { error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: pass
+                });
+                if (error) {
+                    alert("Erreur : " + error.message);
+                    btnAction.innerText = "Se connecter";
+                } else {
+                    window.location.href = "bureau.html";
+                }
+            }
+        };
     </script>
 </body>
 </html>
