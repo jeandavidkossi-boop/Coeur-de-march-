@@ -3,143 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vendre - Cœur de Marché Bouaflé</title>
+    <title>Vendre - Cœur de Marché</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; }
-        .text-cdm-purple { color: #5b21b6; }
-        .bg-cdm-orange { background-color: #f97316; }
-        .border-cdm-orange { border-color: #f97316; }
-    </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
 
-    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-gray-200 p-8">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl p-8 border border-gray-200">
         
-        <div class="text-center mb-8">
-            <img src="1769121566036.png" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-cdm-orange shadow-sm" onerror="this.src='https://via.placeholder.com/80?text=CDM'">
-            <h1 class="text-2xl font-extrabold text-cdm-purple uppercase tracking-tight">Cœur de Marché</h1>
-            <p class="text-cdm-orange font-bold text-xs uppercase tracking-widest">Bouaflé</p>
-            <div class="h-1 w-12 bg-cdm-orange mx-auto mt-2 rounded-full"></div>
-            <p id="form-titre" class="text-gray-500 font-semibold text-sm mt-4">Connectez-vous à votre boutique</p>
+        <div class="text-center mb-6">
+            <img src="1769121566036.png" class="w-20 h-20 rounded-full mx-auto mb-2 border-2 border-orange-500" onerror="this.src='https://via.placeholder.com/80'">
+            <h1 class="text-xl font-black text-purple-900 uppercase">Cœur de Marché</h1>
+            <p id="form-titre" class="text-gray-500 text-sm font-bold">Connexion Vendeur</p>
         </div>
 
         <div class="space-y-4">
-            <div id="extra-fields" style="display: none;" class="space-y-4">
-                <div class="relative">
-                    <i class="fas fa-store absolute left-4 top-4 text-gray-400"></i>
-                    <input type="text" id="nomB" placeholder="Nom de la boutique" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
-                </div>
-                <div class="relative">
-                    <i class="fas fa-user absolute left-4 top-4 text-gray-400"></i>
-                    <input type="text" id="nomP" placeholder="Nom du propriétaire" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
-                </div>
-                <div class="relative">
-                    <i class="fab fa-whatsapp absolute left-4 top-4 text-gray-400"></i>
-                    <input type="tel" id="telephone" placeholder="Numéro WhatsApp" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
-                </div>
+            <div id="champs-inscription" style="display: none;" class="space-y-4">
+                <input type="text" id="nomB" placeholder="Nom Boutique" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-orange-500">
+                <input type="text" id="nomP" placeholder="Votre Nom" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-orange-500">
+                <input type="tel" id="telephone" placeholder="WhatsApp" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-orange-500">
             </div>
 
-            <div class="relative">
-                <i class="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
-                <input type="email" id="email" placeholder="Adresse Email" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
-            </div>
-            <div class="relative">
-                <i class="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
-                <input type="password" id="password" placeholder="Mot de passe" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
-            </div>
+            <input type="email" id="email" placeholder="Email" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-orange-500">
+            <input type="password" id="password" placeholder="Mot de passe" class="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:border-orange-500">
             
-            <button id="btnAction" onclick="gererAction()" class="w-full bg-cdm-orange text-white font-bold py-4 rounded-xl shadow-md active:scale-95 transition-all uppercase tracking-wider mt-4">
+            <button id="btnAction" onclick="executerAction()" class="w-full bg-orange-500 text-white font-bold py-4 rounded-xl shadow-lg active:scale-95 uppercase">
                 Se connecter
             </button>
         </div>
 
-        <div class="mt-8 flex justify-center gap-8 border-t border-gray-100 pt-6">
-            <button id="switchConnexion" onclick="passerConnexion()" class="text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1">Connexion</button>
-            <button id="switchInscription" onclick="passerInscription()" class="text-gray-400 font-bold text-xs uppercase pb-1">Créer un compte</button>
+        <div class="mt-8 flex justify-center gap-6 border-t pt-6">
+            <button id="swConn" onclick="modeC()" class="text-purple-900 font-bold text-xs border-b-2 border-orange-500 pb-1">CONNEXION</button>
+            <button id="swInsc" onclick="modeI()" class="text-gray-400 font-bold text-xs pb-1">CRÉER COMPTE</button>
         </div>
 
         <div class="mt-6 text-center">
-            <a href="index.html" class="text-gray-400 font-bold text-[10px] uppercase hover:text-cdm-orange">
-                <i class="fas fa-arrow-left mr-1"></i> Retour au marché
-            </a>
+            <a href="index.html" class="text-gray-400 font-bold text-xs uppercase"><i class="fas fa-arrow-left"></i> Retour Marché</a>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // On vérifie si Supabase charge bien
+        let supabase;
+        try {
+            const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        } catch(e) { console.error("Erreur chargement Supabase"); }
 
-        let isSignupMode = false;
+        let estEnInscription = false;
 
-        function passerInscription() {
-            isSignupMode = true;
-            document.getElementById('extra-fields').style.display = 'block';
-            document.getElementById('form-titre').innerText = "Inscription nouveau vendeur";
+        function modeI() {
+            estEnInscription = true;
+            document.getElementById('champs-inscription').style.display = 'block';
+            document.getElementById('form-titre').innerText = "Créer votre boutique";
             document.getElementById('btnAction').innerText = "Créer ma boutique";
-            
-            document.getElementById('switchInscription').className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
-            document.getElementById('switchConnexion').className = "text-gray-400 font-bold text-xs uppercase pb-1";
+            document.getElementById('swInsc').className = "text-purple-900 font-bold text-xs border-b-2 border-orange-500 pb-1";
+            document.getElementById('swConn').className = "text-gray-400 font-bold text-xs pb-1";
         }
 
-        function passerConnexion() {
-            isSignupMode = false;
-            document.getElementById('extra-fields').style.display = 'none';
-            document.getElementById('form-titre').innerText = "Connectez-vous à votre boutique";
+        function modeC() {
+            estEnInscription = false;
+            document.getElementById('champs-inscription').style.display = 'none';
+            document.getElementById('form-titre').innerText = "Connexion Vendeur";
             document.getElementById('btnAction').innerText = "Se connecter";
-            
-            document.getElementById('switchConnexion').className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
-            document.getElementById('switchInscription').className = "text-gray-400 font-bold text-xs uppercase pb-1";
+            document.getElementById('swConn').className = "text-purple-900 font-bold text-xs border-b-2 border-orange-500 pb-1";
+            document.getElementById('swInsc').className = "text-gray-400 font-bold text-xs pb-1";
         }
 
-        async function gererAction() {
+        async function executerAction() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
-            const btn = document.getElementById('btnAction');
+            if(!email || !pass) return alert("Remplissez tout !");
 
-            if (!email || !pass) {
-                alert("Email et mot de passe requis.");
-                return;
-            }
+            if(!supabase) return alert("Le système de connexion ne charge pas. Vérifiez votre connexion internet.");
 
-            btn.innerText = "Chargement...";
+            document.getElementById('btnAction').innerText = "Patientez...";
 
-            if (isSignupMode) {
-                const nomB = document.getElementById('nomB').value;
-                const nomP = document.getElementById('nomP').value;
-                const tel = document.getElementById('telephone').value;
-
-                if (!nomB || !nomP || !tel) {
-                    alert("Tous les champs sont requis.");
-                    btn.innerText = "Créer ma boutique";
-                    return;
-                }
-
+            if(estEnInscription) {
                 const { error } = await supabase.auth.signUp({
-                    email,
-                    password: pass,
-                    options: { data: { shop_name: nomB, full_name: nomP, telephone: tel } }
+                    email, password: pass,
+                    options: { data: { shop_name: document.getElementById('nomB').value } }
                 });
-
-                if (error) {
-                    alert("Erreur : " + error.message);
-                    btn.innerText = "Créer ma boutique";
-                } else {
-                    alert("Succès ! Vous pouvez vous connecter.");
-                    passerConnexion();
-                }
+                if(error) { alert(error.message); document.getElementById('btnAction').innerText = "Créer ma boutique"; }
+                else { alert("Compte créé ! Connectez-vous."); modeC(); }
             } else {
                 const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-                if (error) {
-                    alert("Identifiants incorrects.");
-                    btn.innerText = "Se connecter";
-                } else {
-                    window.location.href = "bureau.html";
-                }
+                if(error) { alert("Erreur: " + error.message); document.getElementById('btnAction').innerText = "Se connecter"; }
+                else { window.location.href = "bureau.html"; }
             }
         }
     </script>
