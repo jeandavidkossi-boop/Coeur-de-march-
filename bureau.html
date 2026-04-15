@@ -8,9 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
         .bg-cdm-purple { background-color: #5b21b6; }
-        .text-cdm-orange { color: #f97316; }
     </style>
 </head>
 <body class="pb-24">
@@ -18,20 +17,20 @@
     <nav class="bg-cdm-purple text-white p-6 rounded-b-[35px] shadow-lg">
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-3">
-                <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white shadow-sm" alt="Logo" onerror="this.src='https://via.placeholder.com/50?text=CDM'">
+                <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white" alt="Logo">
                 <div>
                     <h1 class="text-lg font-black uppercase tracking-tighter">Coeur de Marché</h1>
                     <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Bouaflé</p>
                 </div>
             </div>
-            <button onclick="deconnecter()" class="bg-white/10 p-3 rounded-2xl active:scale-95 transition-all">
+            <button onclick="deconnecter()" class="bg-white/10 p-3 rounded-2xl active:scale-90 transition-all">
                 <i class="fas fa-power-off text-white"></i>
             </button>
         </div>
         
         <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/10">
-            <p class="text-[10px] uppercase font-black opacity-60 tracking-widest" id="nom-vendeur">Chargement...</p>
-            <p id="nom-boutique" class="text-2xl font-black uppercase tracking-tight text-white mt-1">Vérification...</p>
+            <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement du gérant...</p>
+            <p id="nom-boutique" class="text-2xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
         </div>
     </nav>
 
@@ -56,22 +55,30 @@
                 </div>
                 
                 <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Catégorie</label>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Rayon du marché</label>
                     <select id="pCat" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-500">
-                        <option value="Vivrier">Marché & Vivrier</option>
-                        <option value="Mode">Mode & Textiles</option>
-                        <option value="Cosmétique">Beauté & Cosmétique</option>
-                        <option value="Divers">Autres articles</option>
+                        <option value="Marché & Vivrier">Marché & Vivrier</option>
+                        <option value="Alimentation & Boissons">Alimentation & Boissons</option>
+                        <option value="Habillement & Pagnes">Habillement & Pagnes</option>
+                        <option value="Mercerie & Couture">Mercerie & Couture</option>
+                        <option value="Maison & Vaisselle">Maison & Vaisselle</option>
+                        <option value="Électronique & Ménager">Électronique & Ménager</option>
+                        <option value="Construction & Quincaillerie">Construction & Quincaillerie</option>
+                        <option value="Motos & Mécanique">Motos & Mécanique</option>
+                        <option value="Agro-Élevage">Agro-Élevage</option>
+                        <option value="Librairie & École">Librairie & École</option>
+                        <option value="Beauté & Cosmétique">Beauté & Cosmétique</option>
+                        <option value="Événementiel & Location">Événementiel & Location</option>
                     </select>
                 </div>
 
-                <button onclick="document.getElementById('photoInput').click()" class="w-full py-8 border-2 border-dashed border-purple-100 rounded-2xl bg-purple-50/50 text-purple-600 flex flex-col items-center hover:bg-purple-50 transition-all">
+                <button type="button" onclick="document.getElementById('photoInput').click()" class="w-full py-8 border-2 border-dashed border-purple-100 rounded-2xl bg-purple-50/50 text-purple-600 flex flex-col items-center active:bg-purple-100 transition-all">
                     <i class="fas fa-camera text-3xl mb-2" id="iconPhoto"></i>
                     <span id="btnPhotoText" class="font-black text-[10px] uppercase text-center px-4">Prendre une photo</span>
-                    <input type="file" id="photoInput" accept="image/*" class="hidden">
+                    <input type="file" id="photoInput" accept="image/*" capture="environment" class="hidden">
                 </button>
 
-                <button onclick="publierAnnonce()" id="btnPublier" class="w-full bg-orange-500 text-white font-black py-5 rounded-2xl shadow-lg shadow-orange-200 uppercase tracking-widest mt-4 active:scale-95 transition-all">
+                <button type="button" onclick="publierAnnonce()" id="btnPublier" class="w-full bg-orange-500 text-white font-black py-5 rounded-2xl shadow-lg shadow-orange-200 uppercase tracking-widest mt-4 active:scale-95 transition-all">
                     Publier sur le marché
                 </button>
             </div>
@@ -87,80 +94,71 @@
         let currentUser = null;
         let selectedFile = null;
 
-        // 1. VERIFIER SESSION ET AFFICHER LE NOM
-        async function verifierSession() {
+        // DÉMARRAGE SÉCURISÉ (Empêche les boutons de bloquer)
+        window.addEventListener('load', async () => {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) {
                 window.location.href = "vendre.html";
                 return;
             }
             currentUser = user; 
+            chargerProfil();
+        });
 
-            const { data: vendeur } = await supabase
-                .from('vendeurs')
-                .select('nom_boutique, proprietaire')
-                .eq('id', user.id)
-                .single();
+        async function chargerProfil() {
+            try {
+                const { data: vendeur } = await supabase
+                    .from('vendeurs')
+                    .select('nom_boutique, proprietaire')
+                    .eq('id', currentUser.id)
+                    .single();
 
-            if (vendeur) {
-                document.getElementById('nom-boutique').innerText = vendeur.nom_boutique;
-                document.getElementById('nom-vendeur').innerText = "Gérant : " + vendeur.proprietaire;
+                if (vendeur) {
+                    document.getElementById('nom-boutique').innerText = vendeur.nom_boutique;
+                    document.getElementById('nom-vendeur').innerText = "Gérant : " + vendeur.proprietaire;
+                }
+            } catch (e) {
+                console.log("Erreur profil");
             }
         }
 
-        async function deconnecter() {
-            await supabase.auth.signOut();
-            window.location.href = "index.html";
-        }
-
-        // 2. GERER LE CHOIX DE LA PHOTO
+        // GESTION DE LA PHOTO 
         document.getElementById('photoInput').addEventListener('change', function(e) {
-            if(e.target.files.length > 0) {
+            if(e.target.files && e.target.files[0]) {
                 selectedFile = e.target.files[0];
-                document.getElementById('btnPhotoText').innerText = "Image prête : " + selectedFile.name;
-                document.getElementById('btnPhotoText').className = "font-black text-[10px] uppercase text-green-600 mt-2";
-                document.getElementById('iconPhoto').className = "fas fa-check-circle text-3xl mb-2 text-green-500";
+                document.getElementById('btnPhotoText').innerText = "IMAGE PRÊTE ✅";
+                document.getElementById('btnPhotoText').style.color = "#16a34a";
+                document.getElementById('iconPhoto').style.color = "#16a34a";
             }
         });
 
-        // 3. PUBLIER LE PRODUIT ET LA PHOTO
+        // PUBLICATION
         async function publierAnnonce() {
             const nomProd = document.getElementById('pNom').value;
             const prixProd = document.getElementById('pPrix').value;
             const catProd = document.getElementById('pCat').value;
             const btn = document.getElementById('btnPublier');
 
-            if (!nomProd || !prixProd) {
-                alert("Le nom et le prix sont obligatoires !");
-                return;
-            }
-            if (!selectedFile) {
-                alert("Vous devez ajouter une photo pour vendre un produit sur le marché !");
+            if (!nomProd || !prixProd || !selectedFile) {
+                alert("Erreur : Remplissez le nom, le prix et prenez une photo !");
                 return;
             }
 
-            btn.innerText = "Envoi de la photo...";
+            btn.innerText = "ENVOI EN COURS...";
             btn.disabled = true;
 
             try {
-                // Envoyer l'image dans ton dossier 'images'
-                const fileExt = selectedFile.name.split('.').pop();
-                const fileName = currentUser.id + "-" + Date.now() + "." + fileExt;
-
+                const fileName = `prod_${Date.now()}.jpg`;
                 const { error: uploadError } = await supabase.storage
                     .from('images')
                     .upload(fileName, selectedFile);
 
                 if (uploadError) throw uploadError;
 
-                btn.innerText = "Enregistrement du produit...";
-
-                // Récupérer l'adresse (URL) de l'image
                 const { data: { publicUrl } } = supabase.storage
                     .from('images')
                     .getPublicUrl(fileName);
 
-                // Sauvegarder dans la table 'produits'
                 const { error: dbError } = await supabase.from('produits').insert([
                     {
                         nom: nomProd,
@@ -173,27 +171,20 @@
 
                 if (dbError) throw dbError;
 
-                alert("Félicitations ! L'article est publié sur le marché.");
+                alert("Succès ! Votre produit est sur le marché.");
+                location.reload(); 
 
-                // Réinitialiser le formulaire
-                document.getElementById('pNom').value = "";
-                document.getElementById('pPrix').value = "";
-                selectedFile = null;
-                document.getElementById('photoInput').value = "";
-                document.getElementById('btnPhotoText').innerText = "Prendre une photo";
-                document.getElementById('btnPhotoText').className = "font-black text-[10px] uppercase text-center px-4";
-                document.getElementById('iconPhoto').className = "fas fa-camera text-3xl mb-2";
-
-            } catch (error) {
-                alert("Erreur : " + error.message);
-                console.log(error);
-            } finally {
-                btn.innerText = "Publier sur le marché";
+            } catch (err) {
+                alert("Erreur : " + err.message);
+                btn.innerText = "PUBLIER SUR LE MARCHÉ";
                 btn.disabled = false;
             }
         }
 
-        window.onload = verifierSession;
+        async function deconnecter() {
+            await supabase.auth.signOut();
+            window.location.href = "index.html";
+        }
     </script>
 </body>
 </html>
