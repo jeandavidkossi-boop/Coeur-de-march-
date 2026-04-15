@@ -29,7 +29,7 @@
         </div>
         
         <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/10">
-            <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Connexion au serveur...</p>
+            <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement...</p>
             <p id="nom-boutique" class="text-2xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
         </div>
     </nav>
@@ -45,8 +45,8 @@
 
             <div class="space-y-5">
                 <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Désignation</label>
-                    <input type="text" id="pNom" placeholder="Ex: Pagne Baoulé, Manioc..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500">
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Désignation (Nom de l'article)</label>
+                    <input type="text" id="pNom" placeholder="Ex: Pagne Baoulé, iPhone 13..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500">
                 </div>
 
                 <div>
@@ -72,9 +72,14 @@
                     </select>
                 </div>
 
+                <div>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Description / Détails (Giga, Taille, État...)</label>
+                    <textarea id="pDesc" placeholder="Ex: 128 Go, Neuf dans le carton, Taille 42..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500" rows="3"></textarea>
+                </div>
+
                 <button type="button" onclick="document.getElementById('photoInput').click()" class="w-full py-8 border-2 border-dashed border-purple-100 rounded-2xl bg-purple-50/50 text-purple-600 flex flex-col items-center active:bg-purple-100 transition-all">
                     <i class="fas fa-camera text-3xl mb-2" id="iconPhoto"></i>
-                    <span id="btnPhotoText" class="font-black text-[10px] uppercase text-center px-4">Prendre ou choisir une photo</span>
+                    <span id="btnPhotoText" class="font-black text-[10px] uppercase text-center px-4">Appuyez pour la photo</span>
                     <input type="file" id="photoInput" accept="image/*" class="hidden">
                 </button>
 
@@ -86,130 +91,113 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script>
-        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+        const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+        const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
         
-        let supabase;
-        let currentUser = null;
-        let selectedFile = null;
+        let mySupabase = null;
+        let myUser = null;
+        let myPhoto = null;
 
-        // 1. DÉMARRAGE SÉCURISÉ
-        window.onload = async function() {
-            // Vérifie si le moteur est bien téléchargé avant de lancer quoi que ce soit
-            if (typeof window.supabase === 'undefined') {
-                document.getElementById('nom-boutique').innerText = "ERREUR INTERNET";
-                document.getElementById('nom-vendeur').innerText = "Vérifiez votre connexion";
-                alert("Impossible de charger la base de données. Vérifiez votre connexion 4G/Wifi et rechargez la page.");
-                return;
+        // 1. BOUTON ORANGE : PUBLIER
+        async function publierAnnonce() {
+            const nomP = document.getElementById('pNom').value;
+            const prixP = document.getElementById('pPrix').value;
+            const catP = document.getElementById('pCat').value;
+            const descP = document.getElementById('pDesc').value;
+
+            if (!nomP) { alert("⚠️ Nom de l'article requis !"); return; }
+            if (!prixP) { alert("⚠️ Prix requis !"); return; }
+            if (!myPhoto) { alert("📸 Photo obligatoire !"); return; }
+            
+            if (!mySupabase || !myUser) { 
+                alert("❌ Erreur de connexion au serveur. Réessayez."); 
+                return; 
             }
 
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            const btn = document.getElementById('btnPublier');
+            btn.innerText = "ENVOI EN COURS...";
+            btn.disabled = true;
 
             try {
-                const { data: { session }, error } = await supabase.auth.getSession();
+                // A. Envoi de l'image au Storage
+                const nomFichier = myUser.id + "_" + Date.now() + ".jpg";
+                const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, myPhoto);
+                if (errPhoto) throw new Error("Erreur Photo : " + errPhoto.message);
+
+                // B. Récupération de l'URL publique
+                const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
+
+                // C. Insertion dans la table produits
+                const { error: errProduit } = await mySupabase.from('produits').insert([{
+                    nom: nomP,
+                    prix: prixP,
+                    categorie: catP, // Correspond au nom sans accent dans Supabase
+                    description: descP,
+                    vendeur: myUser.id,
+                    image: publicUrl
+                }]);
+                
+                if (errProduit) throw new Error("Erreur Base de données : " + errProduit.message);
+
+                alert("✅ MAGNIFIQUE ! Votre article est en ligne.");
+                window.location.reload(); 
+
+            } catch (erreur) {
+                alert("❌ ÉCHEC : " + erreur.message);
+                btn.innerText = "PUBLIER SUR LE MARCHÉ";
+                btn.disabled = false;
+            }
+        }
+
+        // 2. BOUTON SORTIR
+        async function deconnecter() {
+            if (mySupabase) { await mySupabase.auth.signOut(); }
+            window.location.href = "vendre.html";
+        }
+
+        // 3. SELECTION PHOTO
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            if(e.target.files && e.target.files[0]) {
+                myPhoto = e.target.files[0];
+                document.getElementById('btnPhotoText').innerText = "IMAGE PRÊTE ✅";
+                document.getElementById('btnPhotoText').style.color = "#16a34a";
+                document.getElementById('iconPhoto').style.color = "#16a34a";
+            }
+        });
+
+        // 4. DÉMARRAGE ET VÉRIFICATION PROFIL
+        async function demarrerBureau() {
+            try {
+                if (typeof window.supabase === 'undefined') return;
+                
+                mySupabase = window.supabase.createClient(dbUrl, dbKey);
+                const { data: { session } } = await mySupabase.auth.getSession();
+                
                 if (!session) {
-                    window.location.href = "vendre.html"; // Renvoi vers la page de connexion
+                    window.location.href = "vendre.html";
                     return;
                 }
-                currentUser = session.user;
+                
+                myUser = session.user;
 
-                // Récupérer le nom de la boutique
-                const { data: vendeur } = await supabase
+                const { data: vendeur } = await mySupabase
                     .from('vendeurs')
                     .select('nom_boutique, proprietaire')
-                    .eq('id', currentUser.id)
+                    .eq('id', myUser.id)
                     .single();
 
                 if (vendeur) {
                     document.getElementById('nom-boutique').innerText = vendeur.nom_boutique;
                     document.getElementById('nom-vendeur').innerText = "Gérant : " + vendeur.proprietaire;
                 }
-            } catch (err) {
-                console.log("Erreur de profil", err);
-            }
-        };
 
-        // 2. GESTION DE LA PHOTO VISUELLE
-        document.getElementById('photoInput').addEventListener('change', function(e) {
-            if(e.target.files && e.target.files[0]) {
-                selectedFile = e.target.files[0];
-                document.getElementById('btnPhotoText').innerText = "IMAGE PRÊTE : " + selectedFile.name;
-                document.getElementById('btnPhotoText').style.color = "#16a34a"; // Vert
-                document.getElementById('iconPhoto').className = "fas fa-check-circle text-3xl mb-2";
-                document.getElementById('iconPhoto').style.color = "#16a34a"; // Vert
-            }
-        });
-
-        // 3. PUBLICATION DU PRODUIT (Maintenant le bouton te parlera toujours !)
-        async function publierAnnonce() {
-            const nomProd = document.getElementById('pNom').value;
-            const prixProd = document.getElementById('pPrix').value;
-            const catProd = document.getElementById('pCat').value;
-            const btn = document.getElementById('btnPublier');
-
-            // Vérifications qui te préviennent directement par un message (Alert)
-            if (!nomProd) { alert("⚠️ Vous avez oublié de mettre le nom du produit !"); return; }
-            if (!prixProd) { alert("⚠️ Vous avez oublié de mettre le prix du produit !"); return; }
-            if (!selectedFile) { alert("📸 Vous devez obligatoirement prendre ou choisir une photo !"); return; }
-
-            // Vérification de la connexion
-            if (!supabase || !currentUser) {
-                alert("⏳ Le système se connecte à la base de données... Veuillez patienter une seconde.");
-                return;
-            }
-
-            btn.innerText = "ENVOI EN COURS...";
-            btn.disabled = true;
-
-            try {
-                // Créer un nom unique pour l'image
-                const fileName = currentUser.id + "_" + Date.now() + ".jpg";
-                
-                // Envoi de l'image
-                const { error: uploadError } = await supabase.storage
-                    .from('images')
-                    .upload(fileName, selectedFile);
-
-                if (uploadError) throw new Error("Erreur d'envoi d'image : " + uploadError.message);
-
-                // Récupération de l'adresse de l'image
-                const { data: { publicUrl } } = supabase.storage
-                    .from('images')
-                    .getPublicUrl(fileName);
-
-                // Envoi du produit entier dans la table
-                const { error: dbError } = await supabase.from('produits').insert([
-                    {
-                        nom: nomProd,
-                        prix: prixProd,
-                        categorie: catProd,
-                        vendeur: currentUser.id,
-                        image: publicUrl
-                    }
-                ]);
-
-                if (dbError) throw new Error("Erreur d'enregistrement : " + dbError.message);
-
-                // Succès total !
-                alert("✅ Félicitations ! Votre produit est publié sur le marché.");
-                window.location.reload(); // Rafraîchit la page pour vider le formulaire
-
-            } catch (err) {
-                alert("❌ Erreur : " + err.message);
-                btn.innerText = "PUBLIER SUR LE MARCHÉ";
-                btn.disabled = false;
+            } catch (erreur) {
+                console.log("Erreur de démarrage", erreur);
             }
         }
 
-        // 4. DÉCONNEXION (Le bouton rouge marche maintenant)
-        async function deconnecter() {
-            if (supabase) {
-                await supabase.auth.signOut();
-            }
-            window.location.href = "vendre.html"; // Retour à la connexion
-        }
+        demarrerBureau();
     </script>
 </body>
 </html>
