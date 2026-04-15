@@ -7,152 +7,156 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .bg-cdm-purple { background-color: #5b21b6; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f3f4f6; /* Gris clair stable */
+            margin: 0;
+            padding: 0;
+        }
         .text-cdm-purple { color: #5b21b6; }
         .bg-cdm-orange { background-color: #f97316; }
-        .text-cdm-orange { color: #f97316; }
-        .fade-in { animation: fadeIn 0.6s ease-out; }
-        @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .border-cdm-orange { border-color: #f97316; }
     </style>
 </head>
-<body class="bg-cdm-purple min-h-screen flex items-center justify-center p-6 pb-20 relative overflow-x-hidden">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="w-full max-w-md bg-white rounded-[40px] shadow-2xl p-10 border border-gray-100 relative z-10 fade-in">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-gray-200 p-8">
         
-        <div class="text-center mb-10">
-            <div class="inline-block p-1 bg-white rounded-full mb-6 shadow-2xl transform rotate-3 border-4 border-cdm-orange">
-                <img src="1769121566036.png" class="w-24 h-24 rounded-full" onerror="this.src='https://via.placeholder.com/100?text=LOGO'">
-            </div>
-            <h1 class="text-[32px] font-black tracking-tighter italic uppercase text-cdm-purple leading-none mb-1">COEUR DE MARCHE</h1>
-            <p class="text-cdm-orange font-bold text-xs italic tracking-widest uppercase mb-4">Bouaflé - Marahoué</p>
-            <div class="w-16 h-1 bg-cdm-orange mx-auto rounded-full mb-6"></div>
-            <p class="text-gray-500 font-bold text-sm" id="form-titre">Espace Vendeur : Connectez-vous</p>
+        <div class="text-center mb-8">
+            <img src="1769121566036.png" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-cdm-orange shadow-sm" alt="Logo" onerror="this.src='https://via.placeholder.com/80?text=CDM'">
+            <h1 class="text-2xl font-extrabold text-cdm-purple uppercase tracking-tight">Cœur de Marché</h1>
+            <p class="text-cdm-orange font-bold text-xs uppercase tracking-widest">Bouaflé</p>
+            <div class="h-1 w-12 bg-cdm-orange mx-auto mt-2 rounded-full"></div>
+            <p id="form-titre" class="text-gray-500 font-semibold text-sm mt-4">Connectez-vous à votre boutique</p>
         </div>
 
         <div class="space-y-4">
-            <div id="extra-fields" class="hidden space-y-4">
+            
+            <div id="extra-fields" style="display: none;" class="space-y-4">
                 <div class="relative">
-                    <i class="fas fa-store absolute left-4 top-1/2 -translate-y-1/2 text-cdm-purple"></i>
-                    <input type="text" id="nomB" placeholder="Nom de votre boutique" class="w-full p-4 pl-12 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cdm-orange font-bold text-sm">
+                    <i class="fas fa-store absolute left-4 top-4 text-gray-400"></i>
+                    <input type="text" id="nomB" placeholder="Nom de la boutique" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none font-medium">
                 </div>
                 <div class="relative">
-                    <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-cdm-purple"></i>
-                    <input type="text" id="nomP" placeholder="Votre nom complet" class="w-full p-4 pl-12 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cdm-orange font-bold text-sm">
+                    <i class="fas fa-user absolute left-4 top-4 text-gray-400"></i>
+                    <input type="text" id="nomP" placeholder="Nom du propriétaire" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none font-medium">
                 </div>
                 <div class="relative">
-                    <i class="fab fa-whatsapp absolute left-4 top-1/2 -translate-y-1/2 text-cdm-purple"></i>
-                    <input type="tel" id="telephone" placeholder="Numéro WhatsApp (ex: 225...)" class="w-full p-4 pl-12 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cdm-orange font-bold text-sm">
+                    <i class="fab fa-whatsapp absolute left-4 top-4 text-gray-400"></i>
+                    <input type="tel" id="telephone" placeholder="Numéro WhatsApp" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none font-medium">
                 </div>
             </div>
 
             <div class="relative">
-                <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-cdm-purple"></i>
-                <input type="email" id="email" placeholder="Email de connexion" class="w-full p-4 pl-12 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cdm-orange font-bold text-sm">
+                <i class="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
+                <input type="email" id="email" placeholder="Adresse Email" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none font-medium">
             </div>
             <div class="relative">
-                <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-cdm-purple"></i>
-                <input type="password" id="password" placeholder="Mot de passe" class="w-full p-4 pl-12 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-cdm-orange font-bold text-sm">
+                <i class="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
+                <input type="password" id="password" placeholder="Mot de passe" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none font-medium">
             </div>
             
-            <button id="btnAction" class="w-full bg-cdm-orange text-white font-black py-4 rounded-full shadow-lg hover:bg-orange-600 transition transform active:scale-95 uppercase text-xs tracking-widest mt-6">
+            <button id="btnAction" class="w-full bg-cdm-orange text-white font-bold py-4 rounded-xl shadow-md hover:opacity-90 active:scale-95 transition-all uppercase tracking-wider mt-4">
                 Se connecter
             </button>
         </div>
 
-        <div class="mt-10 flex justify-center gap-6 border-t border-gray-100 pt-6">
-            <button id="switchConnexion" class="text-cdm-purple font-black text-xs uppercase border-b-2 border-cdm-orange pb-1 tracking-wider">Connexion</button>
-            <button id="switchInscription" class="text-gray-400 font-black text-xs uppercase pb-1 tracking-wider">Créer ma boutique</button>
+        <div class="mt-8 flex justify-center gap-8 border-t border-gray-100 pt-6">
+            <button id="switchConnexion" class="text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1">Connexion</button>
+            <button id="switchInscription" class="text-gray-400 font-bold text-xs uppercase pb-1">Créer un compte</button>
         </div>
-        
-        <div class="mt-8 text-center bg-gray-50 rounded-full p-2">
-            <a href="index.html" class="text-cdm-purple font-bold text-xs uppercase italic"><i class="fas fa-arrow-left mr-2"></i>Retour au marché de Bouaflé</a>
+
+        <div class="mt-6 text-center">
+            <a href="index.html" class="text-gray-400 font-bold text-[10px] uppercase hover:text-cdm-orange transition-colors">
+                <i class="fas fa-arrow-left mr-1"></i> Retour au marché
+            </a>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // Configuration Supabase
         const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        const btnAction = document.getElementById('btnAction');
+        // Éléments du DOM
         const extraFields = document.getElementById('extra-fields');
-        const formTitre = document.getElementById('form-titre'); // Correction effectuée ici
-        const switchConnexion = document.getElementById('switchConnexion');
-        const switchInscription = document.getElementById('switchInscription');
+        const formTitre = document.getElementById('form-titre');
+        const btnAction = document.getElementById('btnAction');
+        const sConn = document.getElementById('switchConnexion');
+        const sInsc = document.getElementById('switchInscription');
 
-        let isSignup = false;
+        let isSignupMode = false;
 
-        // Fonction pour passer en mode INSCRIPTION
-        switchInscription.onclick = () => {
-            isSignup = true;
-            extraFields.classList.remove('hidden');
-            formTitre.innerText = "Créez votre boutique en 1 minute";
+        // Passer en mode INSCRIPTION
+        sInsc.addEventListener('click', () => {
+            isSignupMode = true;
+            extraFields.style.display = 'block';
+            formTitre.innerText = "Inscription nouveau vendeur";
             btnAction.innerText = "Créer ma boutique";
-            switchInscription.classList.add('text-cdm-purple', 'border-b-2', 'border-cdm-orange');
-            switchInscription.classList.remove('text-gray-400');
-            switchConnexion.classList.remove('text-cdm-purple', 'border-b-2', 'border-cdm-orange');
-            switchConnexion.classList.add('text-gray-400');
-        };
+            sInsc.className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
+            sConn.className = "text-gray-400 font-bold text-xs uppercase pb-1";
+        });
 
-        // Fonction pour passer en mode CONNEXION
-        switchConnexion.onclick = () => {
-            isSignup = false;
-            extraFields.classList.add('hidden');
-            formTitre.innerText = "Espace Vendeur : Connectez-vous";
+        // Passer en mode CONNEXION
+        sConn.addEventListener('click', () => {
+            isSignupMode = false;
+            extraFields.style.display = 'none';
+            formTitre.innerText = "Connectez-vous à votre boutique";
             btnAction.innerText = "Se connecter";
-            switchConnexion.classList.add('text-cdm-purple', 'border-b-2', 'border-cdm-orange');
-            switchConnexion.classList.remove('text-gray-400');
-            switchInscription.classList.remove('text-cdm-purple', 'border-b-2', 'border-cdm-orange');
-            switchInscription.classList.add('text-gray-400');
-        };
+            sConn.className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
+            sInsc.className = "text-gray-400 font-bold text-xs uppercase pb-1";
+        });
 
-        // Action du bouton principal (Connexion ou Inscription)
-        btnAction.onclick = async () => {
+        // Gestion du clic sur le bouton principal
+        btnAction.addEventListener('click', async () => {
             const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const pass = document.getElementById('password').value;
 
-            if (!email || !password) return alert("Email et mot de passe requis.");
+            if (!email || !pass) {
+                alert("Veuillez remplir les champs obligatoires.");
+                return;
+            }
 
-            btnAction.innerText = "Chargement...";
+            btnAction.innerText = "Traitement en cours...";
 
-            if (isSignup) {
+            if (isSignupMode) {
                 const nomB = document.getElementById('nomB').value;
                 const nomP = document.getElementById('nomP').value;
-                const telephone = document.getElementById('telephone').value;
+                const tel = document.getElementById('telephone').value;
 
-                if (!nomB || !nomP || !telephone) {
+                if (!nomB || !nomP || !tel) {
+                    alert("Tous les champs sont nécessaires pour l'inscription.");
                     btnAction.innerText = "Créer ma boutique";
-                    return alert("Tous les champs sont requis.");
+                    return;
                 }
-                
+
                 const { error } = await supabase.auth.signUp({
                     email,
-                    password,
-                    options: { data: { shop_name: nomB, full_name: nomP, telephone: telephone } }
+                    password: pass,
+                    options: { data: { shop_name: nomB, full_name: nomP, telephone: tel } }
                 });
 
                 if (error) {
+                    alert("Erreur d'inscription : " + error.message);
                     btnAction.innerText = "Créer ma boutique";
-                    alert("Erreur : " + error.message);
                 } else {
-                    alert("Succès ! Vous pouvez maintenant vous connecter.");
-                    switchConnexion.click();
+                    alert("Inscription réussie ! Connectez-vous maintenant.");
+                    sConn.click();
                 }
             } else {
-                const { error } = await supabase.auth.signInWithPassword({ email, password });
-
+                const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
                 if (error) {
-                    btnAction.innerText = "Se connecter";
                     alert("Identifiants incorrects.");
+                    btnAction.innerText = "Se connecter";
                 } else {
-                    // Redirection vers le bureau
+                    // Redirection vers le bureau de gestion
                     window.location.href = "bureau.html";
                 }
             }
-        };
+        });
     </script>
 </body>
 </html>
