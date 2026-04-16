@@ -146,10 +146,7 @@
     </nav>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
+        let supabase = null;
         let articles = [];
         let panier = [];
 
@@ -168,7 +165,15 @@
             { id: "Événementiel & Location", icon: "glass-cheers", color: "cyan" }
         ];
 
+        // 1. LA CEINTURE DE SÉCURITÉ : Le code ne crashe plus si internet est lent
+        if (window.supabase) {
+            const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        }
+
         async function init() {
+            // On dessine les rayons MÊME SI internet bug, comme ça les boutons marchent toujours
             document.getElementById('grid-rayons').innerHTML = rayons.map(r => `
                 <div onclick="filtrerBoutique('${r.id}')">
                     <div class="w-12 h-12 mx-auto bg-${r.color}-100 text-${r.color}-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1">
@@ -177,6 +182,11 @@
                     <span class="text-[8px] font-black uppercase text-gray-700">${r.id.split(' ')[0]}</span>
                 </div>
             `).join('');
+
+            if (!supabase) {
+                document.getElementById('texte-annonce').innerText = "Connexion lente. Veuillez rafraîchir la page.";
+                return;
+            }
 
             try {
                 const { data: annonces } = await supabase.from('annonces').select('message').limit(1).single();
@@ -187,7 +197,7 @@
                     articles = produits;
                     afficherProduits(articles, 'liste-accueil');
                 }
-            } catch (err) { console.error(err); }
+            } catch (err) { console.error("Erreur de chargement", err); }
         }
 
         function afficherProduits(liste, target) {
@@ -235,11 +245,11 @@
 
         function ajouterAuPanier(id) {
             const p = articles.find(a => a.id == id);
+            if (!p) return;
             panier.push(p);
             document.getElementById('panier-count').innerText = panier.length;
             document.getElementById('panier-flottant').classList.remove('hidden');
             
-            // Petit effet visuel
             const btn = document.getElementById('panier-flottant');
             btn.classList.add('scale-110');
             setTimeout(() => btn.classList.remove('scale-110'), 200);
@@ -271,7 +281,6 @@
                 }).join('');
                 totalElt.innerText = total + " FCFA";
 
-                // Groupement par vendeur pour WhatsApp
                 const vendeurs = {};
                 panier.forEach(p => {
                     const tel = p.vendeur || '2250576326645';
@@ -310,6 +319,7 @@
             document.getElementById('vue-' + vue).classList.remove('hidden');
             document.getElementById('nav-accueil').classList.toggle('active-nav', vue === 'accueil');
             document.getElementById('nav-boutique').classList.toggle('active-nav', vue === 'boutique');
+            window.scrollTo(0, 0); // Fait remonter l'écran en haut
         }
 
         function filtrerAccueil(cat) {
@@ -335,8 +345,8 @@
 
         function lancerMicro() {
             const icon = document.getElementById('iconMicro');
-            const SpeechRecognition = window.SpeechRecognition || window.webkitRecognition;
-            if (!SpeechRecognition) return alert("Micro non supporté.");
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return alert("Micro non supporté sur ce navigateur.");
             const rec = new SpeechRecognition();
             rec.lang = 'fr-FR';
             rec.onstart = () => icon.className = "fas fa-spinner fa-spin";
