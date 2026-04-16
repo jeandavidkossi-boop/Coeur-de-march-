@@ -17,9 +17,7 @@
         .search-box { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); padding: 6px; display: flex; align-items: center; }
         .mic-btn { background-color: #5b21b6; color: white; width: 45px; height: 45px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         
-        /* Correction : Le prix reste sur la carte */
         .price-badge { background-color: #f97316; color: white; position: absolute; top: 12px; right: 12px; padding: 4px 12px; border-radius: 10px; font-weight: 900; font-size: 12px; z-index: 10; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4); }
-        
         .btn-ajouter { background-color: #5b21b6; color: white; width: 100%; padding: 12px 0; border-radius: 15px; font-weight: 900; font-size: 11px; text-transform: uppercase; margin-top: auto; }
         .nav-bar { background: white; height: 75px; display: flex; justify-content: space-around; align-items: center; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; border-radius: 35px 35px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); padding: 0 15px; }
         .active-nav { color: #f97316 !important; }
@@ -29,6 +27,12 @@
         #panier-flottant { transition: all 0.4s ease; transform: translateY(150px); opacity: 0; }
         #panier-flottant.show { transform: translateY(0); opacity: 1; }
         .hide-scroll::-webkit-scrollbar { display: none; }
+
+        /* NOUVEAU : Design de la fenêtre des détails */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-content { background: white; width: 100%; border-radius: 30px 30px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; }
+        .modal-overlay.active { opacity: 1; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
     </style>
 </head>
 <body class="pb-32">
@@ -124,6 +128,13 @@
         <span class="text-[11px] font-black uppercase">Commander</span>
     </div>
 
+    <div id="modal-details" class="modal-overlay" onclick="fermerModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div id="details-contenu"></div>
+            <button onclick="fermerModal()" class="w-full mt-4 py-4 bg-gray-100 text-gray-500 font-bold rounded-xl uppercase text-xs active:scale-95 transition">Fermer la page</button>
+        </div>
+    </div>
+
     <nav class="nav-bar">
         <button onclick="changerVue('accueil')" id="nav-accueil" class="nav-item active-nav">
             <i class="fas fa-home"></i><span class="nav-text">Accueil</span>
@@ -160,23 +171,16 @@
 
             async function init() {
                 ecran.innerText = "Connexion au marché...";
-
                 try {
                     const { data: annonceData, error: annonceError } = await supabase.from('annonces').select('message').limit(1).single();
-
-                    if (!annonceError && annonceData) {
-                        ecran.innerText = annonceData.message;
-                    }
+                    if (!annonceError && annonceData) { ecran.innerText = annonceData.message; }
 
                     const { data: produitsData, error: produitsError } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
-                    
                     if (produitsData) {
                         articles = produitsData;
                         afficherProduits(articles, 'liste-accueil');
                     }
-                } catch (err) {
-                    ecran.innerText = "CRASH CODE : " + err.message;
-                }
+                } catch (err) { ecran.innerText = "CRASH CODE : " + err.message; }
             }
 
             function afficherProduits(liste, target) {
@@ -184,18 +188,15 @@
                 if (!container) return;
 
                 if (liste.length === 0) {
-                    container.innerHTML = `
-                        <div style="grid-column: 1 / -1;" class="text-center py-10">
-                            <p class="text-gray-500 font-bold text-sm">Rayon vide, revenir plus tard.</p>
-                        </div>
-                    `;
+                    container.innerHTML = `<div style="grid-column: 1 / -1;" class="text-center py-10"><p class="text-gray-500 font-bold text-sm">Rayon vide, revenir plus tard.</p></div>`;
                     return;
                 }
 
+                // NOUVEAU : On a ajouté onclick="ouvrirDetails(...)" sur l'image
                 container.innerHTML = liste.map(p => `
                     <div class="bg-white rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col relative">
                         <div class="price-badge">${p.prix} FCFA</div>
-                        <img src="${p.image}" class="w-full h-36 object-cover rounded-t-[20px]" alt="${p.nom.replace(/"/g, '')}">
+                        <img src="${p.image}" onclick="ouvrirDetails('${p.nom.replace(/'/g, "\\'")}')" class="w-full h-36 object-cover rounded-t-[20px]" alt="${p.nom.replace(/"/g, '')}">
                         <div class="px-3 pt-3 flex-1 flex flex-col text-center">
                             <h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3>
                             <p class="text-blue-500 text-[9px] font-bold mb-3 truncate">Bouaflé</p>
@@ -206,6 +207,38 @@
                         </div>
                     </div>
                 `).join('');
+            }
+
+            // NOUVEAU : La fonction qui dessine et ouvre la fenêtre des détails
+            function ouvrirDetails(nomProduit) {
+                const p = articles.find(a => a.nom === nomProduit);
+                if (!p) return;
+
+                document.getElementById('details-contenu').innerHTML = `
+                    <img src="${p.image}" class="w-full h-64 object-cover rounded-2xl mb-6 shadow-lg">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="font-black text-2xl text-[#4c1d95] uppercase leading-tight">${p.nom}</h2>
+                        <span class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black text-lg">${p.prix} F</span>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-xl mb-6">
+                        <p class="text-[10px] font-black text-purple-400 uppercase mb-2">Description & Détails</p>
+                        <p class="text-gray-700 font-bold text-sm leading-relaxed">${p.description || 'Aucun détail fourni.'}</p>
+                    </div>
+                    <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}'); fermerModal();" class="w-full py-4 bg-[#5b21b6] text-white font-black rounded-2xl shadow-xl uppercase tracking-widest active:scale-95 transition">
+                        Ajouter au panier
+                    </button>
+                `;
+                
+                const modal = document.getElementById('modal-details');
+                modal.style.display = 'flex';
+                setTimeout(() => { modal.classList.add('active'); }, 10);
+            }
+
+            // NOUVEAU : La fonction pour refermer la fenêtre
+            function fermerModal() {
+                const modal = document.getElementById('modal-details');
+                modal.classList.remove('active');
+                setTimeout(() => { modal.style.display = 'none'; }, 300);
             }
 
             function ajouterAuPanier(nom, prix, tel) {
@@ -230,15 +263,10 @@
                 document.getElementById('vue-accueil').classList.add('hidden');
                 document.getElementById('vue-boutique').classList.add('hidden');
                 document.getElementById('vue-rayon').classList.add('hidden'); 
-
                 document.getElementById('vue-' + vue).classList.remove('hidden');
-
                 document.getElementById('nav-accueil').classList.toggle('active-nav', vue === 'accueil');
                 document.getElementById('nav-boutique').classList.toggle('active-nav', vue === 'boutique');
-
-                if (vue === 'accueil') { 
-                    afficherProduits(articles, 'liste-accueil'); 
-                }
+                       if (vue === 'accueil') { afficherProduits(articles, 'liste-accueil'); }
                 window.scrollTo(0, 0);
             }
             
@@ -265,10 +293,7 @@
             function lancerMicro() {
                 const icon = document.getElementById('iconMicro');
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SpeechRecognition) {
-                    alert("Votre navigateur ne supporte pas la recherche vocale.");
-                    return;
-                }
+                if (!SpeechRecognition) { alert("Navigateur incompatible."); return; }
                 const recognition = new SpeechRecognition();
                 recognition.lang = 'fr-FR';
                 recognition.onstart = () => icon.className = "fas fa-spinner fa-spin";
