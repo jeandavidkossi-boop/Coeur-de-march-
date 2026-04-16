@@ -222,30 +222,40 @@
                 `).join('');
             }
 
-            function ouvrirDetails(nomProduit) {
-                const p = articles.find(a => a.nom === nomProduit);
-                if (!p) return;
+                    function ouvrirDetails(nomProduit) {
+            const p = articles.find(a => a.nom === nomProduit);
+            if (!p) return;
+            
+            // Préparation du beau message de partage pour WhatsApp
+            const textePartage = `🔥 Regarde ce que j'ai trouvé sur *Cœur de Marché Bouaflé* !\n\n🛍️ *${p.nom}*\n💰 *Prix : ${p.prix} FCFA*\n\n📸 Voir la photo : ${p.image}\n\nViens faire tes achats sur notre marché en ligne !`;
+            const lienPartage = `https://wa.me/?text=${encodeURIComponent(textePartage).replace(/'/g, "%27")}`;
 
-                document.getElementById('details-contenu').innerHTML = `
-                    <img src="${p.image}" class="w-full h-64 object-cover rounded-2xl mb-6 shadow-lg">
-                    <div class="flex justify-between items-start mb-4">
-                        <h2 class="font-black text-2xl text-[#4c1d95] uppercase leading-tight">${p.nom}</h2>
-                        <span class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black text-lg">${p.prix} F</span>
-                    </div>
-                    <div class="bg-purple-50 p-4 rounded-xl mb-6">
-                        <p class="text-[10px] font-black text-purple-400 uppercase mb-2">Description & Détails</p>
-                        <p class="text-gray-700 font-bold text-sm leading-relaxed">${p.description || 'Aucun détail fourni.'}</p>
-                    </div>
-                    <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}'); fermerModalDetails();" class="w-full py-4 bg-[#5b21b6] text-white font-black rounded-2xl shadow-xl uppercase tracking-widest active:scale-95 transition">
+            document.getElementById('details-contenu').innerHTML = `
+                <img src="${p.image}" class="w-full h-64 object-cover rounded-2xl mb-6 shadow-lg">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="font-black text-2xl text-[#4c1d95] uppercase leading-tight">${p.nom}</h2>
+                    <span class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black text-lg">${p.prix} F</span>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-xl mb-6">
+                    <p class="text-[10px] font-black text-purple-400 uppercase mb-2">Description & Détails</p>
+                    <p class="text-gray-700 font-bold text-sm leading-relaxed">${p.description || 'Aucun détail fourni.'}</p>
+                </div>
+                
+                <div class="flex gap-2">
+                    <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}'); fermerModalDetails();" class="flex-1 py-4 bg-[#5b21b6] text-white font-black rounded-2xl shadow-xl uppercase tracking-widest active:scale-95 transition">
                         Ajouter au panier
                     </button>
-                `;
-                
-                const modal = document.getElementById('modal-details');
-                modal.style.display = 'flex';
-                setTimeout(() => { modal.classList.add('active'); }, 10);
-            }
-
+                    <button onclick="window.open('${lienPartage}')" class="w-16 bg-[#22c55e] text-white rounded-2xl flex items-center justify-center text-3xl shadow-xl active:scale-95 transition">
+                        <i class="fab fa-whatsapp"></i>
+                    </button>
+                </div>
+            `;
+            
+            const modal = document.getElementById('modal-details');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('active'); }, 10);
+                    }
+            
             function fermerModalDetails() {
                 const modal = document.getElementById('modal-details');
                 modal.classList.remove('active');
