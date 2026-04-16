@@ -183,20 +183,28 @@
             let articles = [];
             let panier = [];
 
-            async function init() {
-                ecran.innerText = "Connexion au marché...";
-                try {
-                    const { data: annonceData, error: annonceError } = await supabase.from('annonces').select('message').limit(1).single();
-                    if (!annonceError && annonceData) { ecran.innerText = annonceData.message; }
+                    async function init() {
+            ecran.innerText = "Connexion au marché...";
+            try {
+                const { data: annonceData, error: annonceError } = await supabase.from('annonces').select('message').limit(1).single();
+                if (!annonceError && annonceData) { ecran.innerText = annonceData.message; }
 
-                    const { data: produitsData, error: produitsError } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
-                    if (produitsData) {
-                        articles = produitsData;
-                        afficherProduits(articles, 'liste-accueil');
+                const { data: produitsData, error: produitsError } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
+                if (produitsData) {
+                    articles = produitsData;
+                    afficherProduits(articles, 'liste-accueil');
+                    
+                    // --- NOUVEAU : INTERCEPTION DU LIEN DE PARTAGE ---
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const produitRecherche = urlParams.get('produit');
+                    if (produitRecherche) {
+                        setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
                     }
-                } catch (err) { ecran.innerText = "CRASH CODE : " + err.message; }
-            }
-
+                    // ---------------------------------------------------
+                }
+            } catch (err) { ecran.innerText = "CRASH CODE : " + err.message; }
+                    }
+        
             function afficherProduits(liste, target) {
                 const container = document.getElementById(target);
                 if (!container) return;
