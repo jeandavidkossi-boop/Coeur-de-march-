@@ -246,23 +246,6 @@ function afficherProduits(liste, target) {
     `).join('');
 }
             
-    // --- 2. TON DESIGN ORIGINAL (Si le rayon contient des articles) ---
-    container.innerHTML = liste.map(p => `
-        <div class="bg-white rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
-            <div class="price-badge">${p.prix} FCFA</div>
-            <img src="${p.image}" class="w-full h-36 object-cover rounded-t-[20px]" alt="${p.nom}">
-            <div class="px-3 pt-3 flex-1 flex flex-col text-center">
-                <h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3>
-                <p class="text-blue-500 text-[9px] font-bold mb-3 truncate">Bouaflé</p>
-                <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur_tel}')"
-                    class="btn-ajouter active:scale-95 transition">
-                    AJOUTER
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-            
 
             function ajouterAuPanier(nom, prix, tel) {
                 panier.push({nom, prix, tel});
