@@ -205,7 +205,7 @@
                         ecran.innerText = "LA TABLE EST VIDE.";
                     }
 
-                    const { data: produitsData, error: produitsError } = await supabase.from('produits').select('*').order('created_at', { ascending: false });
+                   const { data: produitsData, error: produitsError } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
                     
                     if (produitsData) {
                         articles = produitsData;
