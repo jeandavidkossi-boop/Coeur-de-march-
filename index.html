@@ -225,10 +225,6 @@
                     function ouvrirDetails(nomProduit) {
             const p = articles.find(a => a.nom === nomProduit);
             if (!p) return;
-            
-            // Préparation du beau message de partage pour WhatsApp
-            const textePartage = `🔥 Regarde ce que j'ai trouvé sur *Cœur de Marché Bouaflé* !\n\n🛍️ *${p.nom}*\n💰 *Prix : ${p.prix} FCFA*\n\n📸 Voir la photo : ${p.image}\n\nViens faire tes achats sur notre marché en ligne !`;
-            const lienPartage = `https://wa.me/?text=${encodeURIComponent(textePartage).replace(/'/g, "%27")}`;
 
             document.getElementById('details-contenu').innerHTML = `
                 <img src="${p.image}" class="w-full h-64 object-cover rounded-2xl mb-6 shadow-lg">
@@ -245,8 +241,8 @@
                     <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}'); fermerModalDetails();" class="flex-1 py-4 bg-[#5b21b6] text-white font-black rounded-2xl shadow-xl uppercase tracking-widest active:scale-95 transition">
                         Ajouter au panier
                     </button>
-                    <button onclick="window.open('${lienPartage}')" class="w-16 bg-[#22c55e] text-white rounded-2xl flex items-center justify-center text-3xl shadow-xl active:scale-95 transition">
-                        <i class="fab fa-whatsapp"></i>
+                    <button onclick="partagerArticle('${p.nom.replace(/'/g, "\\'")}', ${p.prix})" class="w-16 bg-blue-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-xl active:scale-95 transition">
+                        <i class="fas fa-share-nodes"></i>
                     </button>
                 </div>
             `;
@@ -254,7 +250,29 @@
             const modal = document.getElementById('modal-details');
             modal.style.display = 'flex';
             setTimeout(() => { modal.classList.add('active'); }, 10);
-                    }
+        }
+
+        // --- LA NOUVELLE FONCTION INTELLIGENTE DE PARTAGE ---
+        function partagerArticle(nom, prix) {
+            // 1. On fabrique le lien magique qui ramène vers l'application
+            const urlApp = window.location.href.split('?')[0]; 
+            const lienArticle = `${urlApp}?produit=${encodeURIComponent(nom)}`;
+            
+            const textePartage = `🔥 Regarde ce que j'ai trouvé sur *Cœur de Marché Bouaflé* !\n\n🛍️ *${nom}*\n💰 *Prix : ${prix} FCFA*\n\nClique ici pour voir l'article et commander 👇`;
+
+            // 2. On ouvre le menu de partage natif du téléphone
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Cœur de Marché - ' + nom,
+                    text: textePartage,
+                    url: lienArticle
+                }).catch(console.error);
+            } else {
+                // Sécurité si le téléphone est trop ancien
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(textePartage + "\n" + lienArticle)}`;
+                window.open(whatsappUrl);
+            }
+        }
             
             function fermerModalDetails() {
                 const modal = document.getElementById('modal-details');
