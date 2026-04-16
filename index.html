@@ -138,15 +138,16 @@
         
         <div id="liste-boutique" class="grid grid-cols-2 gap-4 pb-10"></div>
     </div>
-<div id="vue-rayon" class="hidden mt-8 px-6">
-    <div class="flex items-center gap-4 mb-6">
-        <button onclick="changerVue('boutique')" class="w-10 h-10 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center active:scale-90 transition shadow-sm">
-            <i class="fas fa-arrow-left"></i>
-        </button>
-        <h2 id="titre-rayon" class="font-black text-[#4c1d95] text-lg uppercase truncate">Chargement...</h2>
+
+    <div id="vue-rayon" class="hidden mt-8 px-6">
+        <div class="flex items-center gap-4 mb-6">
+            <button onclick="changerVue('boutique')" class="w-10 h-10 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center active:scale-90 transition shadow-sm">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 id="titre-rayon" class="font-black text-[#4c1d95] text-lg uppercase truncate">Chargement...</h2>
+        </div>
+        <div id="liste-rayon" class="grid grid-cols-2 gap-4 pb-10"></div>
     </div>
-    <div id="liste-rayon" class="grid grid-cols-2 gap-4 pb-10"></div>
-</div>
     
     <div id="panier-flottant" onclick="commanderWhatsApp()" class="fixed bottom-24 right-6 bg-[#5b21b6] text-white p-4 rounded-2xl shadow-2xl flex items-center gap-3 z-[60] cursor-pointer">
         <div class="relative">
@@ -215,37 +216,36 @@
                 }
             }
 
-function afficherProduits(liste, target) {
-    const container = document.getElementById(target);
-    if (!container) return;
+            function afficherProduits(liste, target) {
+                const container = document.getElementById(target);
+                if (!container) return;
 
-    // Si le rayon est vide
-    if (liste.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1 / -1;" class="text-center py-10">
-                <p class="text-gray-500 font-bold text-sm">Rayon vide, revenir plus tard.</p>
-            </div>
-        `;
-        return;
-    }
+                // Si le rayon est vide
+                if (liste.length === 0) {
+                    container.innerHTML = `
+                        <div style="grid-column: 1 / -1;" class="text-center py-10">
+                            <p class="text-gray-500 font-bold text-sm">Rayon vide, revenir plus tard.</p>
+                        </div>
+                    `;
+                    return;
+                }
 
-    // S'il y a des articles
-    container.innerHTML = liste.map(p => `
-        <div class="bg-white rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
-            <div class="price-badge">${p.prix} FCFA</div>
-            <img src="${p.image}" class="w-full h-36 object-cover rounded-t-[20px]" alt="${p.nom}">
-            <div class="px-3 pt-3 flex-1 flex flex-col text-center">
-                <h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3>
-                <p class="text-blue-500 text-[9px] font-bold mb-3 truncate">Bouaflé</p>
-                <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}')"
-                    class="btn-ajouter active:scale-95 transition">
-                    AJOUTER
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-            
+                // S'il y a des articles
+                container.innerHTML = liste.map(p => `
+                    <div class="bg-white rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
+                        <div class="price-badge">${p.prix} FCFA</div>
+                        <img src="${p.image}" class="w-full h-36 object-cover rounded-t-[20px]" alt="${p.nom}">
+                        <div class="px-3 pt-3 flex-1 flex flex-col text-center">
+                            <h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3>
+                            <p class="text-blue-500 text-[9px] font-bold mb-3 truncate">Bouaflé</p>
+                            <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}')"
+                                class="btn-ajouter active:scale-95 transition">
+                                AJOUTER
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
 
             function ajouterAuPanier(nom, prix, tel) {
                 panier.push({nom, prix, tel});
@@ -266,39 +266,53 @@ function afficherProduits(liste, target) {
             }
 
             function changerVue(vue) {
-    // On ferme toutes les portes
-    document.getElementById('vue-accueil').classList.add('hidden');
-    document.getElementById('vue-boutique').classList.add('hidden');
-    document.getElementById('vue-rayon').classList.add('hidden'); 
+                // On ferme toutes les portes
+                document.getElementById('vue-accueil').classList.add('hidden');
+                document.getElementById('vue-boutique').classList.add('hidden');
+                document.getElementById('vue-rayon').classList.add('hidden'); 
 
-    // On ouvre seulement la salle demandée
-    document.getElementById('vue-' + vue).classList.remove('hidden');
+                // On ouvre seulement la salle demandée
+                document.getElementById('vue-' + vue).classList.remove('hidden');
 
-    // On gère les couleurs du menu en bas
-    document.getElementById('nav-accueil').classList.toggle('active-nav', vue === 'accueil');
-    document.getElementById('nav-boutique').classList.toggle('active-nav', vue === 'boutique');
+                // On gère les couleurs du menu en bas
+                document.getElementById('nav-accueil').classList.toggle('active-nav', vue === 'accueil');
+                document.getElementById('nav-boutique').classList.toggle('active-nav', vue === 'boutique');
 
-    if (vue === 'accueil') { 
-        afficherProduits(articles, 'liste-accueil'); 
-    }
+                if (vue === 'accueil') { 
+                    afficherProduits(articles, 'liste-accueil'); 
+                }
             }
             
             function filtrerAccueil(cat) {
-                const filtered = articles.filter(a => a.categorie && a.categorie.includes(cat));
-                afficherProduits(filtered, 'liste-accueil');
-                window.scrollTo({ top: 400, behavior: 'smooth' });
+                document.getElementById('titre-rayon').innerText = cat;
+                
+                // On filtre en cherchant si le mot de la catégorie correspond
+                const filtered = articles.filter(a => {
+                    if (!a.categorie) return false;
+                    return a.categorie.toLowerCase().includes(cat.toLowerCase());
+                });
+                
+                // On affiche dans la salle et on ouvre la porte
+                afficherProduits(filtered, 'liste-rayon');
+                changerVue('rayon');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
-           function filtrerBoutique(cat) {
-    document.getElementById('titre-rayon').innerText = cat;
-    const filtered = articles.filter(a => a.categorie === cat);
-    
-    // On affiche dans la nouvelle salle et on l'ouvre
-    afficherProduits(filtered, 'liste-rayon'); 
-    changerVue('rayon'); 
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-           }
+            function filtrerBoutique(cat) {
+                document.getElementById('titre-rayon').innerText = cat;
+                
+                // Le filtre blindé pour ignorer les espaces invisibles et la casse
+                const filtered = articles.filter(a => {
+                    if (!a.categorie) return false;
+                    return a.categorie.trim().toLowerCase() === cat.trim().toLowerCase();
+                });
+                
+                // On affiche dans la nouvelle salle et on l'ouvre
+                afficherProduits(filtered, 'liste-rayon'); 
+                changerVue('rayon'); 
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
             
             function lancerMicro() {
                 const icon = document.getElementById('iconMicro');
@@ -329,5 +343,4 @@ function afficherProduits(liste, target) {
         }
     </script>
 </body>
-</html>                                                                                                                                                                                                                                                                                                               </html>
-            
+</html>
