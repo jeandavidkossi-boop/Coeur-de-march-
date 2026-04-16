@@ -90,7 +90,7 @@
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
         const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
@@ -98,6 +98,7 @@
         let mySupabase = null;
         let myUser = null;
         let myPhoto = null;
+        let myWhatsapp = null;
 
         // 1. BOUTON ORANGE : PUBLIER
         async function publierAnnonce() {
@@ -128,13 +129,13 @@
                 // B. Récupération de l'URL publique
                 const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
 
-                // C. Insertion dans la table produits
+                // C. Insertion dans la table produits avec le vrai numéro WhatsApp
                 const { error: errProduit } = await mySupabase.from('produits').insert([{
                     nom: nomP,
                     prix: prixP,
-                    categorie: catP, // Correspond au nom sans accent dans Supabase
+                    categorie: catP,
                     description: descP,
-                    vendeur: myUser.id,
+                    vendeur: myWhatsapp, 
                     image: publicUrl
                 }]);
                 
@@ -181,15 +182,17 @@
                 
                 myUser = session.user;
 
+                // On va chercher le numéro WhatsApp dans la base au démarrage
                 const { data: vendeur } = await mySupabase
                     .from('vendeurs')
-                    .select('nom_boutique, proprietaire')
+                    .select('nom_boutique, proprietaire, whatsapp') 
                     .eq('id', myUser.id)
                     .single();
 
                 if (vendeur) {
                     document.getElementById('nom-boutique').innerText = vendeur.nom_boutique;
                     document.getElementById('nom-vendeur').innerText = "Gérant : " + vendeur.proprietaire;
+                    myWhatsapp = vendeur.whatsapp;
                 }
 
             } catch (erreur) {
@@ -198,6 +201,6 @@
         }
 
         demarrerBureau();
-    </script>
+                </script>
 </body>
 </html>
