@@ -110,21 +110,18 @@
 
     <div id="modal-panier" class="modal-overlay" onclick="fermerPanier()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="font-black text-2xl text-[#4c1d95] uppercase tracking-tight">Mon Panier</h2>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-black text-xl text-[#4c1d95] uppercase tracking-tight">Mon Panier</h2>
                 <button onclick="fermerPanier()" class="text-gray-400 text-2xl"><i class="fas fa-times"></i></button>
             </div>
             
-            <div id="panier-liste" class="space-y-3 max-h-[40vh] overflow-y-auto mb-6"></div>
-            
-            <div class="border-t border-gray-100 pt-4">
-                <div class="flex justify-between items-center font-black text-lg mb-6">
-                    <span class="text-gray-500 text-sm uppercase">Total estimé</span>
-                    <span id="panier-total" class="text-orange-500 text-2xl">0 F</span>
-                </div>
-                <div id="groupes-whatsapp" class="space-y-3">
-                    </div>
+            <div class="flex justify-between items-center font-black text-sm mb-4 bg-orange-50 text-orange-600 p-3 rounded-xl">
+                <span class="uppercase">Total Global</span>
+                <span id="panier-total" class="text-lg">0 F</span>
             </div>
+
+            <div id="panier-liste" class="space-y-4 max-h-[50vh] overflow-y-auto pb-4">
+                </div>
         </div>
     </div>
 
@@ -134,8 +131,8 @@
         <button onclick="window.open('https://wa.me/2250576326645')" class="wa-btn active:scale-95 transition"><i class="fab fa-whatsapp"></i></button>
         <a href="vendre.html" class="nav-item"><i class="fas fa-store-alt"></i><span class="nav-text">Vendre</span></a>
         <button onclick="alert('Aide')" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
-                                                                     </nav>
-            <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    </nav>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const ecran = document.getElementById('texte-annonce');
 
@@ -224,64 +221,80 @@
                 document.getElementById('panier-flottant').classList.add('show');
             }
 
-            // --- LE NOUVEAU MOTEUR DU PANIER ---
+            // --- LE NOUVEAU MOTEUR INTELLIGENT DU PANIER ---
             function ouvrirPanier() {
                 const container = document.getElementById('panier-liste');
                 const totalElt = document.getElementById('panier-total');
-                const waGroup = document.getElementById('groupes-whatsapp');
 
                 if (panier.length === 0) {
                     container.innerHTML = "<p class='text-center text-gray-400 font-bold py-6'>Votre panier est vide.</p>";
                     totalElt.innerText = "0 F";
-                    waGroup.innerHTML = "";
                 } else {
-                    let total = 0;
+                    let totalGlobal = 0;
+                    const vendeurs = {};
                     
-                    // 1. Afficher la liste avec la poubelle
-                    container.innerHTML = panier.map((p, index) => {
-                        total += parseInt(p.prix);
-                        return `
-                            <div class="flex items-center justify-between bg-gray-50 p-4 rounded-2xl border border-gray-100">
-                                <div class="flex-1">
-                                    <h4 class="font-black text-[11px] uppercase text-gray-700 mb-1">${p.nom}</h4>
-                                    <p class="text-orange-500 font-black text-sm">${p.prix} F</p>
+                    // On trie le panier par numéro de vendeur, en gardant l'index pour la poubelle
+                    panier.forEach((p, index) => {
+                        totalGlobal += parseInt(p.prix);
+                        const tel = p.tel || '2250576326645';
+                        if (!vendeurs[tel]) vendeurs[tel] = [];
+                        vendeurs[tel].push({ ...p, originalIndex: index });
+                    });
+
+                    totalElt.innerText = totalGlobal + " FCFA";
+
+                    // On dessine un "casier" pour chaque vendeur
+                    container.innerHTML = Object.keys(vendeurs).map(tel => {
+                        const items = vendeurs[tel];
+                        let ticketListe = '';
+                        let sousTotal = 0;
+                        
+                        // Les lignes d'articles pour cette boutique
+                        const htmlItems = items.map(i => {
+                            sousTotal += parseInt(i.prix);
+                            ticketListe += `▫️ 1x ${i.nom} (${i.prix} F)\n`;
+                            return `
+                                <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                                    <div class="flex-1 pr-2">
+                                        <h4 class="font-bold text-[11px] text-gray-700 leading-tight">${i.nom}</h4>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-orange-500 font-black text-[11px]">${i.prix} F</span>
+                                        <button onclick="retirerDuPanier(${i.originalIndex})" class="text-red-400 active:scale-90 transition"><i class="fas fa-trash"></i></button>
+                                    </div>
                                 </div>
-                                <button onclick="retirerDuPanier(${index})" class="w-10 h-10 bg-red-100 text-red-500 rounded-full flex items-center justify-center active:scale-90 transition">
-                                    <i class="fas fa-trash"></i>
+                            `;
+                        }).join('');
+
+                        // Le beau ticket de caisse WhatsApp
+                        const msgBrut = `🛒 *NOUVELLE COMMANDE - Cœur de Marché*\n------------------------\n${ticketListe}------------------------\n💰 *Total à régler : ${sousTotal} FCFA*`;
+                        const msgSecurise = encodeURIComponent(msgBrut).replace(/'/g, "%27");
+
+                        return `
+                            <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm relative">
+                                <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
+                                    <i class="fas fa-store text-[#4c1d95]"></i>
+                                    <span class="font-black text-[10px] text-[#4c1d95] uppercase">Vendeur : ${tel}</span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    ${htmlItems}
+                                </div>
+                                
+                                <div class="flex justify-between items-center mb-3 pt-2">
+                                    <span class="text-[10px] font-black uppercase text-gray-500">Sous-total</span>
+                                    <span class="text-sm font-black text-gray-800">${sousTotal} F</span>
+                                </div>
+
+                                <button onclick="envoyerCommande('${tel}', '${msgSecurise}')" class="w-full bg-[#22c55e] text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-md active:scale-95 transition">
+                                    <i class="fab fa-whatsapp text-lg"></i>
+                                    <span class="uppercase text-[10px] tracking-wide">Commander chez lui (${items.length} art.)</span>
                                 </button>
                             </div>
                         `;
                     }).join('');
-                    totalElt.innerText = total + " FCFA";
-
-                    // 2. Trier les articles par numéro de vendeur
-                    const vendeurs = {};
-                    panier.forEach(p => {
-                        const tel = p.tel || '2250576326645';
-                        if (!vendeurs[tel]) vendeurs[tel] = [];
-                        vendeurs[tel].push(p);
-                    });
-
-                    // 3. Créer un bouton WhatsApp pour chaque vendeur
-                    waGroup.innerHTML = Object.keys(vendeurs).map(tel => {
-                        const items = vendeurs[tel];
-                        const noms = items.map(i => "- " + i.nom).join('\n');
-                        const sousTotal = items.reduce((sum, i) => sum + parseInt(i.prix), 0);
-                        
-                        // LE BLINDAGE DES APOSTROPHES EST ICI !
-                        const msgBrut = `Bonjour Cœur de Marché, je souhaite commander :\n\n${noms}\n\n*TOTAL : ${sousTotal} FCFA*`;
-                        const msgSecurise = encodeURIComponent(msgBrut).replace(/'/g, "%27");
-                        
-                        return `
-                            <button onclick="window.open('https://wa.me/${tel}?text=${msgSecurise}')" class="w-full bg-[#22c55e] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-3 shadow-lg shadow-green-200 active:scale-95 transition">
-                                <i class="fab fa-whatsapp text-2xl"></i>
-                                <span class="uppercase tracking-wide text-xs">Commander (${items.length} art.)</span>
-                            </button>
-                        `;
-                    }).join('');
                 }
 
-                // Ouvrir la fenêtre du panier
                 const modal = document.getElementById('modal-panier');
                 modal.style.display = 'flex';
                 setTimeout(() => { modal.classList.add('active'); }, 10);
@@ -294,7 +307,23 @@
                     document.getElementById('panier-flottant').classList.remove('show');
                     fermerPanier();
                 } else {
-                    ouvrirPanier(); // Met à jour l'affichage en direct
+                    ouvrirPanier(); 
+                }
+            }
+
+            // La fonction magique qui ouvre WhatsApp ET vide la boutique du panier
+            function envoyerCommande(tel, msgSecurise) {
+                window.open(`https://wa.me/${tel}?text=${msgSecurise}`);
+                
+                // On efface intelligemment uniquement les articles de ce numéro
+                panier = panier.filter(p => (p.tel || '2250576326645') !== tel);
+                document.getElementById('panier-count').innerText = panier.length;
+                
+                if (panier.length === 0) {
+                    document.getElementById('panier-flottant').classList.remove('show');
+                    fermerPanier();
+                } else {
+                    ouvrirPanier(); // Rafraîchit le panier avec ce qui reste
                 }
             }
 
