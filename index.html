@@ -205,151 +205,155 @@
             }
 
             function ajouterAuPanier(id) {
-                const p = articles.find(a => a.id === id);
+                // On s'assure que l'ID est bien trouvé, peu importe si c'est un chiffre ou du texte
+                const p = articles.find(a => String(a.id) === String(id));
+                
                 if (!p) return;
-                if (panier[id]) { panier[id].qty += 1; } 
-                else { panier[id] = { ...p, qty: 1 }; }
-                majCompteurPanier();
-            }
 
-            function majCompteurPanier() {
-                let totalQty = 0;
-                Object.values(panier).forEach(item => { totalQty += item.qty; });
-                document.getElementById('panier-count').innerText = totalQty;
-                if (totalQty > 0) document.getElementById('panier-flottant').classList.add('show');
-                else document.getElementById('panier-flottant').classList.remove('show');
-            }
+                // Si le panier n'est pas encore un objet, on le crée
+                if (typeof panier !== 'object' || panier === null) { panier = {}; }
 
-            function ouvrirPanier() {
-                const container = document.getElementById('panier-liste');
-                const totalElt = document.getElementById('panier-total');
-                const items = Object.values(panier);
-
-                if (items.length === 0) {
-                    container.innerHTML = "<p class='text-center text-gray-400 font-bold py-6'>Votre panier est vide.</p>";
-                    totalElt.innerText = "0 F";
-                } else {
-                    let totalGlobal = 0;
-                    const vendeurs = {};
-                    items.forEach(p => {
-                        totalGlobal += (parseInt(p.prix) * p.qty);
-                        const tel = p.vendeur || '2250576326645';
-                        if (!vendeurs[tel]) vendeurs[tel] = [];
-                        vendeurs[tel].push(p);
-                    });
-                    totalElt.innerText = totalGlobal + " FCFA";
-
-                    container.innerHTML = Object.keys(vendeurs).map(tel => {
-                        const boutiqueItems = vendeurs[tel];
-                        let sousTotal = 0;
-                        let ticketMsg = '';
-                        
-                        const htmlItems = boutiqueItems.map(i => {
-                            sousTotal += (parseInt(i.prix) * i.qty);
-                            ticketMsg += `▫️ ${i.qty}x ${i.nom} (${i.prix} F)\n`;
-                            return `
-                                <div class="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
-                                    <div class="flex-1"><h4 class="font-bold text-[11px] text-gray-700 uppercase leading-none mb-1">${i.nom}</h4><p class="text-orange-500 font-black text-xs">${i.prix} F</p></div>
-                                    <div class="flex items-center gap-2">
-                                        <button onclick="changerQty('${i.id}', -1)" class="qty-btn bg-gray-100 text-gray-500 active:bg-red-100 active:text-red-500">-</button>
-                                        <span class="font-black text-sm w-4 text-center">${i.qty}</span>
-                                        <button onclick="changerQty('${i.id}', 1)" class="qty-btn bg-purple-100 text-purple-600 active:bg-purple-200">+</button>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('');
-
-                        const msgBrut = `🛒 *COMMANDE COEUR DE MARCHE*\n------------------------\n${ticketMsg}------------------------\n💰 *TOTAL : ${sousTotal} FCFA*`;
-                        const msgUrl = encodeURIComponent(msgBrut).replace(/'/g, "%27");
-
-                        return `
-                            <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm">
-                                <p class="font-black text-[9px] text-[#4c1d95] uppercase mb-3 pb-2 border-b border-gray-50"><i class="fas fa-store mr-1"></i> Boutique : ${tel}</p>
-                                <div class="mb-4">${htmlItems}</div>
-                                <div class="flex justify-between items-center mb-4"><span class="text-[10px] font-black uppercase text-gray-400 italic">Sous-total</span><span class="text-sm font-black text-gray-800">${sousTotal} F</span></div>
-                                <button onclick="envoyerCommande('${tel}', '${msgUrl}')" class="w-full bg-[#22c55e] text-white font-black py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg active:scale-95 transition">
-                                    <i class="fab fa-whatsapp text-xl"></i><span class="uppercase text-[10px]">Commander chez lui</span>
-                                </button>
-                            </div>
-                        `;
-                    }).join('');
-                }
-                const modal = document.getElementById('modal-panier');
-                modal.style.display = 'flex';
-                setTimeout(() => { modal.classList.add('active'); }, 10);
-            }
-
-            function changerQty(id, delta) {
                 if (panier[id]) {
-                    panier[id].qty += delta;
-                    if (panier[id].qty <= 0) { delete panier[id]; }
+                    panier[id].qty += 1;
+                } else {
+                    panier[id] = { ...p, qty: 1 };
                 }
+                
+                // On met à jour le compteur et on montre le bouton commander
                 majCompteurPanier();
-                if (Object.keys(panier).length === 0) { fermerPanier(); } 
-                else { ouvrirPanier(); }
+                
+                // Petit retour visuel sur le bouton
+                if (event && event.target) {
+                    const b = event.target;
+                    const t = b.innerText;
+                    b.innerText = "AJOUTÉ ! ✅";
+                    setTimeout(() => { b.innerText = t; }, 800);
+                }
             }
 
-            function envoyerCommande(tel, msgUrl) {
-                window.open(`https://wa.me/${tel}?text=${msgUrl}`);
-                // On vide seulement les articles de ce vendeur
-                Object.keys(panier).forEach(id => {
-                    if ((panier[id].vendeur || '2250576326645') === tel) { delete panier[id]; }
+                }
+        }
+
+        function ouvrirPanier() {
+            const container = document.getElementById('panier-liste');
+            const totalElt = document.getElementById('panier-total');
+            const items = Object.values(panier);
+
+            if (items.length === 0) {
+                container.innerHTML = "<p class='text-center text-gray-400 font-bold py-6'>Panier vide.</p>";
+                totalElt.innerText = "0 F";
+            } else {
+                let totalGlobal = 0;
+                const vendeurs = {};
+                items.forEach(p => {
+                    totalGlobal += (parseInt(p.prix) * p.qty);
+                    const tel = p.vendeur || '2250576326645';
+                    if (!vendeurs[tel]) vendeurs[tel] = [];
+                    vendeurs[tel].push(p);
                 });
+                totalElt.innerText = totalGlobal + " FCFA";
+
+                container.innerHTML = Object.keys(vendeurs).map(tel => {
+                    const boutiqueItems = vendeurs[tel];
+                    let sousTotal = 0;
+                    let ticketMsg = '';
+                    const htmlItems = boutiqueItems.map(i => {
+                        sousTotal += (parseInt(i.prix) * i.qty);
+                        ticketMsg += `▫️ ${i.qty}x ${i.nom} (${i.prix} F)\n`;
+                        return `<div class="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
+                                    <div class="flex-1"><h4 class="font-bold text-[10px] text-gray-700 uppercase">${i.nom}</h4></div>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="changerQty('${i.id}', -1)" class="qty-btn bg-gray-100">-</button>
+                                        <span class="font-black text-xs">${i.qty}</span>
+                                        <button onclick="changerQty('${i.id}', 1)" class="qty-btn bg-purple-100 text-purple-600">+</button>
+                                    </div>
+                                </div>`;
+                    }).join('');
+                    const msgUrl = encodeURIComponent(`🛒 *COMMANDE COEUR DE MARCHE*\n------------------------\n${ticketMsg}------------------------\n💰 *TOTAL : ${sousTotal} FCFA*`).replace(/'/g, "%27");
+                    return `<div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm mb-4">
+                                <p class="font-black text-[9px] text-[#4c1d95] mb-2 uppercase italic">Boutique : ${tel}</p>
+                                ${htmlItems}
+                                <div class="flex justify-between mt-3 mb-3"><span class="text-[10px] font-bold text-gray-400">SOUS-TOTAL</span><span class="font-black">${sousTotal} F</span></div>
+                                <button onclick="envoyerCommande('${tel}', '${msgUrl}')" class="w-full bg-[#22c55e] text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-md active:scale-95 transition">
+                                    <i class="fab fa-whatsapp"></i> <span class="text-[10px]">COMMANDER</span>
+                                </button>
+                            </div>`;
+                }).join('');
+            }
+            const modal = document.getElementById('modal-panier');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('active'); }, 10);
+        }
+
+        function changerQty(id, delta) {
+            if (panier[id]) {
+                panier[id].qty += delta;
+                if (panier[id].qty <= 0) { delete panier[id]; }
                 majCompteurPanier();
-                if (Object.keys(panier).length === 0) { fermerPanier(); } 
-                else { ouvrirPanier(); }
+                if (Object.keys(panier).length === 0) { fermerPanier(); } else { ouvrirPanier(); }
             }
-
-            function fermerPanier() {
-                const modal = document.getElementById('modal-panier');
-                modal.classList.remove('active');
-                setTimeout(() => { modal.style.display = 'none'; }, 300);
-            }
-
-            function changerVue(v) {
-                ['accueil', 'boutique', 'rayon'].forEach(i => document.getElementById('vue-'+i).classList.add('hidden'));
-                document.getElementById('vue-'+v).classList.remove('hidden');
-                document.getElementById('nav-accueil').classList.toggle('active-nav', v==='accueil');
-                document.getElementById('nav-boutique').classList.toggle('active-nav', v==='boutique');
-                if (v==='accueil') afficherProduits(articles, 'liste-accueil');
-                window.scrollTo(0,0);
-            }
-            function filtrerAccueil(c) {
-                document.getElementById('titre-rayon').innerText = c;
-                const f = articles.filter(a => a.categorie && a.categorie.toLowerCase().includes(c.toLowerCase()));
-                afficherProduits(f, 'liste-rayon'); changerVue('rayon');
-            }
-            function filtrerBoutique(c) {
-                document.getElementById('titre-rayon').innerText = c;
-                const f = articles.filter(a => a.categorie && a.categorie.trim().toLowerCase() === c.trim().toLowerCase());
-                afficherProduits(f, 'liste-rayon'); changerVue('rayon');
-            }
-            function rechercherProduit() {
-                const s = document.getElementById('inputRecherche').value.toLowerCase();
-                const f = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
-                const t = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil';
-                afficherProduits(f, t);
-            }
-            function lancerMicro() {
-                const icon = document.getElementById('iconMicro');
-                const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!Recognition) return alert("Micro non supporté.");
-                const rec = new Recognition(); rec.lang = 'fr-FR';
-                rec.onstart = () => icon.className = "fas fa-spinner fa-spin";
-                rec.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
-                rec.onend = () => icon.className = "fas fa-microphone";
-                rec.start();
-            }
-
-            init();
         }
 
-        // --- SCRIPT PWA (Installable) ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
-            });
+        function envoyerCommande(tel, msgUrl) {
+            window.open(`https://wa.me/${tel}?text=${msgUrl}`);
+            Object.keys(panier).forEach(id => { if ((panier[id].vendeur || '2250576326645') === tel) { delete panier[id]; } });
+            majCompteurPanier();
+            if (Object.keys(panier).length === 0) { fermerPanier(); } else { ouvrirPanier(); }
         }
-    </script>
+
+        function fermerPanier() {
+            const modal = document.getElementById('modal-panier');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        function changerVue(v) {
+            ['accueil', 'boutique', 'rayon'].forEach(i => document.getElementById('vue-'+i).classList.add('hidden'));
+            document.getElementById('vue-'+v).classList.remove('hidden');
+            document.getElementById('nav-accueil').classList.toggle('active-nav', v==='accueil');
+            document.getElementById('nav-boutique').classList.toggle('active-nav', v==='boutique');
+            if (v==='accueil') afficherProduits(articles, 'liste-accueil');
+            window.scrollTo(0,0);
+        }
+
+        function filtrerAccueil(c) {
+            document.getElementById('titre-rayon').innerText = c;
+            const f = articles.filter(a => a.categorie && a.categorie.toLowerCase().includes(c.toLowerCase()));
+            afficherProduits(f, 'liste-rayon'); changerVue('rayon');
+        }
+
+        function filtrerBoutique(c) {
+            document.getElementById('titre-rayon').innerText = c;
+            const f = articles.filter(a => a.categorie && a.categorie.trim().toLowerCase() === c.trim().toLowerCase());
+            afficherProduits(f, 'liste-rayon'); changerVue('rayon');
+        }
+
+        function rechercherProduit() {
+            const s = document.getElementById('inputRecherche').value.toLowerCase();
+            const f = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
+            const t = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil';
+            afficherProduits(f, t);
+        }
+
+        function lancerMicro() {
+            const icon = document.getElementById('iconMicro');
+            const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!Recognition) return alert("Micro non supporté.");
+            const rec = new Recognition(); rec.lang = 'fr-FR';
+            rec.onstart = () => icon.className = "fas fa-spinner fa-spin";
+            rec.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
+            rec.onend = () => icon.className = "fas fa-microphone";
+            rec.start();
+        }
+
+        init();
+    }
+    
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
+        });
+    }
+</script>
 </body>
 </html>
