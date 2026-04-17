@@ -17,7 +17,6 @@
         .search-container { margin-top: 0; position: relative; z-index: 50; padding: 0 24px; }
         .search-box { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); padding: 6px; display: flex; align-items: center; }
         .mic-btn { background-color: #5b21b6; color: white; width: 45px; height: 45px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        
         .price-badge { background-color: #f97316; color: white; position: absolute; top: 12px; right: 12px; padding: 4px 12px; border-radius: 10px; font-weight: 900; font-size: 12px; z-index: 10; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.4); }
         .btn-ajouter { background-color: #5b21b6; color: white; width: 100%; padding: 12px 0; border-radius: 15px; font-weight: 900; font-size: 11px; text-transform: uppercase; margin-top: auto; }
         .nav-bar { background: white; height: 75px; display: flex; justify-content: space-around; align-items: center; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; border-radius: 35px 35px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); padding: 0 15px; }
@@ -28,14 +27,23 @@
         #panier-flottant { transition: all 0.4s ease; transform: translateY(150px); opacity: 0; }
         #panier-flottant.show { transform: translateY(0); opacity: 1; }
         .hide-scroll::-webkit-scrollbar { display: none; }
-
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-content { background: white; width: 100%; border-radius: 30px 30px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; }
         .modal-overlay.active { opacity: 1; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        /* --- ECRAN DE CHARGEMENT --- */
+        #ecran-chargement { position: fixed; inset: 0; background-color: #f8f9fd; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+        .spinner { width: 50px; height: 50px; border: 5px solid #e5e7eb; border-top-color: #f97316; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="pb-32">
+
+    <div id="ecran-chargement">
+        <div class="spinner mb-6"></div>
+        <p class="font-black text-[#4c1d95] text-sm uppercase tracking-widest animate-pulse">Chargement du marché...</p>
+    </div>
 
     <header class="header-bg text-center pt-8 px-6 relative">
         <div class="inline-block p-1 bg-white rounded-2xl mb-3 shadow-lg">
@@ -45,53 +53,30 @@
         <p class="text-orange-400 font-bold text-[10px] italic tracking-widest uppercase">Bouaflé - Marahoué</p>
     </header>
 
-    <div class="scrolling-banner">
-        <p id="texte-annonce">Chargement des annonces...</p>
-    </div>
+    <div class="scrolling-banner"><p id="texte-annonce">Chargement des annonces...</p></div>
 
     <div class="search-container">
         <div class="search-box">
             <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher..." class="flex-1 bg-transparent px-4 py-2 outline-none font-bold text-gray-500 text-sm">
-            <button onclick="lancerMicro()" class="mic-btn active:scale-95 transition">
-                <i id="iconMicro" class="fas fa-microphone"></i>
-            </button>
+            <button onclick="lancerMicro()" class="mic-btn active:scale-95 transition"><i id="iconMicro" class="fas fa-microphone"></i></button>
         </div>
     </div>
 
     <div id="vue-accueil">
         <div class="flex justify-between px-8 mt-8">
-            <button onclick="filtrerAccueil('Vivrier')" class="flex flex-col items-center">
-                <div class="w-16 h-16 bg-[#d1fae5] text-[#059669] rounded-full flex items-center justify-center text-3xl mb-2 shadow-sm"><i class="fas fa-leaf"></i></div>
-                <span class="text-[10px] font-black text-gray-800 uppercase">Vivrier</span>
-            </button>
-            <button onclick="filtrerAccueil('Beauté')" class="flex flex-col items-center">
-                <div class="w-16 h-16 bg-[#fce7f3] text-[#db2777] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-magic"></i></div>
-                <span class="text-[10px] font-black text-gray-800 uppercase">Beauté</span>
-            </button>
-            <button onclick="filtrerAccueil('Alimentation')" class="flex flex-col items-center">
-                <div class="w-16 h-16 bg-[#dbeafe] text-[#2563eb] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-utensils"></i></div>
-                <span class="text-[10px] font-black text-gray-800 uppercase">Resto</span>
-            </button>
-            <button onclick="filtrerAccueil('Habillement')" class="flex flex-col items-center">
-                <div class="w-16 h-16 bg-[#ffedd5] text-[#d97706] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-tshirt"></i></div>
-                <span class="text-[10px] font-black text-gray-800 uppercase">Mode</span>
-            </button>
+            <button onclick="filtrerAccueil('Vivrier')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#d1fae5] text-[#059669] rounded-full flex items-center justify-center text-3xl mb-2 shadow-sm"><i class="fas fa-leaf"></i></div><span class="text-[10px] font-black text-gray-800 uppercase">Vivrier</span></button>
+            <button onclick="filtrerAccueil('Beauté')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#fce7f3] text-[#db2777] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-magic"></i></div><span class="text-[10px] font-black text-gray-800 uppercase">Beauté</span></button>
+            <button onclick="filtrerAccueil('Alimentation')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#dbeafe] text-[#2563eb] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-utensils"></i></div><span class="text-[10px] font-black text-gray-800 uppercase">Resto</span></button>
+            <button onclick="filtrerAccueil('Habillement')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#ffedd5] text-[#d97706] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-tshirt"></i></div><span class="text-[10px] font-black text-gray-800 uppercase">Mode</span></button>
         </div>
-
         <main class="mt-8 px-6">
-            <h2 class="font-black text-[#4c1d95] text-sm mb-4 flex items-center gap-2 uppercase">
-                <i class="fas fa-fire text-orange-500 text-lg"></i> A LA UNE
-            </h2>
-            <div id="liste-accueil" class="grid grid-cols-2 gap-4">
-            </div>
+            <h2 class="font-black text-[#4c1d95] text-sm mb-4 flex items-center gap-2 uppercase"><i class="fas fa-fire text-orange-500 text-lg"></i> A LA UNE</h2>
+            <div id="liste-accueil" class="grid grid-cols-2 gap-4"></div>
         </main>
     </div>
 
     <div id="vue-boutique" class="hidden mt-8 px-6">
-        <h2 class="font-black text-[#4c1d95] text-sm mb-6 flex items-center gap-2 uppercase">
-            <i class="fas fa-store text-orange-500"></i> Tous les rayons
-        </h2>
-        
+        <h2 class="font-black text-[#4c1d95] text-sm mb-6 flex items-center gap-2 uppercase"><i class="fas fa-store text-orange-500"></i> Tous les rayons</h2>
         <div class="grid grid-cols-4 gap-y-6 gap-x-2 text-center mb-8">
             <div onclick="filtrerBoutique('Marché & Vivrier')"><div class="w-12 h-12 mx-auto bg-green-100 text-green-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-leaf"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Vivrier</span></div>
             <div onclick="filtrerBoutique('Alimentation & Boissons')"><div class="w-12 h-12 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-utensils"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Aliment</span></div>
@@ -106,15 +91,12 @@
             <div onclick="filtrerBoutique('Beauté & Cosmétique')"><div class="w-12 h-12 mx-auto bg-rose-100 text-rose-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-magic"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Beauté</span></div>
             <div onclick="filtrerBoutique('Événementiel & Location')"><div class="w-12 h-12 mx-auto bg-cyan-100 text-cyan-600 rounded-full flex items-center justify-center shadow-sm text-lg mb-1"><i class="fas fa-glass-cheers"></i></div><span class="text-[8px] font-black uppercase text-gray-700">Events</span></div>
         </div>
-        
         <div id="liste-boutique" class="grid grid-cols-2 gap-4 pb-10"></div>
     </div>
 
     <div id="vue-rayon" class="hidden mt-8 px-6">
         <div class="flex items-center gap-4 mb-6">
-            <button onclick="changerVue('boutique')" class="w-10 h-10 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center active:scale-90 transition shadow-sm">
-                <i class="fas fa-arrow-left"></i>
-            </button>
+            <button onclick="changerVue('boutique')" class="w-10 h-10 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center active:scale-90 transition shadow-sm"><i class="fas fa-arrow-left"></i></button>
             <h2 id="titre-rayon" class="font-black text-[#4c1d95] text-lg uppercase truncate">Chargement...</h2>
         </div>
         <div id="liste-rayon" class="grid grid-cols-2 gap-4 pb-10"></div>
@@ -141,35 +123,22 @@
                 <h2 class="font-black text-xl text-[#4c1d95] uppercase tracking-tight">Mon Panier</h2>
                 <button onclick="fermerPanier()" class="text-gray-400 text-2xl"><i class="fas fa-times"></i></button>
             </div>
-            
             <div class="flex justify-between items-center font-black text-sm mb-4 bg-orange-50 text-orange-600 p-3 rounded-xl">
                 <span class="uppercase">Total Global</span>
                 <span id="panier-total" class="text-lg">0 F</span>
             </div>
-
-            <div id="panier-liste" class="space-y-4 max-h-[50vh] overflow-y-auto pb-4">
-                </div>
+            <div id="panier-liste" class="space-y-4 max-h-[50vh] overflow-y-auto pb-4"></div>
         </div>
     </div>
 
     <nav class="nav-bar">
-        <button onclick="changerVue('accueil')" id="nav-accueil" class="nav-item active-nav">
-            <i class="fas fa-home"></i><span class="nav-text">Accueil</span>
-        </button>
-        <button onclick="changerVue('boutique')" id="nav-boutique" class="nav-item">
-            <i class="fas fa-store"></i><span class="nav-text">Boutique</span>
-        </button>
-        <button onclick="window.open('https://wa.me/2250576326645')" class="wa-btn active:scale-95 transition">
-            <i class="fab fa-whatsapp"></i>
-        </button>
-        <a href="vendre.html" class="nav-item">
-            <i class="fas fa-store-alt"></i><span class="nav-text">Vendre</span>
-        </a>
-        <button onclick="alert('Aide')" class="nav-item">
-            <i class="fas fa-question-circle"></i><span class="nav-text">Aide</span>
-        </button>
-    </nav>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <button onclick="changerVue('accueil')" id="nav-accueil" class="nav-item active-nav"><i class="fas fa-home"></i><span class="nav-text">Accueil</span></button>
+        <button onclick="changerVue('boutique')" id="nav-boutique" class="nav-item"><i class="fas fa-store"></i><span class="nav-text">Boutique</span></button>
+        <button onclick="window.open('https://wa.me/2250576326645')" class="wa-btn active:scale-95 transition"><i class="fab fa-whatsapp"></i></button>
+        <a href="vendre.html" class="nav-item"><i class="fas fa-store-alt"></i><span class="nav-text">Vendre</span></a>
+        <button onclick="alert('Aide')" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
+            </nav>
+                <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const ecran = document.getElementById('texte-annonce');
 
@@ -183,28 +152,33 @@
             let articles = [];
             let panier = [];
 
-                    async function init() {
-            ecran.innerText = "Connexion au marché...";
-            try {
-                const { data: annonceData, error: annonceError } = await supabase.from('annonces').select('message').limit(1).single();
-                if (!annonceError && annonceData) { ecran.innerText = annonceData.message; }
+            async function init() {
+                try {
+                    const { data: annonceData } = await supabase.from('annonces').select('message').limit(1).single();
+                    if (annonceData) document.getElementById('texte-annonce').innerText = annonceData.message;
 
-                const { data: produitsData, error: produitsError } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
-                if (produitsData) {
-                    articles = produitsData;
-                    afficherProduits(articles, 'liste-accueil');
-                    
-                    // --- NOUVEAU : INTERCEPTION DU LIEN DE PARTAGE ---
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const produitRecherche = urlParams.get('produit');
-                    if (produitRecherche) {
-                        setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
+                    const { data: produitsData, error: produitsError } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
+                    if (produitsData) {
+                        articles = produitsData;
+                        afficherProduits(articles, 'liste-accueil');
+                        
+                        // INTERCEPTION DU LIEN DE PARTAGE
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const produitRecherche = urlParams.get('produit');
+                        if (produitRecherche) {
+                            setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
+                        }
                     }
-                    // ---------------------------------------------------
+                } catch (err) { 
+                    console.log("Erreur : " + err.message); 
+                } finally {
+                    // CACHER L'ECRAN DE CHARGEMENT
+                    const ecranLoad = document.getElementById('ecran-chargement');
+                    ecranLoad.style.opacity = '0';
+                    setTimeout(() => { ecranLoad.style.display = 'none'; }, 500);
                 }
-            } catch (err) { ecran.innerText = "CRASH CODE : " + err.message; }
-                    }
-        
+            }
+
             function afficherProduits(liste, target) {
                 const container = document.getElementById(target);
                 if (!container) return;
@@ -215,73 +189,59 @@
                 }
 
                 container.innerHTML = liste.map(p => `
-                    <div class="bg-white rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col relative">
+                    <div class="bg-white rounded-[20px] shadow-[0_4px_15px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col relative border border-gray-100">
                         <div class="price-badge">${p.prix} FCFA</div>
-                        <img src="${p.image}" onclick="ouvrirDetails('${p.nom.replace(/'/g, "\\'")}')" class="w-full h-36 object-cover rounded-t-[20px]" alt="${p.nom.replace(/"/g, '')}">
+                        <img src="${p.image}" loading="lazy" onclick="ouvrirDetails('${p.nom.replace(/'/g, "\\'")}')" class="w-full h-36 object-cover rounded-t-[20px]" alt="${p.nom.replace(/"/g, '')}">
                         <div class="px-3 pt-3 flex-1 flex flex-col text-center">
                             <h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3>
                             <p class="text-blue-500 text-[9px] font-bold mb-3 truncate">Bouaflé</p>
-                            <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}')"
-                                class="btn-ajouter active:scale-95 transition">
-                                AJOUTER
-                            </button>
+                            <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}')" class="btn-ajouter active:scale-95 transition">AJOUTER</button>
                         </div>
                     </div>
                 `).join('');
             }
 
-                    function ouvrirDetails(nomProduit) {
-            const p = articles.find(a => a.nom === nomProduit);
-            if (!p) return;
+            function ouvrirDetails(nomProduit) {
+                const p = articles.find(a => a.nom === nomProduit);
+                if (!p) return;
 
-            document.getElementById('details-contenu').innerHTML = `
-                <img src="${p.image}" class="w-full h-64 object-cover rounded-2xl mb-6 shadow-lg">
-                <div class="flex justify-between items-start mb-4">
-                    <h2 class="font-black text-2xl text-[#4c1d95] uppercase leading-tight">${p.nom}</h2>
-                    <span class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black text-lg">${p.prix} F</span>
-                </div>
-                <div class="bg-purple-50 p-4 rounded-xl mb-6">
-                    <p class="text-[10px] font-black text-purple-400 uppercase mb-2">Description & Détails</p>
-                    <p class="text-gray-700 font-bold text-sm leading-relaxed">${p.description || 'Aucun détail fourni.'}</p>
-                </div>
-                
-                <div class="flex gap-2">
-                    <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}'); fermerModalDetails();" class="flex-1 py-4 bg-[#5b21b6] text-white font-black rounded-2xl shadow-xl uppercase tracking-widest active:scale-95 transition">
-                        Ajouter au panier
-                    </button>
-                    <button onclick="partagerArticle('${p.nom.replace(/'/g, "\\'")}', ${p.prix})" class="w-16 bg-blue-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-xl active:scale-95 transition">
-                        <i class="fas fa-share-nodes"></i>
-                    </button>
-                </div>
-            `;
-            
-            const modal = document.getElementById('modal-details');
-            modal.style.display = 'flex';
-            setTimeout(() => { modal.classList.add('active'); }, 10);
-        }
-
-        // --- LA NOUVELLE FONCTION INTELLIGENTE DE PARTAGE ---
-        function partagerArticle(nom, prix) {
-            // 1. On fabrique le lien magique qui ramène vers l'application
-            const urlApp = window.location.href.split('?')[0]; 
-            const lienArticle = `${urlApp}?produit=${encodeURIComponent(nom)}`;
-            
-            const textePartage = `🔥 Regarde ce que j'ai trouvé sur *Cœur de Marché Bouaflé* !\n\n🛍️ *${nom}*\n💰 *Prix : ${prix} FCFA*\n\nClique ici pour voir l'article et commander 👇`;
-
-            // 2. On ouvre le menu de partage natif du téléphone
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Cœur de Marché - ' + nom,
-                    text: textePartage,
-                    url: lienArticle
-                }).catch(console.error);
-            } else {
-                // Sécurité si le téléphone est trop ancien
-                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(textePartage + "\n" + lienArticle)}`;
-                window.open(whatsappUrl);
+                document.getElementById('details-contenu').innerHTML = `
+                    <img src="${p.image}" class="w-full h-64 object-cover rounded-2xl mb-6 shadow-lg">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="font-black text-2xl text-[#4c1d95] uppercase leading-tight">${p.nom}</h2>
+                        <span class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black text-lg">${p.prix} F</span>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-xl mb-6">
+                        <p class="text-[10px] font-black text-purple-400 uppercase mb-2">Description & Détails</p>
+                        <p class="text-gray-700 font-bold text-sm leading-relaxed">${p.description || 'Aucun détail fourni.'}</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}'); fermerModalDetails();" class="flex-1 py-4 bg-[#5b21b6] text-white font-black rounded-2xl shadow-xl uppercase tracking-widest active:scale-95 transition">
+                            Ajouter au panier
+                        </button>
+                        <button onclick="partagerArticle('${p.nom.replace(/'/g, "\\'")}', ${p.prix})" class="w-16 bg-blue-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-xl active:scale-95 transition">
+                            <i class="fas fa-share-nodes"></i>
+                        </button>
+                    </div>
+                `;
+                const modal = document.getElementById('modal-details');
+                modal.style.display = 'flex';
+                setTimeout(() => { modal.classList.add('active'); }, 10);
             }
-        }
-            
+
+            function partagerArticle(nom, prix) {
+                const urlApp = window.location.href.split('?')[0]; 
+                const lienArticle = `${urlApp}?produit=${encodeURIComponent(nom)}`;
+                const textePartage = `🔥 Regarde ce que j'ai trouvé sur *Cœur de Marché Bouaflé* !\n\n🛍️ *${nom}*\n💰 *Prix : ${prix} FCFA*\n\nClique ici pour voir l'article et commander 👇`;
+
+                if (navigator.share) {
+                    navigator.share({ title: 'Cœur de Marché - ' + nom, text: textePartage, url: lienArticle }).catch(console.error);
+                } else {
+                    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(textePartage + "\n" + lienArticle)}`;
+                    window.open(whatsappUrl);
+                }
+            }
+
             function fermerModalDetails() {
                 const modal = document.getElementById('modal-details');
                 modal.classList.remove('active');
@@ -302,8 +262,7 @@
                     container.innerHTML = "<p class='text-center text-gray-400 font-bold py-6'>Votre panier est vide.</p>";
                     totalElt.innerText = "0 F";
                 } else {
-                    let totalGlobal = 0;
-                    const vendeurs = {};
+                    let totalGlobal = 0; const vendeurs = {};
                     
                     panier.forEach((p, index) => {
                         totalGlobal += parseInt(p.prix);
@@ -316,23 +275,16 @@
 
                     container.innerHTML = Object.keys(vendeurs).map(tel => {
                         const items = vendeurs[tel];
-                        let ticketListe = '';
-                        let sousTotal = 0;
+                        let ticketListe = ''; let sousTotal = 0;
                         
                         const htmlItems = items.map(i => {
                             sousTotal += parseInt(i.prix);
                             ticketListe += `▫️ 1x ${i.nom} (${i.prix} F)\n`;
                             return `
                                 <div class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                                    <div class="flex-1 pr-2">
-                                        <h4 class="font-bold text-[11px] text-gray-700 leading-tight">${i.nom}</h4>
-                                    </div>
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-orange-500 font-black text-[11px]">${i.prix} F</span>
-                                        <button onclick="retirerDuPanier(${i.originalIndex})" class="text-red-400 active:scale-90 transition"><i class="fas fa-trash"></i></button>
-                                    </div>
-                                </div>
-                            `;
+                                    <div class="flex-1 pr-2"><h4 class="font-bold text-[11px] text-gray-700 leading-tight">${i.nom}</h4></div>
+                                    <div class="flex items-center gap-3"><span class="text-orange-500 font-black text-[11px]">${i.prix} F</span><button onclick="retirerDuPanier(${i.originalIndex})" class="text-red-400 active:scale-90 transition"><i class="fas fa-trash"></i></button></div>
+                                </div>`;
                         }).join('');
 
                         const msgBrut = `🛒 *NOUVELLE COMMANDE - Cœur de Marché*\n------------------------\n${ticketListe}------------------------\n💰 *Total à régler : ${sousTotal} FCFA*`;
@@ -340,29 +292,13 @@
 
                         return `
                             <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm relative mb-4">
-                                <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100">
-                                    <i class="fas fa-store text-[#4c1d95]"></i>
-                                    <span class="font-black text-[10px] text-[#4c1d95] uppercase">Vendeur : ${tel}</span>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    ${htmlItems}
-                                </div>
-                                
-                                <div class="flex justify-between items-center mb-3 pt-2">
-                                    <span class="text-[10px] font-black uppercase text-gray-500">Sous-total</span>
-                                    <span class="text-sm font-black text-gray-800">${sousTotal} F</span>
-                                </div>
-
-                                <button onclick="envoyerCommande('${tel}', '${msgSecurise}')" class="w-full bg-[#22c55e] text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-md active:scale-95 transition">
-                                    <i class="fab fa-whatsapp text-lg"></i>
-                                    <span class="uppercase text-[10px] tracking-wide">Commander (${items.length} art.)</span>
-                                </button>
-                            </div>
-                        `;
+                                <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-100"><i class="fas fa-store text-[#4c1d95]"></i><span class="font-black text-[10px] text-[#4c1d95] uppercase">Vendeur : ${tel}</span></div>
+                                <div class="mb-3">${htmlItems}</div>
+                                <div class="flex justify-between items-center mb-3 pt-2"><span class="text-[10px] font-black uppercase text-gray-500">Sous-total</span><span class="text-sm font-black text-gray-800">${sousTotal} F</span></div>
+                                <button onclick="envoyerCommande('${tel}', '${msgSecurise}')" class="w-full bg-[#22c55e] text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-md active:scale-95 transition"><i class="fab fa-whatsapp text-lg"></i><span class="uppercase text-[10px] tracking-wide">Commander (${items.length} art.)</span></button>
+                            </div>`;
                     }).join('');
                 }
-
                 const modal = document.getElementById('modal-panier');
                 modal.style.display = 'flex';
                 setTimeout(() => { modal.classList.add('active'); }, 10);
@@ -371,95 +307,43 @@
             function retirerDuPanier(index) {
                 panier.splice(index, 1);
                 document.getElementById('panier-count').innerText = panier.length;
-                if (panier.length === 0) {
-                    document.getElementById('panier-flottant').classList.remove('show');
-                    fermerPanier();
-                } else {
-                    ouvrirPanier(); 
-                }
+                if (panier.length === 0) { document.getElementById('panier-flottant').classList.remove('show'); fermerPanier(); } else { ouvrirPanier(); }
             }
 
             function envoyerCommande(tel, msgSecurise) {
                 window.open(`https://wa.me/${tel}?text=${msgSecurise}`);
-                
                 panier = panier.filter(p => (p.tel || '2250576326645') !== tel);
                 document.getElementById('panier-count').innerText = panier.length;
-                
-                if (panier.length === 0) {
-                    document.getElementById('panier-flottant').classList.remove('show');
-                    fermerPanier();
-                } else {
-                    ouvrirPanier(); 
-                }
+                if (panier.length === 0) { document.getElementById('panier-flottant').classList.remove('show'); fermerPanier(); } else { ouvrirPanier(); }
             }
 
-            function fermerPanier() {
-                const modal = document.getElementById('modal-panier');
-                modal.classList.remove('active');
-                setTimeout(() => { modal.style.display = 'none'; }, 300);
-            }
+            function fermerPanier() { const modal = document.getElementById('modal-panier'); modal.classList.remove('active'); setTimeout(() => { modal.style.display = 'none'; }, 300); }
 
             function changerVue(vue) {
-                document.getElementById('vue-accueil').classList.add('hidden');
-                document.getElementById('vue-boutique').classList.add('hidden');
-                document.getElementById('vue-rayon').classList.add('hidden'); 
+                document.getElementById('vue-accueil').classList.add('hidden'); document.getElementById('vue-boutique').classList.add('hidden'); document.getElementById('vue-rayon').classList.add('hidden'); 
                 document.getElementById('vue-' + vue).classList.remove('hidden');
-                document.getElementById('nav-accueil').classList.toggle('active-nav', vue === 'accueil');
-                document.getElementById('nav-boutique').classList.toggle('active-nav', vue === 'boutique');
+                document.getElementById('nav-accueil').classList.toggle('active-nav', vue === 'accueil'); document.getElementById('nav-boutique').classList.toggle('active-nav', vue === 'boutique');
                 if (vue === 'accueil') { afficherProduits(articles, 'liste-accueil'); }
                 window.scrollTo(0, 0);
             }
             
-            function filtrerAccueil(cat) {
-                document.getElementById('titre-rayon').innerText = cat;
-                const filtered = articles.filter(a => {
-                    if (!a.categorie) return false;
-                    return a.categorie.toLowerCase().includes(cat.toLowerCase());
-                });
-                afficherProduits(filtered, 'liste-rayon');
-                changerVue('rayon');
-            }
+            function filtrerAccueil(cat) { document.getElementById('titre-rayon').innerText = cat; const filtered = articles.filter(a => { if (!a.categorie) return false; return a.categorie.toLowerCase().includes(cat.toLowerCase()); }); afficherProduits(filtered, 'liste-rayon'); changerVue('rayon'); }
 
-            function filtrerBoutique(cat) {
-                document.getElementById('titre-rayon').innerText = cat;
-                const filtered = articles.filter(a => {
-                    if (!a.categorie) return false;
-                    return a.categorie.trim().toLowerCase() === cat.trim().toLowerCase();
-                });
-                afficherProduits(filtered, 'liste-rayon'); 
-                changerVue('rayon'); 
-            }
+            function filtrerBoutique(cat) { document.getElementById('titre-rayon').innerText = cat; const filtered = articles.filter(a => { if (!a.categorie) return false; return a.categorie.trim().toLowerCase() === cat.trim().toLowerCase(); }); afficherProduits(filtered, 'liste-rayon'); changerVue('rayon'); }
             
             function lancerMicro() {
-                const icon = document.getElementById('iconMicro');
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if (!SpeechRecognition) { alert("Navigateur incompatible."); return; }
-                const recognition = new SpeechRecognition();
-                recognition.lang = 'fr-FR';
-                recognition.onstart = () => icon.className = "fas fa-spinner fa-spin";
-                recognition.onresult = (e) => {
-                    document.getElementById('inputRecherche').value = e.results[0][0].transcript;
-                    rechercherProduit();
-                };
-                recognition.onend = () => icon.className = "fas fa-microphone";
-                recognition.start();
+                const icon = document.getElementById('iconMicro'); const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SpeechRecognition) { alert("Navigateur incompatible."); return; }
+                const recognition = new SpeechRecognition(); recognition.lang = 'fr-FR'; recognition.onstart = () => icon.className = "fas fa-spinner fa-spin";
+                recognition.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
+                recognition.onend = () => icon.className = "fas fa-microphone"; recognition.start();
             }
 
-            function rechercherProduit() {
-                const s = document.getElementById('inputRecherche').value.toLowerCase();
-                const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
-                const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil';
-                afficherProduits(filtered, target);
-            }
+            function rechercherProduit() { const s = document.getElementById('inputRecherche').value.toLowerCase(); const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s)); const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil'; afficherProduits(filtered, target); }
 
             init();
         }
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
-            });
-        }
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.log(err)); }); }
     </script>
 </body>
 </html>
