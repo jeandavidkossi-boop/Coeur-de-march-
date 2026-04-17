@@ -24,9 +24,10 @@
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #9ca3af; font-size: 20px; }
         .nav-text { font-size: 9px; font-weight: 900; text-transform: capitalize; margin-top: 4px; }
         .wa-btn { background: #22c55e; width: 65px; height: 65px; border-radius: 50%; border: 6px solid #f8f9fd; margin-top: -45px; display: flex; align-items: center; justify-content: center; color: white; font-size: 30px; box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3); }
+        
         #panier-flottant { transition: all 0.4s ease; transform: translateY(150px); opacity: 0; }
         #panier-flottant.show { transform: translateY(0); opacity: 1; }
-        .hide-scroll::-webkit-scrollbar { display: none; }
+        
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-content { background: white; width: 100%; border-radius: 30px 30px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; }
         .modal-overlay.active { opacity: 1; }
@@ -59,7 +60,7 @@
 
     <div class="search-container">
         <div class="search-box">
-            <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher..." class="flex-1 bg-transparent px-4 py-2 outline-none font-bold text-gray-500 text-sm">
+            <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher un article..." class="flex-1 bg-transparent px-4 py-2 outline-none font-bold text-gray-500 text-sm">
             <button onclick="lancerMicro()" class="mic-btn active:scale-95 transition"><i id="iconMicro" class="fas fa-microphone"></i></button>
         </div>
     </div>
@@ -119,11 +120,17 @@
         <span class="text-[11px] font-black uppercase">Commander</span>
     </div>
 
-    <div id="modal-details" class="modal-overlay" onclick="fermerModalDetails()"><div class="modal-content" onclick="event.stopPropagation()"><div id="details-contenu"></div><button onclick="fermerModalDetails()" class="w-full mt-4 py-4 bg-gray-100 text-gray-500 font-bold rounded-xl uppercase text-xs">Fermer la page</button></div></div>
+    <div id="modal-details" class="modal-overlay" onclick="fermerModalDetails()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div id="details-contenu"></div>
+            <button onclick="fermerModalDetails()" class="w-full mt-4 py-4 bg-gray-100 text-gray-500 font-bold rounded-xl uppercase text-xs">Fermer la page</button>
+        </div>
+    </div>
 
     <div id="modal-panier" class="modal-overlay" onclick="fermerPanier()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-4"><h2 class="font-black text-xl text-[#4c1d95] uppercase tracking-tight">Mon Panier</h2><button onclick="fermerPanier()" class="text-gray-400 text-2xl"><i class="fas fa-times"></i></button></div>
+            <div class="flex justify-between items-center font-black text-sm mb-4 bg-orange-50 text-orange-600 p-3 rounded-xl"><span class="uppercase">Total Global</span><span id="panier-total" class="text-lg">0 F</span></div>
             <div id="panier-liste" class="space-y-4 max-h-[50vh] overflow-y-auto pb-4"></div>
         </div>
     </div>
@@ -137,34 +144,58 @@
     </nav>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        const supabase = window.supabase.createClient(dbUrl, dbKey);
-
+        // Variables globales
         let articles = []; 
         let panier = [];
         let articlesCourants = []; 
         let cibleCourante = 'liste-accueil';
 
         async function init() {
+            const ecranLoad = document.getElementById('ecran-chargement');
+            
             try {
-                const { data: pr } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
-                if (pr) { articles = pr; afficherProduits(articles, 'liste-accueil'); }
-                const urlParams = new URLSearchParams(window.location.search);
-                const produitRecherche = urlParams.get('produit');
-                if (produitRecherche) setTimeout(() => ouvrirDetails(produitRecherche), 500);
+                if (!window.supabase) throw new Error("Fichier de base de données bloqué par le navigateur.");
+
+                const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+                const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+                const supabase = window.supabase.createClient(dbUrl, dbKey);
+
+                // Récupération de l'annonce
+                const { data: annonceData } = await supabase.from('annonces').select('message').limit(1).single();
+                if (annonceData) document.getElementById('texte-annonce').innerText = annonceData.message;
+
+                // Récupération des produits
+                const { data: produitsData, error } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
+                if (error) throw error;
+
+                if (produitsData) {
+                    articles = produitsData;
+                    afficherProduits(articles, 'liste-accueil');
+                    
+                    // Vérification du lien de partage
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const produitRecherche = urlParams.get('produit');
+                    if (produitRecherche) {
+                        setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
+                    }
+                }
+            } catch (err) {
+                console.error("Erreur de lancement :", err);
+                document.getElementById('texte-annonce').innerText = "Erreur : " + err.message;
             } finally {
-                const ecranLoad = document.getElementById('ecran-chargement');
-                ecranLoad.style.opacity = '0';
-                setTimeout(() => ecranLoad.style.display = 'none', 500);
+                // BLOC DE SECURITE : Retire l'écran de chargement quoi qu'il arrive
+                if (ecranLoad) {
+                    ecranLoad.style.opacity = '0';
+                    setTimeout(() => { ecranLoad.style.display = 'none'; }, 500);
+                }
             }
         }
 
-        // MOTEUR D'AFFICHAGE AVEC TRI AUTOMATIQUE
         function afficherProduits(liste, target) {
             articlesCourants = liste;
             cibleCourante = target;
-            const container = document.getElementById(target); if (!container) return;
+            const container = document.getElementById(target); 
+            if (!container) return;
 
             let listeTriee = [...liste];
             const critereTri = document.getElementById('tri-prix').value;
@@ -196,24 +227,35 @@
         }
 
         function ouvrirDetails(nom) {
-            const p = articles.find(a => a.nom === nom); if (!p) return;
+            const p = articles.find(a => a.nom === nom); 
+            if (!p) return;
+
             const link = window.location.href.split('?')[0] + '?produit=' + encodeURIComponent(nom);
             const msg = `🛍️ *${nom}* (${p.prix} F)\nVoir ici : ${link}`;
+
             document.getElementById('details-contenu').innerHTML = `
                 <img src="${p.image}" class="w-full h-64 object-cover rounded-2xl mb-6 shadow-lg">
-                <h2 class="font-black text-2xl text-[#4c1d95] uppercase leading-tight">${p.nom}</h2>
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="font-black text-2xl text-[#4c1d95] uppercase leading-tight">${p.nom}</h2>
+                    <span class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black text-lg">${p.prix} F</span>
+                </div>
                 <div class="bg-purple-50 p-4 rounded-xl my-4"><p class="text-gray-700 font-bold text-sm">${p.description || 'Pas de détail.'}</p></div>
                 <div class="flex gap-2">
-                    <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}'); fermerModalDetails();" class="flex-1 py-4 bg-[#5b21b6] text-white font-black rounded-2xl">Ajouter au panier</button>
-                    <button onclick="partager('${msg}')" class="w-16 bg-blue-500 text-white rounded-2xl flex items-center justify-center text-2xl"><i class="fas fa-share-nodes"></i></button>
+                    <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}'); fermerModalDetails();" class="flex-1 py-4 bg-[#5b21b6] text-white font-black rounded-2xl shadow-lg">Ajouter au panier</button>
+                    <button onclick="partager('${msg}')" class="w-16 bg-blue-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-lg"><i class="fas fa-share-nodes"></i></button>
                 </div>`;
-            document.getElementById('modal-details').style.display = 'flex';
-            setTimeout(() => document.getElementById('modal-details').classList.add('active'), 10);
+            
+            const modal = document.getElementById('modal-details');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('active'); }, 10);
         }
 
         function partager(m) {
-            if (navigator.share) navigator.share({ text: m });
-            else window.open(`https://wa.me/?text=${encodeURIComponent(m)}`);
+            if (navigator.share) {
+                navigator.share({ text: m });
+            } else {
+                window.open(`https://wa.me/?text=${encodeURIComponent(m)}`);
+            }
         }
 
         function ajouterAuPanier(nom, prix, tel) {
@@ -224,54 +266,155 @@
 
         function ouvrirPanier() {
             const container = document.getElementById('panier-liste');
-            if (panier.length === 0) container.innerHTML = "<p class='text-center py-6 font-bold text-gray-400'>Panier vide.</p>";
-            else {
+            const totalElt = document.getElementById('panier-total');
+
+            if (panier.length === 0) {
+                container.innerHTML = "<p class='text-center py-6 font-bold text-gray-400'>Panier vide.</p>";
+                totalElt.innerText = "0 F";
+            } else {
+                let totalGlobal = 0;
                 const vendeurs = {};
+                
                 panier.forEach((p, index) => {
+                    totalGlobal += parseInt(p.prix);
                     const tel = p.tel || '2250576326645';
                     if (!vendeurs[tel]) vendeurs[tel] = [];
                     vendeurs[tel].push({...p, index});
                 });
+
+                totalElt.innerText = totalGlobal + " FCFA";
+
                 container.innerHTML = Object.keys(vendeurs).map(tel => {
                     const items = vendeurs[tel];
-                    const total = items.reduce((s, i) => s + parseInt(i.prix), 0);
-                    const msg = encodeURIComponent(`🛒 COMMANDE\n${items.map(i => "- " + i.nom).join('\n')}\n💰 TOTAL : ${total} F`).replace(/'/g, "%27");
-                    return `<div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm">
-                        <p class="font-black text-[10px] text-purple-900 mb-2 uppercase italic">Boutique : ${tel}</p>
-                        ${items.map(i => `<div class="flex justify-between py-1 border-b text-[11px] font-bold text-gray-600"><span>${i.nom}</span><span>${i.prix} F</span></div>`).join('')}
-                        <div class="flex justify-between my-3 font-black text-sm"><span>TOTAL</span><span>${total} F</span></div>
-                        <button onclick="window.open('https://wa.me/${tel}?text=${msg}')" class="w-full bg-[#22c55e] text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-md">
-                            <i class="fab fa-whatsapp"></i> COMMANDER
-                        </button>
-                    </div>`;
+                    let sousTotal = 0;
+                    
+                    const htmlItems = items.map(i => {
+                        sousTotal += parseInt(i.prix);
+                        return `
+                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                                <span class="font-bold text-[11px] text-gray-700">${i.nom}</span>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-orange-500 font-black text-[11px]">${i.prix} F</span>
+                                    <button onclick="retirerDuPanier(${i.index})" class="text-red-400 active:scale-90"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>`;
+                    }).join('');
+
+                    const msg = encodeURIComponent(`🛒 COMMANDE\n${items.map(i => "- " + i.nom).join('\n')}\n💰 TOTAL : ${sousTotal} F`).replace(/'/g, "%27");
+                    
+                    return `
+                        <div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm">
+                            <p class="font-black text-[10px] text-purple-900 mb-2 uppercase italic">Boutique : ${tel}</p>
+                            ${htmlItems}
+                            <div class="flex justify-between my-3 font-black text-sm"><span>TOTAL</span><span>${sousTotal} F</span></div>
+                            <button onclick="window.open('https://wa.me/${tel}?text=${msg}')" class="w-full bg-[#22c55e] text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-md">
+                                <i class="fab fa-whatsapp"></i> COMMANDER
+                            </button>
+                        </div>`;
                 }).join('');
             }
-            document.getElementById('modal-panier').style.display = 'flex';
-            setTimeout(() => document.getElementById('modal-panier').classList.add('active'), 10);
+            
+            const modal = document.getElementById('modal-panier');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('active'); }, 10);
+        }
+
+        function retirerDuPanier(index) {
+            panier.splice(index, 1);
+            document.getElementById('panier-count').innerText = panier.length;
+            if (panier.length === 0) { 
+                document.getElementById('panier-flottant').classList.remove('show'); 
+                fermerPanier(); 
+            } else { 
+                ouvrirPanier(); 
+            }
+        }
+
+        function fermerModalDetails() {
+            const modal = document.getElementById('modal-details');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        function fermerPanier() {
+            const modal = document.getElementById('modal-panier');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
 
         function changerVue(v) {
-            ['accueil', 'boutique', 'rayon'].forEach(i => document.getElementById('vue-'+i).classList.add('hidden'));
+            document.getElementById('vue-accueil').classList.add('hidden');
+            document.getElementById('vue-boutique').classList.add('hidden');
+            document.getElementById('vue-rayon').classList.add('hidden');
+            
             document.getElementById('vue-'+v).classList.remove('hidden');
-            document.getElementById('tri-prix').value = 'recent'; // Réinitialise le filtre
+            
+            document.getElementById('nav-accueil').classList.toggle('active-nav', v === 'accueil');
+            document.getElementById('nav-boutique').classList.toggle('active-nav', v === 'boutique');
+            
+            document.getElementById('tri-prix').value = 'recent';
+            
+            if (v === 'accueil') { afficherProduits(articles, 'liste-accueil'); }
             window.scrollTo(0,0);
         }
 
         function filtrerAccueil(c) {
             document.getElementById('titre-rayon').innerText = c;
             const f = articles.filter(a => a.categorie && a.categorie.toLowerCase().includes(c.toLowerCase()));
-            afficherProduits(f, 'liste-rayon'); changerVue('rayon');
+            afficherProduits(f, 'liste-rayon'); 
+            changerVue('rayon');
         }
 
-        function remonterHaut() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function filtrerBoutique(cat) { 
+            document.getElementById('titre-rayon').innerText = cat; 
+            const filtered = articles.filter(a => a.categorie && a.categorie.trim().toLowerCase() === cat.trim().toLowerCase()); 
+            afficherProduits(filtered, 'liste-rayon'); 
+            changerVue('rayon'); 
+        }
+
+        function lancerMicro() {
+            const icon = document.getElementById('iconMicro'); 
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; 
+            if (!SpeechRecognition) { alert("Navigateur incompatible avec le micro."); return; }
+            const recognition = new SpeechRecognition(); 
+            recognition.lang = 'fr-FR'; 
+            recognition.onstart = () => icon.className = "fas fa-spinner fa-spin";
+            recognition.onresult = (e) => { 
+                document.getElementById('inputRecherche').value = e.results[0][0].transcript; 
+                rechercherProduit(); 
+            };
+            recognition.onend = () => icon.className = "fas fa-microphone"; 
+            recognition.start();
+        }
+
+        function rechercherProduit() {
+            const s = document.getElementById('inputRecherche').value.toLowerCase();
+            const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
+            const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil';
+            afficherProduits(filtered, target);
+        }
+
+        function remonterHaut() { 
+            window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        }
         
         window.addEventListener('scroll', () => {
             const btn = document.getElementById('btn-remonter');
-            if (window.scrollY > 400) btn.classList.add('show');
-            else btn.classList.remove('show');
+            if (window.scrollY > 400) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
         });
 
+        // Demarrage de l'application
         init();
+
+        if ('serviceWorker' in navigator) { 
+            window.addEventListener('load', () => { 
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log("Erreur PWA:", err)); 
+            }); 
+        }
     </script>
 </body>
 </html>
