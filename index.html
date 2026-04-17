@@ -28,10 +28,17 @@
         #panier-flottant { transition: all 0.4s ease; transform: translateY(150px); opacity: 0; }
         #panier-flottant.show { transform: translateY(0); opacity: 1; }
         
+        /* Modales Universelles */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-content { background: white; width: 100%; border-radius: 30px 30px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; }
         .modal-overlay.active { opacity: 1; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        /* Modale Alerte Custom (Centrée) */
+        .modal-alerte-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-alerte-content { background: white; width: 85%; border-radius: 25px; padding: 25px; transform: scale(0.9); transition: transform 0.3s ease; text-align: center; }
+        .modal-alerte-overlay.active { opacity: 1; }
+        .modal-alerte-overlay.active .modal-alerte-content { transform: scale(1); }
 
         #ecran-chargement { position: fixed; inset: 0; background-color: #f8f9fd; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
         .spinner { width: 50px; height: 50px; border: 5px solid #e5e7eb; border-top-color: #f97316; border-radius: 50%; animation: spin 1s linear infinite; }
@@ -42,6 +49,15 @@
     </style>
 </head>
 <body class="pb-32">
+
+    <div id="modal-alerte" class="modal-alerte-overlay" onclick="fermerAlerte()">
+        <div class="modal-alerte-content" onclick="event.stopPropagation()">
+            <div class="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fas fa-info-circle"></i></div>
+            <h3 id="alerte-titre" class="font-black text-lg text-[#4c1d95] uppercase mb-2">Message</h3>
+            <p id="alerte-message" class="text-gray-600 text-sm font-bold mb-6">Texte de l'alerte</p>
+            <button onclick="fermerAlerte()" class="w-full bg-[#5b21b6] text-white font-black py-3 rounded-xl active:scale-95 transition uppercase text-xs tracking-wider">J'ai compris</button>
+        </div>
+    </div>
 
     <div id="ecran-chargement">
         <div class="spinner mb-6"></div>
@@ -80,10 +96,7 @@
             <button onclick="filtrerAccueil('Alimentation')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#dbeafe] text-[#2563eb] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-utensils"></i></div><span class="text-[10px] font-black text-gray-800 uppercase">Resto</span></button>
             <button onclick="filtrerAccueil('Habillement')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#ffedd5] text-[#d97706] rounded-full flex items-center justify-center text-2xl mb-2 shadow-sm"><i class="fas fa-tshirt"></i></div><span class="text-[10px] font-black text-gray-800 uppercase">Mode</span></button>
         </div>
-        <main class="mt-8 px-6">
-            <h2 class="font-black text-[#4c1d95] text-sm mb-4 flex items-center gap-2 uppercase"><i class="fas fa-fire text-orange-500 text-lg"></i> A LA UNE</h2>
-            <div id="liste-accueil" class="grid grid-cols-2 gap-4"></div>
-        </main>
+        <main class="mt-8 px-6"><h2 class="font-black text-[#4c1d95] text-sm mb-4 flex items-center gap-2 uppercase"><i class="fas fa-fire text-orange-500 text-lg"></i> A LA UNE</h2><div id="liste-accueil" class="grid grid-cols-2 gap-4"></div></main>
     </div>
 
     <div id="vue-boutique" class="hidden mt-8 px-6">
@@ -106,32 +119,44 @@
     </div>
 
     <div id="vue-rayon" class="hidden mt-8 px-6">
-        <div class="flex items-center gap-4 mb-6">
-            <button onclick="changerVue('boutique')" class="w-10 h-10 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center active:scale-90 transition shadow-sm"><i class="fas fa-arrow-left"></i></button>
-            <h2 id="titre-rayon" class="font-black text-[#4c1d95] text-lg uppercase truncate">Chargement...</h2>
-        </div>
+        <div class="flex items-center gap-4 mb-6"><button onclick="changerVue('boutique')" class="w-10 h-10 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center active:scale-90 transition shadow-sm"><i class="fas fa-arrow-left"></i></button><h2 id="titre-rayon" class="font-black text-[#4c1d95] text-lg uppercase truncate">Chargement...</h2></div>
         <div id="liste-rayon" class="grid grid-cols-2 gap-4 pb-10"></div>
     </div>
 
     <button id="btn-remonter" onclick="remonterHaut()"><i class="fas fa-arrow-up"></i></button>
     
-    <div id="panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-24 right-6 bg-[#5b21b6] text-white p-4 rounded-2xl shadow-2xl flex items-center gap-3 z-[60] cursor-pointer">
-        <div class="relative"><i class="fas fa-shopping-basket text-xl"></i><span id="panier-count" class="absolute -top-3 -right-3 bg-orange-500 text-white text-[11px] w-6 h-6 rounded-full flex items-center justify-center font-black border-2 border-[#5b21b6]">0</span></div>
-        <span class="text-[11px] font-black uppercase">Commander</span>
-    </div>
+    <div id="panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-24 right-6 bg-[#5b21b6] text-white p-4 rounded-2xl shadow-2xl flex items-center gap-3 z-[60] cursor-pointer"><div class="relative"><i class="fas fa-shopping-basket text-xl"></i><span id="panier-count" class="absolute -top-3 -right-3 bg-orange-500 text-white text-[11px] w-6 h-6 rounded-full flex items-center justify-center font-black border-2 border-[#5b21b6]">0</span></div><span class="text-[11px] font-black uppercase">Commander</span></div>
 
-    <div id="modal-details" class="modal-overlay" onclick="fermerModalDetails()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div id="details-contenu"></div>
-            <button onclick="fermerModalDetails()" class="w-full mt-4 py-4 bg-gray-100 text-gray-500 font-bold rounded-xl uppercase text-xs">Fermer la page</button>
-        </div>
-    </div>
+    <div id="modal-details" class="modal-overlay" onclick="fermerModalDetails()"><div class="modal-content" onclick="event.stopPropagation()"><div id="details-contenu"></div><button onclick="fermerModalDetails()" class="w-full mt-4 py-4 bg-gray-100 text-gray-500 font-bold rounded-xl uppercase text-xs">Fermer la page</button></div></div>
 
-    <div id="modal-panier" class="modal-overlay" onclick="fermerPanier()">
+    <div id="modal-panier" class="modal-overlay" onclick="fermerPanier()"><div class="modal-content" onclick="event.stopPropagation()"><div class="flex justify-between items-center mb-4"><h2 class="font-black text-xl text-[#4c1d95] uppercase tracking-tight">Mon Panier</h2><button onclick="fermerPanier()" class="text-gray-400 text-2xl"><i class="fas fa-times"></i></button></div><div class="flex justify-between items-center font-black text-sm mb-4 bg-orange-50 text-orange-600 p-3 rounded-xl"><span class="uppercase">Total Global</span><span id="panier-total" class="text-lg">0 F</span></div><div id="panier-liste" class="space-y-4 max-h-[50vh] overflow-y-auto pb-4"></div></div></div>
+
+    <div id="modal-aide" class="modal-overlay" onclick="fermerAide()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-4"><h2 class="font-black text-xl text-[#4c1d95] uppercase tracking-tight">Mon Panier</h2><button onclick="fermerPanier()" class="text-gray-400 text-2xl"><i class="fas fa-times"></i></button></div>
-            <div class="flex justify-between items-center font-black text-sm mb-4 bg-orange-50 text-orange-600 p-3 rounded-xl"><span class="uppercase">Total Global</span><span id="panier-total" class="text-lg">0 F</span></div>
-            <div id="panier-liste" class="space-y-4 max-h-[50vh] overflow-y-auto pb-4"></div>
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <h2 class="font-black text-xl text-[#4c1d95] uppercase tracking-tight">Guide du Marché</h2>
+                <button onclick="fermerAide()" class="text-gray-400 text-2xl"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="space-y-4 max-h-[60vh] overflow-y-auto pb-4 hide-scroll">
+                <div class="bg-purple-50 p-4 rounded-xl">
+                    <h3 class="font-black text-[#5b21b6] text-sm mb-1"><i class="fas fa-heart text-orange-500 mr-2"></i>Cœur de Marché, c'est quoi ?</h3>
+                    <p class="text-gray-700 text-[11px] font-bold leading-relaxed">C'est le 1er marché numérique de Bouaflé et de la Marahoué. Notre mission : connecter les commerçants locaux directement avec les clients pour faire grandir notre économie.</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <h3 class="font-black text-gray-800 text-sm mb-1"><i class="fas fa-download text-[#22c55e] mr-2"></i>Comment installer l'App ?</h3>
+                    <p class="text-gray-600 text-[11px] font-bold leading-relaxed">Sur Chrome (Android) : Cliquez sur les 3 petits points en haut à droite, puis sélectionnez <span class="text-[#5b21b6] font-black">"Ajouter à l'écran d'accueil"</span>. L'icône apparaîtra sur votre téléphone !</p>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <h3 class="font-black text-gray-800 text-sm mb-1"><i class="fas fa-shopping-cart text-[#3b82f6] mr-2"></i>Comment acheter ?</h3>
+                    <p class="text-gray-600 text-[11px] font-bold leading-relaxed">Parcourez les rayons, ajoutez les articles au panier. Une fois terminé, validez votre commande. Elle sera envoyée directement par message au vendeur sur WhatsApp.</p>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-xl border border-orange-100">
+                    <h3 class="font-black text-orange-600 text-sm mb-1"><i class="fas fa-store text-orange-500 mr-2"></i>Je suis un commerçant</h3>
+                    <p class="text-gray-700 text-[11px] font-bold leading-relaxed mb-3">Vous souhaitez vendre vos articles et augmenter vos revenus avec une vitrine personnalisée ? Rejoignez le marché !</p>
+                    <button onclick="window.open('https://wa.me/2250576326645?text=Bonjour%20l\'administration%20Coeur%20de%20Marché.%20Je%20suis%20commerçant%20et%20je%20souhaite%20ouvrir%20une%20boutique.')" class="w-full bg-[#5b21b6] text-white py-2 rounded-lg font-black text-[10px] uppercase shadow-md"><i class="fab fa-whatsapp mr-2"></i>Contacter l'administration</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -140,76 +165,60 @@
         <button onclick="changerVue('boutique')" id="nav-boutique" class="nav-item"><i class="fas fa-store"></i><span class="nav-text">Boutique</span></button>
         <button onclick="window.open('https://wa.me/2250576326645')" class="wa-btn active:scale-95 transition"><i class="fab fa-whatsapp"></i></button>
         <a href="vendre.html" class="nav-item"><i class="fas fa-store-alt"></i><span class="nav-text">Vendre</span></a>
-        <button onclick="alert('Aide')" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
+        <button onclick="ouvrirAide()" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
     </nav>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Variables globales
-        let articles = []; 
-        let panier = [];
-        let articlesCourants = []; 
-        let cibleCourante = 'liste-accueil';
+        let articles = []; let panier = []; let articlesCourants = []; let cibleCourante = 'liste-accueil';
+
+        // Moteur Alerte Custom
+        function afficherAlerteCustom(titre, message) {
+            document.getElementById('alerte-titre').innerText = titre;
+            document.getElementById('alerte-message').innerText = message;
+            const modal = document.getElementById('modal-alerte');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('active'); }, 10);
+        }
+
+        function fermerAlerte() {
+            const modal = document.getElementById('modal-alerte');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
 
         async function init() {
             const ecranLoad = document.getElementById('ecran-chargement');
-            
             try {
-                if (!window.supabase) throw new Error("Fichier de base de données bloqué par le navigateur.");
-
+                if (!window.supabase) throw new Error("Fichier de base de données bloqué.");
                 const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
                 const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
                 const supabase = window.supabase.createClient(dbUrl, dbKey);
 
-                // Récupération de l'annonce
                 const { data: annonceData } = await supabase.from('annonces').select('message').limit(1).single();
                 if (annonceData) document.getElementById('texte-annonce').innerText = annonceData.message;
 
-                // Récupération des produits
                 const { data: produitsData, error } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
                 if (error) throw error;
 
                 if (produitsData) {
-                    articles = produitsData;
-                    afficherProduits(articles, 'liste-accueil');
-                    
-                    // Vérification du lien de partage
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const produitRecherche = urlParams.get('produit');
-                    if (produitRecherche) {
-                        setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
-                    }
+                    articles = produitsData; afficherProduits(articles, 'liste-accueil');
+                    const produitRecherche = new URLSearchParams(window.location.search).get('produit');
+                    if (produitRecherche) setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
                 }
             } catch (err) {
-                console.error("Erreur de lancement :", err);
-                document.getElementById('texte-annonce').innerText = "Erreur : " + err.message;
+                document.getElementById('texte-annonce').innerText = "Erreur de chargement.";
             } finally {
-                // BLOC DE SECURITE : Retire l'écran de chargement quoi qu'il arrive
-                if (ecranLoad) {
-                    ecranLoad.style.opacity = '0';
-                    setTimeout(() => { ecranLoad.style.display = 'none'; }, 500);
-                }
+                if (ecranLoad) { ecranLoad.style.opacity = '0'; setTimeout(() => { ecranLoad.style.display = 'none'; }, 500); }
             }
         }
 
         function afficherProduits(liste, target) {
-            articlesCourants = liste;
-            cibleCourante = target;
-            const container = document.getElementById(target); 
-            if (!container) return;
+            articlesCourants = liste; cibleCourante = target; const container = document.getElementById(target); if (!container) return;
+            let listeTriee = [...liste]; const critereTri = document.getElementById('tri-prix').value;
+            if (critereTri === 'croissant') listeTriee.sort((a, b) => parseInt(a.prix) - parseInt(b.prix));
+            else if (critereTri === 'decroissant') listeTriee.sort((a, b) => parseInt(b.prix) - parseInt(a.prix));
 
-            let listeTriee = [...liste];
-            const critereTri = document.getElementById('tri-prix').value;
-            
-            if (critereTri === 'croissant') {
-                listeTriee.sort((a, b) => parseInt(a.prix) - parseInt(b.prix));
-            } else if (critereTri === 'decroissant') {
-                listeTriee.sort((a, b) => parseInt(b.prix) - parseInt(a.prix));
-            }
-
-            if (listeTriee.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1 / -1;" class="text-center py-10"><p class="text-gray-500 font-bold text-sm">Rayon vide, revenir plus tard.</p></div>`;
-                return;
-            }
+            if (listeTriee.length === 0) { container.innerHTML = `<div style="grid-column: 1 / -1;" class="text-center py-10"><p class="text-gray-500 font-bold text-sm">Rayon vide, revenir plus tard.</p></div>`; return; }
 
             container.innerHTML = listeTriee.map(p => `
                 <div class="bg-white rounded-[20px] shadow-sm overflow-hidden flex flex-col relative border border-gray-100">
@@ -222,199 +231,74 @@
                 </div>`).join('');
         }
 
-        function changerTri() {
-            afficherProduits(articlesCourants, cibleCourante);
-        }
+        function changerTri() { afficherProduits(articlesCourants, cibleCourante); }
 
         function ouvrirDetails(nom) {
-            const p = articles.find(a => a.nom === nom); 
-            if (!p) return;
-
+            const p = articles.find(a => a.nom === nom); if (!p) return;
             const link = window.location.href.split('?')[0] + '?produit=' + encodeURIComponent(nom);
             const msg = `🛍️ *${nom}* (${p.prix} F)\nVoir ici : ${link}`;
 
             document.getElementById('details-contenu').innerHTML = `
                 <img src="${p.image}" class="w-full h-64 object-cover rounded-2xl mb-6 shadow-lg">
-                <div class="flex justify-between items-start mb-4">
-                    <h2 class="font-black text-2xl text-[#4c1d95] uppercase leading-tight">${p.nom}</h2>
-                    <span class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black text-lg">${p.prix} F</span>
-                </div>
+                <div class="flex justify-between items-start mb-4"><h2 class="font-black text-2xl text-[#4c1d95] uppercase leading-tight">${p.nom}</h2><span class="bg-orange-500 text-white px-4 py-2 rounded-xl font-black text-lg">${p.prix} F</span></div>
                 <div class="bg-purple-50 p-4 rounded-xl my-4"><p class="text-gray-700 font-bold text-sm">${p.description || 'Pas de détail.'}</p></div>
                 <div class="flex gap-2">
                     <button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}'); fermerModalDetails();" class="flex-1 py-4 bg-[#5b21b6] text-white font-black rounded-2xl shadow-lg">Ajouter au panier</button>
                     <button onclick="partager('${msg}')" class="w-16 bg-blue-500 text-white rounded-2xl flex items-center justify-center text-2xl shadow-lg"><i class="fas fa-share-nodes"></i></button>
                 </div>`;
-            
-            const modal = document.getElementById('modal-details');
-            modal.style.display = 'flex';
-            setTimeout(() => { modal.classList.add('active'); }, 10);
+            const modal = document.getElementById('modal-details'); modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('active'); }, 10);
         }
 
-        function partager(m) {
-            if (navigator.share) {
-                navigator.share({ text: m });
-            } else {
-                window.open(`https://wa.me/?text=${encodeURIComponent(m)}`);
-            }
-        }
+        function partager(m) { if (navigator.share) { navigator.share({ text: m }); } else { window.open(`https://wa.me/?text=${encodeURIComponent(m)}`); } }
 
         function ajouterAuPanier(nom, prix, tel) {
-            panier.push({nom, prix, tel});
-            document.getElementById('panier-count').innerText = panier.length;
-            document.getElementById('panier-flottant').classList.add('show');
+            panier.push({nom, prix, tel}); document.getElementById('panier-count').innerText = panier.length; document.getElementById('panier-flottant').classList.add('show');
+            // Utilisation de la nouvelle alerte !
+            afficherAlerteCustom('Ajouté', `${nom} est dans votre panier.`);
         }
 
         function ouvrirPanier() {
-            const container = document.getElementById('panier-liste');
-            const totalElt = document.getElementById('panier-total');
-
-            if (panier.length === 0) {
-                container.innerHTML = "<p class='text-center py-6 font-bold text-gray-400'>Panier vide.</p>";
-                totalElt.innerText = "0 F";
-            } else {
-                let totalGlobal = 0;
-                const vendeurs = {};
-                
-                panier.forEach((p, index) => {
-                    totalGlobal += parseInt(p.prix);
-                    const tel = p.tel || '2250576326645';
-                    if (!vendeurs[tel]) vendeurs[tel] = [];
-                    vendeurs[tel].push({...p, index});
-                });
-
+            const container = document.getElementById('panier-liste'); const totalElt = document.getElementById('panier-total');
+            if (panier.length === 0) { container.innerHTML = "<p class='text-center py-6 font-bold text-gray-400'>Panier vide.</p>"; totalElt.innerText = "0 F"; } else {
+                let totalGlobal = 0; const vendeurs = {};
+                panier.forEach((p, index) => { totalGlobal += parseInt(p.prix); const tel = p.tel || '2250576326645'; if (!vendeurs[tel]) vendeurs[tel] = []; vendeurs[tel].push({...p, index}); });
                 totalElt.innerText = totalGlobal + " FCFA";
-
                 container.innerHTML = Object.keys(vendeurs).map(tel => {
-                    const items = vendeurs[tel];
-                    let sousTotal = 0;
-                    
-                    const htmlItems = items.map(i => {
-                        sousTotal += parseInt(i.prix);
-                        return `
-                            <div class="flex justify-between items-center py-2 border-b border-gray-100">
-                                <span class="font-bold text-[11px] text-gray-700">${i.nom}</span>
-                                <div class="flex items-center gap-3">
-                                    <span class="text-orange-500 font-black text-[11px]">${i.prix} F</span>
-                                    <button onclick="retirerDuPanier(${i.index})" class="text-red-400 active:scale-90"><i class="fas fa-trash"></i></button>
-                                </div>
-                            </div>`;
-                    }).join('');
-
+                    const items = vendeurs[tel]; let sousTotal = 0;
+                    const htmlItems = items.map(i => { sousTotal += parseInt(i.prix); return `<div class="flex justify-between items-center py-2 border-b border-gray-100"><span class="font-bold text-[11px] text-gray-700">${i.nom}</span><div class="flex items-center gap-3"><span class="text-orange-500 font-black text-[11px]">${i.prix} F</span><button onclick="retirerDuPanier(${i.index})" class="text-red-400 active:scale-90"><i class="fas fa-trash"></i></button></div></div>`; }).join('');
                     const msg = encodeURIComponent(`🛒 COMMANDE\n${items.map(i => "- " + i.nom).join('\n')}\n💰 TOTAL : ${sousTotal} F`).replace(/'/g, "%27");
-                    
-                    return `
-                        <div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm">
-                            <p class="font-black text-[10px] text-purple-900 mb-2 uppercase italic">Boutique : ${tel}</p>
-                            ${htmlItems}
-                            <div class="flex justify-between my-3 font-black text-sm"><span>TOTAL</span><span>${sousTotal} F</span></div>
-                            <button onclick="window.open('https://wa.me/${tel}?text=${msg}')" class="w-full bg-[#22c55e] text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-md">
-                                <i class="fab fa-whatsapp"></i> COMMANDER
-                            </button>
-                        </div>`;
+                    return `<div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm"><p class="font-black text-[10px] text-purple-900 mb-2 uppercase italic">Boutique : ${tel}</p>${htmlItems}<div class="flex justify-between my-3 font-black text-sm"><span>TOTAL</span><span>${sousTotal} F</span></div><button onclick="window.open('https://wa.me/${tel}?text=${msg}')" class="w-full bg-[#22c55e] text-white font-black py-3 rounded-xl flex items-center justify-center gap-2 shadow-md"><i class="fab fa-whatsapp"></i> COMMANDER</button></div>`;
                 }).join('');
             }
-            
-            const modal = document.getElementById('modal-panier');
-            modal.style.display = 'flex';
-            setTimeout(() => { modal.classList.add('active'); }, 10);
+            const modal = document.getElementById('modal-panier'); modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('active'); }, 10);
         }
 
-        function retirerDuPanier(index) {
-            panier.splice(index, 1);
-            document.getElementById('panier-count').innerText = panier.length;
-            if (panier.length === 0) { 
-                document.getElementById('panier-flottant').classList.remove('show'); 
-                fermerPanier(); 
-            } else { 
-                ouvrirPanier(); 
-            }
-        }
-
-        function fermerModalDetails() {
-            const modal = document.getElementById('modal-details');
-            modal.classList.remove('active');
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
-        }
-
-        function fermerPanier() {
-            const modal = document.getElementById('modal-panier');
-            modal.classList.remove('active');
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
-        }
-
-        function changerVue(v) {
-            document.getElementById('vue-accueil').classList.add('hidden');
-            document.getElementById('vue-boutique').classList.add('hidden');
-            document.getElementById('vue-rayon').classList.add('hidden');
-            
-            document.getElementById('vue-'+v).classList.remove('hidden');
-            
-            document.getElementById('nav-accueil').classList.toggle('active-nav', v === 'accueil');
-            document.getElementById('nav-boutique').classList.toggle('active-nav', v === 'boutique');
-            
-            document.getElementById('tri-prix').value = 'recent';
-            
-            if (v === 'accueil') { afficherProduits(articles, 'liste-accueil'); }
-            window.scrollTo(0,0);
-        }
-
-        function filtrerAccueil(c) {
-            document.getElementById('titre-rayon').innerText = c;
-            const f = articles.filter(a => a.categorie && a.categorie.toLowerCase().includes(c.toLowerCase()));
-            afficherProduits(f, 'liste-rayon'); 
-            changerVue('rayon');
-        }
-
-        function filtrerBoutique(cat) { 
-            document.getElementById('titre-rayon').innerText = cat; 
-            const filtered = articles.filter(a => a.categorie && a.categorie.trim().toLowerCase() === cat.trim().toLowerCase()); 
-            afficherProduits(filtered, 'liste-rayon'); 
-            changerVue('rayon'); 
-        }
-
-        function lancerMicro() {
-            const icon = document.getElementById('iconMicro'); 
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; 
-            if (!SpeechRecognition) { alert("Navigateur incompatible avec le micro."); return; }
-            const recognition = new SpeechRecognition(); 
-            recognition.lang = 'fr-FR'; 
-            recognition.onstart = () => icon.className = "fas fa-spinner fa-spin";
-            recognition.onresult = (e) => { 
-                document.getElementById('inputRecherche').value = e.results[0][0].transcript; 
-                rechercherProduit(); 
-            };
-            recognition.onend = () => icon.className = "fas fa-microphone"; 
-            recognition.start();
-        }
-
-        function rechercherProduit() {
-            const s = document.getElementById('inputRecherche').value.toLowerCase();
-            const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
-            const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil';
-            afficherProduits(filtered, target);
-        }
-
-        function remonterHaut() { 
-            window.scrollTo({ top: 0, behavior: 'smooth' }); 
-        }
+        function retirerDuPanier(index) { panier.splice(index, 1); document.getElementById('panier-count').innerText = panier.length; if (panier.length === 0) { document.getElementById('panier-flottant').classList.remove('show'); fermerPanier(); } else { ouvrirPanier(); } }
+        function fermerModalDetails() { const modal = document.getElementById('modal-details'); modal.classList.remove('active'); setTimeout(() => { modal.style.display = 'none'; }, 300); }
+        function fermerPanier() { const modal = document.getElementById('modal-panier'); modal.classList.remove('active'); setTimeout(() => { modal.style.display = 'none'; }, 300); }
         
-        window.addEventListener('scroll', () => {
-            const btn = document.getElementById('btn-remonter');
-            if (window.scrollY > 400) {
-                btn.classList.add('show');
-            } else {
-                btn.classList.remove('show');
-            }
-        });
+        // Moteur Aide
+        function ouvrirAide() { const modal = document.getElementById('modal-aide'); modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('active'); }, 10); }
+        function fermerAide() { const modal = document.getElementById('modal-aide'); modal.classList.remove('active'); setTimeout(() => { modal.style.display = 'none'; }, 300); }
 
-        // Demarrage de l'application
-        init();
-
-        if ('serviceWorker' in navigator) { 
-            window.addEventListener('load', () => { 
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log("Erreur PWA:", err)); 
-            }); 
+        function changerVue(v) { document.getElementById('vue-accueil').classList.add('hidden'); document.getElementById('vue-boutique').classList.add('hidden'); document.getElementById('vue-rayon').classList.add('hidden'); document.getElementById('vue-'+v).classList.remove('hidden'); document.getElementById('nav-accueil').classList.toggle('active-nav', v === 'accueil'); document.getElementById('nav-boutique').classList.toggle('active-nav', v === 'boutique'); document.getElementById('tri-prix').value = 'recent'; if (v === 'accueil') { afficherProduits(articles, 'liste-accueil'); } window.scrollTo(0,0); }
+        function filtrerAccueil(c) { document.getElementById('titre-rayon').innerText = c; const f = articles.filter(a => a.categorie && a.categorie.toLowerCase().includes(c.toLowerCase())); afficherProduits(f, 'liste-rayon'); changerVue('rayon'); }
+        function filtrerBoutique(cat) { document.getElementById('titre-rayon').innerText = cat; const filtered = articles.filter(a => a.categorie && a.categorie.trim().toLowerCase() === cat.trim().toLowerCase()); afficherProduits(filtered, 'liste-rayon'); changerVue('rayon'); }
+        
+        function lancerMicro() {
+            const icon = document.getElementById('iconMicro'); const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; 
+            if (!SpeechRecognition) { afficherAlerteCustom('Erreur Micro', 'Votre téléphone n\'est pas compatible avec le micro.'); return; }
+            const recognition = new SpeechRecognition(); recognition.lang = 'fr-FR'; recognition.onstart = () => icon.className = "fas fa-spinner fa-spin";
+            recognition.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
+            recognition.onend = () => icon.className = "fas fa-microphone"; recognition.start();
         }
+
+        function rechercherProduit() { const s = document.getElementById('inputRecherche').value.toLowerCase(); const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s)); const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-boutique' : 'liste-accueil'; afficherProduits(filtered, target); }
+        function remonterHaut() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        window.addEventListener('scroll', () => { const btn = document.getElementById('btn-remonter'); if (window.scrollY > 400) { btn.classList.add('show'); } else { btn.classList.remove('show'); } });
+
+        init();
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.log("Erreur PWA:", err)); }); }
     </script>
 </body>
 </html>
