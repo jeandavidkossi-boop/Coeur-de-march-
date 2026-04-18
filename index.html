@@ -7,252 +7,220 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
-        .bg-cdm-purple { background-color: #5b21b6; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         .text-cdm-purple { color: #5b21b6; }
+        .bg-cdm-orange { background-color: #f97316; }
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-        /* Animation fluide pour le carrousel VIP */
-        #avenue-vip { scroll-behavior: smooth; }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-20">
 
-    <header class="bg-cdm-purple text-white p-6 rounded-b-[35px] shadow-lg sticky top-0 z-50">
+    <header class="bg-[#5b21b6] text-white p-6 rounded-b-[35px] shadow-lg sticky top-0 z-40">
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-3">
-                <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white shadow-sm" alt="Logo">
+                <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white" alt="Logo">
                 <div>
                     <h1 class="text-xl font-black uppercase tracking-tighter">Coeur de Marché</h1>
-                    <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest flex items-center gap-1">
-                        <i class="fas fa-map-marker-alt"></i> Bouaflé
-                    </p>
+                    <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest italic">Bouaflé</p>
                 </div>
             </div>
-            <a href="vendre.html" class="bg-white/20 p-3 rounded-2xl active:scale-90 transition-all shadow-sm border border-white/20">
+            <a href="vendre.html" class="bg-white/10 p-3 rounded-2xl active:scale-90 transition-all">
                 <i class="fas fa-store text-white"></i>
             </a>
         </div>
         
         <div class="relative">
             <i class="fas fa-search absolute left-4 top-4 text-gray-400"></i>
-            <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Que cherchez-vous à Bouaflé ?" class="w-full p-4 pl-12 bg-white text-gray-800 rounded-2xl outline-none font-bold shadow-inner placeholder-gray-400 focus:ring-2 focus:ring-orange-500 transition-all">
+            <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Que cherchez-vous à Bouaflé ?" class="w-full p-4 pl-12 bg-white text-gray-800 rounded-2xl outline-none font-bold shadow-inner">
         </div>
     </header>
 
-    <div class="px-6 mt-6 mb-2">
-        <h2 class="font-black text-[#4c1d95] text-[11px] mb-3 flex items-center gap-2 uppercase tracking-widest border-b-2 border-purple-200 pb-2 w-max">
-            <i class="fas fa-crown text-yellow-500 text-sm"></i> Boutiques Officielles
+    <div class="px-6 mt-8">
+        <h2 class="font-black text-[#4c1d95] text-xs mb-3 flex items-center gap-2 uppercase">
+            <i class="fas fa-crown text-yellow-500"></i> Boutiques Officielles
         </h2>
-        <div id="avenue-vip" class="flex gap-4 overflow-x-auto hide-scroll py-2">
-            <p class="text-[10px] font-bold text-gray-400 italic">Chargement des boutiques...</p>
+        <div id="carrousel-vip" class="flex gap-4 overflow-x-auto hide-scroll py-2">
+            <p class="text-[10px] font-bold text-gray-400 italic">Chargement des VIP...</p>
         </div>
     </div>
-        <main class="mt-2">
-        <div class="px-6 mb-6">
+        <main class="mt-4">
+        <div class="px-6 mb-8">
             <div id="carrousel-alaune" class="flex gap-4 overflow-x-auto hide-scroll snap-x snap-mandatory rounded-2xl">
                 </div>
         </div>
 
         <div class="px-6 mb-6 overflow-x-auto hide-scroll">
-            <div class="flex gap-3 pb-2 w-max">
-                <button onclick="filtrerCat('Tous')" class="cat-btn active bg-[#4c1d95] text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-md transition-all">Tout le marché</button>
-                <button onclick="filtrerCat('Marché & Vivrier')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-sm transition-all">Vivrier</button>
-                <button onclick="filtrerCat('Habillement & Pagnes')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-sm transition-all">Habillement</button>
-                <button onclick="filtrerCat('Beauté & Cosmétique')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-sm transition-all">Beauté</button>
-                <button onclick="filtrerCat('Maison & Vaisselle')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-sm transition-all">Maison</button>
+            <div class="flex gap-3 pb-2">
+                <button onclick="filtrerCat('Tous')" class="cat-btn active bg-[#4c1d95] text-white px-5 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-md">Tous</button>
+                <button onclick="filtrerCat('Marché & Vivrier')" class="cat-btn bg-white text-gray-600 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase">Vivrier</button>
+                <button onclick="filtrerCat('Habillement & Pagnes')" class="cat-btn bg-white text-gray-600 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase">Habillement</button>
+                <button onclick="filtrerCat('Beauté & Cosmétique')" class="cat-btn bg-white text-gray-600 px-5 py-2.5 rounded-xl text-[10px] font-black uppercase">Beauté</button>
             </div>
         </div>
 
-        <div class="px-6 mb-8">
+        <div class="px-6 mb-24">
             <div id="grille-produits" class="grid grid-cols-2 gap-4">
-                <p class="text-gray-400 text-sm font-bold col-span-2 text-center py-10 italic">Chargement du marché...</p>
+                <p class="text-gray-400 text-sm italic col-span-2 text-center py-10">Chargement du marché...</p>
             </div>
         </div>
     </main>
 
-    <div id="modal-contact" class="fixed inset-0 bg-black/80 z-[300] hidden items-center justify-center opacity-0 transition-opacity duration-300">
-        <div class="bg-white w-[85%] rounded-[30px] p-6 text-center transform scale-90 transition-transform duration-300 relative overflow-hidden" id="modal-content">
-            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-orange-600"></div>
-            <img id="modal-img" src="" class="w-24 h-24 object-cover rounded-2xl mx-auto mb-4 border-4 border-gray-50 shadow-md">
-            <h3 id="modal-nom" class="font-black text-lg uppercase mb-1 text-gray-800">Nom du produit</h3>
-            <p id="modal-prix" class="text-orange-600 font-black text-xl mb-4">0 FCFA</p>
-            <div class="bg-gray-50 p-4 rounded-2xl mb-6 text-left border border-gray-100">
-                <p class="text-[10px] uppercase font-black text-gray-400 mb-1">Détails de l'article :</p>
-                <p id="modal-desc" class="text-xs font-bold text-gray-600 leading-relaxed">Description...</p>
-            </div>
-            <button id="btn-whatsapp" class="w-full bg-[#25D366] text-white font-black py-4 rounded-xl flex items-center justify-center gap-2 uppercase tracking-wide active:scale-95 transition-all shadow-lg shadow-green-200">
-                <i class="fab fa-whatsapp text-2xl"></i> Contacter le vendeur
+    <nav class="fixed bottom-0 left-0 w-full bg-white border-t border-gray-100 p-4 flex justify-around items-center z-50">
+        <button onclick="changerVue('accueil')" class="flex flex-col items-center gap-1 text-cdm-purple">
+            <i class="fas fa-home text-xl"></i>
+            <span class="text-[9px] font-black uppercase">Accueil</span>
+        </button>
+        <button onclick="changerVue('boutique')" class="flex flex-col items-center gap-1 text-gray-400">
+            <i class="fas fa-th-large text-xl"></i>
+            <span class="text-[9px] font-black uppercase">Marché</span>
+        </button>
+        <button onclick="ouvrirPanier()" class="flex flex-col items-center gap-1 text-gray-400 relative">
+            <i class="fas fa-shopping-basket text-xl"></i>
+            <span id="badge-panier" class="absolute -top-1 -right-1 bg-orange-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center font-bold hidden">0</span>
+            <span class="text-[9px] font-black uppercase">Panier</span>
+        </button>
+        <button onclick="changerVue('aide')" class="flex flex-col items-center gap-1 text-gray-400">
+            <i class="fas fa-question-circle text-xl"></i>
+            <span class="text-[9px] font-black uppercase">Aide</span>
+        </button>
+    </nav>
+
+    <div id="modal-contact" class="fixed inset-0 bg-black/80 z-[60] hidden items-center justify-center p-6">
+        <div class="bg-white w-full max-w-sm rounded-[30px] p-6 text-center">
+            <img id="modal-img" src="" class="w-32 h-32 object-cover rounded-2xl mx-auto mb-4 border-4 border-gray-100">
+            <h3 id="modal-nom" class="font-black text-lg uppercase mb-1">...</h3>
+            <p id="modal-prix" class="text-orange-600 font-black text-xl mb-4">... F</p>
+            <p id="modal-desc" class="text-xs text-gray-500 mb-6 px-4">...</p>
+            <button id="btn-whatsapp" class="w-full bg-[#25D366] text-white font-black py-4 rounded-xl flex items-center justify-center gap-2 uppercase mb-3">
+                <i class="fab fa-whatsapp text-2xl"></i> Commander
             </button>
-            <button onclick="fermerContact()" class="mt-4 text-gray-400 font-bold text-xs uppercase underline decoration-gray-300 underline-offset-4">Fermer</button>
+            <button onclick="fermerContact()" class="text-gray-400 font-bold text-xs uppercase underline">Fermer</button>
         </div>
     </div>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
         const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        
-        let supabase;
-        let tousLesProduits = [];
-        let autoScrollVipInterval;
+        const supabase = window.supabase.createClient(dbUrl, dbKey);
+
+        let articles = [];
 
         async function init() {
-            if (typeof window.supabase === 'undefined') return;
-            supabase = window.supabase.createClient(dbUrl, dbKey);
-            
-            await chargerAvenueVIP();
-            await chargerProduitsDuMarche();
-            afficherProduits(tousLesProduits);
-            afficherAlaUne();
-        }
-
-        // --- 1. L'AVENUE DES VIP ---
-        async function chargerAvenueVIP() {
-            const { data: vips } = await supabase.from('vendeurs').select('*').eq('abonnement', 'vip');
-            const conteneurVIP = document.getElementById('avenue-vip');
-            
-            if (vips && vips.length > 0) {
-                conteneurVIP.innerHTML = vips.map(v => {
-                    const initiale = v.nom_boutique ? v.nom_boutique.substring(0, 1).toUpperCase() : 'B';
-                    return `
-                    <div onclick="filtrerParBoutiqueVIP('${v.nom_boutique}')" class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer w-16">
-                        <div class="w-14 h-14 rounded-full border-2 border-orange-500 p-0.5 shadow-md">
-                            <div class="w-full h-full rounded-full bg-gradient-to-br from-[#4c1d95] to-[#f97316] flex items-center justify-center text-white font-black text-xl shadow-inner">
-                                ${initiale}
-                            </div>
-                        </div>
-                        <span class="text-[8px] font-black uppercase text-gray-700 truncate w-full text-center tracking-tight">${v.nom_boutique}</span>
-                    </div>
-                `}).join('');
-                demarrerAutoScrollVIP();
-            } else {
-                conteneurVIP.innerHTML = "<p class='text-[9px] font-bold text-gray-400 italic px-2 py-2'>Les boutiques officielles arrivent bientôt.</p>";
-            }
-        }
-
-        // L'animation automatique des VIP
-        function demarrerAutoScrollVIP() {
-            const avenue = document.getElementById('avenue-vip');
-            if(autoScrollVipInterval) clearInterval(autoScrollVipInterval);
-            
-            autoScrollVipInterval = setInterval(() => {
-                if (avenue.scrollLeft + avenue.clientWidth >= avenue.scrollWidth - 10) {
-                    avenue.scrollTo({ left: 0, behavior: 'smooth' }); // Retour au début
-                } else {
-                    avenue.scrollBy({ left: 80, behavior: 'smooth' }); // Décale d'un cercle
-                }
-            }, 3500); // Tourne toutes les 3.5 secondes
-        }
-
-        // Clic sur un VIP = Filtre ses articles
-        function filtrerParBoutiqueVIP(nomBoutique) {
-            document.getElementById('inputRecherche').value = nomBoutique;
-            rechercherProduit();
-            window.scrollTo({ top: document.getElementById('inputRecherche').offsetTop - 20, behavior: 'smooth' });
-        }
-
-        // --- 2. LE MARCHÉ (AVEC LE FILTRE SÉCURITÉ "ACTIF") ---
-        async function chargerProduitsDuMarche() {
-            const { data, error } = await supabase
+            // 1. Récupérer les produits (FILTRE ACTIF UNIQUEMENT)
+            const { data: produitsData } = await supabase
                 .from('produits')
                 .select('*')
-                .eq('statut', 'actif') // LE BOUCLIER : Cache les articles en attente
+                .eq('statut', 'actif')
                 .order('dateajout', { ascending: false });
-                
-            if (data) { tousLesProduits = data; }
+            
+            if (produitsData) {
+                articles = produitsData;
+                afficherProduits(articles);
+                afficherAlaUne();
+            }
+
+            // 2. Récupérer les Boutiques VIP (DANS LA TABLE VENDEURS)
+            const { data: vips } = await supabase
+                .from('vendeurs')
+                .select('*')
+                .eq('abonnement', 'vip');
+
+            const carrousel = document.getElementById('carrousel-vip');
+            if (vips && vips.length > 0) {
+                carrousel.innerHTML = vips.map(v => `
+                    <div onclick="document.getElementById('inputRecherche').value='${v.nom_boutique}'; rechercherProduit();" class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer w-16">
+                        <div class="w-14 h-14 rounded-full border-2 border-orange-500 p-0.5 shadow-md">
+                            <div class="w-full h-full rounded-full bg-gradient-to-br from-[#4c1d95] to-[#f97316] flex items-center justify-center text-white font-black text-xl uppercase">
+                                ${v.nom_boutique.substring(0, 1)}
+                            </div>
+                        </div>
+                        <span class="text-[8px] font-black uppercase text-gray-700 truncate w-full text-center">${v.nom_boutique}</span>
+                    </div>
+                `).join('');
+                setTimeout(demarrerCarrouselAuto, 1000);
+            } else {
+                carrousel.innerHTML = "<p class='text-[10px] font-bold text-gray-400 italic py-4'>Nouveaux VIP bientôt...</p>";
+            }
         }
 
         function afficherProduits(liste) {
             const grille = document.getElementById('grille-produits');
-            if(liste.length === 0) {
-                grille.innerHTML = `<p class='text-gray-400 text-xs font-bold col-span-2 text-center py-10 uppercase'>Aucun article trouvé.</p>`;
+            if (liste.length === 0) {
+                grille.innerHTML = "<p class='text-gray-400 text-xs font-bold col-span-2 text-center py-10'>Aucun article.</p>";
                 return;
             }
-            
             grille.innerHTML = liste.map(p => `
-                <div onclick="ouvrirContact('${p.nom}', '${p.prix}', '${p.description}', '${p.vendeur}', '${p.image}')" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col active:scale-95 transition-transform relative cursor-pointer group">
-                    <img src="${p.image}" class="w-full h-32 object-cover bg-gray-50 group-hover:opacity-90 transition-opacity">
+                <div onclick="ouvrirContact('${p.nom}', '${p.prix}', '${p.description}', '${p.vendeur}', '${p.image}')" class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col active:scale-95 transition-all">
+                    <img src="${p.image}" class="w-full h-32 object-cover">
                     <div class="p-3 flex-1 flex flex-col">
                         <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-1">${p.nom}</h4>
-                        <span class="text-orange-600 font-black text-sm mt-auto">${p.prix} F</span>
+                        <span class="text-orange-600 font-black text-sm">${p.prix} F</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        // --- 3. RECHERCHE ET FILTRES CLASSIQUES ---
+        function afficherAlaUne() {
+            const conteneur = document.getElementById('carrousel-alaune');
+            const alaune = articles.slice(0, 5);
+            conteneur.innerHTML = alaune.map(p => `
+                <div onclick="ouvrirContact('${p.nom}', '${p.prix}', '${p.description}', '${p.vendeur}', '${p.image}')" class="flex-shrink-0 w-64 h-36 relative rounded-2xl overflow-hidden shadow-md">
+                    <img src="${p.image}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex flex-col justify-end p-4">
+                        <h3 class="text-white font-black text-sm uppercase">${p.nom}</h3>
+                        <p class="text-orange-400 font-black text-xs">${p.prix} F</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function rechercherProduit() {
             const terme = document.getElementById('inputRecherche').value.toLowerCase();
-            const resultats = tousLesProduits.filter(p => 
-                p.nom.toLowerCase().includes(terme) || 
-                (p.description && p.description.toLowerCase().includes(terme)) ||
-                (p.vendeur && p.vendeur.toLowerCase().includes(terme)) // Permet de trouver par numéro ou nom caché
-            );
-            afficherProduits(resultats);
+            const filtres = articles.filter(p => p.nom.toLowerCase().includes(terme) || p.vendeur.toLowerCase().includes(terme));
+            afficherProduits(filtres);
         }
 
         function filtrerCat(cat) {
             const boutons = document.querySelectorAll('.cat-btn');
-            boutons.forEach(b => {
-                b.classList.remove('bg-[#4c1d95]', 'text-white');
-                b.classList.add('bg-white', 'text-gray-600');
-            });
-            event.target.classList.remove('bg-white', 'text-gray-600');
+            boutons.forEach(b => b.classList.remove('bg-[#4c1d95]', 'text-white'));
             event.target.classList.add('bg-[#4c1d95]', 'text-white');
-
             if (cat === 'Tous') {
-                afficherProduits(tousLesProduits);
+                afficherProduits(articles);
             } else {
-                const filtrés = tousLesProduits.filter(p => p.categorie === cat);
-                afficherProduits(filtrés);
+                afficherProduits(articles.filter(p => p.categorie === cat));
             }
         }
 
-        // --- 4. À LA UNE ---
-        function afficherAlaUne() {
-            const conteneur = document.getElementById('carrousel-alaune');
-            const enAvant = tousLesProduits.slice(0, 5); // Prend les 5 derniers actifs
-            
-            if(enAvant.length > 0) {
-                conteneur.innerHTML = enAvant.map(p => `
-                    <div onclick="ouvrirContact('${p.nom}', '${p.prix}', '${p.description}', '${p.vendeur}', '${p.image}')" class="flex-shrink-0 w-64 h-36 relative rounded-2xl overflow-hidden shadow-md cursor-pointer">
-                        <img src="${p.image}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4">
-                            <span class="bg-orange-500 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded-full w-max mb-1 shadow-sm">Nouveau</span>
-                            <h3 class="text-white font-black text-sm uppercase truncate drop-shadow-md">${p.nom}</h3>
-                            <p class="text-orange-400 font-black text-xs drop-shadow-md">${p.prix} FCFA</p>
-                        </div>
-                    </div>
-                `).join('');
-            }
+        function demarrerCarrouselAuto() {
+            const el = document.getElementById('carrousel-vip');
+            setInterval(() => {
+                if (el.scrollLeft + el.clientWidth >= el.scrollWidth) {
+                    el.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    el.scrollBy({ left: 80, behavior: 'smooth' });
+                }
+            }, 3000);
         }
 
-        // --- 5. FENÊTRE WHATSAPP ---
         function ouvrirContact(nom, prix, desc, tel, img) {
             document.getElementById('modal-nom').innerText = nom;
-            document.getElementById('modal-prix').innerText = prix + " FCFA";
-            document.getElementById('modal-desc').innerText = desc || "Aucun détail supplémentaire.";
+            document.getElementById('modal-prix').innerText = prix;
+            document.getElementById('modal-desc').innerText = desc || "Pas de détails.";
             document.getElementById('modal-img').src = img;
-            
-            const message = encodeURIComponent(`Bonjour ! Je suis intéressé par votre article sur Cœur de Marché Bouaflé :\n\n📦 *${nom}*\n💰 *${prix} FCFA*\n\nEst-il toujours disponible ?`);
-            document.getElementById('btn-whatsapp').onclick = () => window.open(`https://wa.me/${tel}?text=${message}`);
-            
-            const modal = document.getElementById('modal-contact');
-            const content = document.getElementById('modal-content');
-            modal.style.display = 'flex';
-            setTimeout(() => { modal.classList.add('opacity-100'); content.classList.remove('scale-90'); }, 10);
+            const msg = encodeURIComponent("Bonjour ! Je suis intéressé par : " + nom);
+            document.getElementById('btn-whatsapp').onclick = () => window.open(`https://wa.me/${tel}?text=${msg}`);
+            document.getElementById('modal-contact').style.display = 'flex';
         }
 
-        function fermerContact() {
-            const modal = document.getElementById('modal-contact');
-            const content = document.getElementById('modal-content');
-            modal.classList.remove('opacity-100');
-            content.classList.add('scale-90');
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        function fermerContact() { document.getElementById('modal-contact').style.display = 'none'; }
+        
+        function changerVue(vue) {
+            if (vue === 'accueil') window.location.reload();
+            else alert("Vue " + vue + " en cours de développement.");
         }
 
-        // Lancement au démarrage de la page
         init();
     </script>
 </body>
