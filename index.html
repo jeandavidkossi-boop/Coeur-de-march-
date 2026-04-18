@@ -92,13 +92,21 @@
     </div>
 
     <div id="vue-accueil">
+        <div class="px-6 mt-6 mb-2">
+            <h2 class="font-black text-[#4c1d95] text-[11px] mb-3 flex items-center gap-2 uppercase tracking-widest">
+                <i class="fas fa-crown text-yellow-500 text-sm"></i> Boutiques Officielles
+            </h2>
+            <div id="avenue-boutiques-vip" class="flex gap-4 overflow-x-auto hide-scroll py-2" style="scroll-behavior: smooth;"></div>
+        </div>
+
         <div class="flex justify-between px-8 mt-6">
             <button onclick="filtrerAccueil('Vivrier')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#ffedd5] rounded-2xl flex items-center justify-center text-[#d97706] text-2xl mb-2 shadow-sm"><i class="fas fa-carrot"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Vivrier</span></button>
             <button onclick="filtrerAccueil('Beauté')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#fce7f3] rounded-2xl flex items-center justify-center text-[#db2777] text-2xl mb-2 shadow-sm"><i class="fas fa-magic"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Beauté</span></button>
             <button onclick="filtrerAccueil('Alimentation')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#e0e7ff] rounded-2xl flex items-center justify-center text-[#4f46e5] text-2xl mb-2 shadow-sm"><i class="fas fa-shopping-bag"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Superette</span></button>
             <button onclick="filtrerAccueil('Habillement')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#dcfce7] rounded-2xl flex items-center justify-center text-[#16a34a] text-2xl mb-2 shadow-sm"><i class="fas fa-tshirt"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Mode</span></button>
         </div>
-                <div class="px-6 mt-8">
+
+        <div class="px-6 mt-8">
             <h2 class="font-black text-[#4c1d95] text-sm mb-3 flex items-center gap-2 uppercase"><i class="fas fa-star text-yellow-500"></i> À la une</h2>
             <div id="carrousel-vip" class="scroll-h hide-scroll">
                 <div class="bg-gray-100 w-full h-32 rounded-[15px] flex flex-col items-center justify-center text-gray-400">
@@ -123,8 +131,7 @@
             <div id="liste-nouveautes" class="scroll-h hide-scroll"></div>
         </div>
     </div>
-
-    <div id="vue-boutique" class="hidden mt-8 px-6">
+        <div id="vue-boutique" class="hidden mt-8 px-6">
         <div class="flex justify-end items-center mb-4">
             <select id="tri-prix-boutique" onchange="changerTriBoutique()" class="bg-white border border-gray-100 text-[#5b21b6] text-[10px] font-black uppercase py-2 px-3 rounded-xl outline-none shadow-sm">
                 <option value="recent">✨ Nouveautés</option>
@@ -175,9 +182,8 @@
         <button onclick="window.open('https://wa.me/2250576326645')" class="wa-btn active:scale-95 transition"><i class="fab fa-whatsapp"></i></button>
         <a href="vendre.html" class="nav-item"><i class="fas fa-store"></i><span class="nav-text">Vendre</span></a>
         <button onclick="ouvrirAide()" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
-    </nav>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+                                                           </nav>
+             <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         let articles = []; let panier = []; let articlesCourants = []; let cibleCourante = '';
         let intervalCarrousel;
@@ -192,7 +198,7 @@
             modal.style.display = 'flex';
             setTimeout(() => {
                 modal.classList.add('active');
-                    imgElt.classList.remove('scale-95');
+                imgElt.classList.remove('scale-95');
                 imgElt.classList.add('scale-100');
             }, 10);
         }
@@ -221,7 +227,6 @@
             }, 3000);
         }
 
-        // LE NOUVEAU DECODEUR YOUTUBE AUTOMATIQUE
         function extraireYoutubeId(url) {
             let id = url;
             const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
@@ -236,8 +241,8 @@
                 const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
                 const supabase = window.supabase.createClient(dbUrl, dbKey);
 
-                // 1. Récupérer les produits
-                const { data: produitsData, error } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
+                // 1. Récupérer les produits (FILTRE ACTIF)
+                const { data: produitsData, error } = await supabase.from('produits').select('*').eq('statut', 'actif').order('dateajout', { ascending: false });
                 if (produitsData) articles = produitsData;
 
                 // 2. Récupérer les Publicités VIP
@@ -263,7 +268,7 @@
                     setTimeout(demarrerCarrouselAuto, 1000);
                 }
 
-                // 3. Récupérer Coeur de Marché TV (avec le VRAI lien YouTube corrigé)
+                // 3. Récupérer Coeur de Marché TV
                 const { data: tvData } = await supabase.from('tv_market').select('*').eq('statut', 'actif').limit(1).single();
                 const conteneurTV = document.getElementById('conteneur-tv');
 
@@ -279,10 +284,8 @@
                         `;
                     }
 
-                    // On utilise le décodeur pour trouver l'ID exact de la vidéo
                     const youtubeIdNettoye = extraireYoutubeId(tvData.lien_youtube);
 
-                    // ICI c'est la ligne qui a été corrigée !
                     conteneurTV.innerHTML = `
                         <div class="bg-white p-3 rounded-[20px] shadow-sm border border-gray-100">
                             <div class="video-container shadow-inner">
@@ -303,14 +306,36 @@
                 const produitRecherche = new URLSearchParams(window.location.search).get("produit");
                 if (produitRecherche) setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
 
+                // NOUVEAU : Récupérer les Boutiques VIP et les faire tourner
+                const { data: vendeursVip } = await supabase.from('vendeurs').select('*').eq('abonnement', 'vip');
+                const conteneurBoutiques = document.getElementById('avenue-boutiques-vip');
+                if (conteneurBoutiques && vendeursVip && vendeursVip.length > 0) {
+                    conteneurBoutiques.innerHTML = vendeursVip.map(v => {
+                        const initiale = v.nom_boutique ? v.nom_boutique.substring(0, 1).toUpperCase() : 'B';
+                        return `<div onclick="document.getElementById('inputRecherche').value='${v.nom_boutique.replace(/'/g, "\\'")}'; rechercherProduit();" class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer w-16">
+                            <div class="w-14 h-14 rounded-full border-2 border-orange-500 p-0.5 shadow-md">
+                                <div class="w-full h-full rounded-full bg-[#4c1d95] flex items-center justify-center text-white font-black text-xl">${initiale}</div>
+                            </div>
+                            <span class="text-[8px] font-black uppercase text-gray-700 truncate w-full text-center">${v.nom_boutique}</span>
+                        </div>`;
+                    }).join('');
+                    
+                    setInterval(() => {
+                        if (conteneurBoutiques.scrollLeft + conteneurBoutiques.clientWidth >= conteneurBoutiques.scrollWidth - 10) {
+                            conteneurBoutiques.scrollTo({ left: 0, behavior: 'smooth' });
+                        } else {
+                            conteneurBoutiques.scrollBy({ left: 70, behavior: 'smooth' });
+                        }
+                    }, 3500);
+                }
+
             } catch (err) {
                 document.getElementById('texte-annonce').innerText = "Erreur de connexion.";
             } finally {
                 if (ecranLoad) { ecranLoad.style.opacity = '0'; setTimeout(() => { ecranLoad.style.display = 'none'; }, 300); }
             }
         }
-
-        function afficherNouveautes(liste, target) {
+                function afficherNouveautes(liste, target) {
             const container = document.getElementById(target); if (!container) return;
             if (liste.length === 0) { container.innerHTML = '<p class="text-gray-400 text-[10px] italic">Aucune nouveauté</p>'; return; }
             container.innerHTML = liste.map(p => `
