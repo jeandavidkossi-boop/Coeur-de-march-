@@ -172,7 +172,7 @@
         <a href="vendre.html" class="nav-item"><i class="fas fa-store-alt"></i><span class="nav-text">Vendre</span></a>
         <button onclick="ouvrirAide()" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
     </nav>
-            <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         let articles = []; let panier = []; let articlesCourants = []; let cibleCourante = '';
         let intervalCarrousel; 
@@ -215,6 +215,14 @@
             }, 3000);
         }
 
+        // LE NOUVEAU DÉCODEUR YOUTUBE AUTOMATIQUE
+        function extraireYoutubeId(url) {
+            let id = url;
+            const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))((\w|-){11})/);
+            if (match && match[1]) id = match[1];
+            return id;
+        }
+
         async function init() {
             const ecranLoad = document.getElementById('ecran-chargement');
             try {
@@ -248,29 +256,28 @@
                     setTimeout(demarrerCarrouselAuto, 1000);
                 }
 
-                // 3. Récupérer Cœur de Marché TV AVEC L'INTERRUPTEUR
+                // 3. Récupérer Cœur de Marché TV (Avec décodeur Youtube intégré)
                 const { data: tvData } = await supabase.from('tv_market').select('*').eq('statut', 'actif').limit(1).single();
                 const conteneurTV = document.getElementById('conteneur-tv');
                 
                 if (tvData && tvData.lien_youtube) {
-                    // On cherche si un article est lié à la vidéo
                     const articleTV = tvData.id_produit ? articles.find(a => a.id == tvData.id_produit) : null;
-                    let boutonAction = ''; // Par défaut, la zone du bouton est vide
+                    let boutonAction = '';
                     
-                    // SI l'interrupteur est sur "Vente" (un ID est renseigné)
                     if (articleTV) {
                         boutonAction = `
                         <button onclick="ouvrirDetails('${articleTV.nom.replace(/'/g, "\\'")}')" class="w-full bg-[#f97316] text-white font-black py-3 mt-3 rounded-xl uppercase text-[10px] tracking-wide active:scale-95 transition flex justify-center items-center gap-2">
                             <i class="fas fa-shopping-cart text-sm"></i> Commander (${articleTV.prix} F)
                         </button>`;
                     }
-                    // SI l'interrupteur est sur "Divertissement" (case ID vide), le bouton reste vide et n'apparaît pas !
 
-                    // On affiche la TV avec le bon lien YouTube
+                    // On utilise le décodeur pour trouver l'ID exact de la vidéo
+                    const youtubeIdNettoye = extraireYoutubeId(tvData.lien_youtube);
+
                     conteneurTV.innerHTML = `
                     <div class="bg-white p-3 rounded-[20px] shadow-sm border border-gray-100">
                         <div class="video-container shadow-inner">
-                            <iframe src="https://www.youtube.com/embed/${tvData.lien_youtube}" frameborder="0" allowfullscreen></iframe>
+                            <iframe src="https://www.youtube.com/embed/${youtubeIdNettoye}" frameborder="0" allowfullscreen></iframe>
                         </div>
                         ${boutonAction}
                     </div>`;
@@ -408,6 +415,6 @@
 
         init();
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.log("Erreur PWA:", err)); }); }
-    </script>
-</body>
+                </script>
+                </body>
 </html>
