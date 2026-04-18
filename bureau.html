@@ -10,16 +10,45 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
         .bg-cdm-purple { background-color: #5b21b6; }
+        .badge-standard { background-color: #9ca3af; color: white; }
+        .badge-pro { background-color: #2563eb; color: white; }
+        .badge-vip { background-color: #f59e0b; color: white; animation: blink 2s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+        
+        /* Styles pour les belles fenêtres d'alerte */
+        .modal-bg { transition: opacity 0.3s ease; }
+        .modal-box { transition: transform 0.3s ease; }
     </style>
 </head>
 <body class="pb-24">
+
+    <div id="modal-alerte" class="fixed inset-0 bg-black/80 z-[300] hidden items-center justify-center opacity-0 modal-bg">
+        <div id="modal-alerte-content" class="bg-white w-[85%] rounded-[25px] p-6 text-center transform scale-90 modal-box">
+            <div id="alerte-icon" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"></div>
+            <h3 id="alerte-titre" class="font-black text-lg uppercase mb-2"></h3>
+            <p id="alerte-message" class="text-gray-500 text-xs font-bold mb-6"></p>
+            <button onclick="fermerAlerte()" class="w-full bg-[#5b21b6] text-white font-black py-3 rounded-xl uppercase text-[10px] active:scale-95 transition-transform">J'ai compris</button>
+        </div>
+    </div>
+
+    <div id="modal-confirm" class="fixed inset-0 bg-black/80 z-[300] hidden items-center justify-center opacity-0 modal-bg">
+        <div id="modal-confirm-content" class="bg-white w-[85%] rounded-[25px] p-6 text-center transform scale-90 modal-box">
+            <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fas fa-trash-alt"></i></div>
+            <h3 class="font-black text-lg text-gray-800 uppercase mb-2">Retirer l'article ?</h3>
+            <p class="text-gray-500 text-xs font-bold mb-6">Cet article sera effacé de votre boutique.</p>
+            <div class="flex gap-3">
+                <button onclick="fermerConfirm()" class="flex-1 bg-gray-100 text-gray-600 font-black py-3 rounded-xl uppercase text-[10px] active:scale-95 transition-transform">Annuler</button>
+                <button id="btn-confirm-action" class="flex-1 bg-red-500 text-white font-black py-3 rounded-xl uppercase text-[10px] shadow-lg shadow-red-200 active:scale-95 transition-transform">Oui, effacer</button>
+            </div>
+        </div>
+    </div>
 
     <nav class="bg-cdm-purple text-white p-6 rounded-b-[35px] shadow-lg">
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-3">
                 <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white" alt="Logo">
                 <div>
-                    <h1 class="text-lg font-black uppercase tracking-tighter">Coeur de Marché</h1>
+                    <h1 class="text-lg font-black uppercase tracking-tighter">Mon Bureau</h1>
                     <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Bouaflé</p>
                 </div>
             </div>
@@ -29,33 +58,41 @@
         </div>
         
         <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/10">
-            <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement...</p>
-            <p id="nom-boutique" class="text-2xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
+            <div class="flex justify-between items-start">
+                <div>
+                    <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement...</p>
+                    <p id="nom-boutique" class="text-2xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
+                </div>
+                <span id="badge-abonnement" class="text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-sm">...</span>
+            </div>
         </div>
     </nav>
 
     <main class="p-6 -mt-6">
-        <div class="bg-white rounded-[30px] shadow-xl p-7 border border-gray-100">
-            <div class="flex items-center gap-3 mb-8">
-                <div onclick="alert('Remplissez les informations ci-dessous pour envoyer un produit sur le marché.')" class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center active:scale-90 transition-all cursor-pointer">
-                    <i class="fas fa-plus"></i>
+        <div id="bloc-ajouter" class="bg-white rounded-[30px] shadow-xl p-7 border border-gray-100">
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <h2 class="font-black text-gray-800 uppercase text-sm tracking-wide">Ajouter un article</h2>
                 </div>
-                <h2 class="font-black text-gray-800 uppercase text-sm tracking-wide">Ajouter un article</h2>
+                <span id="compteur-articles" class="text-[10px] font-black text-gray-400 bg-gray-50 px-3 py-1 rounded-lg">--/--</span>
             </div>
 
-            <div class="space-y-5">
+            <div id="formulaire-annonce" class="space-y-5">
                 <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Désignation (Nom de l'article)</label>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Désignation</label>
                     <input type="text" id="pNom" placeholder="Ex: Pagne Baoulé, iPhone 13..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500">
                 </div>
 
                 <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Prix de vente (FCFA)</label>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Prix (FCFA)</label>
                     <input type="number" id="pPrix" placeholder="0" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-black text-orange-600 focus:border-orange-500">
                 </div>
                 
                 <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Rayon du marché</label>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Rayon</label>
                     <select id="pCat" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-500">
                         <option value="Marché & Vivrier">Marché & Vivrier</option>
                         <option value="Alimentation & Boissons">Alimentation & Boissons</option>
@@ -73,191 +110,38 @@
                 </div>
 
                 <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Description / Détails (Giga, Taille, État...)</label>
-                    <textarea id="pDesc" placeholder="Ex: 128 Go, Neuf dans le carton, Taille 42..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500" rows="3"></textarea>
+                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Description</label>
+                    <textarea id="pDesc" placeholder="Détails de l'article..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500" rows="3"></textarea>
                 </div>
 
                 <button type="button" onclick="document.getElementById('photoInput').click()" class="w-full py-8 border-2 border-dashed border-purple-100 rounded-2xl bg-purple-50/50 text-purple-600 flex flex-col items-center active:bg-purple-100 transition-all">
                     <i class="fas fa-camera text-3xl mb-2" id="iconPhoto"></i>
-                    <span id="btnPhotoText" class="font-black text-[10px] uppercase text-center px-4">Appuyez pour la photo</span>
+                    <span id="btnPhotoText" class="font-black text-[10px] uppercase text-center px-4">Prendre la photo</span>
                     <input type="file" id="photoInput" accept="image/*" class="hidden">
                 </button>
 
                 <button type="button" onclick="publierAnnonce()" id="btnPublier" class="w-full bg-orange-500 text-white font-black py-5 rounded-2xl shadow-lg shadow-orange-200 uppercase tracking-widest mt-4 active:scale-95 transition-all">
-                    Publier sur le marché
+                    Publier l'article
                 </button>
+            </div>
+
+            <div id="message-limite" class="hidden text-center py-6">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="font-black text-gray-800 uppercase text-xs mb-2">Limite Gratuite Atteinte</h3>
+                <p class="text-gray-500 text-[10px] font-bold mb-6 px-4">Pour ajouter plus de 10 articles et vendre sans limite, passez au forfait Pro !</p>
+                <button onclick="window.open('https://wa.me/2250576326645?text=Je souhaite passer mon compte au forfait PRO')" class="bg-blue-600 text-white font-black px-8 py-3 rounded-xl uppercase text-[10px] shadow-lg">Devenir PRO (2000 F)</button>
             </div>
         </div>
 
         <div class="mt-10 mb-8">
             <h2 class="font-black text-[#4c1d95] text-lg uppercase mb-4 border-b-2 border-purple-200 pb-2 flex items-center gap-2">
-                <i class="fas fa-boxes text-orange-500"></i> Mon Stock en Ligne
+                <i class="fas fa-boxes text-orange-500"></i> Stock en Ligne
             </h2>
-            
             <div id="mes-articles" class="grid grid-cols-2 gap-4">
-                <p class="text-gray-400 text-sm italic col-span-2">Chargement de vos articles...</p>
+                <p class="text-gray-400 text-sm italic col-span-2">Chargement...</p>
             </div>
         </div>
     </main>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        
-        let mySupabase = null;
-        let myUser = null;
-        let myPhoto = null;
-        let myWhatsapp = null;
-
-        // 1. BOUTON ORANGE : PUBLIER
-        async function publierAnnonce() {
-            const nomP = document.getElementById('pNom').value;
-            const prixP = document.getElementById('pPrix').value;
-            const catP = document.getElementById('pCat').value;
-            const descP = document.getElementById('pDesc').value;
-
-            if (!nomP) { alert("⚠️ Nom de l'article requis !"); return; }
-            if (!prixP) { alert("⚠️ Prix requis !"); return; }
-            if (!myPhoto) { alert("📸 Photo obligatoire !"); return; }
-            
-            if (!mySupabase || !myUser) { 
-                alert("❌ Erreur de connexion au serveur. Réessayez."); 
-                return; 
-            }
-
-            const btn = document.getElementById('btnPublier');
-            btn.innerText = "ENVOI EN COURS...";
-            btn.disabled = true;
-
-            try {
-                const nomFichier = myUser.id + "_" + Date.now() + ".jpg";
-                const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, myPhoto);
-                if (errPhoto) throw new Error("Erreur Photo : " + errPhoto.message);
-
-                const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
-
-                const { error: errProduit } = await mySupabase.from('produits').insert([{
-                    nom: nomP,
-                    prix: prixP,
-                    categorie: catP,
-                    description: descP,
-                    vendeur: myWhatsapp, 
-                    image: publicUrl
-                }]);
-                
-                if (errProduit) throw new Error("Erreur Base de données : " + errProduit.message);
-
-                alert("✅ MAGNIFIQUE ! Votre article est en ligne.");
-                window.location.reload(); 
-
-            } catch (erreur) {
-                alert("❌ ÉCHEC : " + erreur.message);
-                btn.innerText = "PUBLIER SUR LE MARCHÉ";
-                btn.disabled = false;
-            }
-        }
-
-        // 2. BOUTON SORTIR
-        async function deconnecter() {
-            if (mySupabase) { await mySupabase.auth.signOut(); }
-            window.location.href = "vendre.html";
-        }
-
-        // 3. SELECTION PHOTO
-        document.getElementById('photoInput').addEventListener('change', function(e) {
-            if(e.target.files && e.target.files[0]) {
-                myPhoto = e.target.files[0];
-                document.getElementById('btnPhotoText').innerText = "IMAGE PRÊTE ✅";
-                document.getElementById('btnPhotoText').style.color = "#16a34a";
-                document.getElementById('iconPhoto').style.color = "#16a34a";
-            }
-        });
-
-        // NOUVEAU 4 : CHARGER LES ARTICLES DU VENDEUR
-        async function chargerMesArticles() {
-            if (!myWhatsapp) return; 
-            
-            const container = document.getElementById('mes-articles');
-            
-            const { data, error } = await mySupabase
-                .from('produits')
-                .select('*')
-                .eq('vendeur', myWhatsapp)
-                .order('dateajout', { ascending: false });
-                
-            if (error || !data || data.length === 0) {
-                container.innerHTML = "<p class='text-gray-400 text-sm font-bold col-span-2 text-center py-4'>Vous n'avez aucun article en ligne.</p>";
-                return;
-            }
-
-            container.innerHTML = data.map(p => `
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-                    <img src="${p.image}" class="w-full h-24 object-cover">
-                    <div class="p-2 flex-1 flex flex-col">
-                        <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-1">${p.nom}</h4>
-                        <span class="text-orange-500 font-black text-xs mb-3">${p.prix} F</span>
-                        <button onclick="supprimerArticle('${p.id}')" class="mt-auto w-full bg-red-100 text-red-600 font-bold py-2 rounded-lg text-[10px] uppercase active:scale-95 transition-all">
-                            <i class="fas fa-trash"></i> Retirer
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // NOUVEAU 5 : SUPPRIMER L'ARTICLE
-        async function supprimerArticle(idArticle) {
-            const confirmation = confirm("Voulez-vous vraiment retirer cet article du marché ?");
-            if (!confirmation) return;
-
-            const { error } = await mySupabase
-                .from('produits')
-                .delete()
-                .eq('id', idArticle);
-
-            if (error) {
-                alert("❌ Erreur lors de la suppression : " + error.message);
-            } else {
-                alert("✅ Article retiré avec succès !");
-                chargerMesArticles(); 
-            }
-        }
-
-        // 6. DÉMARRAGE ET VÉRIFICATION PROFIL
-        async function demarrerBureau() {
-            try {
-                if (typeof window.supabase === 'undefined') return;
-                
-                mySupabase = window.supabase.createClient(dbUrl, dbKey);
-                const { data: { session } } = await mySupabase.auth.getSession();
-                
-                if (!session) {
-                    window.location.href = "vendre.html";
-                    return;
-                }
-                
-                myUser = session.user;
-
-                const { data: vendeur } = await mySupabase
-                    .from('vendeurs')
-                    .select('nom_boutique, proprietaire, whatsapp') 
-                    .eq('id', myUser.id)
-                    .single();
-
-                if (vendeur) {
-                    document.getElementById('nom-boutique').innerText = vendeur.nom_boutique;
-                    document.getElementById('nom-vendeur').innerText = "Gérant : " + vendeur.proprietaire;
-                    myWhatsapp = vendeur.whatsapp;
-                    
-                    // On lance le chargement des articles juste après avoir trouvé le vendeur
-                    chargerMesArticles();
-                }
-
-            } catch (erreur) {
-                console.log("Erreur de démarrage", erreur);
-            }
-        }
-
-        demarrerBureau();
-    </script>
-</body>
-</html>
+    
