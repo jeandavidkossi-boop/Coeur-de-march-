@@ -60,7 +60,7 @@
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     </style>
 </head>
-<body class="pb-32">
+    <body class="pb-32">
 
     <div id="modal-image" class="modal-image-overlay" onclick="fermerImage()">
         <button onclick="fermerImage()" class="absolute top-6 right-6 text-white text-3xl z-50 p-2"><i class="fas fa-times"></i></button>
@@ -106,13 +106,11 @@
 
         <div class="px-6 mt-6">
             <h2 class="font-black text-[#4c1d95] text-sm mb-3 flex items-center gap-2 uppercase"><i class="fas fa-tv text-red-500"></i> Cœur de Marché TV</h2>
-            <div class="bg-white p-3 rounded-[20px] shadow-sm border border-gray-100">
-                <div class="video-container shadow-inner mb-3">
-                    <iframe src="https://www.youtube.com/embed/YE7VzlLtp-4?rel=0&controls=1" frameborder="0" allowfullscreen></iframe>
+            <div id="conteneur-tv">
+                <div class="bg-gray-100 p-3 rounded-[20px] shadow-sm border border-dashed border-gray-300 flex flex-col items-center justify-center py-10 text-gray-400">
+                    <i class="fas fa-video text-3xl mb-2"></i>
+                    <span class="text-xs font-bold uppercase tracking-wider">Espace TV Disponible</span>
                 </div>
-                <button onclick="window.open('https://wa.me/2250576326645?text=Bonjour, je souhaite commander l\'article vu à la TV sur Cœur de Marché.')" class="w-full bg-[#f97316] text-white font-black py-3 rounded-xl uppercase text-[10px] tracking-wide active:scale-95 transition flex justify-center items-center gap-2">
-                    <i class="fas fa-shopping-cart text-sm"></i> Acheter l'article de la vidéo
-                </button>
             </div>
         </div>
 
@@ -174,10 +172,10 @@
         <a href="vendre.html" class="nav-item"><i class="fas fa-store-alt"></i><span class="nav-text">Vendre</span></a>
         <button onclick="ouvrirAide()" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
     </nav>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         let articles = []; let panier = []; let articlesCourants = []; let cibleCourante = '';
-        let intervalCarrousel; // Moteur du carrousel auto
+        let intervalCarrousel; 
 
         function afficherAlerteCustom(titre, message) { document.getElementById('alerte-titre').innerText = titre; document.getElementById('alerte-message').innerText = message; const modal = document.getElementById('modal-alerte'); modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('active'); }, 10); }
         function fermerAlerte() { const modal = document.getElementById('modal-alerte'); modal.classList.remove('active'); setTimeout(() => { modal.style.display = 'none'; }, 300); }
@@ -202,13 +200,10 @@
             setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
 
-        // Moteur de défilement automatique (Toutes les 3 secondes)
         function demarrerCarrouselAuto() {
             const carrousel = document.getElementById('carrousel-vip');
             if (!carrousel || carrousel.children.length <= 1) return;
-            
             clearInterval(intervalCarrousel);
-            
             intervalCarrousel = setInterval(() => {
                 const maxScroll = carrousel.scrollWidth - carrousel.clientWidth;
                 if (carrousel.scrollLeft >= maxScroll - 10) {
@@ -238,7 +233,6 @@
                 if (pubData && pubData.length > 0) {
                     conteneurVIP.innerHTML = pubData.map(p => {
                         const articleLie = p.id_produit ? articles.find(a => a.id == p.id_produit) : null;
-                        
                         if (articleLie) {
                             return `
                             <div class="vip-banner relative overflow-hidden rounded-[15px] shadow-sm border border-gray-100 flex-shrink-0 cursor-pointer active:scale-95 transition" style="min-width:90%;" onclick="ouvrirDetails('${articleLie.nom.replace(/'/g, "\\'")}')">
@@ -251,14 +245,38 @@
                             return `<img src="${p.image}" onclick="ouvrirImage('${p.image}')" class="vip-banner h-32 shadow-sm border border-gray-100 object-cover rounded-[15px] flex-shrink-0 cursor-pointer active:scale-95 transition" style="min-width:90%;">`;
                         }
                     }).join('');
-                    
-                    // Lancement du carrousel automatique !
                     setTimeout(demarrerCarrouselAuto, 1000);
-                } else {
-                    conteneurVIP.innerHTML = `<div class="bg-gray-100 w-full h-32 rounded-[15px] flex flex-col items-center justify-center text-gray-400 border border-dashed border-gray-300 min-w-full"><i class="fas fa-bullhorn text-2xl mb-2"></i><span class="text-xs font-bold uppercase tracking-wider">Espace Pub Disponible</span></div>`;
                 }
 
-                // 3. Charger les nouveautés
+                // 3. Récupérer Cœur de Marché TV AVEC L'INTERRUPTEUR
+                const { data: tvData } = await supabase.from('tv_market').select('*').eq('statut', 'actif').limit(1).single();
+                const conteneurTV = document.getElementById('conteneur-tv');
+                
+                if (tvData && tvData.lien_youtube) {
+                    // On cherche si un article est lié à la vidéo
+                    const articleTV = tvData.id_produit ? articles.find(a => a.id == tvData.id_produit) : null;
+                    let boutonAction = ''; // Par défaut, la zone du bouton est vide
+                    
+                    // SI l'interrupteur est sur "Vente" (un ID est renseigné)
+                    if (articleTV) {
+                        boutonAction = `
+                        <button onclick="ouvrirDetails('${articleTV.nom.replace(/'/g, "\\'")}')" class="w-full bg-[#f97316] text-white font-black py-3 mt-3 rounded-xl uppercase text-[10px] tracking-wide active:scale-95 transition flex justify-center items-center gap-2">
+                            <i class="fas fa-shopping-cart text-sm"></i> Commander (${articleTV.prix} F)
+                        </button>`;
+                    }
+                    // SI l'interrupteur est sur "Divertissement" (case ID vide), le bouton reste vide et n'apparaît pas !
+
+                    // On affiche la TV avec le bon lien YouTube
+                    conteneurTV.innerHTML = `
+                    <div class="bg-white p-3 rounded-[20px] shadow-sm border border-gray-100">
+                        <div class="video-container shadow-inner">
+                            <iframe src="https://www.youtube.com/embed/${tvData.lien_youtube}" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        ${boutonAction}
+                    </div>`;
+                }
+
+                // 4. Charger les nouveautés
                 const nouveautes = articles.slice(0, 6);
                 afficherNouveautes(nouveautes, 'liste-nouveautes');
                 
