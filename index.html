@@ -29,7 +29,7 @@
         #panier-flottant.show { transform: translateY(0); opacity: 1; }
         
         /* Modales Universelles */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; display: none; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
         .modal-content { background: white; width: 100%; border-radius: 30px 30px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; }
         .modal-overlay.active { opacity: 1; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
@@ -39,6 +39,10 @@
         .modal-alerte-content { background: white; width: 85%; border-radius: 25px; padding: 25px; transform: scale(0.9); transition: transform 0.3s ease; text-align: center; }
         .modal-alerte-overlay.active { opacity: 1; }
         .modal-alerte-overlay.active .modal-alerte-content { transform: scale(1); }
+
+        /* Modale Image Plein Écran */
+        .modal-image-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 400; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-image-overlay.active { opacity: 1; }
 
         #ecran-chargement { position: fixed; inset: 0; background-color: #f8f9fd; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
         .spinner { width: 50px; height: 50px; border: 5px solid #e5e7eb; border-top-color: #f97316; border-radius: 50%; animation: spin 1s linear infinite; }
@@ -57,6 +61,11 @@
     </style>
 </head>
 <body class="pb-32">
+
+    <div id="modal-image" class="modal-image-overlay" onclick="fermerImage()">
+        <button onclick="fermerImage()" class="absolute top-6 right-6 text-white text-3xl z-50 p-2"><i class="fas fa-times"></i></button>
+        <img id="image-en-grand" src="" class="max-w-[95%] max-h-[85%] object-contain rounded-lg shadow-2xl transition-transform transform scale-95">
+    </div>
 
     <div id="modal-alerte" class="modal-alerte-overlay" onclick="fermerAlerte()"><div class="modal-alerte-content" onclick="event.stopPropagation()"><div class="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fas fa-info-circle"></i></div><h3 id="alerte-titre" class="font-black text-lg text-[#4c1d95] uppercase mb-2">Message</h3><p id="alerte-message" class="text-gray-600 text-sm font-bold mb-6">Texte</p><button onclick="fermerAlerte()" class="w-full bg-[#5b21b6] text-white font-black py-3 rounded-xl active:scale-95 transition uppercase text-xs tracking-wider">J'ai compris</button></div></div>
 
@@ -168,9 +177,48 @@
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         let articles = []; let panier = []; let articlesCourants = []; let cibleCourante = '';
+        let intervalCarrousel; // Moteur du carrousel auto
 
         function afficherAlerteCustom(titre, message) { document.getElementById('alerte-titre').innerText = titre; document.getElementById('alerte-message').innerText = message; const modal = document.getElementById('modal-alerte'); modal.style.display = 'flex'; setTimeout(() => { modal.classList.add('active'); }, 10); }
         function fermerAlerte() { const modal = document.getElementById('modal-alerte'); modal.classList.remove('active'); setTimeout(() => { modal.style.display = 'none'; }, 300); }
+
+        function ouvrirImage(url) {
+            const imgElt = document.getElementById('image-en-grand');
+            imgElt.src = url;
+            const modal = document.getElementById('modal-image');
+            modal.style.display = 'flex';
+            setTimeout(() => { 
+                modal.classList.add('active'); 
+                imgElt.classList.remove('scale-95');
+                imgElt.classList.add('scale-100');
+            }, 10);
+        }
+        function fermerImage() {
+            const modal = document.getElementById('modal-image');
+            const imgElt = document.getElementById('image-en-grand');
+            modal.classList.remove('active');
+            imgElt.classList.remove('scale-100');
+            imgElt.classList.add('scale-95');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        // Moteur de défilement automatique (Toutes les 3 secondes)
+        function demarrerCarrouselAuto() {
+            const carrousel = document.getElementById('carrousel-vip');
+            if (!carrousel || carrousel.children.length <= 1) return;
+            
+            clearInterval(intervalCarrousel);
+            
+            intervalCarrousel = setInterval(() => {
+                const maxScroll = carrousel.scrollWidth - carrousel.clientWidth;
+                if (carrousel.scrollLeft >= maxScroll - 10) {
+                    carrousel.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    const itemWidth = carrousel.children[0].clientWidth + 12;
+                    carrousel.scrollBy({ left: itemWidth, behavior: 'smooth' });
+                }
+            }, 3000);
+        }
 
         async function init() {
             const ecranLoad = document.getElementById('ecran-chargement');
@@ -179,7 +227,7 @@
                 const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
                 const supabase = window.supabase.createClient(dbUrl, dbKey);
 
-                // 1. Récupérer les produits en premier pour pouvoir faire les liens ID
+                // 1. Récupérer les produits 
                 const { data: produitsData, error } = await supabase.from('produits').select('*').order('dateajout', { ascending: false });
                 if (produitsData) articles = produitsData;
 
@@ -190,18 +238,22 @@
                 if (pubData && pubData.length > 0) {
                     conteneurVIP.innerHTML = pubData.map(p => {
                         const articleLie = p.id_produit ? articles.find(a => a.id == p.id_produit) : null;
+                        
                         if (articleLie) {
                             return `
-                            <div class="vip-banner relative overflow-hidden rounded-[15px] shadow-sm border border-gray-100 flex-shrink-0" style="min-width:90%;" onclick="ouvrirDetails('${articleLie.nom.replace(/'/g, "\\'")}')">
+                            <div class="vip-banner relative overflow-hidden rounded-[15px] shadow-sm border border-gray-100 flex-shrink-0 cursor-pointer active:scale-95 transition" style="min-width:90%;" onclick="ouvrirDetails('${articleLie.nom.replace(/'/g, "\\'")}')">
                                 <img src="${p.image}" class="w-full h-32 object-cover">
                                 <div class="absolute bottom-2 right-2 bg-[#5b21b6] text-white text-[10px] font-black uppercase px-4 py-2 rounded-full shadow-xl flex items-center gap-2">
                                     <i class="fas fa-shopping-bag"></i> Voir l'article
                                 </div>
                             </div>`;
                         } else {
-                            return `<img src="${p.image}" class="vip-banner h-32 shadow-sm border border-gray-100 object-cover rounded-[15px] flex-shrink-0" style="min-width:90%;">`;
+                            return `<img src="${p.image}" onclick="ouvrirImage('${p.image}')" class="vip-banner h-32 shadow-sm border border-gray-100 object-cover rounded-[15px] flex-shrink-0 cursor-pointer active:scale-95 transition" style="min-width:90%;">`;
                         }
                     }).join('');
+                    
+                    // Lancement du carrousel automatique !
+                    setTimeout(demarrerCarrouselAuto, 1000);
                 } else {
                     conteneurVIP.innerHTML = `<div class="bg-gray-100 w-full h-32 rounded-[15px] flex flex-col items-center justify-center text-gray-400 border border-dashed border-gray-300 min-w-full"><i class="fas fa-bullhorn text-2xl mb-2"></i><span class="text-xs font-bold uppercase tracking-wider">Espace Pub Disponible</span></div>`;
                 }
