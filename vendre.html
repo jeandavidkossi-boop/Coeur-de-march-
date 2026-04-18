@@ -3,266 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mon Bureau - Coeur de Marché</title>
+    <title>Vendre - Coeur de Marché Bouaflé</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
-        .bg-cdm-purple { background-color: #5b21b6; }
-        .badge-standard { background-color: #9ca3af; color: white; }
-        .badge-pro { background-color: #2563eb; color: white; }
-        .badge-vip { background-color: #f59e0b; color: white; animation: blink 2s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; }
+        .text-cdm-purple { color: #5b21b6; }
+        .bg-cdm-orange { background-color: #f97316; }
+        .border-cdm-orange { border-color: #f97316; }
     </style>
 </head>
-<body class="pb-24">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <nav class="bg-cdm-purple text-white p-6 rounded-b-[35px] shadow-lg">
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex items-center gap-3">
-                <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white" alt="Logo">
-                <div>
-                    <h1 class="text-lg font-black uppercase tracking-tighter">Mon Bureau</h1>
-                    <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Bouaflé</p>
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-gray-200 p-8">
+        
+        <div class="text-center mb-8">
+            <img src="1769121566036.png" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-cdm-orange shadow-sm" alt="Logo" onerror="this.src='https://via.placeholder.com/80?text=CDM'">
+            <h1 class="text-2xl font-extrabold text-cdm-purple uppercase tracking-tight">Coeur de Marché</h1>
+            <p class="text-cdm-orange font-bold text-xs uppercase tracking-widest">Bouaflé</p>
+            <div class="h-1 w-12 bg-cdm-orange mx-auto mt-2 rounded-full"></div>
+            <p id="form-titre" class="text-gray-500 font-semibold text-sm mt-4">Connectez-vous à votre boutique</p>
+        </div>
+
+        <div class="space-y-4">
+            
+            <div id="champs-inscription" style="display: none;" class="space-y-4">
+                <div class="relative">
+                    <i class="fas fa-store absolute left-4 top-4 text-gray-400"></i>
+                    <input type="text" id="nomB" placeholder="Nom de la boutique" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
+                </div>
+                <div class="relative">
+                    <i class="fas fa-user absolute left-4 top-4 text-gray-400"></i>
+                    <input type="text" id="nomP" placeholder="Nom du propriétaire" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
+                </div>
+                <div class="relative">
+                    <i class="fab fa-whatsapp absolute left-4 top-4 text-gray-400"></i>
+                    <input type="tel" id="telephone" placeholder="Numéro WhatsApp" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
                 </div>
             </div>
-            <button onclick="deconnecter()" class="bg-white/10 p-3 rounded-2xl active:scale-90 transition-all">
-                <i class="fas fa-power-off text-white"></i>
+
+            <div class="relative">
+                <i class="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
+                <input type="email" id="email" placeholder="Adresse Email" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
+            </div>
+            <div class="relative">
+                <i class="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
+                <input type="password" id="password" placeholder="Mot de passe" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
+            </div>
+            
+            <button id="btnAction" onclick="executerAction()" class="w-full bg-cdm-orange text-white font-bold py-4 rounded-xl shadow-md active:scale-95 transition-all uppercase tracking-wider mt-4">
+                Se connecter
             </button>
         </div>
-        
-        <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/10">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement...</p>
-                    <p id="nom-boutique" class="text-2xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
-                </div>
-                <span id="badge-abonnement" class="text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-sm">...</span>
-            </div>
-        </div>
-    </nav>
 
-    <main class="p-6 -mt-6">
-        <div id="bloc-ajouter" class="bg-white rounded-[30px] shadow-xl p-7 border border-gray-100">
-            <div class="flex justify-between items-center mb-8">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center">
-                        <i class="fas fa-plus"></i>
-                    </div>
-                    <h2 class="font-black text-gray-800 uppercase text-sm tracking-wide">Ajouter un article</h2>
-                </div>
-                <span id="compteur-articles" class="text-[10px] font-black text-gray-400 bg-gray-50 px-3 py-1 rounded-lg">--/--</span>
-            </div>
-
-            <div id="formulaire-annonce" class="space-y-5">
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Désignation</label>
-                    <input type="text" id="pNom" placeholder="Ex: Pagne Baoulé, iPhone 13..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500">
-                </div>
-
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Prix (FCFA)</label>
-                    <input type="number" id="pPrix" placeholder="0" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-black text-orange-600 focus:border-orange-500">
-                </div>
-                
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Rayon</label>
-                    <select id="pCat" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-500">
-                        <option value="Marché & Vivrier">Marché & Vivrier</option>
-                        <option value="Alimentation & Boissons">Alimentation & Boissons</option>
-                        <option value="Habillement & Pagnes">Habillement & Pagnes</option>
-                        <option value="Mercerie & Couture">Mercerie & Couture</option>
-                        <option value="Maison & Vaisselle">Maison & Vaisselle</option>
-                        <option value="Électronique & Ménager">Électronique & Ménager</option>
-                        <option value="Construction & Quincaillerie">Construction & Quincaillerie</option>
-                        <option value="Motos & Mécanique">Motos & Mécanique</option>
-                        <option value="Agro-Élevage">Agro-Élevage</option>
-                        <option value="Librairie & École">Librairie & École</option>
-                        <option value="Beauté & Cosmétique">Beauté & Cosmétique</option>
-                        <option value="Événementiel & Location">Événementiel & Location</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Description</label>
-                    <textarea id="pDesc" placeholder="Détails de l'article..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500" rows="3"></textarea>
-                </div>
-
-                <button type="button" onclick="document.getElementById('photoInput').click()" class="w-full py-8 border-2 border-dashed border-purple-100 rounded-2xl bg-purple-50/50 text-purple-600 flex flex-col items-center active:bg-purple-100 transition-all">
-                    <i class="fas fa-camera text-3xl mb-2" id="iconPhoto"></i>
-                    <span id="btnPhotoText" class="font-black text-[10px] uppercase text-center px-4">Prendre la photo</span>
-                    <input type="file" id="photoInput" accept="image/*" class="hidden">
-                </button>
-
-                <button type="button" onclick="publierAnnonce()" id="btnPublier" class="w-full bg-orange-500 text-white font-black py-5 rounded-2xl shadow-lg shadow-orange-200 uppercase tracking-widest mt-4 active:scale-95 transition-all">
-                    Publier l'article
-                </button>
-            </div>
-
-            <div id="message-limite" class="hidden text-center py-6">
-                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                    <i class="fas fa-lock"></i>
-                </div>
-                <h3 class="font-black text-gray-800 uppercase text-xs mb-2">Limite Gratuite Atteinte</h3>
-                <p class="text-gray-500 text-[10px] font-bold mb-6 px-4">Pour ajouter plus de 10 articles et vendre sans limite, passez au forfait Pro !</p>
-                <button onclick="window.open('https://wa.me/2250576326645?text=Je souhaite passer mon compte au forfait PRO')" class="bg-blue-600 text-white font-black px-8 py-3 rounded-xl uppercase text-[10px] shadow-lg">Devenir PRO (2000 F)</button>
-            </div>
+        <div class="mt-8 flex justify-center gap-8 border-t border-gray-100 pt-6">
+            <button id="swConn" onclick="modeC()" class="text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1">Connexion</button>
+            <button id="swInsc" onclick="modeI()" class="text-gray-400 font-bold text-xs uppercase pb-1">Créer un compte</button>
         </div>
 
-        <div class="mt-10 mb-8">
-            <h2 class="font-black text-[#4c1d95] text-lg uppercase mb-4 border-b-2 border-purple-200 pb-2 flex items-center gap-2">
-                <i class="fas fa-boxes text-orange-500"></i> Stock en Ligne
-            </h2>
-            <div id="mes-articles" class="grid grid-cols-2 gap-4">
-                <p class="text-gray-400 text-sm italic col-span-2">Chargement...</p>
-            </div>
+        <div class="mt-6 text-center">
+            <a href="index.html" class="text-gray-400 font-bold text-[10px] uppercase hover:text-cdm-orange">
+                <i class="fas fa-arrow-left mr-1"></i> Retour au marché
+            </a>
         </div>
-    </main>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    </div>
+        <script>
+        let estEnInscription = false;
+
+        function modeI() {
+            estEnInscription = true;
+            document.getElementById('champs-inscription').style.display = 'block';
+            document.getElementById('form-titre').innerText = "Inscription nouveau vendeur";
+            document.getElementById('btnAction').innerText = "Créer ma boutique";
+            document.getElementById('swInsc').className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
+            document.getElementById('swConn').className = "text-gray-400 font-bold text-xs uppercase pb-1";
+        }
+
+        function modeC() {
+            estEnInscription = false;
+            document.getElementById('champs-inscription').style.display = 'none';
+            document.getElementById('form-titre').innerText = "Connectez-vous à votre boutique";
+            document.getElementById('btnAction').innerText = "Se connecter";
+            document.getElementById('swConn').className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
+            document.getElementById('swInsc').className = "text-gray-400 font-bold text-xs uppercase pb-1";
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
-        const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        
-        let mySupabase = null;
-        let myUser = null;
-        let myPhoto = null;
-        let myWhatsapp = null;
-        let monAbonnement = 'standard';
-        let monNombreArticles = 0;
+        async function executerAction() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            const btn = document.getElementById('btnAction');
 
-        // 1. PUBLICATION AVEC VERROU ET STATUT
-        async function publierAnnonce() {
-            // Vérification de la limite avant tout
-            if (monAbonnement === 'standard' && monNombreArticles >= 10) {
-                alert("🚫 Limite de 10 articles atteinte !");
+            // 1. Vérification de base
+            if(!email || !pass) {
+                alert("L'email et le mot de passe sont obligatoires !");
                 return;
             }
 
-            const nomP = document.getElementById('pNom').value;
-            const prixP = document.getElementById('pPrix').value;
-            const catP = document.getElementById('pCat').value;
-            const descP = document.getElementById('pDesc').value;
+            // 2. Vérification anti-crash : on s'assure que Supabase est bien réveillé
+            if (typeof window.supabase === 'undefined') {
+                alert("Le système de base de données est en cours de chargement. Veuillez patienter une seconde et réessayer.");
+                return;
+            }
 
-            if (!nomP || !prixP || !myPhoto) { alert("⚠️ Informations et Photo obligatoires !"); return; }
+            const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
             
-            const btn = document.getElementById('btnPublier');
-            btn.innerText = "ENVOI EN COURS...";
-            btn.disabled = true;
+            btn.innerText = "Traitement en cours...";
 
-            try {
-                // Upload Photo
-                const nomFichier = myUser.id + "_" + Date.now() + ".jpg";
-                const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, myPhoto);
-                if (errPhoto) throw new Error(errPhoto.message);
-                const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
+            if(estEnInscription) {
+                const nomB = document.getElementById('nomB').value;
+                const nomP = document.getElementById('nomP').value;
+                const tel = document.getElementById('telephone').value;
 
-                // DÉFINITION DU STATUT (Interrupteur sécurité)
-                // VIP et Pro = actif direct / Standard = attente
-                let statutDepart = (monAbonnement === 'vip' || monAbonnement === 'pro') ? 'actif' : 'attente';
-
-                const { error: errProduit } = await mySupabase.from('produits').insert([{
-                    nom: nomP,
-                    prix: prixP,
-                    categorie: catP,
-                    description: descP,
-                    vendeur: myWhatsapp, 
-                    image: publicUrl,
-                    statut: statutDepart // Nouveau champ sécurité
-                }]);
-                
-                if (errProduit) throw new Error(errProduit.message);
-
-                alert(monAbonnement === 'standard' ? "✅ Envoyé ! Votre article sera visible après validation." : "✅ Génial ! Votre article est en ligne.");
-                window.location.reload(); 
-
-            } catch (erreur) {
-                alert("❌ Erreur : " + erreur.message);
-                btn.innerText = "PUBLIER L'ARTICLE";
-                btn.disabled = false;
-            }
-        }
-
-        async function deconnecter() {
-            if (mySupabase) { await mySupabase.auth.signOut(); }
-            window.location.href = "vendre.html";
-        }
-
-        document.getElementById('photoInput').addEventListener('change', function(e) {
-            if(e.target.files && e.target.files[0]) {
-                myPhoto = e.target.files[0];
-                document.getElementById('btnPhotoText').innerText = "IMAGE PRÊTE ✅";
-                document.getElementById('btnPhotoText').style.color = "#16a34a";
-                document.getElementById('iconPhoto').style.color = "#16a34a";
-            }
-        });
-
-        async function chargerMesArticles() {
-            if (!myWhatsapp) return; 
-            const container = document.getElementById('mes-articles');
-            const { data, error } = await mySupabase.from('produits').select('*').eq('vendeur', myWhatsapp).order('dateajout', { ascending: false });
-                
-            if (error || !data || data.length === 0) {
-                container.innerHTML = "<p class='text-gray-400 text-sm font-bold col-span-2 text-center py-4'>Aucun article.</p>";
-                monNombreArticles = 0;
-            } else {
-                monNombreArticles = data.length;
-                container.innerHTML = data.map(p => `
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col relative">
-                        ${p.statut === 'attente' ? '<span class="absolute top-1 left-1 bg-gray-800 text-white text-[7px] px-2 py-1 rounded font-black uppercase">En attente</span>' : ''}
-                        <img src="${p.image}" class="w-full h-24 object-cover">
-                        <div class="p-2 flex-1 flex flex-col">
-                            <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-1">${p.nom}</h4>
-                            <span class="text-orange-500 font-black text-xs mb-3">${p.prix} F</span>
-                            <button onclick="supprimerArticle('${p.id}')" class="mt-auto w-full bg-red-100 text-red-600 font-bold py-2 rounded-lg text-[10px] uppercase">Retirer</button>
-                        </div>
-                    </div>`).join('');
-            }
-            majCompteurUI();
-        }
-
-        function majCompteurUI() {
-            const limite = (monAbonnement === 'standard') ? 10 : (monAbonnement === 'pro' ? 50 : '∞');
-            document.getElementById('compteur-articles').innerText = monNombreArticles + " / " + limite;
-            
-            // Si limite atteinte en mode Standard
-            if (monAbonnement === 'standard' && monNombreArticles >= 10) {
-                document.getElementById('formulaire-annonce').classList.add('hidden');
-                document.getElementById('message-limite').classList.remove('hidden');
-            }
-        }
-
-        async function supprimerArticle(idArticle) {
-            if (!confirm("Retirer cet article ?")) return;
-            await mySupabase.from('produits').delete().eq('id', idArticle);
-            chargerMesArticles(); 
-        }
-
-        async function demarrerBureau() {
-            try {
-                mySupabase = window.supabase.createClient(dbUrl, dbKey);
-                const { data: { session } } = await mySupabase.auth.getSession();
-                if (!session) { window.location.href = "vendre.html"; return; }
-                myUser = session.user;
-
-                const { data: v } = await mySupabase.from('vendeurs').select('nom_boutique, proprietaire, whatsapp, abonnement').eq('id', myUser.id).single();
-
-                if (v) {
-                    document.getElementById('nom-boutique').innerText = v.nom_boutique;
-                    document.getElementById('nom-vendeur').innerText = "Gérant : " + v.proprietaire;
-                    myWhatsapp = v.whatsapp;
-                    monAbonnement = v.abonnement || 'standard';
-                    
-                    const badge = document.getElementById('badge-abonnement');
-                    badge.innerText = monAbonnement;
-                    badge.className = "badge-" + monAbonnement + " text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-sm";
-                    
-                    chargerMesArticles();
+                // Vérification stricte des champs obligatoires
+                if(!nomB || !nomP || !tel) {
+                    alert("Veuillez remplir TOUTES les informations (Nom, Propriétaire, WhatsApp).");
+                    btn.innerText = "Créer ma boutique";
+                    return;
                 }
-            } catch (erreur) { console.log(erreur); }
-        }
 
-        demarrerBureau();
+                // A. Création du compte sécurisé
+                const { data, error: authError } = await supabase.auth.signUp({
+                    email: email,
+                    password: pass
+                });
+
+                if(authError) {
+                    alert("Erreur d'inscription : " + authError.message);
+                    btn.innerText = "Créer ma boutique";
+                } else if (data.user) {
+                    
+                    // B. Envoi des informations dans ta table "vendeurs"
+                    const { error: dbError } = await supabase.from('vendeurs').insert([
+                        { 
+                            id: data.user.id, 
+                            nom_boutique: nomB, 
+                            proprietaire: nomP, 
+                            whatsapp: tel, 
+                            email: email,
+                            abonnement: 'standard'
+                        }
+                    ]);
+
+                    if(dbError) {
+                        alert("Erreur d'enregistrement dans la table : " + dbError.message);
+                        btn.innerText = "Créer ma boutique";
+                    } else {
+                        alert("Félicitations ! Votre boutique est créée. Connectez-vous maintenant.");
+                        modeC(); 
+                    }
+                }
+            } else {
+                // CONNEXION CLASSIQUE
+                const { error } = await supabase.auth.signInWithPassword({ 
+                    email: email, 
+                    password: pass 
+                });
+                
+                if(error) {
+                    alert("Identifiants incorrects.");
+                    btn.innerText = "Se connecter";
+                } else {
+                    window.location.href = "bureau.html"; // Redirection vers le bureau
+                }
+            }
+        }
     </script>
 </body>
 </html>
