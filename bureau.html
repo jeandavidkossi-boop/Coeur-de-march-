@@ -10,16 +10,43 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
         .bg-cdm-purple { background-color: #5b21b6; }
+        
+        /* Animations des belles modales */
+        .modal-overlay { transition: opacity 0.3s ease; }
+        .modal-box { transition: transform 0.3s ease; }
     </style>
 </head>
 <body class="pb-24">
+
+    <div id="modal-alerte" class="fixed inset-0 bg-black/80 z-[300] hidden items-center justify-center opacity-0 modal-overlay">
+        <div id="modal-alerte-content" class="bg-white w-[85%] rounded-[25px] p-6 text-center transform scale-90 modal-box">
+            <div id="alerte-icon" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"></div>
+            <h3 id="alerte-titre" class="font-black text-lg uppercase mb-2 text-[#4c1d95]">Message</h3>
+            <p id="alerte-message" class="text-gray-500 text-xs font-bold mb-6">Texte</p>
+            <button onclick="fermerAlerte()" class="w-full bg-[#5b21b6] text-white font-black py-4 rounded-xl uppercase text-[10px] active:scale-95 transition-all">J'ai compris</button>
+        </div>
+    </div>
+
+    <div id="modal-confirm" class="fixed inset-0 bg-black/80 z-[300] hidden items-center justify-center opacity-0 modal-overlay">
+        <div id="modal-confirm-content" class="bg-white w-[85%] rounded-[25px] p-6 text-center transform scale-90 modal-box">
+            <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            <h3 class="font-black text-lg text-gray-800 uppercase mb-2">Retirer l'article ?</h3>
+            <p class="text-gray-500 text-xs font-bold mb-6">Cet article sera retiré de votre boutique.</p>
+            <div class="flex gap-3">
+                <button onclick="fermerConfirm()" class="flex-1 bg-gray-100 text-gray-600 font-black py-3 rounded-xl uppercase text-[10px] active:scale-95 transition-all">Annuler</button>
+                <button id="btn-confirm-action" class="flex-1 bg-red-500 text-white font-black py-3 rounded-xl uppercase text-[10px] active:scale-95 transition-all">Oui, effacer</button>
+            </div>
+        </div>
+    </div>
 
     <nav class="bg-cdm-purple text-white p-6 rounded-b-[35px] shadow-lg">
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-3">
                 <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white" alt="Logo">
                 <div>
-                    <h1 class="text-lg font-black uppercase tracking-tighter">Coeur de Marché</h1>
+                    <h1 class="text-lg font-black uppercase tracking-tighter">Mon Bureau</h1>
                     <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Bouaflé</p>
                 </div>
             </div>
@@ -28,22 +55,28 @@
             </button>
         </div>
         
-        <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/10">
-            <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement...</p>
-            <p id="nom-boutique" class="text-2xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
+        <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/10 flex justify-between items-center">
+            <div>
+                <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement...</p>
+                <p id="nom-boutique" class="text-xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
+            </div>
+            <span id="badge-abonnement" class="hidden text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-sm">...</span>
         </div>
     </nav>
 
     <main class="p-6 -mt-6">
         <div class="bg-white rounded-[30px] shadow-xl p-7 border border-gray-100">
-            <div class="flex items-center gap-3 mb-8">
-                <div onclick="alert('Remplissez les informations ci-dessous pour envoyer un produit sur le marché.')" class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center active:scale-90 transition-all cursor-pointer">
-                    <i class="fas fa-plus"></i>
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <h2 class="font-black text-gray-800 uppercase text-sm tracking-wide">Ajouter un article</h2>
                 </div>
-                <h2 class="font-black text-gray-800 uppercase text-sm tracking-wide">Ajouter un article</h2>
+                <span id="compteur-articles" class="text-[10px] font-black text-gray-400 bg-gray-50 px-3 py-1 rounded-lg">--/--</span>
             </div>
 
-            <div class="space-y-5">
+            <div id="formulaire-annonce" class="space-y-5">
                 <div>
                     <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Désignation (Nom de l'article)</label>
                     <input type="text" id="pNom" placeholder="Ex: Pagne Baoulé, iPhone 13..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500">
@@ -87,6 +120,15 @@
                     Publier sur le marché
                 </button>
             </div>
+
+            <div id="message-limite" class="hidden text-center py-6">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3 class="font-black text-gray-800 uppercase text-xs mb-2">Limite Gratuite Atteinte</h3>
+                <p class="text-gray-500 text-[10px] font-bold mb-6 px-4">Passez au forfait Pro pour ajouter plus de 10 articles !</p>
+                <button onclick="window.open('https://wa.me/2250576326645')" class="bg-blue-600 text-white font-black px-8 py-3 rounded-xl uppercase text-[10px] shadow-lg">Devenir PRO (2000 F)</button>
+            </div>
         </div>
 
         <div class="mt-10 mb-8">
@@ -99,7 +141,7 @@
             </div>
         </div>
     </main>
-     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
         const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
@@ -108,16 +150,70 @@
         let myUser = null;
         let myPhoto = null;
         let myWhatsapp = null;
-        
-        // Variables pour gérer la limite
         let monAbonnement = 'standard';
         let monNombreArticles = 0;
+        let articleASupprimer = null;
 
-        // 1. BOUTON ORANGE : PUBLIER
+        // --- GESTION DES BELLES MODALES ---
+        function afficherAlerteCustom(titre, message, typeAlerte) {
+            const modal = document.getElementById('modal-alerte');
+            const content = document.getElementById('modal-alerte-content');
+            const icon = document.getElementById('alerte-icon');
+            
+            document.getElementById('alerte-titre').innerText = titre;
+            document.getElementById('alerte-message').innerText = message;
+            
+            if (typeAlerte === 'succes') {
+                icon.className = "w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 bg-green-100 text-green-500";
+                icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+            } else {
+                icon.className = "w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 bg-red-100 text-red-500";
+                icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            }
+            
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('opacity-100'); content.classList.remove('scale-90'); }, 10);
+        }
+
+        function fermerAlerte() {
+            const modal = document.getElementById('modal-alerte');
+            const content = document.getElementById('modal-alerte-content');
+            modal.classList.remove('opacity-100');
+            content.classList.add('scale-90');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        function demanderConfirmation(id) {
+            articleASupprimer = id;
+            const modal = document.getElementById('modal-confirm');
+            const content = document.getElementById('modal-confirm-content');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('opacity-100'); content.classList.remove('scale-90'); }, 10);
+        }
+
+        function fermerConfirm() {
+            articleASupprimer = null;
+            const modal = document.getElementById('modal-confirm');
+            const content = document.getElementById('modal-confirm-content');
+            modal.classList.remove('opacity-100');
+            content.classList.add('scale-90');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        // Action de confirmation de suppression
+        document.getElementById('btn-confirm-action').addEventListener('click', async () => {
+            if(articleASupprimer) {
+                await mySupabase.from('produits').delete().eq('id', articleASupprimer);
+                fermerConfirm();
+                chargerMesArticles();
+                afficherAlerteCustom("Retiré", "L'article a été effacé de votre boutique.", "succes");
+            }
+        });
+
+        // --- 1. BOUTON ORANGE : PUBLIER ---
         async function publierAnnonce() {
-            // VÉRIFICATION DE LA LIMITE (10 articles pour le compte standard)
             if (monAbonnement === 'standard' && monNombreArticles >= 10) {
-                alert("⚠️ Limite atteinte ! Vous avez déjà 10 articles. Passez au forfait PRO pour publier sans limite.");
+                afficherAlerteCustom("Limite atteinte", "Passez PRO pour publier plus d'articles !", "erreur");
                 return;
             }
 
@@ -126,15 +222,9 @@
             const catP = document.getElementById('pCat').value;
             const descP = document.getElementById('pDesc').value;
 
-            if (!nomP) { alert("⚠️ Nom de l'article requis !"); return; }
-            if (!prixP) { alert("⚠️ Prix requis !"); return; }
-            if (!myPhoto) { alert("📸 Photo obligatoire !"); return; }
+            if (!nomP || !prixP) { afficherAlerteCustom("Attention", "Le nom et le prix sont obligatoires.", "erreur"); return; }
+            if (!myPhoto) { afficherAlerteCustom("Attention", "N'oubliez pas la photo de l'article.", "erreur"); return; }
             
-            if (!mySupabase || !myUser) { 
-                alert("❌ Erreur de connexion au serveur. Réessayez."); 
-                return; 
-            }
-
             const btn = document.getElementById('btnPublier');
             btn.innerText = "ENVOI EN COURS...";
             btn.disabled = true;
@@ -145,47 +235,37 @@
                 if (errPhoto) throw new Error("Erreur Photo : " + errPhoto.message);
 
                 const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
-
-                // DÉFINITION DU STATUT (Attente ou Actif selon l'abonnement)
-                let statutArticle = 'attente';
-                if (monAbonnement === 'pro' || monAbonnement === 'vip') {
-                    statutArticle = 'actif';
-                }
+                
+                let statutArticle = (monAbonnement === 'vip' || monAbonnement === 'pro') ? 'actif' : 'attente';
 
                 const { error: errProduit } = await mySupabase.from('produits').insert([{
-                    nom: nomP,
-                    prix: prixP,
-                    categorie: catP,
-                    description: descP,
-                    vendeur: myWhatsapp, 
-                    image: publicUrl,
-                    statut: statutArticle
+                    nom: nomP, prix: prixP, categorie: catP, description: descP, vendeur: myWhatsapp, image: publicUrl, statut: statutArticle
                 }]);
                 
-                if (errProduit) throw new Error("Erreur Base de données : " + errProduit.message);
+                if (errProduit) throw new Error(errProduit.message);
 
-                if (monAbonnement === 'standard') {
-                    alert("✅ MAGNIFIQUE ! Votre article est envoyé. Il sera visible sur le marché après vérification.");
+                if(monAbonnement === 'standard') {
+                    afficherAlerteCustom("Envoyé", "Votre article sera visible après vérification.", "succes");
                 } else {
-                    alert("✅ MAGNIFIQUE ! Votre article est en ligne.");
+                    afficherAlerteCustom("MAGNIFIQUE !", "Votre article est en ligne.", "succes");
                 }
                 
-                window.location.reload(); 
+                setTimeout(() => { window.location.reload(); }, 2000); 
 
             } catch (erreur) {
-                alert("❌ ÉCHEC : " + erreur.message);
-                btn.innerText = "PUBLIER SUR LE MARCHÉ";
+                afficherAlerteCustom("ÉCHEC", erreur.message, "erreur");
+                btn.innerText = "Publier sur le marché";
                 btn.disabled = false;
             }
         }
 
-        // 2. BOUTON SORTIR
+        // --- 2. BOUTON SORTIR ---
         async function deconnecter() {
             if (mySupabase) { await mySupabase.auth.signOut(); }
             window.location.href = "vendre.html";
         }
 
-        // 3. SELECTION PHOTO
+        // --- 3. SELECTION PHOTO ---
         document.getElementById('photoInput').addEventListener('change', function(e) {
             if(e.target.files && e.target.files[0]) {
                 myPhoto = e.target.files[0];
@@ -195,7 +275,7 @@
             }
         });
 
-        // 4. CHARGER LES ARTICLES DU VENDEUR
+        // --- 4. CHARGER LES ARTICLES DU VENDEUR ---
         async function chargerMesArticles() {
             if (!myWhatsapp) return; 
             
@@ -210,46 +290,33 @@
             if (error || !data || data.length === 0) {
                 container.innerHTML = "<p class='text-gray-400 text-sm font-bold col-span-2 text-center py-4'>Vous n'avez aucun article en ligne.</p>";
                 monNombreArticles = 0;
-                return;
-            }
-
-            // On enregistre le nombre d'articles pour bloquer si besoin
-            monNombreArticles = data.length;
-
-            container.innerHTML = data.map(p => `
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col relative">
-                    ${p.statut === 'attente' ? '<span class="absolute top-1 left-1 bg-gray-800 text-white text-[7px] px-2 py-1 rounded font-black uppercase shadow-sm">En attente</span>' : ''}
-                    <img src="${p.image}" class="w-full h-24 object-cover">
-                    <div class="p-2 flex-1 flex flex-col">
-                        <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-1">${p.nom}</h4>
-                        <span class="text-orange-500 font-black text-xs mb-3">${p.prix} F</span>
-                        <button onclick="supprimerArticle('${p.id}')" class="mt-auto w-full bg-red-100 text-red-600 font-bold py-2 rounded-lg text-[10px] uppercase active:scale-95 transition-all">
-                            <i class="fas fa-trash"></i> Retirer
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // 5. SUPPRIMER L'ARTICLE
-        async function supprimerArticle(idArticle) {
-            const confirmation = confirm("Voulez-vous vraiment retirer cet article du marché ?");
-            if (!confirmation) return;
-
-            const { error } = await mySupabase
-                .from('produits')
-                .delete()
-                .eq('id', idArticle);
-
-            if (error) {
-                alert("❌ Erreur lors de la suppression : " + error.message);
             } else {
-                alert("✅ Article retiré avec succès !");
-                chargerMesArticles(); 
+                monNombreArticles = data.length;
+                container.innerHTML = data.map(p => `
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col relative">
+                        ${p.statut === 'attente' ? '<span class="absolute top-1 left-1 bg-gray-800 text-white text-[7px] px-2 py-1 rounded font-black uppercase shadow-sm">En attente</span>' : ''}
+                        <img src="${p.image}" class="w-full h-24 object-cover">
+                        <div class="p-2 flex-1 flex flex-col">
+                            <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-1">${p.nom}</h4>
+                            <span class="text-orange-500 font-black text-xs mb-3">${p.prix} F</span>
+                            <button onclick="demanderConfirmation('${p.id}')" class="mt-auto w-full bg-red-100 text-red-600 font-bold py-2 rounded-lg text-[10px] uppercase active:scale-95 transition-all">
+                                <i class="fas fa-trash"></i> Retirer
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            const limiteAffichage = (monAbonnement === 'standard') ? 10 : ((monAbonnement === 'pro') ? 50 : '∞');
+            document.getElementById('compteur-articles').innerText = monNombreArticles + " / " + limiteAffichage;
+            
+            if (monAbonnement === 'standard' && monNombreArticles >= 10) {
+                document.getElementById('formulaire-annonce').classList.add('hidden');
+                document.getElementById('message-limite').classList.remove('hidden');
             }
         }
 
-        // 6. DÉMARRAGE ET VÉRIFICATION PROFIL
+        // --- 6. DÉMARRAGE ET VÉRIFICATION PROFIL ---
         async function demarrerBureau() {
             try {
                 if (typeof window.supabase === 'undefined') return;
@@ -264,21 +331,23 @@
                 
                 myUser = session.user;
 
-                // On récupère l'abonnement en plus du reste
-                const { data: vendeur } = await mySupabase
+                const { data: vendeur, error: errVendeur } = await mySupabase
                     .from('vendeurs')
-                    .select('nom_boutique, proprietaire, whatsapp, abonnement') 
+                    .select('*') 
                     .eq('id', myUser.id)
                     .single();
 
                 if (vendeur) {
-                    document.getElementById('nom-boutique').innerText = vendeur.nom_boutique;
-                    document.getElementById('nom-vendeur').innerText = "Gérant : " + vendeur.proprietaire;
+                    document.getElementById('nom-boutique').innerText = vendeur.nom_boutique || "Boutique";
+                    document.getElementById('nom-vendeur').innerText = "Gérant : " + (vendeur.proprietaire || "Gérant");
                     myWhatsapp = vendeur.whatsapp;
                     
-                    // On enregistre l'abonnement du vendeur pour faire fonctionner la limite
                     monAbonnement = vendeur.abonnement || 'standard';
-                    
+                    const badge = document.getElementById('badge-abonnement');
+                    badge.innerText = monAbonnement;
+                    badge.classList.remove('hidden');
+                    badge.className = "text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-sm badge-" + monAbonnement;
+
                     chargerMesArticles();
                 }
 
@@ -291,3 +360,4 @@
     </script>
 </body>
 </html>
+
