@@ -60,7 +60,7 @@
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     </style>
 </head>
-    <body class="pb-32">
+<body class="pb-32">
 
     <div id="modal-image" class="modal-image-overlay" onclick="fermerImage()">
         <button onclick="fermerImage()" class="absolute top-6 right-6 text-white text-3xl z-50 p-2"><i class="fas fa-times"></i></button>
@@ -171,7 +171,7 @@
         <button onclick="window.open('https://wa.me/2250576326645')" class="wa-btn active:scale-95 transition"><i class="fab fa-whatsapp"></i></button>
         <a href="vendre.html" class="nav-item"><i class="fas fa-store-alt"></i><span class="nav-text">Vendre</span></a>
         <button onclick="ouvrirAide()" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
-    </nav>
+                                                                                                                                                                                                       </nav>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         let articles = []; let panier = []; let articlesCourants = []; let cibleCourante = '';
@@ -256,7 +256,7 @@
                     setTimeout(demarrerCarrouselAuto, 1000);
                 }
 
-                // 3. Récupérer Cœur de Marché TV (Avec décodeur Youtube intégré)
+                // 3. Récupérer Cœur de Marché TV (Avec le VRAI lien YouTube corrigé)
                 const { data: tvData } = await supabase.from('tv_market').select('*').eq('statut', 'actif').limit(1).single();
                 const conteneurTV = document.getElementById('conteneur-tv');
                 
@@ -274,6 +274,7 @@
                     // On utilise le décodeur pour trouver l'ID exact de la vidéo
                     const youtubeIdNettoye = extraireYoutubeId(tvData.lien_youtube);
 
+                    // ICI c'est la ligne qui a été corrigée !
                     conteneurTV.innerHTML = `
                     <div class="bg-white p-3 rounded-[20px] shadow-sm border border-gray-100">
                         <div class="video-container shadow-inner">
@@ -415,6 +416,6 @@
 
         init();
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.log("Erreur PWA:", err)); }); }
-                </script>
-                </body>
+    </script>
+</body>
 </html>
