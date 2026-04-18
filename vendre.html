@@ -1,103 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vendre - Coeur de Marché Bouaflé</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; margin: 0; padding: 0; }
+        .text-cdm-purple { color: #5b21b6; }
+        .bg-cdm-orange { background-color: #f97316; }
+        .modal-bg { transition: opacity 0.3s ease; }
+    </style>
+</head>
 <body class="min-h-screen flex items-center justify-center p-4">
 
     <div id="modal-alerte" class="fixed inset-0 bg-black/80 z-[300] hidden items-center justify-center opacity-0 modal-bg">
-        <div id="modal-alerte-content" class="bg-white w-[85%] max-w-sm rounded-[25px] p-6 text-center transform scale-90 modal-box">
+        <div class="bg-white w-[85%] max-w-sm rounded-[25px] p-6 text-center shadow-2xl">
             <div id="alerte-icon" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"></div>
             <h3 id="alerte-titre" class="font-black text-lg uppercase mb-2"></h3>
             <p id="alerte-message" class="text-gray-500 text-xs font-bold mb-6"></p>
-            <button onclick="fermerAlerte()" class="w-full bg-[#5b21b6] text-white font-black py-4 rounded-xl uppercase text-[10px] active:scale-95 transition-transform">Continuer</button>
+            <button onclick="fermerAlerte()" class="w-full bg-[#5b21b6] text-white font-black py-4 rounded-xl uppercase text-[10px]">Continuer</button>
         </div>
     </div>
 
     <div class="w-full max-w-md bg-white rounded-[35px] shadow-xl border border-gray-200 p-8">
-        
         <div class="text-center mb-8">
-            <img src="1769121566036.png" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-cdm-orange shadow-sm" alt="Logo">
+            <img src="1769121566036.png" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-[#f97316]" alt="Logo">
             <h1 class="text-2xl font-extrabold text-cdm-purple uppercase tracking-tight">Coeur de Marché</h1>
-            <p class="text-cdm-orange font-bold text-xs uppercase tracking-widest">Bouaflé</p>
-            <div class="h-1 w-12 bg-cdm-orange mx-auto mt-2 rounded-full"></div>
-            <p id="form-titre" class="text-gray-500 font-semibold text-sm mt-4 italic">Accédez à votre espace vendeur</p>
+            <p class="text-[#f97316] font-bold text-xs uppercase tracking-widest">Bouaflé</p>
+            <div class="h-1 w-12 bg-[#f97316] mx-auto mt-2 rounded-full"></div>
+            <p id="form-titre" class="text-gray-500 font-semibold text-sm mt-4">Connectez-vous à votre boutique</p>
         </div>
 
         <div class="space-y-4">
             <div id="champs-inscription" style="display: none;" class="space-y-4">
-                <div class="relative">
-                    <i class="fas fa-store absolute left-4 top-4 text-gray-400"></i>
-                    <input type="text" id="nomB" placeholder="Nom de votre boutique" class="w-full p-4 pl-11 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700">
-                </div>
-                <div class="relative">
-                    <i class="fas fa-user absolute left-4 top-4 text-gray-400"></i>
-                    <input type="text" id="nomP" placeholder="Votre nom complet" class="w-full p-4 pl-11 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700">
-                </div>
-                <div class="relative">
-                    <i class="fab fa-whatsapp absolute left-4 top-4 text-gray-400"></i>
-                    <input type="tel" id="telephone" placeholder="Numéro WhatsApp" class="w-full p-4 pl-11 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700">
-                </div>
+                <input type="text" id="nomB" placeholder="Nom de la boutique" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold">
+                <input type="text" id="nomP" placeholder="Nom du propriétaire" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold">
+                <input type="tel" id="telephone" placeholder="Numéro WhatsApp" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold">
             </div>
-
-            <div class="relative">
-                <i class="fas fa-envelope absolute left-4 top-4 text-gray-400"></i>
-                <input type="email" id="email" placeholder="Adresse Email" class="w-full p-4 pl-11 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700">
-            </div>
-            <div class="relative">
-                <i class="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
-                <input type="password" id="password" placeholder="Mot de passe" class="w-full p-4 pl-11 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700">
-            </div>
-            
-            <button id="btnAction" onclick="executerAction()" class="w-full bg-cdm-orange text-white font-black py-5 rounded-2xl shadow-lg shadow-orange-100 active:scale-95 transition-all uppercase tracking-widest mt-4">
-                Se connecter
-            </button>
+            <input type="email" id="email" placeholder="Adresse Email" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold">
+            <input type="password" id="password" placeholder="Mot de passe" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold">
+            <button id="btnAction" onclick="executerAction()" class="w-full bg-[#f97316] text-white font-black py-5 rounded-2xl shadow-lg uppercase mt-4">Se connecter</button>
         </div>
 
         <div class="mt-8 flex justify-center gap-8 border-t border-gray-100 pt-6">
-            <button id="swConn" onclick="modeC()" class="text-cdm-purple font-black text-[10px] uppercase border-b-2 border-cdm-orange pb-1">Connexion</button>
+            <button id="swConn" onclick="modeC()" class="text-cdm-purple font-black text-[10px] uppercase border-b-2 border-[#f97316] pb-1">Connexion</button>
             <button id="swInsc" onclick="modeI()" class="text-gray-400 font-black text-[10px] uppercase pb-1">Créer un compte</button>
         </div>
-
-        <div class="mt-6 text-center">
-            <a href="index.html" class="text-gray-400 font-black text-[10px] uppercase hover:text-cdm-orange">
-                <i class="fas fa-arrow-left mr-1"></i> Retour au marché
-            </a>
-        </div>
     </div>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         let estEnInscription = false;
+        const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+        const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+        const supabase = window.supabase.createClient(dbUrl, dbKey);
 
-        // GESTION DES BELLES ALERTES
         function afficherAlerte(titre, message, type) {
             const modal = document.getElementById('modal-alerte');
             const icon = document.getElementById('alerte-icon');
-            const titreElt = document.getElementById('alerte-titre');
+            document.getElementById('alerte-titre').innerText = titre;
             document.getElementById('alerte-message').innerText = message;
-            titreElt.innerText = titre;
-            
             if(type === 'succes') {
                 icon.className = "w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4";
-                icon.innerHTML = '<i class="fas fa-check-circle"></i>';
-                titreElt.className = "font-black text-lg uppercase mb-2 text-green-600";
+                icon.innerHTML = '<i class="fas fa-check"></i>';
             } else {
                 icon.className = "w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4";
-                icon.innerHTML = '<i class="fas fa-times-circle"></i>';
-                titreElt.className = "font-black text-lg uppercase mb-2 text-red-600";
+                icon.innerHTML = '<i class="fas fa-exclamation"></i>';
             }
             modal.style.display = 'flex';
-            setTimeout(() => { modal.classList.add('opacity-100'); document.getElementById('modal-alerte-content').classList.remove('scale-90'); }, 10);
+            setTimeout(() => modal.classList.add('opacity-100'), 10);
         }
 
         function fermerAlerte() {
-            const modal = document.getElementById('modal-alerte');
-            modal.classList.remove('opacity-100');
-            document.getElementById('modal-alerte-content').classList.add('scale-90');
-            setTimeout(() => { modal.style.display = 'none'; }, 300);
+            document.getElementById('modal-alerte').classList.remove('opacity-100');
+            setTimeout(() => document.getElementById('modal-alerte').style.display = 'none', 300);
         }
 
         function modeI() {
             estEnInscription = true;
             document.getElementById('champs-inscription').style.display = 'block';
-            document.getElementById('form-titre').innerText = "Rejoignez le marché";
+            document.getElementById('form-titre').innerText = "Inscription nouveau vendeur";
             document.getElementById('btnAction').innerText = "Créer ma boutique";
-            document.getElementById('swInsc').className = "text-cdm-purple font-black text-[10px] uppercase border-b-2 border-cdm-orange pb-1";
+            document.getElementById('swInsc').className = "text-cdm-purple font-black text-[10px] uppercase border-b-2 border-[#f97316] pb-1";
             document.getElementById('swConn').className = "text-gray-400 font-black text-[10px] uppercase pb-1";
         }
 
@@ -106,7 +93,7 @@
             document.getElementById('champs-inscription').style.display = 'none';
             document.getElementById('form-titre').innerText = "Connectez-vous à votre boutique";
             document.getElementById('btnAction').innerText = "Se connecter";
-            document.getElementById('swConn').className = "text-cdm-purple font-black text-[10px] uppercase border-b-2 border-cdm-orange pb-1";
+            document.getElementById('swConn').className = "text-cdm-purple font-black text-[10px] uppercase border-b-2 border-[#f97316] pb-1";
             document.getElementById('swInsc').className = "text-gray-400 font-black text-[10px] uppercase pb-1";
         }
 
@@ -115,59 +102,28 @@
             const pass = document.getElementById('password').value;
             const btn = document.getElementById('btnAction');
 
-            if(!email || !pass) {
-                afficherAlerte("Oups !", "L'email et le mot de passe sont obligatoires.", "erreur");
-                return;
-            }
-
-            const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-            const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-            const supabase = window.supabase.createClient(dbUrl, dbKey);
-            
+            if(!email || !pass) { afficherAlerte("Oups", "Email et mot de passe requis.", "erreur"); return; }
             btn.innerText = "Traitement...";
-            btn.disabled = true;
 
             if(estEnInscription) {
                 const nomB = document.getElementById('nomB').value;
                 const nomP = document.getElementById('nomP').value;
                 const tel = document.getElementById('telephone').value;
 
-                if(!nomB || !nomP || !tel) {
-                    afficherAlerte("Champs vides", "Veuillez remplir toutes les informations.", "erreur");
-                    btn.innerText = "Créer ma boutique";
-                    btn.disabled = false;
-                    return;
-                }
+                if(!nomB || !nomP || !tel) { afficherAlerte("Manquant", "Remplissez tous les champs.", "erreur"); btn.innerText = "Créer ma boutique"; return; }
 
                 const { data, error: authError } = await supabase.auth.signUp({ email, password: pass });
-
-                if(authError) {
-                    afficherAlerte("Erreur", authError.message, "erreur");
-                    btn.innerText = "Créer ma boutique";
-                    btn.disabled = false;
-                } else if (data.user) {
-                    const { error: dbError } = await supabase.from('vendeurs').insert([
-                        { id: data.user.id, nom_boutique: nomB, proprietaire: nomP, whatsapp: tel, email: email, abonnement: 'standard' }
-                    ]);
-
-                    if(dbError) {
-                        afficherAlerte("Erreur DB", dbError.message, "erreur");
-                    } else {
-                        afficherAlerte("Félicitations", "Votre boutique est prête ! Connectez-vous maintenant.", "succes");
-                        modeC(); 
-                    }
+                if(authError) { afficherAlerte("Erreur", authError.message, "erreur"); btn.innerText = "Créer ma boutique"; }
+                else if (data.user) {
+                    await supabase.from('vendeurs').insert([{ id: data.user.id, nom_boutique: nomB, proprietaire: nomP, whatsapp: tel, email: email, abonnement: 'standard' }]);
+                    afficherAlerte("Bravo", "Boutique créée ! Connectez-vous.", "succes");
+                    modeC();
                     btn.innerText = "Se connecter";
-                    btn.disabled = false;
                 }
             } else {
                 const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
-                if(error) {
-                    afficherAlerte("Échec", "Email ou mot de passe incorrect.", "erreur");
-                    btn.innerText = "Se connecter";
-                    btn.disabled = false;
-                } else {
-                    window.location.href = "bureau.html";
-                }
+                if(error) { afficherAlerte("Échec", "Identifiants incorrects.", "erreur"); btn.innerText = "Se connecter"; }
+                else { window.location.href = "bureau.html"; }
             }
         }
     </script>
