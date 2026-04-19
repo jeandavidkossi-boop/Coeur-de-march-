@@ -360,15 +360,29 @@
         function ouvrirAide() { const modal = document.getElementById('modal-aide'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10); }
         function fermerAide() { const modal = document.getElementById('modal-aide'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
 
-        function changerVue(v) {
-            document.getElementById('vue-accueil').classList.add('hidden'); document.getElementById('vue-boutique').classList.add('hidden'); document.getElementById('vue-rayon').classList.add('hidden');
-            document.getElementById(`vue-${v}`).classList.remove('hidden');
-            document.getElementById('nav-accueil').classList.remove('active-nav'); document.getElementById('nav-boutique').classList.remove('active-nav');
-            if (document.getElementById(`nav-${v}`)) document.getElementById(`nav-${v}`).classList.add('active-nav');
-            if (v === 'boutique') { afficherProduits(articles, 'liste-boutique'); }
-            window.scrollTo(0,0);
-        }
+                function changerVue(v) {
+            // Le balai automatique pour vider la barre de recherche
+            document.getElementById('inputRecherche').value = '';
 
+            document.getElementById('vue-accueil').classList.add('hidden'); 
+            document.getElementById('vue-boutique').classList.add('hidden'); 
+            document.getElementById('vue-rayon').classList.add('hidden');
+            
+            document.getElementById(`vue-${v}`).classList.remove('hidden');
+            
+            document.getElementById('nav-accueil').classList.remove('active-nav'); 
+            document.getElementById('nav-boutique').classList.remove('active-nav');
+            
+            if (document.getElementById(`nav-${v}`)) {
+                document.getElementById(`nav-${v}`).classList.add('active-nav');
+            }
+            
+            if (v === 'boutique') { 
+                afficherProduits(articles, 'liste-boutique'); 
+            }
+            window.scrollTo(0,0);
+                }
+        
         function filtrerAccueil(c) { document.getElementById('titre-rayon').innerText = c; const f = articles.filter(a => a.categorie && a.categorie.includes(c)); afficherProduits(f, 'liste-rayon'); changerVue('rayon'); }
         function filtrerBoutique(cat) { document.getElementById('titre-rayon').innerText = cat; const filtered = articles.filter(a => a.categorie === cat); afficherProduits(filtered, 'liste-rayon'); changerVue('rayon'); }
 
