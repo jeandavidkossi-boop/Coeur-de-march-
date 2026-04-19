@@ -89,13 +89,13 @@
             <div id="avenue-boutiques-vip" class="flex gap-4 overflow-x-auto hide-scroll py-2" style="scroll-behavior: smooth;"></div>
         </div>
 
-        <div class="flex justify-between px-8 mt-6">
-            <button onclick="filtrerAccueil('Vivrier')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#ffedd5] rounded-2xl flex items-center justify-center text-[#d97706] text-2xl mb-2 shadow-sm"><i class="fas fa-carrot"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Vivrier</span></button>
-            <button onclick="filtrerAccueil('Beauté')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#fce7f3] rounded-2xl flex items-center justify-center text-[#db2777] text-2xl mb-2 shadow-sm"><i class="fas fa-magic"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Beauté</span></button>
-            <button onclick="filtrerAccueil('Alimentation')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#e0e7ff] rounded-2xl flex items-center justify-center text-[#4f46e5] text-2xl mb-2 shadow-sm"><i class="fas fa-shopping-bag"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Superette</span></button>
-            <button onclick="filtrerAccueil('Habillement')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#dcfce7] rounded-2xl flex items-center justify-center text-[#16a34a] text-2xl mb-2 shadow-sm"><i class="fas fa-tshirt"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Mode</span></button>
-        </div>
-
+                <div class="flex justify-between px-8 mt-6">
+            <button onclick="filtrerAccueil('Vivrier')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#ffedd5] rounded-2xl flex items-center justify-center text-[#d97706] text-2xl mb-2 shadow-sm"><i class="fas fa-shopping-basket"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Marché Frais</span></button>
+            <button onclick="filtrerAccueil('Beauté')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#dcfce7] rounded-2xl flex items-center justify-center text-[#16a34a] text-2xl mb-2 shadow-sm"><i class="fas fa-star"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Tendances</span></button>
+            <button onclick="filtrerAccueil('Alimentation')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#e0e7ff] rounded-2xl flex items-center justify-center text-[#4f46e5] text-2xl mb-2 shadow-sm"><i class="fas fa-box-open"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Superette</span></button>
+            <button onclick="filtrerAccueil('Habillement')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#fce7f3] rounded-2xl flex items-center justify-center text-[#db2777] text-2xl mb-2 shadow-sm"><i class="fas fa-gift"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Idées Cadeaux</span></button>
+                </div>
+        
         <div class="px-6 mt-8">
             <h2 class="font-black text-[#4c1d95] text-sm mb-3 flex items-center gap-2 uppercase"><i class="fas fa-star text-yellow-500"></i> À la une</h2>
             <div id="carrousel-vip" class="scroll-h hide-scroll">
@@ -111,7 +111,7 @@
         </div>
 
         <div class="px-6 mt-8 mb-8">
-            <h2 class="font-black text-[#4c1d95] text-sm mb-3 flex items-center gap-2 uppercase"><i class="fas fa-bolt text-yellow-500"></i> Nouveautés</h2>
+                        <h2 class="font-black text-[#4c1d95] text-sm mb-3 flex items-center gap-2 uppercase"><i class="fas fa-fire text-red-500"></i> Sélection du Moment</h2>
             <div id="liste-nouveautes" class="scroll-h hide-scroll"></div>
         </div>
     </div>
@@ -244,9 +244,17 @@
                     conteneurTV.innerHTML = `<div class="bg-white p-3 rounded-[20px] shadow-sm border border-gray-100"><div class="video-container shadow-inner"><iframe src="https://www.youtube.com/embed/${youtubeIdNettoye}" frameborder="0" allowfullscreen></iframe></div>${boutonAction}</div>`;
                 }
 
-                const nouveautes = articles.slice(0, 6);
-                afficherNouveautes(nouveautes, 'liste-nouveautes');
+                                // --- SÉLECTION DU JOUR (Fixe pour 24h) ---
+                const dateDuJour = new Date().toDateString(); 
+                const selectionDuJour = [...articles].sort((a, b) => {
+                    const calculA = String(a.id + dateDuJour).split('').reduce((total, lettre) => total + lettre.charCodeAt(0), 0);
+                    const calculB = String(b.id + dateDuJour).split('').reduce((total, lettre) => total + lettre.charCodeAt(0), 0);
+                    return calculA - calculB;
+                }).slice(0, 6);
 
+                afficherNouveautes(selectionDuJour, 'liste-nouveautes');
+                // --- FIN SÉLECTION DU JOUR ---
+                
                 const { data: annonceData } = await supabase.from('annonces').select('message').limit(1).single();
                 if (annonceData) document.getElementById('texte-annonce').innerText = annonceData.message;
 
