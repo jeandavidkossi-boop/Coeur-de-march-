@@ -274,17 +274,28 @@
                 if (ecranLoad) { ecranLoad.style.opacity = '0'; setTimeout(() => { ecranLoad.style.display = 'none'; }, 300); }
             }
         }
-                function filtrerVIP(telVendeur, nomBoutique) {
+                        function filtrerVIP(telVendeur, nomBoutique) {
             document.getElementById('inputRecherche').value = nomBoutique;
             const resultats = articles.filter(a => String(a.vendeur) === String(telVendeur));
+            
+            // 1. On bascule l'affichage manuellement pour ne pas réinitialiser le marché
+            document.getElementById('vue-accueil').classList.add('hidden');
+            document.getElementById('vue-rayon').classList.add('hidden');
+            document.getElementById('vue-boutique').classList.remove('hidden');
+            
+            document.getElementById('nav-accueil').classList.remove('active-nav');
+            document.getElementById('nav-boutique').classList.add('active-nav');
+
+            // 2. On affiche exclusivement les articles de ce vendeur
             afficherProduits(resultats, 'liste-boutique');
-            changerVue('boutique');
+            
+            // 3. On descend doucement vers les articles
             setTimeout(() => {
                 const listeElt = document.getElementById('liste-boutique');
                 if(listeElt) listeElt.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 300);
-        }
-
+                        }
+        
         function afficherNouveautes(liste, target) {
             const container = document.getElementById(target); if (!container) return;
             if (liste.length === 0) { container.innerHTML = '<p class="text-gray-400 text-[10px] italic">Aucune nouveauté</p>'; return; }
