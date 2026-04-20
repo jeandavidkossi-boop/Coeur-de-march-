@@ -63,9 +63,10 @@
         <p id="alerte-message" class="text-gray-500 text-xs font-bold mb-6">Message</p>
         <button onclick="fermerAlerte()" class="w-full bg-[#f97316] text-white font-black py-4 rounded-xl uppercase text-[10px]">Compris</button>
     </div></div>
-
-    <div id="ecran-chargement"><div class="spinner mb-6"></div><p class="font-black text-[#5b21b6] text-sm uppercase tracking-widest animate-pulse">Chargement...</p></div>
-
+    <div id="ecran-chargement" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
+        <img src="1769121566036.png" class="w-[280px] max-w-[85%] object-contain animate-pulse" alt="Logo complet">
+    </div>
+    
     <div class="bg-[#4c1d95] pt-8 pb-6 px-6 relative shadow-md">
         
         <div class="flex items-center gap-4 mb-6">
@@ -198,7 +199,20 @@
     </nav>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        let articles = []; let panier = []; let articlesCourants = []; let cibleCourante = '';
+            let articles = []; 
+    let panier = JSON.parse(localStorage.getItem('coeur_panier')) || []; 
+    let articlesCourants = []; 
+    let cibleCourante = '';
+
+    // Réafficher le petit panier flottant au démarrage s'il y a déjà des articles
+    if (panier.length > 0) {
+        const badge = document.getElementById('panier-count');
+        if(badge) badge.innerText = panier.length;
+        
+        const btnPanier = document.getElementById('panier-flottant');
+        if(btnPanier) btnPanier.classList.add('show');
+    }
+        
         let intervalCarrousel;
 
         function afficherAlerteCustom(titre, message) { document.getElementById('alerte-titre').innerText = titre; document.getElementById('alerte-message').innerText = message; const modal = document.getElementById('modal-alerte'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10); }
@@ -363,12 +377,17 @@
 
         function partager(m) { if (navigator.share) { navigator.share({ text: m }); } else { window.open('https://wa.me/?text=' + encodeURIComponent(m)); } }
 
-        function ajouterAuPanier(nom, prix, tel) {
-            panier.push({nom, prix, tel}); document.getElementById('panier-count').innerText = panier.length + (panier.length > 1 ? " articles" : " article");
-            afficherAlerteCustom("Ajouté !", `${nom} est dans votre panier.`);
-            document.getElementById('panier-flottant').classList.add('show');
-        }
-
+            function ajouterAuPanier(nom, prix, tel) {
+        panier.push({nom, prix, tel}); 
+        document.getElementById('panier-count').innerText = panier.length;
+        
+        // On sauvegarde le panier dans le téléphone
+        localStorage.setItem('coeur_panier', JSON.stringify(panier));
+        
+        afficherAlerteCustom("Ajouté !", `\n${nom}\n est dans votre panier.`);
+        document.getElementById('panier-flottant').classList.add('show');
+            }
+        
         function ouvrirPanier() {
             const container = document.getElementById('panier-liste'); const totalElt = document.getElementById('panier-total');
             if (panier.length === 0) { 
@@ -389,7 +408,16 @@
             const modal = document.getElementById('modal-panier'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10);
         }
 
-        function retirerDuPanier(index) { panier.splice(index, 1); document.getElementById('panier-count').innerText = panier.length + (panier.length > 1 ? " articles" : " article"); if(panier.length === 0) { document.getElementById('panier-flottant').classList.remove('show'); } ouvrirPanier(); }
+            function retirerDuPanier(index) { 
+        panier.splice(index, 1); 
+        document.getElementById('panier-count').innerText = panier.length; 
+        
+        // On met à jour la sauvegarde dans le téléphone
+        localStorage.setItem('coeur_panier', JSON.stringify(panier));
+        
+        ouvrirPanier(); 
+            }
+        
         function fermerModalDetails() { const modal = document.getElementById('modal-details'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
         function fermerPanier() { const modal = document.getElementById('modal-panier'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
         function ouvrirAide() { const modal = document.getElementById('modal-aide'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10); }
