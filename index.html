@@ -128,6 +128,7 @@
         </div>
     </div>
         <div id="vue-boutique" class="hidden mt-8 px-6">
+                <div id="banniere-vendeur" class="mb-4"></div>
         <div class="flex justify-end items-center mb-4">
             <select id="tri-prix-boutique" onchange="changerTriBoutique()" class="bg-white border border-gray-100 text-[#5b21b6] text-[10px] font-black uppercase py-2 px-3 rounded-xl outline-none shadow-sm">
                 <option value="recent">✨ Nouveautés</option>
@@ -295,6 +296,18 @@
             }
         }
                         function filtrerVIP(telVendeur, nomBoutique) {
+                                // Création de la bannière VIP personnalisée
+    const zoneBanniere = document.getElementById('banniere-vendeur');
+    if(zoneBanniere) {
+        zoneBanniere.innerHTML = `
+            <div class="w-full h-32 rounded-[20px] bg-[#4c1d95] shadow-md flex flex-col items-center justify-center relative overflow-hidden mb-2">
+                <div class="absolute inset-0 bg-black/20"></div>
+                <i class="fas fa-crown text-yellow-400 text-2xl mb-1 relative z-10"></i>
+                <h2 class="text-white text-2xl font-black uppercase tracking-wider relative z-10">${nomBoutique}</h2>
+                <p class="text-white/80 text-xs font-medium uppercase mt-1 relative z-10">Boutique Officielle</p>
+            </div>
+        `;
+    }
             document.getElementById('inputRecherche').value = nomBoutique;
             const resultats = articles.filter(a => String(a.vendeur) === String(telVendeur));
             
