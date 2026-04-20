@@ -66,21 +66,34 @@
 
     <div id="ecran-chargement"><div class="spinner mb-6"></div><p class="font-black text-[#5b21b6] text-sm uppercase tracking-widest animate-pulse">Chargement...</p></div>
 
-    <header class="header-bg text-center pt-8 px-6 relative">
-        <div class="inline-block p-1 bg-white rounded-2xl mb-3 shadow-lg"><img src="1769121566036.png" class="w-16 h-16 rounded-xl object-cover"></div>
-        <h1 class="text-white text-[26px] font-black italic uppercase tracking-tighter leading-none mb-1">COEUR DE MARCHE</h1>
-        <p class="text-orange-400 font-bold text-[10px] italic tracking-widest uppercase">Bouaflé - Marahoué</p>
-    </header>
-
-    <div class="scrolling-banner"><p id="texte-annonce">Bienvenue sur le marché de Bouaflé !</p></div>
-
-    <div class="search-container">
-        <div class="search-box">
-            <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Rechercher un article..." class="w-full p-4 bg-transparent outline-none font-bold text-gray-700 text-sm">
-            <button onclick="lancerMicro()" class="mic-btn active:scale-95 transition"><i id="iconMicro" class="fas fa-microphone"></i></button>
+       <div class="bg-[#4c1d95] rounded-b-[2.5rem] pt-10 pb-14 px-6 relative shadow-md">
+        <div class="flex items-center gap-4">
+            <div class="bg-white rounded-2xl p-1 shadow-lg shrink-0">
+                <img src="1769121566036.png" class="w-12 h-12 object-contain rounded-xl" alt="Logo">
+            </div>
+            <div class="flex flex-col">
+                <h1 class="text-white text-[22px] font-black italic uppercase tracking-tighter leading-none">CŒUR DE MARCHÉ</h1>
+                <p class="text-orange-400 font-bold text-[10px] uppercase tracking-widest mt-1">
+                    <i class="fas fa-map-marker-alt mr-1"></i> Bouaflé - Marahoué
+                </p>
+            </div>
         </div>
     </div>
 
+    <div class="px-6 -mt-7 relative z-20">
+        <div class="bg-white rounded-[20px] shadow-xl p-2 flex items-center border border-gray-100">
+            <i class="fas fa-search text-gray-400 ml-3 mr-3 text-lg"></i>
+            <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Que cherchez-vous à Bouaflé ?" class="flex-1 bg-transparent outline-none text-sm text-gray-700 h-10">
+            <button onclick="lancerMicro()" class="w-12 h-10 bg-[#4c1d95] rounded-xl flex items-center justify-center text-white shadow-sm transition transform active:scale-95 ml-2">
+                <i id="iconMicro" class="fas fa-microphone"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="scrolling-banner mt-6 mb-4 mx-4 rounded-xl shadow-sm overflow-hidden border border-gray-50">
+        <p id="texte-annonce">Bienvenue sur le marché de Bouaflé !</p>
+    </div>
+    
     <div id="vue-accueil">
         <div class="px-6 mt-6 mb-2">
             <h2 class="font-black text-[#4c1d95] text-[11px] mb-3 flex items-center gap-2 uppercase tracking-widest">
