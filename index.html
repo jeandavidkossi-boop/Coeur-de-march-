@@ -136,20 +136,22 @@
                 <option value="decroissant">🔼 Plus cher</option>
             </select>
         </div>
-        <h2 class="font-black text-[#4c1d95] text-sm mb-6 flex items-center gap-2 uppercase"><i class="fas fa-store text-orange-500"></i> Rayons du marché</h2>
-        <div class="grid grid-cols-4 gap-y-6 gap-x-2 text-center mb-8">
-            <div onclick="filtrerBoutique('Marché & Vivrier')"><div class="w-12 h-12 mx-auto bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-carrot"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Vivrier</span></div>
-            <div onclick="filtrerBoutique('Alimentation & Boissons')"><div class="w-12 h-12 mx-auto bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-shopping-basket"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Aliment.</span></div>
-            <div onclick="filtrerBoutique('Habillement & Pagnes')"><div class="w-12 h-12 mx-auto bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-tshirt"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Mode</span></div>
-            <div onclick="filtrerBoutique('Mercerie & Couture')"><div class="w-12 h-12 mx-auto bg-pink-100 text-pink-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-cut"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Mercerie</span></div>
-            <div onclick="filtrerBoutique('Maison & Vaisselle')"><div class="w-12 h-12 mx-auto bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-home"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Maison</span></div>
-            <div onclick="filtrerBoutique('Électronique & Ménager')"><div class="w-12 h-12 mx-auto bg-gray-200 text-gray-700 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-tv"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Electro</span></div>
-            <div onclick="filtrerBoutique('Construction & Quincaillerie')"><div class="w-12 h-12 mx-auto bg-yellow-100 text-yellow-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-tools"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Outils</span></div>
-            <div onclick="filtrerBoutique('Motos & Mécanique')"><div class="w-12 h-12 mx-auto bg-red-100 text-red-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-motorcycle"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Moto</span></div>
-            <div onclick="filtrerBoutique('Agro-Élevage')"><div class="w-12 h-12 mx-auto bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-tractor"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Agro</span></div>
-            <div onclick="filtrerBoutique('Librairie & École')"><div class="w-12 h-12 mx-auto bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-book"></i></div><span class="text-[8px] font-black uppercase text-gray-600">École</span></div>
-            <div onclick="filtrerBoutique('Beauté & Cosmétique')"><div class="w-12 h-12 mx-auto bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-spa"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Beauté</span></div>
-            <div onclick="filtrerBoutique('Événementiel & Location')"><div class="w-12 h-12 mx-auto bg-cyan-100 text-cyan-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-glass-cheers"></i></div><span class="text-[8px] font-black uppercase text-gray-600">Fête</span></div>
+        <div id="menu-rayons">
+            <h2 class="font-black text-[#4c1d95] text-sm mb-6 flex items-center gap-2 uppercase"><i class="fas fa-store text-orange-500"></i> Rayons du marché</h2>
+            <div class="grid grid-cols-4 gap-y-6 gap-x-2 text-center mb-8">
+                <div onclick="filtrerBoutique('Marché & Vivrier')"><div class="w-12 h-12 mx-auto bg-green-100 text-green-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-carrot"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Vivrier</span></div>
+                <div onclick="filtrerBoutique('Alimentation & Boissons')"><div class="w-12 h-12 mx-auto bg-blue-100 text-blue-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-shopping-basket"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Aliment.</span></div>
+                <div onclick="filtrerBoutique('Habillement & Pagnes')"><div class="w-12 h-12 mx-auto bg-purple-100 text-purple-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-tshirt"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Mode</span></div>
+                <div onclick="filtrerBoutique('Mercerie & Couture')"><div class="w-12 h-12 mx-auto bg-pink-100 text-pink-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-cut"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Mercerie</span></div>
+                <div onclick="filtrerBoutique('Maison & Vaisselle')"><div class="w-12 h-12 mx-auto bg-orange-100 text-orange-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-home"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Maison</span></div>
+                <div onclick="filtrerBoutique('Électronique & Ménager')"><div class="w-12 h-12 mx-auto bg-gray-200 text-gray-700 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-tv"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Électro</span></div>
+                <div onclick="filtrerBoutique('Construction & Quincaillerie')"><div class="w-12 h-12 mx-auto bg-yellow-100 text-yellow-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-tools"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Outils</span></div>
+                <div onclick="filtrerBoutique('Motos & Mécanique')"><div class="w-12 h-12 mx-auto bg-red-100 text-red-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-motorcycle"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Moto</span></div>
+                <div onclick="filtrerBoutique('Agro-Élevage')"><div class="w-12 h-12 mx-auto bg-emerald-100 text-emerald-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-tractor"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Agro</span></div>
+                <div onclick="filtrerBoutique('Librairie & École')"><div class="w-12 h-12 mx-auto bg-indigo-100 text-indigo-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-book"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">École</span></div>
+                <div onclick="filtrerBoutique('Beauté & Cosmétique')"><div class="w-12 h-12 mx-auto bg-rose-100 text-rose-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-spa"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Beauté</span></div>
+                <div onclick="filtrerBoutique('Événementiel & Location')"><div class="w-12 h-12 mx-auto bg-cyan-100 text-cyan-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-glass-cheers"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Fête</span></div>
+            </div>
         </div>
         <div id="liste-boutique" class="grid grid-cols-2 gap-4 pb-10"></div>
     </div>
@@ -318,7 +320,7 @@
             
             document.getElementById('nav-accueil').classList.remove('active-nav');
             document.getElementById('nav-boutique').classList.add('active-nav');
-
+    document.getElementById('menu-rayons').classList.add('hidden');
             // 2. On affiche exclusivement les articles de ce vendeur
             afficherProduits(resultats, 'liste-boutique');
             
@@ -410,9 +412,18 @@
                 document.getElementById(`nav-${v}`).classList.add('active-nav');
             }
             
-            if (v === 'boutique') { 
-                afficherProduits(articles, 'liste-boutique'); 
-            }
+                if (v === 'boutique') {
+        // On réaffiche le menu des rayons
+        const menu = document.getElementById('menu-rayons');
+        if(menu) menu.classList.remove('hidden');
+        
+        // On efface la bannière VIP pour faire propre
+        const banniere = document.getElementById('banniere-vendeur');
+        if(banniere) banniere.innerHTML = '';
+        
+        afficherProduits(articles, 'liste-boutique');
+                }
+                    
             window.scrollTo(0,0);
                 }
         
