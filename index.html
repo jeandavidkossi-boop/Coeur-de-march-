@@ -66,30 +66,33 @@
 
     <div id="ecran-chargement"><div class="spinner mb-6"></div><p class="font-black text-[#5b21b6] text-sm uppercase tracking-widest animate-pulse">Chargement...</p></div>
 
-       <div class="bg-[#4c1d95] rounded-b-[2.5rem] pt-10 pb-14 px-6 relative shadow-md">
-        <div class="flex items-center gap-4">
-            <div class="bg-white rounded-2xl p-1 shadow-lg shrink-0">
-                <img src="1769121566036.png" class="w-12 h-12 object-contain rounded-xl" alt="Logo">
+    <div class="bg-[#4c1d95] pt-8 pb-6 px-6 relative shadow-md">
+        
+        <div class="flex items-center gap-4 mb-6">
+            <div class="bg-white rounded-full p-1 shadow-sm shrink-0">
+                <img src="1769121566036.png" class="w-12 h-12 object-contain rounded-full" alt="Logo">
             </div>
             <div class="flex flex-col">
-                <h1 class="text-white text-[22px] font-black italic uppercase tracking-tighter leading-none">CŒUR DE MARCHÉ</h1>
+                <h1 class="text-white text-[22px] font-black uppercase tracking-wide leading-none">CŒUR DE MARCHÉ</h1>
                 <p class="text-orange-400 font-bold text-[10px] uppercase tracking-widest mt-1">
-                    <i class="fas fa-map-marker-alt mr-1"></i> Bouaflé - Marahoué
+                    <i class="fas fa-map-marker-alt mr-1"></i> Bouaflé
                 </p>
             </div>
         </div>
-    </div>
 
-    <div class="px-6 -mt-7 relative z-20">
-        <div class="bg-white rounded-[20px] shadow-xl p-2 flex items-center border border-gray-100">
-            <i class="fas fa-search text-gray-400 ml-3 mr-3 text-lg"></i>
+        <div class="bg-white rounded-[15px] shadow-inner p-1.5 flex items-center">
+            <i class="fas fa-search text-gray-400 ml-3 mr-2 text-lg"></i>
             <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Que cherchez-vous à Bouaflé ?" class="flex-1 bg-transparent outline-none text-sm text-gray-700 h-10">
-            <button onclick="lancerMicro()" class="w-12 h-10 bg-[#4c1d95] rounded-xl flex items-center justify-center text-white shadow-sm transition transform active:scale-95 ml-2">
+            <button onclick="lancerMicro()" class="w-12 h-10 bg-[#4c1d95] rounded-xl flex items-center justify-center text-white shadow-sm ml-2">
                 <i id="iconMicro" class="fas fa-microphone"></i>
             </button>
         </div>
     </div>
 
+    <div class="scrolling-banner mt-0 mx-0 mb-4 bg-white border-b border-gray-200 shadow-sm overflow-hidden py-1">
+        <p id="texte-annonce">Bienvenue sur le marché de Bouaflé !</p>
+    </div>
+    
     <div class="scrolling-banner mt-6 mb-4 mx-4 rounded-xl shadow-sm overflow-hidden border border-gray-50">
         <p id="texte-annonce">Bienvenue sur le marché de Bouaflé !</p>
     </div>
