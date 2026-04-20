@@ -13,9 +13,28 @@
         .bg-cdm-orange { background-color: #f97316; }
         .border-cdm-orange { border-color: #f97316; }
     </style>
+        #notif-custom {
+        position: fixed;
+        top: -100px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #4c1d95;
+        color: white;
+        padding: 16px 28px;
+        border-radius: 15px;
+        box-shadow: 0 15px 35px rgba(76, 29, 149, 0.3);
+        z-index: 10000;
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        font-weight: bold;
+        text-align: center;
+        min-width: 280px;
+    }
+    #notif-custom.active { top: 25px; }
+    
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
-
+    <div id="notif-custom">Message envoyé !</div>
+    
     <div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-gray-200 p-8">
         
         <div class="text-center mb-8">
@@ -93,6 +112,17 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
+            function alertePro(message) {
+        const n = document.getElementById('notif-custom');
+        n.innerText = message;
+        n.classList.add('active');
+        setTimeout(() => { n.classList.remove('active'); }, 3000);
+    }
+
+    window.alert = function(msg) {
+        alertePro(msg);
+    };
+        
         async function executerAction() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
