@@ -1,41 +1,39 @@
-const CACHE_NAME = 'coeur-marche-v3';
-const ASSETS_TO_CACHE = [
+const CACHE_NAME = 'coeur-marche-v4';
+const ASSETS = [
   './',
   './index.html',
-  './manifest.json',
-  './1769121566036.png'
+  './1769121566036.png', // Ton logo actuel
+  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
+  'https://cdn.tailwindcss.com'
 ];
 
-// Installation : Mise en cache des fichiers de base
+// Installation : Mise en cache des fichiers essentiels
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      return cache.addAll(ASSETS);
     })
   );
   self.skipWaiting();
 });
 
-// Activation : Nettoyage des anciens caches
+// Activation : Nettoyage des vieilles versions (v1, v2, v3)
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
-          }
-        })
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
       );
     })
   );
+  self.clients.claim();
 });
 
-// Stratégie : Réseau d'abord, sinon Cache (pour avoir les produits à jour)
+// Stratégie : Récupérer depuis le cache, sinon sur internet
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
     })
   );
 });
