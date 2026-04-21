@@ -385,7 +385,9 @@
             <h3 class="font-black text-xl text-[#4c1d95]">${nom}</h3>
             <span class="text-orange-500 font-black text-lg">${p.prix} F</span>
         </div>
-        <p class="text-gray-500 text-sm mt-2 mb-4">Aucun détail supplémentaire.</p>
+                <div class="text-gray-600 text-sm mt-2 mb-6 overflow-y-auto" style="max-height: 200px;">
+            ${p.description || 'Aucun détail supplémentaire.'}
+        </div>
         <div class="flex gap-2">
             <button onclick="ajouterAuPanier('${nom}', '${p.prix}', '${p.tel}')" class="flex-1 bg-[#5b21b6] text-white font-black py-3 rounded-xl uppercase text-sm shadow-md transition transform active:scale-95">Ajouter au panier</button>
             <button onclick="partager()" class="w-14 bg-blue-500 text-white rounded-xl flex items-center justify-center text-xl shadow-md transition transform active:scale-95"><i class="fas fa-share-alt"></i></button>
