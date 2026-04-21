@@ -380,7 +380,7 @@
     
     // 2. On affiche la fiche produit (le bouton partager utilise maintenant la mémoire)
     document.getElementById('details-contenu').innerHTML = `
-        <img src="${p.image}" class="w-full h-64 object-cover rounded-xl mb-4 shadow-sm">
+        <img src="${p.image}" onclick="ouvrirImage('${p.image}')" class="w-full h-64 object-cover rounded-xl mb-4 shadow-sm active:scale-95 transition transform">
         <div class="flex justify-between items-center">
             <h3 class="font-black text-xl text-[#4c1d95]">${nom}</h3>
             <span class="text-orange-500 font-black text-lg">${p.prix} F</span>
