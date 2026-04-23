@@ -277,16 +277,6 @@
                     conteneurTV.innerHTML = `<div class="bg-white p-3 rounded-[20px] shadow-sm border border-gray-100"><div class="video-container shadow-inner"><iframe src="https://www.youtube.com/embed/${youtubeIdNettoye}" frameborder="0" allowfullscreen></iframe></div>${boutonAction}</div>`;
                 }
 
-                                // --- SÉLECTION DU JOUR (Fixe pour 24h) ---
-                const dateDuJour = new Date().toDateString(); 
-                const selectionDuJour = [...articles].sort((a, b) => {
-                    const calculA = String(a.id + dateDuJour).split('').reduce((total, lettre) => total + lettre.charCodeAt(0), 0);
-                    const calculB = String(b.id + dateDuJour).split('').reduce((total, lettre) => total + lettre.charCodeAt(0), 0);
-                    return calculA - calculB;
-                }).slice(0, 6);
-
-                afficherNouveautes(selectionDuJour, 'liste-nouveautes');
-                // --- FIN SÉLECTION DU JOUR ---
                 
                 const { data: annonceData } = await supabase.from('annonces').select('message').limit(1).single();
                 if (annonceData) document.getElementById('texte-annonce').innerText = annonceData.message;
@@ -308,7 +298,23 @@
                         else { conteneurBoutiques.scrollBy({ left: 70, behavior: 'smooth' }); }
                     }, 3500);
                 }
-
+        // --- NOUVEAU : SÉLECTION DU MOMENT (100% VIP) ---
+        if (vendeursVip && vendeursVip.length > 0) {
+            const numerosVIP = vendeursVip.map(v => String(v.whatsapp));
+            const articlesVIP = articles.filter(a => numerosVIP.includes(String(a.vendeur)));
+            
+            const selectionVIP = articlesVIP.sort(() => 0.5 - Math.random()).slice(0, 6);
+            
+            if (selectionVIP.length > 0) {
+                afficherNouveautes(selectionVIP, 'liste-nouveautes');
+            } else {
+                afficherNouveautes(articles.slice(0, 6), 'liste-nouveautes');
+            }
+        } else {
+            afficherNouveautes(articles.slice(0, 6), 'liste-nouveautes');
+        }
+        // --- FIN SÉLECTION VIP ---
+                
             } catch (err) {
                 document.getElementById('texte-annonce').innerText = "Erreur de connexion.";
             } finally {
@@ -362,10 +368,10 @@
             if (target === 'liste-rayon') critereTri = document.getElementById('tri-prix-rayon').value;
             if (critereTri === 'croissant') listeTriee.sort((a, b) => parseInt(a.prix) - parseInt(b.prix));
             else if (critereTri === 'decroissant') listeTriee.sort((a, b) => parseInt(b.prix) - parseInt(a.prix));
+const listeLimitee = listeTriee.slice(0, 12);
+            if (listeLimitee.length === 0) { container.innerHTML = '<div style="grid-column: 1 / -1;" class="text-center py-8 text-gray-400 font-bold text-xs uppercase">Aucun article</div>'; return; }
 
-            if (listeTriee.length === 0) { container.innerHTML = '<div style="grid-column: 1 / -1;" class="text-center py-8 text-gray-400 font-bold text-xs uppercase">Aucun article</div>'; return; }
-
-            container.innerHTML = listeTriee.map(p => `<div class="bg-white rounded-[20px] shadow-sm overflow-hidden flex flex-col relative border border-gray-100 active:scale-95 transition-transform"><div class="price-badge">${p.prix} F</div><img src="${p.image}" loading="lazy" onclick="ouvrirDetails('${p.nom.replace(/'/g, "\\'")}')" class="w-full h-36 object-cover bg-gray-50"><div class="px-3 pt-3 flex-1 flex flex-col text-center"><h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3><button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}')" class="btn-ajouter active:bg-[#4c1d95] transition">Ajouter</button></div></div>`).join('');
+            container.innerHTML = listeLimitee.map(p => `<div class="bg-white rounded-[20px] shadow-sm overflow-hidden flex flex-col relative border border-gray-100 active:scale-95 transition-transform"><div class="price-badge">${p.prix} F</div><img src="${p.image}" loading="lazy" onclick="ouvrirDetails('${p.nom.replace(/'/g, "\\'")}')" class="w-full h-36 object-cover bg-gray-50"><div class="px-3 pt-3 flex-1 flex flex-col text-center"><h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3><button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}')" class="btn-ajouter active:bg-[#4c1d95] transition">Ajouter</button></div></div>`).join('');
         }
 
         function changerTriBoutique() { afficherProduits(articlesCourants, 'liste-boutique'); }
