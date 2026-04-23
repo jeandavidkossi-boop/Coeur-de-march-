@@ -79,7 +79,7 @@
     <h3 class="font-bold text-orange-800 text-sm mb-2"><i class="fas fa-crown text-yellow-500"></i> Boostez vos ventes !</h3>
     <p class="text-xs text-orange-700 mb-3">Passez au statut VIP pour publier en illimité, sans attente, et apparaître en haut du marché.</p>
     <button onclick="contacterAdminUpgrade()" class="w-full bg-orange-500 text-white font-bold py-2 rounded-lg text-sm shadow-sm">
-        Devenir Vendeur VIP (via WhatsApp)
+        Devenir Vendeur VIP
     </button>
 </div>
             
@@ -332,6 +332,16 @@ function contacterAdminUpgrade() {
     
     window.open(`https://wa.me/2250576326645?text=${message}`);
         }
+        
+        // --- FONCTION UPGRADE PRO ---
+function contacterAdminPro() {
+    const nomElem = document.getElementById('nom-boutique');
+    const nomBoutique = nomElem ? nomElem.innerText : "ma boutique";
+    
+    const message = encodeURIComponent(`Bonjour Cœur de Marché, ma boutique "${nomBoutique}" a atteint la limite gratuite de 10 articles. Je souhaite passer au forfait PRO (2000 F / mois) pour débloquer mon espace et continuer à vendre. Comment procéder au paiement ?`);
+    
+    window.open(`https://wa.me/2250576326645?text=${message}`);
+}
         
         // --- 6. DÉMARRAGE ET VÉRIFICATION PROFIL ---
         async function demarrerBureau() {
