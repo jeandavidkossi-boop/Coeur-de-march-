@@ -436,10 +436,11 @@ function partager() {
             container.innerHTML = Object.keys(vendeurs).map(tel => {
                 const items = vendeurs[tel]; let sousTotal = 0;
                 const htmlItems = items.map(i => { sousTotal += parseInt(i.prix); return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl"><div class="flex-1 pr-4"><p class="font-black text-[10px] text-gray-800 uppercase truncate">${i.nom}</p><p class="text-orange-500 font-bold text-xs">${i.prix} F</p></div><button onclick="retirerDuPanier(${i.index})" class="w-8 h-8 bg-red-100 text-red-500 rounded-lg flex items-center justify-center active:scale-90"><i class="fas fa-trash-alt"></i></button></div>`; }).join('');
-                       const msg = encodeURIComponent("COMMANDE\n" + items.map(i => "- " + i.nom).join('\n') + "\n💰 TOTAL : " + sousTotal + " FCFA");
+                      const msgBrut = "COMMANDE\n" + items.map(i => "- " + i.nom).join('\n') + "\n💰 TOTAL : " + sousTotal + " FCFA";
+        const msg = encodeURIComponent(msgBrut).replace(/'/g, "%27");
         const telWhatsApp = tel.startsWith('+') ? tel.substring(1) : (tel.startsWith('225') ? tel : '225' + tel);
-        return '<div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm"><p class="font-black text-[#5b21b6] text-[10px] uppercase mb-3 border-b border-gray-100 pb-2">Boutique : ' + tel + '</p><div class="space-y-2 mb-4">' + htmlItems + '</div><button onclick="window.open(\'https://wa.me/' + telWhatsApp + '?text=' + msg + '\')" class="w-full bg-[#25D366] text-white font-black py-3 rounded-xl uppercase text-[10px] flex items-center justify-center gap-2 active:scale-95 transition"><i class="fab fa-whatsapp text-lg"></i> Commander ces articles</button></div>';
-    }).join('');
+        return '<div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm"><p class="font-black text-[#5b21b6] text-[10px] uppercase mb-3 border-b border-gray-100 pb-2">Boutique : ' + tel + '</p><div class="space-y-2 mb-4">' + htmlItems + '</div><button onclick="validerCommande(\'' + telWhatsApp + '\', \'' + msg + '\', \'' + tel + '\')" class="w-full bg-[#25D366] text-white font-black py-3 rounded-xl uppercase text-[10px] flex items-center justify-center gap-2 active:scale-95 transition"><i class="fab fa-whatsapp text-lg"></i> Commander ces articles</button></div>';
+            }).join('');
             const modal = document.getElementById('modal-panier'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10);
         }
 
@@ -452,7 +453,18 @@ function partager() {
         
         ouvrirPanier(); 
             }
-        
+            function validerCommande(telWhatsApp, msgEncoded, telVendeur) {
+        window.open('https://wa.me/' + telWhatsApp + '?text=' + msgEncoded);
+        panier = panier.filter(p => String(p.tel) !== String(telVendeur));
+        localStorage.setItem('coeur_panier', JSON.stringify(panier));
+        document.getElementById('panier-count').innerText = panier.length;
+        if (panier.length === 0) {
+            document.getElementById('panier-flottant').classList.remove('show');
+            fermerPanier();
+        } else {
+            ouvrirPanier();
+        }
+            }
         function fermerModalDetails() { const modal = document.getElementById('modal-details'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
         function fermerPanier() { const modal = document.getElementById('modal-panier'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
         function ouvrirAide() { const modal = document.getElementById('modal-aide'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10); }
