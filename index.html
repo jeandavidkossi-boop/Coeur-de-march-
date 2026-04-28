@@ -361,20 +361,55 @@
             if (liste.length === 0) { container.innerHTML = '<p class="text-gray-400 text-[10px] italic">Aucune nouveauté</p>'; return; }
             container.innerHTML = liste.map(p => `<div class="scroll-item bg-white rounded-[15px] shadow-sm overflow-hidden flex flex-col relative border border-gray-50 active:scale-95 transition"><div class="price-badge" style="font-size:10px; padding:3px 8px; top:8px; right:8px;">${p.prix} F</div><img src="${p.image}" loading="lazy" onclick="ouvrirDetails('${p.nom.replace(/'/g, "\\'")}')" class="w-full h-24 object-cover"><div class="px-2 py-2 flex-1 flex flex-col text-center"><h3 class="font-black text-[#4c1d95] text-[9px] uppercase truncate mb-2">${p.nom}</h3><button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}')" class="w-full bg-[#f8f9fd] text-[#5b21b6] font-black py-2 rounded-xl text-[9px] uppercase border border-gray-100 active:bg-gray-100">Ajouter</button></div></div>`).join('');
         }
+function afficherProduits(liste, target) {
+    articlesCourants = liste; 
+    cibleCourante = target; 
+    const container = document.getElementById(target); 
+    if (!container) return;
 
-        function afficherProduits(liste, target) {
-            articlesCourants = liste; cibleCourante = target; const container = document.getElementById(target); if (!container) return;
-            let listeTriee = [...liste]; let critereTri = 'recent';
-            if (target === 'liste-boutique') critereTri = document.getElementById('tri-prix-boutique').value;
-            if (target === 'liste-rayon') critereTri = document.getElementById('tri-prix-rayon').value;
-            if (critereTri === 'croissant') listeTriee.sort((a, b) => parseInt(a.prix) - parseInt(b.prix));
-            else if (critereTri === 'decroissant') listeTriee.sort((a, b) => parseInt(b.prix) - parseInt(a.prix));
-const listeLimitee = listeTriee.slice(0, 12);
-            if (listeLimitee.length === 0) { container.innerHTML = '<div style="grid-column: 1 / -1;" class="text-center py-8 text-gray-400 font-bold text-xs uppercase">Aucun article</div>'; return; }
+    let listeTriee = [...liste]; 
+    let critereTri = 'recent';
+    
+    if (target === 'liste-boutique') critereTri = document.getElementById('tri-prix-boutique').value;
+    if (target === 'liste-rayon') critereTri = document.getElementById('tri-prix-rayon').value;
 
-            container.innerHTML = listeLimitee.map(p => `<div class="bg-white rounded-[20px] shadow-sm overflow-hidden flex flex-col relative border border-gray-100 active:scale-95 transition-transform"><div class="price-badge">${p.prix} F</div><img src="${p.image}" loading="lazy" onclick="ouvrirDetails('${p.nom.replace(/'/g, "\\'")}')" class="w-full h-36 object-cover bg-gray-50"><div class="px-3 pt-3 flex-1 flex flex-col text-center"><h3 class="font-black text-[#4c1d95] text-[11px] uppercase truncate mb-1">${p.nom}</h3><button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}')" class="btn-ajouter active:bg-[#4c1d95] transition">Ajouter</button></div></div>`).join('');
-        }
+    // 1. GESTION DU TRI (Correction pour les nouveautés)
+    if (critereTri === 'croissant') {
+        listeTriee.sort((a, b) => parseInt(a.prix) - parseInt(b.prix));
+    } else if (critereTri === 'decroissant') {
+        listeTriee.sort((a, b) => parseInt(b.prix) - parseInt(a.prix));
+    } else {
+        // Mode 'recent' : on inverse pour avoir les derniers ajouts en haut de liste
+        listeTriee.reverse(); 
+    }
 
+    // 2. GESTION DE LA LIMITE (12 pour la boutique, TOUT pour les rayons)
+    let listeFinale = (target === 'liste-boutique') ? listeTriee.slice(0, 12) : listeTriee;
+
+    if (listeFinale.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1 / -1;" class="text-center py-8 text-gray-400">Aucun produit trouvé.</div>';
+        return;
+    }
+
+    // 3. AFFICHAGE HTML (Design original conservé)
+    container.innerHTML = listeFinale.map(p => `
+        <div class="bg-white rounded-[20px] shadow-sm overflow-hidden flex flex-col relative">
+            <div class="relative w-full h-40 bg-gray-100">
+                <img src="${p.image}" onclick="ouvrirImage('${p.image}')" class="w-full h-full object-cover">
+                <div class="price-badge">${p.prix} <small>FCFA</small></div>
+            </div>
+            <div class="p-3 flex flex-col flex-grow">
+                <h3 class="font-black text-[13px] text-[#5b21b6] mb-1 uppercase leading-tight line-clamp-2">${p.nom}</h3>
+                <div class="mt-auto flex gap-2">
+                    <button onclick="ouvrirDetails('${p.nom}')" class="flex-1 bg-gray-100 text-[#5b21b6] py-2.5 rounded-xl font-bold text-[10px] uppercase">Détails</button>
+                    <button onclick="ajouterAuPanier('${p.nom}', '${p.prix}', '${p.vendeur}')" class="w-10 h-10 bg-[#5b21b6] text-white flex items-center justify-center rounded-xl shadow-md">
+                        <i class="fas fa-shopping-basket"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
         function changerTriBoutique() { afficherProduits(articlesCourants, 'liste-boutique'); }
         function changerTriRayon() { afficherProduits(articlesCourants, 'liste-rayon'); }
 
