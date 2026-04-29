@@ -548,14 +548,22 @@ function partager() {
             recognition.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
             recognition.onend = () => { icon.className = "fas fa-microphone"; }; recognition.start();
         }
-
         function rechercherProduit(event) {
-            const s = document.getElementById('inputRecherche').value.toLowerCase();
-            const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
-            if (document.getElementById('vue-accueil').classList.contains('hidden') && document.getElementById('vue-rayon').classList.contains('hidden')) { afficherProduits(filtered, 'liste-boutique'); }
-            else { const target = document.getElementById('vue-rayon').classList.contains('hidden') ? 'liste-boutique' : 'liste-rayon'; afficherProduits(filtered, target); if(target === 'liste-boutique') changerVue('boutique');}
+    const s = document.getElementById('inputRecherche').value.toLowerCase();
+    const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
+    
+    // Détermine où afficher les résultats selon la vue active
+    if (document.getElementById('vue-accueil').classList.contains('hidden') && document.getElementById('vue-rayon').classList.contains('hidden')) {
+        afficherProduits(filtered, 'liste-boutique');
+    } else {
+        const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-rayon' : 'liste-nouveautes';
+        afficherProduits(filtered, target);
+    }
+
+    // Ferme le clavier mobile quand on appuie sur Entrée
     if (event && event.key === 'Enter') {
         document.getElementById('inputRecherche').blur();
+    }
         }
         
         function remonterHaut() { window.scrollTo({ top: 0, behavior: "smooth" }); }
