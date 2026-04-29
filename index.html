@@ -540,25 +540,24 @@ function partager() {
         
         function filtrerAccueil(c) { document.getElementById('titre-rayon').innerText = c; const f = articles.filter(a => a.categorie && a.categorie.includes(c)); afficherProduits(f, 'liste-rayon'); changerVue('rayon'); }
         function filtrerBoutique(cat) { document.getElementById('titre-rayon').innerText = cat; const filtered = articles.filter(a => a.categorie === cat); afficherProduits(filtered, 'liste-rayon'); changerVue('rayon'); }
-
-        function lancerMicro() {
-            const icon = document.getElementById('iconMicro'); const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) { afficherAlerteCustom("Erreur Micro", "Votre téléphone n'est pas compatible avec la recherche vocale."); return; }
-            const recognition = new SpeechRecognition(); recognition.lang = 'fr-FR'; recognition.onstart = () => { icon.className = "fas fa-spinner fa-spin text-orange-500"; };
-            recognition.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
-            recognition.onend = () => { icon.className = "fas fa-microphone"; }; recognition.start();
-        }
-     function rechercherProduit(event) {
+    }
+         function rechercherProduit(event) {
     const s = document.getElementById('inputRecherche').value.toLowerCase();
     const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
     
-    if (document.getElementById('vue-accueil').classList.contains('hidden') && ... ) {
-    }
-         
+    if (document.getElementById('vue-accueil').classList.contains('hidden') && ...) {
+        // ... ton code ...
+    } else {
+        const target = ... ;
+        afficherProduits(filtered, target);
+    } // <--- C'est ici que finit ton bloc "else", pas la fonction !
+
+    // CE BLOC DOIT ÊTRE À L'INTÉRIEUR DE LA FONCTION
     if (event && event.key === 'Enter') {
         document.getElementById('inputRecherche').blur();
     }
-} 
+} // <--- L'accolade de fin de la fonction DOIT être ici, à la fin.
+        
         function remonterHaut() { window.scrollTo({ top: 0, behavior: "smooth" }); }
         window.addEventListener('scroll', () => { const btn = document.getElementById('btn-remonter'); if (window.scrollY > 300) btn.classList.add('show'); else btn.classList.remove('show'); });
 
