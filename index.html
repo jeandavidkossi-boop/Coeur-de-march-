@@ -540,7 +540,7 @@ function partager() {
         
         function filtrerAccueil(c) { document.getElementById('titre-rayon').innerText = c; const f = articles.filter(a => a.categorie && a.categorie.includes(c)); afficherProduits(f, 'liste-rayon'); changerVue('rayon'); }
         function filtrerBoutique(cat) { document.getElementById('titre-rayon').innerText = cat; const filtered = articles.filter(a => a.categorie === cat); afficherProduits(filtered, 'liste-rayon'); changerVue('rayon'); }
-    }
+    
          function rechercherProduit(event) {
     // 1. On récupère la valeur saisie
     const s = document.getElementById('inputRecherche').value.toLowerCase();
