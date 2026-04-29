@@ -542,21 +542,32 @@ function partager() {
         function filtrerBoutique(cat) { document.getElementById('titre-rayon').innerText = cat; const filtered = articles.filter(a => a.categorie === cat); afficherProduits(filtered, 'liste-rayon'); changerVue('rayon'); }
     }
          function rechercherProduit(event) {
+    // 1. On récupère la valeur saisie
     const s = document.getElementById('inputRecherche').value.toLowerCase();
-    const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
     
-    if (document.getElementById('vue-accueil').classList.contains('hidden') && ...) {
-        // ... ton code ...
-    } else {
-        const target = ... ;
-        afficherProduits(filtered, target);
-    } // <--- C'est ici que finit ton bloc "else", pas la fonction !
+    // 2. On filtre la liste de vos articles
+    const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
 
-    // CE BLOC DOIT ÊTRE À L'INTÉRIEUR DE LA FONCTION
+    // 3. On détermine où afficher le résultat (dans 'liste-boutique' ou 'liste-rayon')
+    let target = 'liste-boutique';
+    if (!document.getElementById('vue-rayon').classList.contains('hidden')) {
+        target = 'liste-rayon';
+    } else {
+        // Si l'utilisateur est sur l'accueil, on le bascule automatiquement vers la boutique pour voir les résultats
+        if (!document.getElementById('vue-accueil').classList.contains('hidden') && s.length > 0) {
+            changerVue('boutique');
+        }
+    }
+
+    // 4. On affiche les produits trouvés
+    afficherProduits(filtered, target);
+
+    // 5. FERMETURE DU CLAVIER MOBILE
+    // Si la touche pressée est "Entrée", on enlève le focus du champ de recherche
     if (event && event.key === 'Enter') {
         document.getElementById('inputRecherche').blur();
     }
-} // <--- L'accolade de fin de la fonction DOIT être ici, à la fin.
+         }
         
         function remonterHaut() { window.scrollTo({ top: 0, behavior: "smooth" }); }
         window.addEventListener('scroll', () => { const btn = document.getElementById('btn-remonter'); if (window.scrollY > 300) btn.classList.add('show'); else btn.classList.remove('show'); });
