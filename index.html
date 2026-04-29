@@ -548,23 +548,19 @@ function partager() {
             recognition.onresult = (e) => { document.getElementById('inputRecherche').value = e.results[0][0].transcript; rechercherProduit(); };
             recognition.onend = () => { icon.className = "fas fa-microphone"; }; recognition.start();
         }
-        function rechercherProduit(event) {
+     function rechercherProduit(event) {
     const s = document.getElementById('inputRecherche').value.toLowerCase();
     const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
     
-    // Détermine où afficher les résultats selon la vue active
-    if (document.getElementById('vue-accueil').classList.contains('hidden') && document.getElementById('vue-rayon').classList.contains('hidden')) {
-        afficherProduits(filtered, 'liste-boutique');
-    } else {
-        const target = document.getElementById('vue-accueil').classList.contains('hidden') ? 'liste-rayon' : 'liste-nouveautes';
-        afficherProduits(filtered, target);
+    if (document.getElementById('vue-accueil').classList.contains('hidden') && ... ) {
+        // ... ton code de filtrage existant ...
     }
 
-    // Ferme le clavier mobile quand on appuie sur Entrée
+    // On place la détection de la touche Entrée ICI, AVANT la fin de la fonction
     if (event && event.key === 'Enter') {
         document.getElementById('inputRecherche').blur();
     }
-        }
+} // L'accolade de fin de fonction doit être ICI
         
         function remonterHaut() { window.scrollTo({ top: 0, behavior: "smooth" }); }
         window.addEventListener('scroll', () => { const btn = document.getElementById('btn-remonter'); if (window.scrollY > 300) btn.classList.add('show'); else btn.classList.remove('show'); });
