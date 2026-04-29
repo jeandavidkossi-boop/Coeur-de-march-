@@ -88,7 +88,7 @@
 
         <div class="bg-white rounded-[15px] shadow-inner p-1.5 flex items-center">
             <i class="fas fa-search text-gray-400 ml-3 mr-2 text-lg"></i>
-            <input type="text" id="inputRecherche" onkeyup="rechercherProduit()" placeholder="Que cherchez-vous à Bouaflé ?" class="flex-1 bg-transparent outline-none text-sm text-gray-700 h-10">
+            <input type="search" id="inputRecherche" onkeyup="rechercherProduit(event)" placeholder="Que cherchez-vous à Bouaflé" class="w-12 h-10 bg-[#f4c1d95] rounded-xl flex items-center justify-center text-lg">
             <button onclick="lancerMicro()" class="w-12 h-10 bg-[#4c1d95] rounded-xl flex items-center justify-center text-white shadow-sm ml-2">
                 <i id="iconMicro" class="fas fa-microphone"></i>
             </button>
@@ -549,13 +549,15 @@ function partager() {
             recognition.onend = () => { icon.className = "fas fa-microphone"; }; recognition.start();
         }
 
-        function rechercherProduit() {
+        function rechercherProduit(event) {
             const s = document.getElementById('inputRecherche').value.toLowerCase();
             const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
             if (document.getElementById('vue-accueil').classList.contains('hidden') && document.getElementById('vue-rayon').classList.contains('hidden')) { afficherProduits(filtered, 'liste-boutique'); }
-            else { const target = document.getElementById('vue-rayon').classList.contains('hidden') ? 'liste-boutique' : 'liste-rayon'; afficherProduits(filtered, target); if(target === 'liste-boutique') changerVue('boutique'); }
+            else { const target = document.getElementById('vue-rayon').classList.contains('hidden') ? 'liste-boutique' : 'liste-rayon'; afficherProduits(filtered, target); if(target === 'liste-boutique') changerVue('boutique');}
+    if (event && event.key === 'Enter') {
+        document.getElementById('inputRecherche').blur();
         }
-
+        
         function remonterHaut() { window.scrollTo({ top: 0, behavior: "smooth" }); }
         window.addEventListener('scroll', () => { const btn = document.getElementById('btn-remonter'); if (window.scrollY > 300) btn.classList.add('show'); else btn.classList.remove('show'); });
 
