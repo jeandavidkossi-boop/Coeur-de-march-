@@ -553,15 +553,12 @@ function partager() {
     const filtered = articles.filter(a => a.nom && a.nom.toLowerCase().includes(s));
     
     if (document.getElementById('vue-accueil').classList.contains('hidden') && ... ) {
-        // ... ton code de filtrage existant ...
     }
-
-    // On place la détection de la touche Entrée ICI, AVANT la fin de la fonction
+         
     if (event && event.key === 'Enter') {
         document.getElementById('inputRecherche').blur();
     }
-} // L'accolade de fin de fonction doit être ICI
-        
+} 
         function remonterHaut() { window.scrollTo({ top: 0, behavior: "smooth" }); }
         window.addEventListener('scroll', () => { const btn = document.getElementById('btn-remonter'); if (window.scrollY > 300) btn.classList.add('show'); else btn.classList.remove('show'); });
 
