@@ -513,13 +513,13 @@ function partager() {
             document.getElementById('vue-boutique').classList.add('hidden'); 
             document.getElementById('vue-rayon').classList.add('hidden');
             
-            document.getElementById(`vue-${v}`).classList.remove('hidden');
+            document.getElementById('vue-' + v).classList.remove('hidden');
             
             document.getElementById('nav-accueil').classList.remove('active-nav'); 
             document.getElementById('nav-boutique').classList.remove('active-nav');
             
-            if (document.getElementById(`nav-${v}`)) {
-                document.getElementById(`nav-${v}`).classList.add('active-nav');
+            if (document.getElementById('nav-' + v)) {
+                document.getElementById('nav-' + v).classList.add('active-nav');
             }
             
                 if (v === 'boutique') {
@@ -539,7 +539,52 @@ function partager() {
         
         function filtrerAccueil(c) { document.getElementById('titre-rayon').innerText = c; const f = articles.filter(a => a.categorie && a.categorie.includes(c)); afficherProduits(f, 'liste-rayon'); changerVue('rayon'); }
         function filtrerBoutique(cat) { document.getElementById('titre-rayon').innerText = cat; const filtered = articles.filter(a => a.categorie === cat); afficherProduits(filtered, 'liste-rayon'); changerVue('rayon'); }
-    
+        
+    function lancerMicro() {
+    const iconMicro = document.getElementById('iconMicro');
+    const inputRecherche = document.getElementById('inputRecherche');
+
+    // Vérifier si le navigateur du téléphone supporte la commande vocale
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        afficherAlerteCustom('Désolé', 'Votre navigateur ne supporte pas la recherche vocale.');
+        return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'fr-FR'; // On règle l'écoute en français
+    recognition.interimResults = false;
+
+    // Quand le micro commence à écouter
+    recognition.onstart = function() {
+        iconMicro.classList.remove('fa-microphone');
+        iconMicro.classList.add('fa-microphone-slash', 'text-red-500'); // L'icône devient rouge
+    };
+
+    // Quand il a compris ce que le client a dit
+    recognition.onresult = function(event) {
+        const texteCompris = event.results[0][0].transcript;
+        inputRecherche.value = texteCompris; // On écrit dans la barre
+        
+        // On lance la recherche de l'article automatiquement
+        rechercherProduit({ key: 'Enter' }); 
+    };
+
+    // S'il y a une erreur ou s'il n'entend rien
+    recognition.onerror = function(event) {
+        afficherAlerteCustom('Erreur', 'Je n\'ai pas bien entendu. Réessayez.');
+    };
+
+    // Quand l'écoute est finie
+    recognition.onend = function() {
+        iconMicro.classList.add('fa-microphone');
+        iconMicro.classList.remove('fa-microphone-slash', 'text-red-500'); // L'icône redevient normale
+    };
+
+    // Allumer le micro
+    recognition.start();
+        }
+                           
          function rechercherProduit(event) {
     // 1. On récupère la valeur saisie
     const s = document.getElementById('inputRecherche').value.toLowerCase();
