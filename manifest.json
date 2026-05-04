@@ -12,5 +12,16 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
+  ],
+  "id": "com.coeurdemarche.bouafle",
+  "description": "La plateforme officielle pour acheter et vendre en toute confiance à Bouaflé et dans la Marahoué.",
+  "dir": "ltr",
+  "lang": "fr",
+  "orientation": "portrait",
+  "categories": [
+    "business",
+    "food",
+    "lifestyle",
+    "shopping"
   ]
 }
