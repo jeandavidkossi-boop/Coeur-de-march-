@@ -1,7 +1,7 @@
 {
   "name": "Cœur de Marché Bouaflé",
   "short_name": "Cœur de Marché",
-  "start_url": "https://jeandavidkossi-boop.github.io/Coeur-de-march-/",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4c1d95",
@@ -12,14 +12,5 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "id": "com.coeurdemarche.bouafle",
-  "dir": "ltr",
-  "lang": "fr",
-  "orientation": "portrait",
-  "categories": [
-    "business",
-    "lifestyle",
-    "shopping"
   ]
 }
