@@ -19,6 +19,22 @@
       "purpose": "maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "screenshot-desktop.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Version Bureau de Cœur de Marché"
+    },
+    {
+      "src": "screenshot-mobile.jpg",
+      "sizes": "750x1334",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Version Mobile de Cœur de Marché"
+    }
+  ],
   "id": "com.coeurdemarche.bouafle",
   "description": "La plateforme officielle pour acheter et vendre en toute confiance à Bouaflé et dans la Marahoué.",
   "dir": "ltr",
@@ -29,21 +45,5 @@
     "food",
     "lifestyle",
     "shopping"
-  ],
-  "screenshots": [
-    {
-      "src": "screenshot-mobile.jpg",
-      "sizes": "1080x1920",
-      "type": "image/jpeg",
-      "form_factor": "narrow",
-      "label": "Accueil de Cœur de Marché sur mobile"
-    },
-    {
-      "src": "screenshot-desktop.jpg",
-      "sizes": "1920x1080",
-      "type": "image/jpeg",
-      "form_factor": "wide",
-      "label": "Version ordinateur de la plateforme"
-    }
   ]
 }
