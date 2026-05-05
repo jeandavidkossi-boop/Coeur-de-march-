@@ -29,8 +29,8 @@
     },
     {
       "src": "1769121566036.png",
-      "sizes": "512x512",
-      "type": "image/png",
+      "sizes": "560x560",
+      "type": "image/jpeg",
       "purpose": "maskable"
     }
   ],
@@ -51,3 +51,4 @@
     }
   ]
 }
+
