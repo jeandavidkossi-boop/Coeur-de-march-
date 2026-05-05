@@ -28,9 +28,9 @@
       "purpose": "any"
     },
     {
-      "src": "1769121566036.png",
-      "sizes": "560x560",
-      "type": "image/jpeg",
+      "src": "logo-pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],
