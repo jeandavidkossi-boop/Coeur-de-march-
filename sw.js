@@ -2,7 +2,7 @@ const CACHE_NAME = 'coeur-marche-v4';
 const ASSETS = [
   './',
   './index.html',
-  './1769121566036.png', // Ton logo actuel
+  './logo-pwa-512x512.png', // Ton logo actuel
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
   'https://cdn.tailwindcss.com'
 ];
