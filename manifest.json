@@ -5,7 +5,7 @@
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#ffffff",
-  "theme_color": "#dc1d95",
+  "theme_color": "#5b21b6",
   "description": "La plateforme officielle pour acheter et vendre en toute confiance à Bouaflé et dans la Marahoué.",
   "id": "com.coeurdemarche.bouafle",
   "dir": "ltr",
