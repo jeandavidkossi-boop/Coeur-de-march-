@@ -3,13 +3,17 @@
   "short_name": "Cœur de Marché",
   "start_url": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#ffffff",
-  "theme_color": "#4c1d95",
+  "theme_color": "#dc1d95",
   "description": "La plateforme officielle pour acheter et vendre en toute confiance à Bouaflé et dans la Marahoué.",
   "id": "com.coeurdemarche.bouafle",
   "dir": "ltr",
   "lang": "fr",
   "orientation": "portrait",
+  "prefer_related_applications": false,
+  "related_applications": [],
+  "iarc_rating_id": "",
   "categories": [
     "business",
     "shopping"
@@ -49,6 +53,19 @@
       "form_factor": "narrow",
       "label": "Version Mobile de Cœur de Marché"
     }
+  ],
+  "shortcuts": [
+    {
+      "name": "Vendre un article",
+      "short_name": "Vendre",
+      "description": "Publier un nouvel article sur le marché",
+      "url": "/vendre.html",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }
-
