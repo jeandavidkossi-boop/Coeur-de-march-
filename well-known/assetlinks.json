@@ -1,9 +1,0 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "ci.bouafle.coeurdemarche",
-    "sha256_cert_fingerprints": ["09:42:CB:46:AD:06:64:23:EF:9E:09:FD:FC:F4:63:64:22:F6:8D:CA:9E:03:4C:1B:FA:4C:1D:48:82:64:96:22"]
-  }
-}]
-
