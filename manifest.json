@@ -1,7 +1,7 @@
 {
   "name": "Cœur de Marché Bouaflé",
   "short_name": "Cœur de Marché",
-  "start_url": "./Coeur-de-march-",
+  "start_url": "./Coeur-de-march-/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "standalone"],
   "background_color": "#ffffff",
