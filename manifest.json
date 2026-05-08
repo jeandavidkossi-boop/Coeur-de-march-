@@ -59,7 +59,7 @@
       "name": "Vendre un article",
       "short_name": "Vendre",
       "description": "Publier un nouvel article sur le marché",
-      "url": "./vendre.html",
+      "url": "/vendre.html",
       "icons": [
         {
           "src": "icon-192x192.png",
