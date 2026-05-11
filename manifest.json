@@ -9,7 +9,7 @@
   "description": "La plateforme officielle pour acheter et vendre en toute confiance à Bouaflé et dans la Marahoué.",
   "id": "com.coeurdemarche.bouafle",
   "dir": "ltr",
-  "lang": "fr
+  "lang": "fr",
   "orientation": "portrait",
   "prefer_related_applications": false,
   "related_applications": [],
