@@ -1,4 +1,4 @@
-const CACHE_NAME = 'coeur-marche-v2';
+const CACHE_NAME = 'coeur-marche-v3';
 const ASSETS = [
   './',
   './index.html',
