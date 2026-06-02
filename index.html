@@ -209,6 +209,13 @@
     let articlesCourants = []; 
     let cibleCourante = '';
 
+        let supabase;
+let deviceId = localStorage.getItem('coeur_device_id');
+if (!deviceId) {
+    deviceId = 'tel_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+    localStorage.setItem('coeur_device_id', deviceId);
+}
+        
     // Réafficher le petit panier flottant au démarrage s'il y a déjà des articles
     if (panier.length > 0) {
         const badge = document.getElementById('panier-count');
@@ -249,7 +256,7 @@
             try {
                 const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
                 const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-                const supabase = window.supabase.createClient(dbUrl, dbKey);
+                supabase = window.supabase.createClient(dbUrl, dbKey);
 
                 const { data: produitsData } = await supabase.from('produits').select('*').eq('statut', 'actif').order('dateajout', { ascending: false });
                 if (produitsData) articles = produitsData;
@@ -413,8 +420,20 @@ function afficherProduits(liste, target) {
         function changerTriBoutique() { afficherProduits(articlesCourants, 'liste-boutique'); }
         function changerTriRayon() { afficherProduits(articlesCourants, 'liste-rayon'); }
 
+        async function enregistrerInteraction(nomArticle, typeAction) {
+    if (!supabase) return; 
+    try {
+        await supabase.from('interactions_utilisateurs').insert([
+            { device_id: deviceId, article_nom: nomArticle, action: typeAction }
+        ]);
+    } catch (error) {
+        console.log("Erreur silencieuse", error);
+    }
+        }
+        
        function ouvrirDetails(nom) {
     const p = articles.find(a => a.nom === nom); if (!p) return;
+      enregistrerInteraction(nom, 'vue');
     const link = window.location.href.split('?')[0] + '?produit=' + encodeURIComponent(nom);
     
     // 1. On sauvegarde le message proprement dans la mémoire de la page pour éviter de casser le bouton
@@ -450,7 +469,8 @@ function partager() {
             function ajouterAuPanier(nom, prix, tel) {
         panier.push({nom, prix, tel}); 
         document.getElementById('panier-count').innerText = panier.length;
-        
+        enregistrerInteraction(nom, 'ajout_panier');
+                
         // On sauvegarde le panier dans le téléphone
         localStorage.setItem('coeur_panier', JSON.stringify(panier));
         
