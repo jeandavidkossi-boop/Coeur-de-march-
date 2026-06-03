@@ -209,7 +209,7 @@
     let articlesCourants = []; 
     let cibleCourante = '';
 
-        let supabase;
+        let monSupabase;
 let deviceId = localStorage.getItem('coeur_device_id');
 if (!deviceId) {
     deviceId = 'tel_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
@@ -256,7 +256,7 @@ if (!deviceId) {
             try {
                 const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
                 const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-                supabase = window.supabase.createClient(dbUrl, dbKey);
+                const supabase = window.supabase.createClient(dbUrl, dbKey);
 
                 const { data: produitsData } = await supabase.from('produits').select('*').eq('statut', 'actif').order('dateajout', { ascending: false });
                 if (produitsData) articles = produitsData;
@@ -421,9 +421,9 @@ function afficherProduits(liste, target) {
         function changerTriRayon() { afficherProduits(articlesCourants, 'liste-rayon'); }
 
         async function enregistrerInteraction(nomArticle, typeAction) {
-    if (!supabase) return; 
+    if (!monSupabase) return; 
     try {
-        await supabase.from('interactions_utilisateurs').insert([
+        await monSupabase.from('interactions_utilisateurs').insert([
             { device_id: deviceId, article_nom: nomArticle, action: typeAction }
         ]);
     } catch (error) {
