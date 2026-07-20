@@ -385,7 +385,7 @@ function contacterAdminPro() {
 
     // --- FONCTIONS DE MODIFICATION ---
     function ouvrirModification(id) {
-        const article = window.mesArticlesLocaux.find(a => a.id === id);
+const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
         if (!article) return;
         
         document.getElementById('mod-id').value = article.id;
