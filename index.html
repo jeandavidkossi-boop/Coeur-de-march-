@@ -302,20 +302,16 @@ if (!deviceId) {
                     const initiale = nomBoutique.substring(0, 1).toUpperCase();
                     const telVendeur = v.whatsapp || v.telephone || v.numero || '';
                     
-                    // AVIS D'EXPERT : On remplace le petit cercle par une vraie carte Premium large
                     return `
                     <div onclick="filtrerVIP('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}')" 
                          class="min-w-[220px] h-24 bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] rounded-2xl shadow-md p-4 flex flex-col justify-center relative overflow-hidden shrink-0 active:scale-95 transition-transform">
                         
-                        <!-- Le petit logo en fond transparent pour faire joli -->
                         <i class="fas fa-store absolute -right-4 -bottom-4 text-white opacity-10 text-6xl"></i>
                         
                         <div class="flex items-center gap-3 relative z-10">
-                            <!-- Le cercle avec la lettre -->
                             <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#4c1d95] font-black text-lg shadow-sm">
                                 ${initiale}
                             </div>
-                            <!-- Le nom de la boutique et le badge -->
                             <div>
                                 <h3 class="text-white font-black text-sm uppercase leading-tight truncate w-32">${nomBoutique}</h3>
                                 <span class="text-yellow-300 text-[9px] font-black uppercase tracking-widest"><i class="fas fa-star mr-1"></i>VIP</span>
@@ -324,10 +320,18 @@ if (!deviceId) {
                     </div>
                     `;
                 }).join('');
+
+                // L'animation de défilement est maintenant sécurisée à l'intérieur du bloc
+                setInterval(() => {
+                    if (conteneurBoutiques.scrollLeft >= conteneurBoutiques.scrollWidth - conteneurBoutiques.clientWidth) {
+                        conteneurBoutiques.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else { 
+                        conteneurBoutiques.scrollBy({ left: 70, behavior: 'smooth' }); 
+                    }
+                }, 3500);
             }
 
             // --- 2. LE LIEN MAGIQUE VIP ---
-            // Si on détecte un lien du type ?boutique=22505... on ouvre directement la boutique !
             const boutiqueRecherche = new URLSearchParams(window.location.search).get('boutique');
             if (boutiqueRecherche) {
                 setTimeout(() => {
@@ -335,13 +339,8 @@ if (!deviceId) {
                     const nomPourBanniere = vendeurTrouve ? vendeurTrouve.nom_boutique : "Boutique Officielle";
                     filtrerVIP(boutiqueRecherche, nomPourBanniere);
                 }, 800);
-            }
-                      
-                    setInterval(() => {
-                        if (conteneurBoutiques.scrollLeft + conteneurBoutiques.clientWidth >= conteneurBoutiques.scrollWidth - 10) { conteneurBoutiques.scrollTo({ left: 0, behavior: 'smooth' }); } 
-                        else { conteneurBoutiques.scrollBy({ left: 70, behavior: 'smooth' }); }
-                    }, 3500);
-                }
+                        }
+                                                                                     
         // --- NOUVEAU : SÉLECTION DU MOMENT (100% VIP) ---
         if (vendeursVip && vendeursVip.length > 0) {
             const numerosVIP = vendeursVip.map(v => String(v.whatsapp));
