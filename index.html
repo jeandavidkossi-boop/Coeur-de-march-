@@ -208,7 +208,8 @@
     let panier = JSON.parse(localStorage.getItem('coeur_panier')) || []; 
     let articlesCourants = []; 
     let cibleCourante = '';
-
+let limiteAffichage = 12;
+        
         let monSupabase;
 let deviceId = localStorage.getItem('coeur_device_id');
 if (!deviceId) {
@@ -445,12 +446,13 @@ if (!deviceId) {
             container.innerHTML = liste.map(p => `<div class="scroll-item bg-white rounded-[15px] shadow-sm overflow-hidden flex flex-col relative border border-gray-50 active:scale-95 transition"><div class="price-badge" style="font-size:10px; padding:3px 8px; top:8px; right:8px;">${p.prix} F</div><img src="${p.image}" loading="lazy" onclick="ouvrirDetails('${p.nom.replace(/'/g, "\\'")}')" class="w-full h-24 object-cover"><div class="px-2 py-2 flex-1 flex flex-col text-center"><h3 class="font-black text-[#4c1d95] text-[9px] uppercase truncate mb-2">${p.nom}</h3><button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}')" class="w-full bg-[#f8f9fd] text-[#5b21b6] font-black py-2 rounded-xl text-[9px] uppercase border border-gray-100 active:bg-gray-100">Ajouter</button></div></div>`).join('');
         }
         
-function afficherProduits(liste, target) {
+function afficherProduits(liste, target, isLoadMore = false) {
     articlesCourants = liste; 
     cibleCourante = target; 
     const container = document.getElementById(target); 
     if (!container) return;
-
+    if (!isLoadMore) limiteAffichage = 12;
+    
     let listeTriee = [...liste]; 
     let critereTri = 'recent';
     
@@ -468,8 +470,7 @@ function afficherProduits(liste, target) {
     }
 
     // 2. GESTION DE LA LIMITE (12 pour la boutique, TOUT pour les rayons)
-    let listeFinale = (target === 'liste-boutique') ? listeTriee.slice(0, 12) : listeTriee;
-
+let listeFinale = listeTriee.slice(0, limiteAffichage);
     if (listeFinale.length === 0) {
         container.innerHTML = '<div style="grid-column: 1 / -1;" class="text-center py-8 text-gray-400">Aucun produit trouvé.</div>';
         return;
@@ -512,7 +513,24 @@ container.innerHTML = listeFinale.map(p => {
     </div>
     `;
 }).join('');;
-}
+        // 4. BOUTON "VOIR PLUS" POUR LES BOUTIQUES ET LES RAYONS
+        if (listeTriee.length > limiteAffichage) {
+            container.innerHTML += `
+            <div style="grid-column: 1 / -1;" class="flex justify-center mt-4 mb-8">
+                <button onclick="chargerPlusArticles()" class="bg-white border-2 border-[#5b21b6] text-[#5b21b6] font-black text-sm px-6 py-2.5 rounded-full shadow-sm flex items-center gap-2 active:scale-95 transition">
+                    Voir la suite <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            `;
+        }
+    } // <-- Fin de la fonction afficherProduits
+
+    // Fonction déclenchée quand on clique sur le bouton
+    function chargerPlusArticles() {
+        limiteAffichage += 12; // On ajoute 12 articles de plus
+        afficherProduits(articlesCourants, cibleCourante, true); // true = on ne remet pas à zéro
+    }
+        
         function changerTriBoutique() { afficherProduits(articlesCourants, 'liste-boutique'); }
         function changerTriRayon() { afficherProduits(articlesCourants, 'liste-rayon'); }
 
