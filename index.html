@@ -292,15 +292,51 @@ if (!deviceId) {
                 const produitRecherche = new URLSearchParams(window.location.search).get("produit");
                 if (produitRecherche) setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
 
-                const { data: vendeursVip } = await supabase.from('vendeurs').select('*').eq('abonnement', 'vip');
-                const conteneurBoutiques = document.getElementById('avenue-boutiques-vip');
-                if (conteneurBoutiques && vendeursVip && vendeursVip.length > 0) {
-                    conteneurBoutiques.innerHTML = vendeursVip.map(v => {
-                        const initiale = v.nom_boutique ? v.nom_boutique.substring(0, 1).toUpperCase() : 'B';
-                        const telVendeur = v.whatsapp || v.telephone || v.numero || '';
-                        return `<div onclick="filtrerVIP('${telVendeur}', '${v.nom_boutique.replace(/'/g, "\\'")}')" class="flex-shrink-0 flex flex-col items-center gap-1 cursor-pointer w-16"><div class="w-14 h-14 rounded-full border-2 border-orange-500 p-0.5 shadow-md"><div class="w-full h-full rounded-full bg-[#4c1d95] flex items-center justify-center text-white font-black text-xl">${initiale}</div></div><span class="text-[8px] font-black uppercase text-gray-700 truncate w-full text-center">${v.nom_boutique}</span></div>`;
-                    }).join('');
+                            // --- 1. CHARGEMENT DES VENDEURS VIP ---
+            const { data: vendeursVip } = await supabase.from('vendeurs').select('*').eq('abonnement', 'vip');
+            const conteneurBoutiques = document.getElementById('avenue-boutiques-vip');
+            
+            if (conteneurBoutiques && vendeursVip && vendeursVip.length > 0) {
+                conteneurBoutiques.innerHTML = vendeursVip.map(v => {
+                    const nomBoutique = v.nom_boutique || 'Boutique Officielle';
+                    const initiale = nomBoutique.substring(0, 1).toUpperCase();
+                    const telVendeur = v.whatsapp || v.telephone || v.numero || '';
                     
+                    // AVIS D'EXPERT : On remplace le petit cercle par une vraie carte Premium large
+                    return `
+                    <div onclick="filtrerVIP('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}')" 
+                         class="min-w-[220px] h-24 bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] rounded-2xl shadow-md p-4 flex flex-col justify-center relative overflow-hidden shrink-0 active:scale-95 transition-transform">
+                        
+                        <!-- Le petit logo en fond transparent pour faire joli -->
+                        <i class="fas fa-store absolute -right-4 -bottom-4 text-white opacity-10 text-6xl"></i>
+                        
+                        <div class="flex items-center gap-3 relative z-10">
+                            <!-- Le cercle avec la lettre -->
+                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#4c1d95] font-black text-lg shadow-sm">
+                                ${initiale}
+                            </div>
+                            <!-- Le nom de la boutique et le badge -->
+                            <div>
+                                <h3 class="text-white font-black text-sm uppercase leading-tight truncate w-32">${nomBoutique}</h3>
+                                <span class="text-yellow-300 text-[9px] font-black uppercase tracking-widest"><i class="fas fa-star mr-1"></i>VIP</span>
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+
+            // --- 2. LE LIEN MAGIQUE VIP ---
+            // Si on détecte un lien du type ?boutique=22505... on ouvre directement la boutique !
+            const boutiqueRecherche = new URLSearchParams(window.location.search).get('boutique');
+            if (boutiqueRecherche) {
+                setTimeout(() => {
+                    const vendeurTrouve = vendeursVip ? vendeursVip.find(v => String(v.whatsapp) === String(boutiqueRecherche)) : null;
+                    const nomPourBanniere = vendeurTrouve ? vendeurTrouve.nom_boutique : "Boutique Officielle";
+                    filtrerVIP(boutiqueRecherche, nomPourBanniere);
+                }, 800);
+            }
+                      
                     setInterval(() => {
                         if (conteneurBoutiques.scrollLeft + conteneurBoutiques.clientWidth >= conteneurBoutiques.scrollWidth - 10) { conteneurBoutiques.scrollTo({ left: 0, behavior: 'smooth' }); } 
                         else { conteneurBoutiques.scrollBy({ left: 70, behavior: 'smooth' }); }
