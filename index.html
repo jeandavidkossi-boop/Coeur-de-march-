@@ -302,26 +302,36 @@ if (!deviceId) {
                 const initiale = nomBoutique.substring(0, 1).toUpperCase();
                 const telVendeur = v.whatsapp || v.telephone || v.numero || '';
                 
-                // NOUVEAU : Récupération de l'image de la boutique depuis Supabase
-                const imageCouverture = v.image || v.photo_couverture || v.logo || '';
+        // NOUVEAU : Récupération de l'image de la boutique depuis Supabase
+        const imageCouverture = v.image || v.photo_couverture || v.logo || '';
+        
+        // On crée le style de fond avec l'image pour la petite carte
+        const bgStyle = (imageCouverture && imageCouverture !== 'null' && imageCouverture !== '') 
+            ? "background-image: url('" + imageCouverture + "'); background-size: cover; background-position: center;" 
+            : "background: linear-gradient(to right, #4c1d95, #7c3aed);";
 
-                return `
-                <div onclick="filtrerVIP('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}', '${imageCouverture}')" 
-                     class="min-w-[220px] h-24 bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] rounded-2xl shadow-md p-4 flex flex-col justify-center relative overflow-hidden shrink-0 active:scale-95 transition-transform">
-                    
-                    <i class="fas fa-store absolute -right-4 -bottom-4 text-white opacity-10 text-6xl"></i>
-                    
-                    <div class="flex items-center gap-3 relative z-10">
-                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#4c1d95] font-black text-lg shadow-sm">
-                            ${initiale}
-                        </div>
-                        <div>
-                            <h3 class="text-white font-black text-sm uppercase leading-tight truncate w-32">${nomBoutique}</h3>
-                            <span class="text-yellow-300 text-[9px] font-black uppercase tracking-widest"><i class="fas fa-star mr-1"></i>VIP</span>
-                        </div>
-                    </div>
+        return `
+        <div onclick="filtrerVIP('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}', '${imageCouverture}')" 
+             style="${bgStyle}"
+             class="min-w-[220px] h-24 rounded-2xl shadow-md p-4 flex flex-col justify-center relative overflow-hidden shrink-0">
+            
+            <!-- Filtre sombre pour bien lire le texte sur l'image -->
+            <div class="absolute inset-0 bg-black/60"></div>
+            
+            <i class="fas fa-store absolute -right-4 -bottom-4 text-white opacity-10 text-6xl z-0"></i>
+            
+            <div class="flex items-center gap-3 relative z-10">
+                <!-- L'initiale avec un effet "verre" très moderne -->
+                <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white font-black text-xl shrink-0 shadow-sm border border-white/30">
+                    ${initiale}
                 </div>
-                `;
+                <div>
+                    <h3 class="text-white font-black text-sm uppercase leading-tight truncate w-32">${nomBoutique}</h3>
+                    <span class="text-yellow-300 text-[9px] font-black uppercase tracking-widest"><i class="fas fa-star mr-1"></i> VIP</span>
+                </div>
+            </div>
+        </div>
+        `;              
             }).join('');       
 
                 // L'animation de défilement est maintenant sécurisée à l'intérieur du bloc
@@ -380,24 +390,32 @@ if (!deviceId) {
         // Style dynamique : Image si on la trouve, sinon fond violet par défaut
         const styleFond = (imageCouverture && imageCouverture !== 'null' && imageCouverture !== 'undefined' && imageCouverture !== '') 
             ? "background-image: url('" + imageCouverture + "'); background-size: cover; background-position: center;"
-            : "background: linear-gradient(to right, #4c1d95, #7c3aed);";              
+            : "background: linear-gradient(to right, #4c1d95, #7c3aed);";
 
-                zoneBanniere.innerHTML = `
-                <div style="${styleFond}" class="w-full h-32 rounded-[20px] shadow-md flex flex-col items-center justify-center relative overflow-hidden">
-                    <!-- Filtre sombre plus fort pour que le texte blanc soit bien lisible sur la photo -->
-                    <div class="absolute inset-0 bg-black/60"></div>
-                    
-                    <!-- BOUTON DE PARTAGE DE LA BOUTIQUE -->
-                    <button onclick="partagerBoutique('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}')" 
-                            class="absolute top-3 right-3 bg-white/20 backdrop-blur-md text-white w-10 h-10 rounded-full flex items-center justify-center z-20 active:scale-95 transition-transform shadow-sm border border-white/30">
-                        <i class="fas fa-share-nodes text-lg"></i>
-                    </button>
-
-                    <i class="fas fa-crown text-yellow-400 text-2xl mb-1 relative z-10"></i>
-                    <h2 class="text-white text-2xl font-black uppercase tracking-wider text-center px-10 leading-tight relative z-10 line-clamp-1">${nomBoutique}</h2>
-                    <p class="text-white/80 text-xs font-medium uppercase mt-1 relative z-10">Boutique Officielle</p>
+        zoneBanniere.innerHTML = `
+        <div style="${styleFond}" class="w-full h-48 rounded-[20px] shadow-md relative overflow-hidden shrink-0 mb-4">
+            
+            <!-- Le dégradé magique : transparent en haut, sombre en bas pour lire le texte -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+            
+            <!-- BOUTON DE PARTAGE EN HAUT À DROITE -->
+            <button onclick="partagerBoutique('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}')" 
+                    class="absolute top-3 right-3 bg-black/40 backdrop-blur-md text-white w-10 h-10 rounded-full flex items-center justify-center shadow-sm z-20 border border-white/20">
+                <i class="fas fa-share-nodes text-lg"></i>
+            </button>
+            
+            <!-- INFORMATIONS DE LA BOUTIQUE (RANGÉES EN BAS À GAUCHE) -->
+            <div class="absolute bottom-4 left-4 right-4 z-10 flex flex-col justify-end">
+                <div class="flex items-center gap-1.5 mb-1">
+                    <i class="fas fa-crown text-yellow-400 text-[11px] drop-shadow-md"></i>
+                    <p class="text-yellow-400 text-[10px] font-black uppercase tracking-widest drop-shadow-md">Boutique Officielle VIP</p>
                 </div>
-                `;
+                <!-- Le nom en grand, aligné à gauche -->
+                <h2 class="text-white text-2xl font-black uppercase leading-tight drop-shadow-lg">${nomBoutique}</h2>
+            </div>
+            
+        </div>
+        `;
             }
             
             document.getElementById('inputRecherche').value = nomBoutique;
