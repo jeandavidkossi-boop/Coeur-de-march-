@@ -379,10 +379,10 @@ if (!deviceId) {
             // Création de la bannière VIP personnalisée
             const zoneBanniere = document.getElementById('banniere-vendeur');
             if(zoneBanniere) {
-                // Style dynamique : Image si on la trouve, sinon fond violet par défaut
-                const styleFond = (imageCouverture && imageCouverture !== 'null' && imageCouverture !== 'undefined' && imageCouverture !== '') 
-                    ? `background-image: url('${imageCouverture}'); background-size: cover; background-position: center;`
-                    : `background: linear-gradient(to right, #4c1d95, #7c3aed);`;
+        // Style dynamique : Image si on la trouve, sinon fond violet par défaut
+        const styleFond = (imageCouverture && imageCouverture !== 'null' && imageCouverture !== 'undefined' && imageCouverture !== '') 
+            ? "background-image: url('" + imageCouverture + "'); background-size: cover; background-position: center;"
+            : "background: linear-gradient(to right, #4c1d95, #7c3aed);";              
 
                 zoneBanniere.innerHTML = `
                 <div style="${styleFond}" class="w-full h-32 rounded-[20px] shadow-md flex flex-col items-center justify-center relative overflow-hidden">
