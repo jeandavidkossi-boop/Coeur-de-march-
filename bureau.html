@@ -75,10 +75,14 @@
         
         <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/10 flex justify-between items-center">
             <div>
-                <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement...</p>
-                <p id="nom-boutique" class="text-xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
-            </div>
-            <span id="badge-abonnement" class="hidden text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-sm">...</span>
+<div class="flex items-center gap-2">
+    <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement...</p>
+    <!-- NOUVEAU : Le badge PRO (caché par défaut) -->
+    <span id="badge-pro" class="hidden bg-blue-500 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded shadow-sm"><i class="fas fa-check-circle mr-1"></i>PRO</span>
+</div>
+<p id="nom-boutique" class="text-xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
+</div>
+<span id="badge-abonnement" class="hidden text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-sm">...
         </div>
     </nav>
 
@@ -237,10 +241,11 @@
 
         // --- 1. BOUTON ORANGE : PUBLIER ---
         async function publierAnnonce() {
-            if (monAbonnement === 'standard' && monNombreArticles >= 10) {
-                afficherAlerteCustom("Limite atteinte", "Passez PRO pour publier plus d'articles !", "erreur");
-                return;
+            if (monAbonnement === 'standard' && monNombreArticles >= 3) {
+    afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 3 emplacements gratuits. Passez PRO pour un stock ILLIMITÉ !", "erreur");
+    return;
             }
+            
 
             const nomP = document.getElementById('pNom').value;
             const prixP = document.getElementById('pPrix').value;
@@ -261,7 +266,7 @@
 
                 const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
                 
-                let statutArticle = (monAbonnement === 'vip' || monAbonnement === 'pro') ? 'actif' : 'attente';
+                let statutArticle = 'actif';
 
                 const { error: errProduit } = await mySupabase.from('produits').insert([{
                     nom: nomP, prix: prixP, categorie: catP, description: descP, vendeur: myWhatsapp, image: publicUrl, statut: statutArticle
@@ -269,10 +274,7 @@
                 
                 if (errProduit) throw new Error(errProduit.message);
 
-                if(monAbonnement === 'standard') {
-                    afficherAlerteCustom("Envoyé", "Votre article sera visible après vérification.", "succes");
-                } else {
-                    afficherAlerteCustom("MAGNIFIQUE !", "Votre article est en ligne.", "succes");
+afficherAlerteCustom("MAGNIFIQUE !", "Votre article est en ligne et visible par tous.", "succes");
                 }
                 
                 setTimeout(() => { window.location.reload(); }, 2000); 
@@ -346,14 +348,16 @@
             </div>
             `).join('');
             }
-            
-            const limiteAffichage = (monAbonnement === 'standard') ? 10 : ((monAbonnement === 'pro') ? 50 : '∞');
-            document.getElementById('compteur-articles').innerText = monNombreArticles + " / " + limiteAffichage;
-            
-            if (monAbonnement === 'standard' && monNombreArticles >= 10) {
-                document.getElementById('formulaire-annonce').classList.add('hidden');
-                document.getElementById('message-limite').classList.remove('hidden');
-            }
+
+// AVIS D'EXPERT : On affiche clairement "Illimité" pour faire baver le vendeur Standard.
+const limiteAffichage = (monAbonnement === 'standard') ? 3 : 'Illimité';
+document.getElementById('compteur-articles').innerText = monNombreArticles + " / " + limiteAffichage;
+
+// On cache le formulaire dès qu'il touche le plafond des 3 articles
+if (monAbonnement === 'standard' && monNombreArticles >= 3) {
+    document.getElementById('formulaire-annonce').classList.add('hidden');
+    document.getElementById('message-limite').classList.remove('hidden');
+}
         }
         
 // --- FONCTION UPGRADE VIP ---
@@ -465,6 +469,11 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
                     .single();
 
                 if (vendeur) {
+                        // AVIS D'EXPERT : On affiche le badge de confiance si le vendeur est PRO
+    if (monAbonnement === 'pro') {
+        document.getElementById('badge-pro').classList.remove('hidden');
+    }
+                    
                     document.getElementById('nom-boutique').innerText = vendeur.nom_boutique || "Boutique";
                     document.getElementById('nom-vendeur').innerText = "Gérant : " + (vendeur.proprietaire || "Gérant");
                     myWhatsapp = vendeur.whatsapp;
