@@ -368,14 +368,21 @@ if (!deviceId) {
                                 // Création de la bannière VIP personnalisée
     const zoneBanniere = document.getElementById('banniere-vendeur');
     if(zoneBanniere) {
-        zoneBanniere.innerHTML = `
-            <div class="w-full h-32 rounded-[20px] bg-[#4c1d95] shadow-md flex flex-col items-center justify-center relative overflow-hidden mb-2">
-                <div class="absolute inset-0 bg-black/20"></div>
-                <i class="fas fa-crown text-yellow-400 text-2xl mb-1 relative z-10"></i>
-                <h2 class="text-white text-2xl font-black uppercase tracking-wider relative z-10">${nomBoutique}</h2>
-                <p class="text-white/80 text-xs font-medium uppercase mt-1 relative z-10">Boutique Officielle</p>
-            </div>
-        `;
+                zoneBanniere.innerHTML = `
+        <div class="w-full h-32 rounded-[20px] bg-[#4c1d95] shadow-md flex flex-col items-center justify-center relative overflow-hidden">
+            <div class="absolute inset-0 bg-black/20"></div>
+            
+            <!-- BOUTON DE PARTAGE DE LA BOUTIQUE -->
+            <button onclick="partagerBoutique('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}')" 
+                    class="absolute top-3 right-3 bg-white/20 backdrop-blur-md text-white w-10 h-10 rounded-full flex items-center justify-center z-20 active:scale-95 transition-transform shadow-sm border border-white/30">
+                <i class="fas fa-share-nodes text-lg"></i>
+            </button>
+
+            <i class="fas fa-crown text-yellow-400 text-2xl mb-1 relative z-10"></i>
+            <h2 class="text-white text-2xl font-black uppercase tracking-wider text-center px-10 leading-tight relative z-10 line-clamp-1">${nomBoutique}</h2>
+            <p class="text-white/80 text-xs font-medium uppercase mt-1 relative z-10">Boutique Officielle</p>
+        </div>
+        `;        
     }
             document.getElementById('inputRecherche').value = nomBoutique;
             const resultats = articles.filter(a => String(a.vendeur) === String(telVendeur));
@@ -687,6 +694,27 @@ function partager() {
         document.getElementById('inputRecherche').blur();
     }
          }
+
+                // --- FONCTION POUR PARTAGER UNE BOUTIQUE VIP ---
+        function partagerBoutique(tel, nom) {
+            // On construit le fameux Lien Magique VIP
+            const baseUrl = window.location.href.split('?')[0]; 
+            const lienMagique = baseUrl + '?boutique=' + tel;
+            
+            // Le texte marketing prêt à être envoyé
+            const message = "👋 Visitez ma boutique officielle *" + nom + "* sur Cœur de Marché Bouaflé !\n\n🛒 Cliquez sur ce lien pour voir tous mes articles : \n" + lienMagique;
+
+            // On lance le menu de partage natif du téléphone
+            if (navigator.share) {
+                navigator.share({
+                    title: nom + ' - Cœur de Marché',
+                    text: message
+                }).catch(err => console.log("Partage annulé", err));
+            } else {
+                // Si ça ne marche pas (ex: sur PC), on ouvre WhatsApp directement
+                window.open('https://wa.me/?text=' + encodeURIComponent(message));
+            }
+        }
         
         function remonterHaut() { window.scrollTo({ top: 0, behavior: "smooth" }); }
         window.addEventListener('scroll', () => { const btn = document.getElementById('btn-remonter'); if (window.scrollY > 300) btn.classList.add('show'); else btn.classList.remove('show'); });
