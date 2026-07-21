@@ -296,30 +296,35 @@ if (!deviceId) {
             const { data: vendeursVip } = await supabase.from('vendeurs').select('*').eq('abonnement', 'vip');
             const conteneurBoutiques = document.getElementById('avenue-boutiques-vip');
             
-            if (conteneurBoutiques && vendeursVip && vendeursVip.length > 0) {
-                conteneurBoutiques.innerHTML = vendeursVip.map(v => {
-                    const nomBoutique = v.nom_boutique || 'Boutique Officielle';
-                    const initiale = nomBoutique.substring(0, 1).toUpperCase();
-                    const telVendeur = v.whatsapp || v.telephone || v.numero || '';
+        if (conteneurBoutiques && vendeursVip && vendeursVip.length > 0) {
+            conteneurBoutiques.innerHTML = vendeursVip.map(v => {
+                const nomBoutique = v.nom_boutique || 'Boutique Officielle';
+                const initiale = nomBoutique.substring(0, 1).toUpperCase();
+                const telVendeur = v.whatsapp || v.telephone || v.numero || '';
+                
+                // NOUVEAU : Récupération de l'image de la boutique depuis Supabase
+                const imageCouverture = v.image || v.photo_couverture || v.logo || '';
+
+                return `
+                <div onclick="filtrerVIP('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}', '${imageCouverture}')" 
+                     class="min-w-[220px] h-24 bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] rounded-2xl shadow-md p-4 flex flex-col justify-center relative overflow-hidden shrink-0 active:scale-95 transition-transform">
                     
-                    return `
-                    <div onclick="filtrerVIP('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}')" 
-                         class="min-w-[220px] h-24 bg-gradient-to-r from-[#4c1d95] to-[#7c3aed] rounded-2xl shadow-md p-4 flex flex-col justify-center relative overflow-hidden shrink-0 active:scale-95 transition-transform">
-                        
-                        <i class="fas fa-store absolute -right-4 -bottom-4 text-white opacity-10 text-6xl"></i>
-                        
-                        <div class="flex items-center gap-3 relative z-10">
-                            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#4c1d95] font-black text-lg shadow-sm">
-                                ${initiale}
-                            </div>
-                            <div>
-                                <h3 class="text-white font-black text-sm uppercase leading-tight truncate w-32">${nomBoutique}</h3>
-                                <span class="text-yellow-300 text-[9px] font-black uppercase tracking-widest"><i class="fas fa-star mr-1"></i>VIP</span>
-                            </div>
+                    <i class="fas fa-store absolute -right-4 -bottom-4 text-white opacity-10 text-6xl"></i>
+                    
+                    <div class="flex items-center gap-3 relative z-10">
+                        <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#4c1d95] font-black text-lg shadow-sm">
+                            ${initiale}
+                        </div>
+                        <div>
+                            <h3 class="text-white font-black text-sm uppercase leading-tight truncate w-32">${nomBoutique}</h3>
+                            <span class="text-yellow-300 text-[9px] font-black uppercase tracking-widest"><i class="fas fa-star mr-1"></i>VIP</span>
                         </div>
                     </div>
-                    `;
-                }).join('');
+                </div>
+                `;
+            }).join('');
+        }
+                
 
                 // L'animation de défilement est maintenant sécurisée à l'intérieur du bloc
                 setInterval(() => {
@@ -332,14 +337,19 @@ if (!deviceId) {
             }
 
             // --- 2. LE LIEN MAGIQUE VIP ---
-            const boutiqueRecherche = new URLSearchParams(window.location.search).get('boutique');
-            if (boutiqueRecherche) {
-                setTimeout(() => {
-                    const vendeurTrouve = vendeursVip ? vendeursVip.find(v => String(v.whatsapp) === String(boutiqueRecherche)) : null;
-                    const nomPourBanniere = vendeurTrouve ? vendeurTrouve.nom_boutique : "Boutique Officielle";
-                    filtrerVIP(boutiqueRecherche, nomPourBanniere);
-                }, 800);
-                        }
+        const boutiqueRecherche = new URLSearchParams(window.location.search).get('boutique');
+        if (boutiqueRecherche) {
+            setTimeout(() => {
+                const vendeurTrouve = vendeursVip ? vendeursVip.find(v => String(v.whatsapp) === String(boutiqueRecherche)) : null;
+                const nomPourBanniere = vendeurTrouve ? vendeurTrouve.nom_boutique : "Boutique Officielle";
+                
+                // NOUVEAU : On charge aussi l'image pour ceux qui viennent de WhatsApp
+                const imagePourBanniere = vendeurTrouve ? (vendeurTrouve.image || vendeurTrouve.photo_couverture || vendeurTrouve.logo || '') : '';
+                
+                filtrerVIP(boutiqueRecherche, nomPourBanniere, imagePourBanniere);
+            }, 800);
+        }
+                
                                                                                      
         // --- NOUVEAU : SÉLECTION DU MOMENT (100% VIP) ---
         if (vendeursVip && vendeursVip.length > 0) {
@@ -364,26 +374,34 @@ if (!deviceId) {
                 if (ecranLoad) { ecranLoad.style.opacity = '0'; setTimeout(() => { ecranLoad.style.display = 'none'; }, 300); }
             }
         }
-                        function filtrerVIP(telVendeur, nomBoutique) {
-                                // Création de la bannière VIP personnalisée
-    const zoneBanniere = document.getElementById('banniere-vendeur');
-    if(zoneBanniere) {
-                zoneBanniere.innerHTML = `
-        <div class="w-full h-32 rounded-[20px] bg-[#4c1d95] shadow-md flex flex-col items-center justify-center relative overflow-hidden">
-            <div class="absolute inset-0 bg-black/20"></div>
-            
-            <!-- BOUTON DE PARTAGE DE LA BOUTIQUE -->
-            <button onclick="partagerBoutique('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}')" 
-                    class="absolute top-3 right-3 bg-white/20 backdrop-blur-md text-white w-10 h-10 rounded-full flex items-center justify-center z-20 active:scale-95 transition-transform shadow-sm border border-white/30">
-                <i class="fas fa-share-nodes text-lg"></i>
-            </button>
 
-            <i class="fas fa-crown text-yellow-400 text-2xl mb-1 relative z-10"></i>
-            <h2 class="text-white text-2xl font-black uppercase tracking-wider text-center px-10 leading-tight relative z-10 line-clamp-1">${nomBoutique}</h2>
-            <p class="text-white/80 text-xs font-medium uppercase mt-1 relative z-10">Boutique Officielle</p>
-        </div>
-        `;        
-    }
+        function filtrerVIP(telVendeur, nomBoutique, imageCouverture = '') {
+            // Création de la bannière VIP personnalisée
+            const zoneBanniere = document.getElementById('banniere-vendeur');
+            if(zoneBanniere) {
+                // Style dynamique : Image si on la trouve, sinon fond violet par défaut
+                const styleFond = (imageCouverture && imageCouverture !== 'null' && imageCouverture !== 'undefined' && imageCouverture !== '') 
+                    ? `background-image: url('${imageCouverture}'); background-size: cover; background-position: center;`
+                    : `background: linear-gradient(to right, #4c1d95, #7c3aed);`;
+
+                zoneBanniere.innerHTML = `
+                <div style="${styleFond}" class="w-full h-32 rounded-[20px] shadow-md flex flex-col items-center justify-center relative overflow-hidden">
+                    <!-- Filtre sombre plus fort pour que le texte blanc soit bien lisible sur la photo -->
+                    <div class="absolute inset-0 bg-black/60"></div>
+                    
+                    <!-- BOUTON DE PARTAGE DE LA BOUTIQUE -->
+                    <button onclick="partagerBoutique('${telVendeur}', '${nomBoutique.replace(/'/g, "\\'")}')" 
+                            class="absolute top-3 right-3 bg-white/20 backdrop-blur-md text-white w-10 h-10 rounded-full flex items-center justify-center z-20 active:scale-95 transition-transform shadow-sm border border-white/30">
+                        <i class="fas fa-share-nodes text-lg"></i>
+                    </button>
+
+                    <i class="fas fa-crown text-yellow-400 text-2xl mb-1 relative z-10"></i>
+                    <h2 class="text-white text-2xl font-black uppercase tracking-wider text-center px-10 leading-tight relative z-10 line-clamp-1">${nomBoutique}</h2>
+                    <p class="text-white/80 text-xs font-medium uppercase mt-1 relative z-10">Boutique Officielle</p>
+                </div>
+                `;
+            }
+            
             document.getElementById('inputRecherche').value = nomBoutique;
             const resultats = articles.filter(a => String(a.vendeur) === String(telVendeur));
             
