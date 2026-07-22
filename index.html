@@ -29,7 +29,7 @@
         .active-nav { color: #f97316 !important; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #9ca3af; font-size: 20px; }
         .nav-text { font-size: 9px; font-weight: 900; text-transform: capitalize; margin-top: 4px; }
-        .wa-btn { background: #22c55e; width: 65px; height: 65px; border-radius: 50%; border: 6px solid #f8f9fd; margin-top: -35px; display: flex; justify-content: center; align-items: center; color: white; font-size: 28px; box-shadow: 0 10px 20px rgba(34,197,94,0.3); }
+        .panier-central { background: #f97316; width: 65px; height: 65px; border-radius: 50%; border: 6px solid #f8f9fd; margin-top: -30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: white; font-size: 28px; display: flex; align-items: center; justify-content: center; position: relative; }
 
         #panier-flottant { transition: all 0.4s ease; transform: translateY(150px); opacity: 0; }
         #panier-flottant.show { transform: translateY(0); opacity: 1; }
@@ -175,7 +175,6 @@
     </div>
 
     <button id="btn-remonter" onclick="remonterHaut()"><i class="fas fa-arrow-up"></i></button>
-    <div id="panier-flottant" onclick="ouvrirPanier()" class="fixed bottom-24 right-6 bg-[#5b21b6] text-white p-4 rounded-full shadow-2xl flex items-center gap-3 z-50"><i class="fas fa-shopping-cart text-xl"></i><div class="flex flex-col"><span class="text-[9px] font-bold uppercase opacity-80">Mon Panier</span><span id="panier-count" class="font-black text-sm">0 article</span></div></div>
 
     <div id="modal-details" class="modal-overlay" onclick="fermerModalDetails()"><div class="modal-content" onclick="event.stopPropagation()"><div id="details-contenu"></div></div></div>
     
@@ -198,7 +197,7 @@
     <nav class="nav-bar">
         <button onclick="changerVue('accueil')" id="nav-accueil" class="nav-item active-nav"><i class="fas fa-home"></i><span class="nav-text">Accueil</span></button>
         <button onclick="changerVue('boutique')" id="nav-boutique" class="nav-item"><i class="fas fa-store-alt"></i><span class="nav-text">Boutiques</span></button>
-        <button onclick="window.open('https://wa.me/2250576326645')" class="wa-btn active:scale-95 transition"><i class="fab fa-whatsapp"></i></button>
+        <button onclick="ouvrirPanier()" class="panier-central active:scale-95 transition"><i class="fas fa-shopping-basket"></i><span id="panier-count-nav" class="absolute -top-1 -right-1 bg-red-600 text-white text-[11px] font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-md">0</span></button>
         <a href="vendre.html" class="nav-item"><i class="fas fa-store"></i><span class="nav-text">Vendre</span></a>
         <button onclick="ouvrirAide()" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
     </nav>
@@ -219,14 +218,11 @@ if (!deviceId) {
     localStorage.setItem('coeur_device_id', deviceId);
 }
         
-    // Réafficher le petit panier flottant au démarrage s'il y a déjà des articles
-    if (panier.length > 0) {
-        const badge = document.getElementById('panier-count');
-        if(badge) badge.innerText = panier.length;
-        
-        const btnPanier = document.getElementById('panier-flottant');
-        if(btnPanier) btnPanier.classList.add('show');
-    }
+// Mettre à jour le compteur du nouveau panier central au démarrage
+if (panier.length > 0) {
+    const badgeNav = document.getElementById('panier-count-nav');
+    if (badgeNav) badgeNav.innerText = panier.length;
+}
         
         let intervalCarrousel;
 
@@ -607,18 +603,18 @@ function partager() {
         window.open('https://wa.me/?text=' + encodeURIComponent(window.messagePartage)); 
     } 
 }
-        
-            function ajouterAuPanier(nom, prix, tel) {
-        panier.push({nom, prix, tel}); 
-        document.getElementById('panier-count').innerText = panier.length;
-        enregistrerInteraction(nom, 'ajout_panier');
-                
-        // On sauvegarde le panier dans le téléphone
-        localStorage.setItem('coeur_panier', JSON.stringify(panier));
-        
-        afficherAlerteCustom("Ajouté !", `\n${nom}\n est dans votre panier.`);
-        document.getElementById('panier-flottant').classList.add('show');
-            }
+function ajouterAuPanier(nom, prix, tel) {
+    panier.push({nom, prix, tel});
+    
+    // On met à jour le nouveau compteur du bouton central
+    const badgeNav = document.getElementById('panier-count-nav');
+    if (badgeNav) badgeNav.innerText = panier.length;
+    
+    enregistrerInteraction(nom, 'ajout_panier');
+    localStorage.setItem('coeur_panier', JSON.stringify(panier));
+    
+    afficherAlerteCustom('Ajouté !', `\n${nom}\n a été ajouté au panier.`);
+}
         
         function ouvrirPanier() {
             const container = document.getElementById('panier-liste'); const totalElt = document.getElementById('panier-total');
@@ -768,7 +764,12 @@ function partager() {
 
     // 4. On affiche les produits trouvés
     afficherProduits(filtered, target);
-
+// On force la disparition du menu des rayons et de la bannière VIP pour y voir clair
+const menuRayons = document.getElementById('menu-rayons');
+if (menuRayons) menuRayons.classList.add('hidden');
+const avenueBoutiques = document.getElementById('avenue-boutiques-vip');
+if (avenueBoutiques) avenueBoutiques.parentElement.classList.add('hidden');
+             
     // 5. FERMETURE DU CLAVIER MOBILE
     // Si la touche pressée est "Entrée", on enlève le focus du champ de recherche
     if (event && event.key === 'Enter') {
