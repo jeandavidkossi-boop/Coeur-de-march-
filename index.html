@@ -157,6 +157,9 @@
                 <div onclick="filtrerBoutique('Librairie & École')"><div class="w-12 h-12 mx-auto bg-indigo-100 text-indigo-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-book"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">École</span></div>
                 <div onclick="filtrerBoutique('Beauté & Cosmétique')"><div class="w-12 h-12 mx-auto bg-rose-100 text-rose-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-spa"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Beauté</span></div>
                 <div onclick="filtrerBoutique('Événementiel & Location')"><div class="w-12 h-12 mx-auto bg-cyan-100 text-cyan-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-glass-cheers"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Fête</span></div>
+           <div onclick="filtrerBoutique('Univers Bébé & Maternité')"><div class="w-12 h-12 mx-auto bg-pink-100 text-pink-500 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-baby"></i></div>Univers Bébé & Maternité</div>
+<div onclick="filtrerBoutique('Immobilier & Terrains')"><div class="w-12 h-12 mx-auto bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-home"></i></div>Immobilier & Terrains</div>
+<div onclick="filtrerBoutique('Restauration & Maquis')"><div class="w-12 h-12 mx-auto bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-xl shadow-sm mb-2"><i class="fas fa-utensils"></i></div>Restauration & Maquis</div>
             </div>
         </div>
         <div id="liste-boutique" class="grid grid-cols-2 gap-4 pb-10"></div>
@@ -638,27 +641,36 @@ function ajouterAuPanier(nom, prix, tel) {
             const modal = document.getElementById('modal-panier'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10);
         }
 
-            function retirerDuPanier(index) { 
-        panier.splice(index, 1); 
-        document.getElementById('panier-count').innerText = panier.length; 
-        
-        // On met à jour la sauvegarde dans le téléphone
-        localStorage.setItem('coeur_panier', JSON.stringify(panier));
-        
-        ouvrirPanier(); 
-            }
-            function validerCommande(telWhatsApp, msgEncoded, telVendeur) {
-        window.open('https://wa.me/' + telWhatsApp + '?text=' + msgEncoded);
-        panier = panier.filter(p => String(p.tel) !== String(telVendeur));
-        localStorage.setItem('coeur_panier', JSON.stringify(panier));
-        document.getElementById('panier-count').innerText = panier.length;
-        if (panier.length === 0) {
-            document.getElementById('panier-flottant').classList.remove('show');
-            fermerPanier();
-        } else {
-            ouvrirPanier();
+        function retirerDuPanier(index) {
+    panier.splice(index, 1);
+    
+    // On met à jour le nouveau compteur central
+    const badgeNav = document.getElementById('panier-count-nav');
+    if (badgeNav) badgeNav.innerText = panier.length;
+
+    // On met à jour la sauvegarde dans le téléphone
+    localStorage.setItem('coeur_panier', JSON.stringify(panier));
+
+    ouvrirPanier();
         }
+        
+            function validerCommande(telWhatsApp, msgEncoded, telVendeur) {
+    window.open('https://wa.me/' + telWhatsApp + '?text=' + msgEncoded);
+    
+    panier = panier.filter(p => String(p.tel) !== String(telVendeur));
+    localStorage.setItem('coeur_panier', JSON.stringify(panier));
+    
+    // On met à jour le nouveau compteur central
+    const badgeNav = document.getElementById('panier-count-nav');
+    if (badgeNav) badgeNav.innerText = panier.length;
+    
+    if (panier.length === 0) {
+        fermerPanier();
+    } else {
+        ouvrirPanier();
+    }
             }
+    
         function fermerModalDetails() { const modal = document.getElementById('modal-details'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
         function fermerPanier() { const modal = document.getElementById('modal-panier'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
         function ouvrirAide() { const modal = document.getElementById('modal-aide'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10); }
