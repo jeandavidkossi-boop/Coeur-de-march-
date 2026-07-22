@@ -208,7 +208,9 @@
     let panier = JSON.parse(localStorage.getItem('coeur_panier')) || []; 
     let articlesCourants = []; 
     let cibleCourante = '';
-let limiteAffichage = 12;
+let pageCourante = 1;
+const elementsParPage = 12;
+        
         
         let monSupabase;
 let deviceId = localStorage.getItem('coeur_device_id');
@@ -445,37 +447,43 @@ if (!deviceId) {
             if (liste.length === 0) { container.innerHTML = '<p class="text-gray-400 text-[10px] italic">Aucune nouveauté</p>'; return; }
             container.innerHTML = liste.map(p => `<div class="scroll-item bg-white rounded-[15px] shadow-sm overflow-hidden flex flex-col relative border border-gray-50 active:scale-95 transition"><div class="price-badge" style="font-size:10px; padding:3px 8px; top:8px; right:8px;">${p.prix} F</div><img src="${p.image}" loading="lazy" onclick="ouvrirDetails('${p.nom.replace(/'/g, "\\'")}')" class="w-full h-24 object-cover"><div class="px-2 py-2 flex-1 flex flex-col text-center"><h3 class="font-black text-[#4c1d95] text-[9px] uppercase truncate mb-2">${p.nom}</h3><button onclick="ajouterAuPanier('${p.nom.replace(/'/g, "\\'")}', ${p.prix}, '${p.vendeur}')" class="w-full bg-[#f8f9fd] text-[#5b21b6] font-black py-2 rounded-xl text-[9px] uppercase border border-gray-100 active:bg-gray-100">Ajouter</button></div></div>`).join('');
         }
-        
-function afficherProduits(liste, target, isLoadMore = false) {
-    articlesCourants = liste; 
-    cibleCourante = target; 
-    const container = document.getElementById(target); 
+
+function afficherProduits(liste, target, resetPage = true) {
+    articlesCourants = liste;
+    cibleCourante = target;
+    const container = document.getElementById(target);
     if (!container) return;
-    if (!isLoadMore) limiteAffichage = 12;
-    
-    let listeTriee = [...liste]; 
+
+    if (resetPage) pageCourante = 1;
+
+    let listeTriee = [...liste];
     let critereTri = 'recent';
-    
+
     if (target === 'liste-boutique') critereTri = document.getElementById('tri-prix-boutique').value;
     if (target === 'liste-rayon') critereTri = document.getElementById('tri-prix-rayon').value;
 
-    // 1. GESTION DU TRI (Correction pour les nouveautés)
+    // 1. GESTION DU TRI
     if (critereTri === 'croissant') {
         listeTriee.sort((a, b) => parseInt(a.prix) - parseInt(b.prix));
     } else if (critereTri === 'decroissant') {
         listeTriee.sort((a, b) => parseInt(b.prix) - parseInt(a.prix));
     } else {
-        // Mode 'recent' : on inverse pour avoir les derniers ajouts en haut de liste
-        listeTriee.reverse(); 
+        listeTriee.reverse();
     }
 
-    // 2. GESTION DE LA LIMITE (12 pour la boutique, TOUT pour les rayons)
-let listeFinale = listeTriee.slice(0, limiteAffichage);
+    // Calcul des pages
+    const totalPages = Math.ceil(listeTriee.length / elementsParPage);
+    if (pageCourante > totalPages && totalPages > 0) pageCourante = totalPages;
+
+    const debut = (pageCourante - 1) * elementsParPage;
+    const fin = debut + elementsParPage;
+    let listeFinale = listeTriee.slice(debut, fin);
+
     if (listeFinale.length === 0) {
-        container.innerHTML = '<div style="grid-column: 1 / -1;" class="text-center py-8 text-gray-400">Aucun produit trouvé.</div>';
+        container.innerHTML = `<div style="grid-column: 1 / -1;" class="text-center py-8 text-gray-400">Aucun produit trouvé.</div>`;
         return;
     }
-
+    
     // --- NOUVEAU : ALGORITHME DE BOOST ---
 // On force les articles boostés à remonter tout en haut, peu importe le tri précédent
 listeTriee.sort((a, b) => {
@@ -513,23 +521,43 @@ container.innerHTML = listeFinale.map(p => {
     </div>
     `;
 }).join('');;
-        // 4. BOUTON "VOIR PLUS" POUR LES BOUTIQUES ET LES RAYONS
-        if (listeTriee.length > limiteAffichage) {
-            container.innerHTML += `
-            <div style="grid-column: 1 / -1;" class="flex justify-center mt-4 mb-8">
-                <button onclick="chargerPlusArticles()" class="bg-white border-2 border-[#5b21b6] text-[#5b21b6] font-black text-sm px-6 py-2.5 rounded-full shadow-sm flex items-center gap-2 active:scale-95 transition">
-                    Voir la suite <i class="fas fa-chevron-down"></i>
-                </button>
-            </div>
-            `;
+    // 4. BARRE DE PAGINATION
+    if (listeTriee.length > elementsParPage) {
+        const totalPages = Math.ceil(listeTriee.length / elementsParPage);
+        let paginationHtml = `<div style="grid-column: 1 / -1;" class="flex justify-center items-center gap-2 mt-6 mb-8 flex-wrap">`;
+        
+        if (pageCourante > 1) {
+            paginationHtml += `<button onclick="allerPage(${pageCourante - 1})" class="bg-white border-2 border-[#5b21b6] text-[#5b21b6] font-bold text-xs px-3.5 py-2 rounded-xl shadow-sm active:scale-95 transition">Précédent</button>`;
         }
-    } // <-- Fin de la fonction afficherProduits
 
-    // Fonction déclenchée quand on clique sur le bouton
-    function chargerPlusArticles() {
-        limiteAffichage += 12; // On ajoute 12 articles de plus
-        afficherProduits(articlesCourants, cibleCourante, true); // true = on ne remet pas à zéro
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === pageCourante) {
+                paginationHtml += `<span class="bg-[#5b21b6] text-white font-black text-xs px-4 py-2 rounded-xl shadow-md">${i}</span>`;
+            } else {
+                paginationHtml += `<button onclick="allerPage(${i})" class="bg-white border border-gray-300 text-gray-700 font-bold text-xs px-3.5 py-2 rounded-xl shadow-sm active:scale-95 transition">${i}</button>`;
+            }
+        }
+
+        if (pageCourante < totalPages) {
+            paginationHtml += `<button onclick="allerPage(${pageCourante + 1})" class="bg-white border-2 border-[#5b21b6] text-[#5b21b6] font-bold text-xs px-3.5 py-2 rounded-xl shadow-sm active:scale-95 transition">Suivant</button>`;
+        }
+
+        paginationHtml += `</div>`;
+        container.innerHTML += paginationHtml;
     }
+} // <-- Fin de la fonction afficherProduits
+
+// Fonction pour changer de page
+function allerPage(numPage) {
+    pageCourante = numPage;
+    afficherProduits(articlesCourants, cibleCourante, false);
+    
+    // Remonter doucement en haut
+    const container = document.getElementById(cibleCourante);
+    if (container) {
+        container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
         
         function changerTriBoutique() { afficherProduits(articlesCourants, 'liste-boutique'); }
         function changerTriRayon() { afficherProduits(articlesCourants, 'liste-rayon'); }
