@@ -245,7 +245,6 @@
 
         // --- 1. BOUTON ORANGE : PUBLIER ---
         async function publierAnnonce() {
-            alert("Le bouton a bien été cliqué !");
             if (monAbonnement === 'standard' && monNombreArticles >= 3) {
     afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 3 emplacements gratuits. Passez PRO pour un stock ILLIMITÉ !", "erreur");
     return;
@@ -472,11 +471,6 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
                     .select('*') 
                     .eq('id', myUser.id)
                     .single();
-    if (errVendeur) {
-        alert("Erreur : " + errVendeur.message);
-        document.getElementById('nom-boutique').innerText = "ERREUR DE LECTURE";
-        return;
-    }
                 
                 if (vendeur) {
                         // AVIS D'EXPERT : On affiche le badge de confiance si le vendeur est PRO
