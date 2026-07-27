@@ -472,7 +472,12 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
                     .select('*') 
                     .eq('id', myUser.id)
                     .single();
-
+    if (errVendeur) {
+        alert("Erreur : " + errVendeur.message);
+        document.getElementById('nom-boutique').innerText = "ERREUR DE LECTURE";
+        return;
+    }
+                
                 if (vendeur) {
                         // AVIS D'EXPERT : On affiche le badge de confiance si le vendeur est PRO
     if (monAbonnement === 'pro') {
