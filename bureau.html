@@ -245,6 +245,7 @@
 
         // --- 1. BOUTON ORANGE : PUBLIER ---
         async function publierAnnonce() {
+            alert("Le bouton a bien été cliqué !");
             if (monAbonnement === 'standard' && monNombreArticles >= 3) {
     afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 3 emplacements gratuits. Passez PRO pour un stock ILLIMITÉ !", "erreur");
     return;
