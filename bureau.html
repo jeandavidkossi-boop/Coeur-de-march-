@@ -245,8 +245,8 @@
 
         // --- 1. BOUTON ORANGE : PUBLIER ---
         async function publierAnnonce() {
-            if (monAbonnement === 'standard' && monNombreArticles >= 3) {
-    afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 3 emplacements gratuits. Passez PRO pour un stock ILLIMITÉ !", "erreur");
+            if (monAbonnement === 'standard' && monNombreArticles >= 5) {
+    afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 5 emplacements gratuits. Passez PRO pour un stock ILLIMITÉ !", "erreur");
     return;
             }
             
@@ -354,11 +354,11 @@ afficherAlerteCustom("MAGNIFIQUE !", "Votre article est en ligne et visible par 
             }
 
 // AVIS D'EXPERT : On affiche clairement "Illimité" pour faire baver le vendeur Standard.
-const limiteAffichage = (monAbonnement === 'standard') ? 3 : 'Illimité';
+const limiteAffichage = (monAbonnement === 'standard') ? 5 : 'Illimité';
 document.getElementById('compteur-articles').innerText = monNombreArticles + " / " + limiteAffichage;
 
-// On cache le formulaire dès qu'il touche le plafond des 3 articles
-if (monAbonnement === 'standard' && monNombreArticles >= 3) {
+// On cache le formulaire dès qu'il touche le plafond des 5 articles
+if (monAbonnement === 'standard' && monNombreArticles >= 5) {
     document.getElementById('formulaire-annonce').classList.add('hidden');
     document.getElementById('message-limite').classList.remove('hidden');
 }
