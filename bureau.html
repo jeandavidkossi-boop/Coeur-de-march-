@@ -174,6 +174,8 @@
             </div>
         </div>
     </main>
+    </main>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
@@ -263,13 +265,33 @@
             btn.innerText = "ENVOI EN COURS...";
             btn.disabled = true;
 
-            try {
-                const nomFichier = myUser.id + "_" + Date.now() + ".jpg";
-                const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, myPhoto);
-                if (errPhoto) throw new Error("Erreur Photo : " + errPhoto.message);
+               try {
+        // --- NOUVEAU : Configuration de la compression ---
+        const optionsCompression = {
+            maxSizeMB: 0.15, // Compresse à 150 Ko maximum (parfait pour Cœur de Marché)
+            maxWidthOrHeight: 1024,
+            useWebWorker: true,
+            fileType: 'image/webp' // Format moderne et très léger
+        };
 
-                const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
-                
+        btn.innerText = "COMPRESSION..."; // Indique au vendeur ce qui se passe
+        
+        // On compresse la photo stockée dans la variable globale myPhoto
+        const imageCompressee = await imageCompression(myPhoto, optionsCompression);
+        // -------------------------------------------------
+
+        btn.innerText = "ENVOI EN COURS...";
+        
+        // On utilise l'extension .webp au lieu de .jpg
+        const nomFichier = myUser.id + "_" + Date.now() + ".webp"; 
+        
+        // On envoie l'image compressée à Supabase au lieu de myPhoto
+        const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, imageCompressee);
+        
+        if (errPhoto) throw new Error("Erreur Photo : " + errPhoto.message);
+        
+        const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
+                   
                 let statutArticle = 'actif';
 
                 const { error: errProduit } = await mySupabase.from('produits').insert([{
