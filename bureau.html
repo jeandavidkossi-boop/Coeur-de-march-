@@ -172,6 +172,11 @@
             <div id="mes-articles" class="grid grid-cols-2 gap-4">
                 <p class="text-gray-400 text-sm italic col-span-2">Chargement de vos articles...</p>
             </div>
+            <div id="pagination-controls" class="flex justify-between items-center mt-6 hidden">
+  <button id="btn-prev" onclick="changerPage(-1)" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-xl font-black text-xs disabled:opacity-30">← Précédent</button>
+  <span id="page-indicator" class="text-xs font-black text-[#5b21b6]">Page 1</span>
+  <button id="btn-next" onclick="changerPage(1)" class="px-4 py-2 bg-[#5b21b6] text-white rounded-xl font-black text-xs disabled:opacity-30">Suivant →</button>
+            </div>
         </div>
     </main>
     </main>
@@ -188,7 +193,9 @@
         let monAbonnement = 'standard';
         let monNombreArticles = 0;
         let articleASupprimer = null;
-
+let pageActuelle = 1;
+const articlesParPage = 12;
+        
         // --- GESTION DES BELLES MODALES ---
         function afficherAlerteCustom(titre, message, typeAlerte) {
             const modal = document.getElementById('modal-alerte');
@@ -328,63 +335,56 @@ afficherAlerteCustom("MAGNIFIQUE !", "Votre article est en ligne et visible par 
             }
         });
 
-        // --- 4. CHARGER LES ARTICLES DU VENDEUR ---
-        async function chargerMesArticles() {
-            if (!myWhatsapp) return; 
-            
-            const container = document.getElementById('mes-articles');
-            
-            const { data, error } = await mySupabase
-                .from('produits')
-                .select('*')
-                .eq('vendeur', myWhatsapp)
-                .order('dateajout', { ascending: false });
-                
-            if (error || !data || data.length === 0) {
-                container.innerHTML = "<p class='text-gray-400 text-sm font-bold col-span-2 text-center py-4'>Vous n'avez aucun article en ligne.</p>";
-                monNombreArticles = 0;
-            } else {
-                monNombreArticles = data.length;
-                            // On garde les données en mémoire pour faciliter la modification
-            window.mesArticlesLocaux = data;
+  // --- 4. CHARGER LES ARTICLES DU VENDEUR ---
+async function chargerMesArticles(page = 1) {
+  if (!myWhatsapp) return;
+  pageActuelle = page;
+  const container = document.getElementById('mes-articles');
+  const from = (page - 1) * articlesParPage;
+  const to = from + articlesParPage - 1;
 
-            container.innerHTML = data.map(p => `
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col relative">
-                ${p.statut === "attente" ? '<span class="absolute top-1 left-1 bg-gray-800 text-white text-[7px] px-2 py-1 rounded-full z-10">EN ATTENTE</span>' : ''}
-                <img src="${p.image}" class="w-full h-24 object-cover">
-                <div class="p-2 flex-1 flex flex-col">
-                    <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-1">${p.nom}</h4>
-                    <span class="text-orange-500 font-black text-xs mb-3">${p.prix} F</span>
-                    
-                    <!-- Ligne avec les trois boutons -->
-                    <div class="flex gap-1 mt-auto">
-                        <button onclick="demanderConfirmation('${p.id}')" class="w-9 bg-red-100 text-red-600 rounded-lg py-2 flex items-center justify-center active:scale-95">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        
-                        <button onclick="ouvrirModification('${p.id}')" class="w-9 bg-blue-100 text-blue-600 rounded-lg py-2 flex items-center justify-center active:scale-95">
-                            <i class="fas fa-pen"></i>
-                        </button>
+  const { data, error, count } = await mySupabase
+    .from('produits')
+    .select('*', { count: 'exact' })
+    .eq('vendeur', myWhatsapp)
+    .order('dateajout', { ascending: false })
+    .range(from, to);
 
-                        <button onclick="demanderBoost('${p.nom.replace(/'/g, "\\'")}')" class="flex-1 bg-orange-100 text-[#f97316] border border-[#f97316] rounded-lg py-2 text-[10px] font-black uppercase flex items-center justify-center gap-1 active:scale-95">
-                            <i class="fas fa-rocket"></i> Boost
-                        </button>
-                    </div>
-                </div>
-            </div>
-            `).join('');
-            }
+  if (error || !data || data.length === 0) {
+    if (page === 1) container.innerHTML = `<p class="text-gray-400 text-sm font-bold col-span-2 text-center py-4">Vous n'avez aucun article.</p>`;
+    document.getElementById('pagination-controls')?.classList.add('hidden');
+    return;
+  }
 
-// AVIS D'EXPERT : On affiche clairement "Illimité" pour faire baver le vendeur Standard.
-const limiteAffichage = (monAbonnement === 'standard') ? 5 : 'Illimité';
-document.getElementById('compteur-articles').innerText = monNombreArticles + " / " + limiteAffichage;
+  monNombreArticles = count;
+  window.mesArticlesLocaux = data;
 
-// On cache le formulaire dès qu'il touche le plafond des 5 articles
-if (monAbonnement === 'standard' && monNombreArticles >= 5) {
+  container.innerHTML = data.map(p => `
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col relative">
+      ${p.statut === 'attente' ? `<span class="absolute top-1 left-1 bg-gray-800 text-white text-[7px] px-2 py-0.5 rounded shadow">ATTENTE</span>` : ''}
+      <img src="${p.image}" class="w-full h-24 object-cover">
+      <div class="p-2 flex-1 flex flex-col">
+        <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-1">${p.nom}</h4>
+        <span class="text-orange-500 font-black text-xs mb-3">${p.prix} F</span>
+        <div class="flex gap-1 mt-auto">
+          <button onclick="demanderConfirmation('${p.id}')" class="w-9 bg-red-100 text-red-600 rounded-lg py-1"><i class="fas fa-trash"></i></button>
+          <button onclick="ouvrirModification('${p.id}')" class="w-9 bg-blue-100 text-blue-600 rounded-lg py-1"><i class="fas fa-pen"></i></button>
+          <button onclick="demanderBoost('${p.nom.replace(/'/g, "\\'")}')" class="flex-1 bg-orange-100 text-orange-600 rounded-lg py-1 text-[9px] font-bold uppercase"><i class="fas fa-rocket"></i> Boost</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const limiteAffichage = (monAbonnement === 'standard') ? 5 : "Illimité";
+  document.getElementById('compteur-articles').innerText = monNombreArticles + " / " + limiteAffichage;
+  
+  if (monAbonnement === 'standard' && monNombreArticles >= 5) {
     document.getElementById('formulaire-annonce').classList.add('hidden');
     document.getElementById('message-limite').classList.remove('hidden');
-}
-        }
+  }
+
+  mettreAJourPagination(count);
+      }
         
 // --- FONCTION UPGRADE VIP ---
 function contacterAdminUpgrade() {
@@ -472,6 +472,26 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
             btn.disabled = false;
         }
     }
+
+        function mettreAJourPagination(total) {
+  const controls = document.getElementById('pagination-controls');
+  const totalPages = Math.ceil(total / articlesParPage);
+  
+  if (totalPages <= 1) { 
+    controls.classList.add('hidden'); 
+    return; 
+  }
+  
+  controls.classList.remove('hidden');
+  document.getElementById('page-indicator').innerText = `Page ${pageActuelle} / ${totalPages}`;
+  document.getElementById('btn-prev').disabled = (pageActuelle === 1);
+  document.getElementById('btn-next').disabled = (pageActuelle === totalPages);
+}
+
+function changerPage(dir) {
+  chargerMesArticles(pageActuelle + dir);
+  document.getElementById('mes-articles').scrollIntoView({ behavior: 'smooth' });
+}
         
         // --- 6. DÉMARRAGE ET VÉRIFICATION PROFIL ---
         async function demarrerBureau() {
