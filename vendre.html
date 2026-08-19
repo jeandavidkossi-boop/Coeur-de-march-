@@ -70,6 +70,9 @@
                 <i class="fas fa-lock absolute left-4 top-4 text-gray-400"></i>
                 <input type="password" id="password" placeholder="Mot de passe" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
             </div>
+            <div class="text-right mb-4">
+  <button type="button" onclick="motDePasseOublie()" class="text-xs font-bold text-cdm-purple hover:underline">Mot de passe oublié ?</button>
+            </div>
             
             <button id="btnAction" onclick="executerAction()" class="w-full bg-cdm-orange text-white font-bold py-4 rounded-xl shadow-md active:scale-95 transition-all uppercase tracking-wider mt-4">
                 Se connecter
@@ -122,6 +125,33 @@
     window.alert = function(msg) {
         alertePro(msg);
     };
+
+        async function motDePasseOublie() {
+  const email = document.getElementById('email').value;
+  
+  if (!email) {
+    alert("Veuillez d'abord saisir votre adresse email dans le champ ci-dessus.");
+    return;
+  }
+
+  // Initialisation de Supabase avec ta clé
+  const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
+  const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
+  const supabase = window.supabase.createClient(dbUrl, dbKey);
+
+  const btn = document.getElementById('btnAction');
+  btn.innerText = "Envoi du mail...";
+
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email);
+
+  if (error) {
+    alert("Erreur : " + error.message);
+  } else {
+    alert("Vérifiez votre boîte mail ! Un lien de réinitialisation a été envoyé.");
+  }
+  
+  btn.innerText = "SE CONNECTER";
+        }
         
         async function executerAction() {
             const email = document.getElementById('email').value;
