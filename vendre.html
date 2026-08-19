@@ -138,12 +138,31 @@
   const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
   const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
   const supabase = window.supabase.createClient(dbUrl, dbKey);
-
+            
+// Détecter le retour depuis le lien d'email
+supabase.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    const nouveauMdp = window.prompt("Saisissez votre NOUVEAU mot de passe (6 caractères min) :");
+    if (nouveauMdp && nouveauMdp.length >= 6) {
+      const { error } = await supabase.auth.updateUser({ password: nouveauMdp });
+      if (error) {
+        alert("Erreur : " + error.message);
+      } else {
+        alert("Mot de passe modifié avec succès ! Vous pouvez vous connecter.");
+      }
+    } else if (nouveauMdp) {
+      alert("Le mot de passe doit faire au moins 6 caractères.");
+    }
+  }
+});
+            
   const btn = document.getElementById('btnAction');
   btn.innerText = "Envoi du mail...";
 
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email);
-
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+  redirectTo: 'https://jeandavidkossi-boop.github.io/Coeur-de-march-/vendre.html'
+});
+            
   if (error) {
     alert("Erreur : " + error.message);
   } else {
