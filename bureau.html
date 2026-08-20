@@ -479,43 +479,90 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
         }
     }
 
-        function mettreAjourPagination(total) {
+   function mettreAjourPagination(total) {
     const controls = document.getElementById('pagination-controls');
-    const totalPages = Math.ceil(total / articlesParPage);
-    controls.innerHTML = ''; 
+    
+    // Protection : s'assurer qu'on a un nombre valide
+    const totalArticles = total || 0; 
+    const totalPages = Math.ceil(totalArticles / articlesParPage);
 
+    controls.innerHTML = '';
+
+    // Si 1 page ou moins, on cache
     if (totalPages <= 1) {
         controls.classList.add('hidden');
         return;
     }
+
     controls.classList.remove('hidden');
 
-    // Bouton Précédent
+    // --- 1. BOUTON PRÉCÉDENT ---
     const btnPrev = document.createElement('button');
-    btnPrev.innerHTML = '&laquo;';
-    btnPrev.className = `px-3 py-1 rounded ${pageActuelle === 1 ? 'bg-gray-200 text-gray-400' : 'bg-[#5b21b6] text-white'}`;
+    btnPrev.innerHTML = '← Précédent';
+    btnPrev.className = `px-3 py-2 rounded-xl text-sm font-bold transition-all ${pageActuelle === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-800 active:scale-95'}`;
     btnPrev.disabled = (pageActuelle === 1);
     btnPrev.onclick = () => changerPage(-1);
     controls.appendChild(btnPrev);
 
-    // Boutons numérotés
-    for (let i = 1; i <= totalPages; i++) {
+    // --- 2. BOUTONS NUMÉROTÉS (Intelligents) ---
+    let start = Math.max(1, pageActuelle - 1);
+    let end = Math.min(totalPages, pageActuelle + 1);
+
+    if (pageActuelle === 1) end = Math.min(totalPages, 3);
+    if (pageActuelle === totalPages) start = Math.max(1, totalPages - 2);
+
+    if (start > 1) {
+        const btnFirst = document.createElement('button');
+        btnFirst.innerText = '1';
+        btnFirst.className = 'w-10 h-10 rounded-xl font-bold bg-white text-gray-700 border border-gray-200';
+        btnFirst.onclick = () => allerAPage(1);
+        controls.appendChild(btnFirst);
+
+        if (start > 2) {
+            const dots = document.createElement('span');
+            dots.innerHTML = '...';
+            dots.className = 'flex items-end px-1 text-gray-400 font-bold';
+            controls.appendChild(dots);
+        }
+    }
+
+    for (let i = start; i <= end; i++) {
         const btn = document.createElement('button');
         btn.innerText = i;
-        btn.className = `px-3 py-1 rounded border ${i === pageActuelle ? 'bg-[#5b21b6] text-white border-[#5b21b6]' : 'bg-white text-black border-gray-300'}`;
-        btn.onclick = () => allerAPage(i);
+        if (i === pageActuelle) {
+            // Le bouton actif reprend le violet de votre charte graphique
+            btn.className = 'w-10 h-10 rounded-xl font-black bg-[#5b21b6] text-white shadow-md';
+        } else {
+            btn.className = 'w-10 h-10 rounded-xl font-bold bg-white text-gray-700 border border-gray-200 active:bg-gray-50';
+            btn.onclick = () => allerAPage(i);
+        }
         controls.appendChild(btn);
     }
 
-    // Bouton Suivant
+    if (end < totalPages) {
+        if (end < totalPages - 1) {
+            const dots = document.createElement('span');
+            dots.innerHTML = '...';
+            dots.className = 'flex items-end px-1 text-gray-400 font-bold';
+            controls.appendChild(dots);
+        }
+
+        const btnLast = document.createElement('button');
+        btnLast.innerText = totalPages;
+        btnLast.className = 'w-10 h-10 rounded-xl font-bold bg-white text-gray-700 border border-gray-200';
+        btnLast.onclick = () => allerAPage(totalPages);
+        controls.appendChild(btnLast);
+    }
+
+    // --- 3. BOUTON SUIVANT ---
     const btnNext = document.createElement('button');
-    btnNext.innerHTML = '&raquo;';
-    btnNext.className = `px-3 py-1 rounded ${pageActuelle === totalPages ? 'bg-gray-200 text-gray-400' : 'bg-[#5b21b6] text-white'}`;
+    btnNext.innerHTML = 'Suivant →';
+    btnNext.className = `px-3 py-2 rounded-xl text-sm font-bold transition-all ${pageActuelle === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-[#5b21b6] text-white active:scale-95 shadow-md'}`;
     btnNext.disabled = (pageActuelle === totalPages);
     btnNext.onclick = () => changerPage(1);
     controls.appendChild(btnNext);
-}
-
+        }
+            
 function allerAPage(p) {
     chargerMesArticles(p);
     document.getElementById('mes-articles').scrollIntoView({ behavior: 'smooth' });
