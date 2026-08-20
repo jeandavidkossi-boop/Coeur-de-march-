@@ -561,22 +561,36 @@ function changerPage(dir) {
     btnOpti.disabled = true;
 
     try {
-        const reponse = await fetch(window.urlImageActuelle);
+        // 1. Extraire le nom exact de l'ancienne image depuis l'URL
+        const ancienneUrl = window.urlImageActuelle;
+        const nomAncienFichier = ancienneUrl.substring(ancienneUrl.lastIndexOf('/') + 1).split('?')[0];
+
+        // 2. Récupération du fichier
+        const reponse = await fetch(ancienneUrl);
         const blob = await reponse.blob();
         const fichierVirtuel = new File([blob], "image_recuperee.webp", { type: blob.type });
 
+        // 3. Compression WebP
         btnOpti.innerHTML = '<i class="fas fa-compress fa-beat"></i> Compression...';
         const optionsCompression = { maxSizeMB: 0.15, maxWidthOrHeight: 1024, useWebWorker: true, fileType: 'image/webp' };
         const imageCompressee = await imageCompression(fichierVirtuel, optionsCompression);
 
+        // 4. Téléversement du nouveau fichier
         btnOpti.innerHTML = '<i class="fas fa-upload fa-bounce"></i> Envoi...';
         const nomFichier = myUser.id + "_opti_" + Date.now() + ".webp";
         
         const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, imageCompressee);
         if (errPhoto) throw new Error("Erreur d'envoi : " + errPhoto.message);
 
+        // 5. Suppression de l'ancienne photo sur Supabase
+        if (nomAncienFichier && nomAncienFichier !== nomFichier) {
+            await mySupabase.storage.from('images').remove([nomAncienFichier]);
+        }
+
+        // 6. Récupération du nouveau lien public
         const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
 
+        // 7. Mise à jour dans la base de données
         btnOpti.innerHTML = '<i class="fas fa-database"></i> Mise à jour...';
         const { error: errDb } = await mySupabase
             .from('produits')
@@ -585,7 +599,7 @@ function changerPage(dir) {
 
         if (errDb) throw new Error(errDb.message);
 
-        afficherAlerteCustom("MAGNIFIQUE", "L'image a été allégée et remplacée avec succès !", "succes");
+        afficherAlerteCustom("MAGNIFIQUE", "L'image a été allégée et l'ancienne a été supprimée du serveur !", "succes");
         fermerModification();
         chargerMesArticles(); 
 
@@ -595,7 +609,7 @@ function changerPage(dir) {
         btnOpti.innerHTML = '<i class="fas fa-compress-arrows-alt"></i> Alléger l\'image actuelle';
         btnOpti.disabled = false;
     }
-            }
+        }
         
         demarrerBureau();
     </script>
