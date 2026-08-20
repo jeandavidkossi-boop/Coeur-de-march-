@@ -179,9 +179,7 @@
             <div id="mes-articles" class="grid grid-cols-2 gap-4">
                 <p class="text-gray-400 text-sm italic col-span-2">Chargement de vos articles...</p>
             </div>
-            <div id="pagination-controls" class="flex flex-wrap justify-center gap-2 mt-6 hidden">
-    <!-- Les boutons de pagination seront générés automatiquement en JS -->
-            </div>
+            <div id="pagination-controls" class="flex flex-wrap justify-center items-center gap-2 mt-6 pb-12"></div>
         </div>
     </main>
     </main>
@@ -479,16 +477,28 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
         }
     }
 
-   function mettreAjourPagination(total) {
+function allerAPage(p) {
+    pageActuelle = p;
+    chargerMesArticles(p);
+    document.getElementById('mes-articles').scrollIntoView({ behavior: 'smooth' });
+}
+
+function changerPage(direction) {
+    const nouvellePage = pageActuelle + direction;
+    if (nouvellePage >= 1) {
+        allerAPage(nouvellePage);
+    }
+}
+
+function mettreAjourPagination(total) {
     const controls = document.getElementById('pagination-controls');
-    
-    // Protection : s'assurer qu'on a un nombre valide
-    const totalArticles = total || 0; 
-    const totalPages = Math.ceil(totalArticles / articlesParPage);
+    if (!controls) return;
 
     controls.innerHTML = '';
 
-    // Si 1 page ou moins, on cache
+    const totalArticles = total || 0;
+    const totalPages = Math.ceil(totalArticles / articlesParPage);
+
     if (totalPages <= 1) {
         controls.classList.add('hidden');
         return;
@@ -496,15 +506,19 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
 
     controls.classList.remove('hidden');
 
-    // --- 1. BOUTON PRÉCÉDENT ---
+    // --- BOUTON PRÉCÉDENT ---
     const btnPrev = document.createElement('button');
-    btnPrev.innerHTML = '← Précédent';
-    btnPrev.className = `px-3 py-2 rounded-xl text-sm font-bold transition-all ${pageActuelle === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-800 active:scale-95'}`;
+    btnPrev.innerText = '← Précédent';
+    btnPrev.className = `px-3 py-2 rounded-xl text-xs font-bold ${
+        pageActuelle === 1 
+            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+            : 'bg-gray-200 text-gray-800 active:scale-95'
+    }`;
     btnPrev.disabled = (pageActuelle === 1);
     btnPrev.onclick = () => changerPage(-1);
     controls.appendChild(btnPrev);
 
-    // --- 2. BOUTONS NUMÉROTÉS (Intelligents) ---
+    // --- BOUTONS NUMÉROTÉS ---
     let start = Math.max(1, pageActuelle - 1);
     let end = Math.min(totalPages, pageActuelle + 1);
 
@@ -514,14 +528,14 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
     if (start > 1) {
         const btnFirst = document.createElement('button');
         btnFirst.innerText = '1';
-        btnFirst.className = 'w-10 h-10 rounded-xl font-bold bg-white text-gray-700 border border-gray-200';
+        btnFirst.className = 'w-9 h-9 rounded-xl font-bold bg-white text-gray-700 border border-gray-200';
         btnFirst.onclick = () => allerAPage(1);
         controls.appendChild(btnFirst);
 
         if (start > 2) {
             const dots = document.createElement('span');
-            dots.innerHTML = '...';
-            dots.className = 'flex items-end px-1 text-gray-400 font-bold';
+            dots.innerText = '...';
+            dots.className = 'px-1 text-gray-400 font-bold';
             controls.appendChild(dots);
         }
     }
@@ -530,10 +544,9 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
         const btn = document.createElement('button');
         btn.innerText = i;
         if (i === pageActuelle) {
-            // Le bouton actif reprend le violet de votre charte graphique
-            btn.className = 'w-10 h-10 rounded-xl font-black bg-[#5b21b6] text-white shadow-md';
+            btn.className = 'w-9 h-9 rounded-xl font-black bg-[#5b21b6] text-white shadow-md';
         } else {
-            btn.className = 'w-10 h-10 rounded-xl font-bold bg-white text-gray-700 border border-gray-200 active:bg-gray-50';
+            btn.className = 'w-9 h-9 rounded-xl font-bold bg-white text-gray-700 border border-gray-200 active:bg-gray-50';
             btn.onclick = () => allerAPage(i);
         }
         controls.appendChild(btn);
@@ -542,31 +555,30 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
     if (end < totalPages) {
         if (end < totalPages - 1) {
             const dots = document.createElement('span');
-            dots.innerHTML = '...';
-            dots.className = 'flex items-end px-1 text-gray-400 font-bold';
+            dots.innerText = '...';
+            dots.className = 'px-1 text-gray-400 font-bold';
             controls.appendChild(dots);
         }
 
         const btnLast = document.createElement('button');
         btnLast.innerText = totalPages;
-        btnLast.className = 'w-10 h-10 rounded-xl font-bold bg-white text-gray-700 border border-gray-200';
+        btnLast.className = 'w-9 h-9 rounded-xl font-bold bg-white text-gray-700 border border-gray-200';
         btnLast.onclick = () => allerAPage(totalPages);
         controls.appendChild(btnLast);
     }
 
-    // --- 3. BOUTON SUIVANT ---
+    // --- BOUTON SUIVANT ---
     const btnNext = document.createElement('button');
-    btnNext.innerHTML = 'Suivant →';
-    btnNext.className = `px-3 py-2 rounded-xl text-sm font-bold transition-all ${pageActuelle === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-[#5b21b6] text-white active:scale-95 shadow-md'}`;
+    btnNext.innerText = 'Suivant →';
+    btnNext.className = `px-3 py-2 rounded-xl text-xs font-bold ${
+        pageActuelle === totalPages 
+            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+            : 'bg-[#5b21b6] text-white active:scale-95 shadow-md'
+    }`;
     btnNext.disabled = (pageActuelle === totalPages);
     btnNext.onclick = () => changerPage(1);
     controls.appendChild(btnNext);
-        }
-            
-function allerAPage(p) {
-    chargerMesArticles(p);
-    document.getElementById('mes-articles').scrollIntoView({ behavior: 'smooth' });
-        }
+}
         
         // --- 6. DÉMARRAGE ET VÉRIFICATION PROFIL ---
         async function demarrerBureau() {
