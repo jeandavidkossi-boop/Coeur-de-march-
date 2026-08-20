@@ -179,10 +179,8 @@
             <div id="mes-articles" class="grid grid-cols-2 gap-4">
                 <p class="text-gray-400 text-sm italic col-span-2">Chargement de vos articles...</p>
             </div>
-            <div id="pagination-controls" class="flex justify-between items-center mt-6 hidden">
-  <button id="btn-prev" onclick="changerPage(-1)" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-xl font-black text-xs disabled:opacity-30">← Précédent</button>
-  <span id="page-indicator" class="text-xs font-black text-[#5b21b6]">Page 1</span>
-  <button id="btn-next" onclick="changerPage(1)" class="px-4 py-2 bg-[#5b21b6] text-white rounded-xl font-black text-xs disabled:opacity-30">Suivant →</button>
+            <div id="pagination-controls" class="flex flex-wrap justify-center gap-2 mt-6 hidden">
+    <!-- Les boutons de pagination seront générés automatiquement en JS -->
             </div>
         </div>
     </main>
@@ -481,21 +479,48 @@ const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
         }
     }
 
-        function mettreAJourPagination(total) {
-  const controls = document.getElementById('pagination-controls');
-  const totalPages = Math.ceil(total / articlesParPage);
-  
-  if (totalPages <= 1) { 
-    controls.classList.add('hidden'); 
-    return; 
-  }
-  
-  controls.classList.remove('hidden');
-  document.getElementById('page-indicator').innerText = `Page ${pageActuelle} / ${totalPages}`;
-  document.getElementById('btn-prev').disabled = (pageActuelle === 1);
-  document.getElementById('btn-next').disabled = (pageActuelle === totalPages);
+        function mettreAjourPagination(total) {
+    const controls = document.getElementById('pagination-controls');
+    const totalPages = Math.ceil(total / articlesParPage);
+    controls.innerHTML = ''; 
+
+    if (totalPages <= 1) {
+        controls.classList.add('hidden');
+        return;
+    }
+    controls.classList.remove('hidden');
+
+    // Bouton Précédent
+    const btnPrev = document.createElement('button');
+    btnPrev.innerHTML = '&laquo;';
+    btnPrev.className = `px-3 py-1 rounded ${pageActuelle === 1 ? 'bg-gray-200 text-gray-400' : 'bg-[#5b21b6] text-white'}`;
+    btnPrev.disabled = (pageActuelle === 1);
+    btnPrev.onclick = () => changerPage(-1);
+    controls.appendChild(btnPrev);
+
+    // Boutons numérotés
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = i;
+        btn.className = `px-3 py-1 rounded border ${i === pageActuelle ? 'bg-[#5b21b6] text-white border-[#5b21b6]' : 'bg-white text-black border-gray-300'}`;
+        btn.onclick = () => allerAPage(i);
+        controls.appendChild(btn);
+    }
+
+    // Bouton Suivant
+    const btnNext = document.createElement('button');
+    btnNext.innerHTML = '&raquo;';
+    btnNext.className = `px-3 py-1 rounded ${pageActuelle === totalPages ? 'bg-gray-200 text-gray-400' : 'bg-[#5b21b6] text-white'}`;
+    btnNext.disabled = (pageActuelle === totalPages);
+    btnNext.onclick = () => changerPage(1);
+    controls.appendChild(btnNext);
 }
 
+function allerAPage(p) {
+    chargerMesArticles(p);
+    document.getElementById('mes-articles').scrollIntoView({ behavior: 'smooth' });
+        }
+        
 function changerPage(dir) {
   chargerMesArticles(pageActuelle + dir);
   document.getElementById('mes-articles').scrollIntoView({ behavior: 'smooth' });
