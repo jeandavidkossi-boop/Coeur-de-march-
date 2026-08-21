@@ -515,20 +515,6 @@ function changerPage(direction) {
         allerAPage(nouvellePage);
     }
 }
-
-        
-    // --- BOUTON SUIVANT ---
-    const btnNext = document.createElement('button');
-    btnNext.innerText = 'Suivant →';
-    btnNext.className = `px-3 py-2 rounded-xl text-xs font-bold ${
-        pageActuelle === totalPages 
-            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-            : 'bg-[#5b21b6] text-white active:scale-95 shadow-md'
-    }`;
-    btnNext.disabled = (pageActuelle === totalPages);
-    btnNext.onclick = () => changerPage(1);
-    controls.appendChild(btnNext);
-}
         
         // --- 6. DÉMARRAGE ET VÉRIFICATION PROFIL ---
         async function demarrerBureau() {
