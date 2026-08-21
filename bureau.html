@@ -10,7 +10,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
         .bg-cdm-purple { background-color: #5b21b6; }
-        
+
         /* Animations des belles modales */
         .modal-overlay { transition: opacity 0.3s ease; }
         .modal-box { transition: transform 0.3s ease; }
@@ -22,8 +22,8 @@
         <div id="modal-alerte-content" class="bg-white w-[85%] rounded-[25px] p-6 text-center transform scale-90 modal-box">
             <div id="alerte-icon" class="w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"></div>
             <h3 id="alerte-titre" class="font-black text-lg uppercase mb-2 text-[#4c1d95]">Message</h3>
-            <p id="alerte-message" class="text-gray-500 text-xs font-bold mb-6">Texte</p>
-            <button onclick="fermerAlerte()" class="w-full bg-[#5b21b6] text-white font-black py-4 rounded-xl uppercase text-[10px] active:scale-95 transition-all">J'ai compris</button>
+            <p id="alerte-message" class="text-gray-500 text-sm font-bold mb-6">Texte</p>
+            <button onclick="fermerAlerte()" class="w-full bg-[#5b21b6] text-white font-black py-4 rounded-xl uppercase shadow-md active:scale-95 transition-all">OK</button>
         </div>
     </div>
 
@@ -33,43 +33,43 @@
                 <i class="fas fa-trash-alt"></i>
             </div>
             <h3 class="font-black text-lg text-gray-800 uppercase mb-2">Retirer l'article ?</h3>
-            <p class="text-gray-500 text-xs font-bold mb-6">Cet article sera retiré de votre boutique.</p>
+            <p class="text-gray-500 text-sm font-bold mb-6">Cet article sera retiré de votre boutique.</p>
             <div class="flex gap-3">
-                <button onclick="fermerConfirm()" class="flex-1 bg-gray-100 text-gray-600 font-black py-3 rounded-xl uppercase text-[10px] active:scale-95 transition-all">Annuler</button>
-                <button id="btn-confirm-action" class="flex-1 bg-red-500 text-white font-black py-3 rounded-xl uppercase text-[10px] active:scale-95 transition-all">Oui, effacer</button>
+                <button onclick="fermerConfirm()" class="flex-1 bg-gray-100 text-gray-600 font-black py-3 rounded-xl uppercase active:scale-95 transition-all">Annuler</button>
+                <button id="btn-confirm-action" class="flex-1 bg-red-500 text-white font-black py-3 rounded-xl uppercase active:scale-95 transition-all shadow-md">Oui, Retirer</button>
             </div>
         </div>
     </div>
 
     <!-- NOUVEAU : MODAL DE MODIFICATION -->
-<div id="modal-modifier" class="fixed inset-0 bg-black/80 z-[300] hidden items-center justify-center opacity-0 modal-overlay">
-    <div class="bg-white w-[85%] rounded-[25px] p-6 text-center transform scale-90 modal-box">
-        <h3 class="font-black text-lg uppercase mb-4 text-[#4c1d95]">Modifier l'article</h3>
-        <div class="space-y-3 text-left">
-            <input type="hidden" id="mod-id">
-            <input type="text" id="mod-nom" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl text-sm" placeholder="Nom de l'article">
-            <input type="number" id="mod-prix" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl text-sm" placeholder="Prix de vente">
-            <textarea id="mod-desc" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl text-sm" placeholder="Description (optionnel)"></textarea>
-        </div>
-        <div class="mt-4 mb-2">
-    <button type="button" id="btn-optimiser-img" onclick="optimiserImageExistante()" class="w-full bg-blue-100 text-blue-700 font-black text-xs py-3 rounded-xl uppercase flex items-center justify-center gap-2 shadow-sm active:scale-95 transition-all">
-        <i class="fas fa-compress-arrows-alt"></i>
-        Alléger l'image actuelle
-    </button>
-    <p class="text-[9px] text-gray-400 text-center mt-1 italic">Utilisez ceci si la photo d'origine est trop lourde.</p>
-        </div>
-        <div class="flex gap-3 mt-6">
-            <button onclick="fermerModification()" class="flex-1 bg-gray-100 text-gray-600 font-black py-3 rounded-xl uppercase text-xs">Annuler</button>
-            <button id="btn-sauver-mod" onclick="sauvegarderModification()" class="flex-1 bg-[#f97316] text-white font-black py-3 rounded-xl uppercase text-xs">Sauvegarder</button>
+    <div id="modal-modifier" class="fixed inset-0 bg-black/80 z-[300] hidden items-center justify-center opacity-0 modal-overlay">
+        <div class="bg-white w-[85%] rounded-[25px] p-6 text-center transform scale-90 modal-box">
+            <h3 class="font-black text-lg uppercase mb-4 text-[#4c1d95]">Modifier l'article</h3>
+            <div class="space-y-3 text-left">
+                <input type="hidden" id="mod-id">
+                <input type="text" id="mod-nom" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl text-sm" placeholder="Nom de l'article">
+                <input type="number" id="mod-prix" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl text-sm" placeholder="Prix (FCFA)">
+                <textarea id="mod-desc" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl text-sm" placeholder="Description courte (optionnel)"></textarea>
+            </div>
+            <div class="mt-4 mb-2">
+                <button type="button" id="btn-optimiser-img" onclick="optimiserImageExistante()" class="w-full bg-blue-100 text-blue-700 font-bold py-2 rounded-xl text-xs active:scale-95 transition-all">
+                    <i class="fas fa-compress-arrows-alt"></i>
+                    Alléger l'image actuelle
+                </button>
+                <p class="text-[9px] text-gray-400 text-center mt-1 italic">Utilisez ceci si la photo d'origine est trop lourde.</p>
+            </div>
+            <div class="flex gap-3 mt-6">
+                <button onclick="fermerModification()" class="flex-1 bg-gray-100 text-gray-600 font-black py-3 rounded-xl uppercase active:scale-95 transition-all">Annuler</button>
+                <button id="btn-sauver-mod" onclick="sauvegarderModification()" class="flex-1 bg-[#f97316] text-white font-black py-3 rounded-xl uppercase active:scale-95 transition-all shadow-md">Sauver</button>
+            </div>
         </div>
     </div>
-</div>
-<!-- FIN MODAL MODIFICATION -->
-    
+    <!-- FIN MODAL MODIFICATION -->
+
     <nav class="bg-cdm-purple text-white p-6 rounded-b-[35px] shadow-lg">
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-3">
-                <img src="1769121566036.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white" alt="Logo">
+                <img src="1709121566036.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white" alt="Logo">
                 <div>
                     <h1 class="text-lg font-black uppercase tracking-tighter">Mon Bureau</h1>
                     <p class="text-[10px] text-orange-400 font-bold uppercase tracking-widest">Bouaflé</p>
@@ -79,17 +79,17 @@
                 <i class="fas fa-power-off text-white"></i>
             </button>
         </div>
-        
-        <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/10 flex justify-between items-center">
-            <div>
-<div class="flex items-center gap-2">
-    <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement...</p>
-    <!-- NOUVEAU : Le badge PRO (caché par défaut) -->
-    <span id="badge-pro" class="hidden bg-blue-500 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded shadow-sm"><i class="fas fa-check-circle mr-1"></i>PRO</span>
-</div>
-<p id="nom-boutique" class="text-xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
-</div>
-<span id="badge-abonnement" class="hidden text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-sm">...
+
+        <div class="bg-white/10 p-5 rounded-2xl backdrop-blur-md border border-white/10 flex justify-between items-center relative overflow-hidden">
+            <div class="flex items-center gap-2">
+                <p id="nom-vendeur" class="text-[10px] uppercase font-black opacity-60 tracking-widest italic">Chargement...</p>
+                <!-- NOUVEAU : Le badge PRO (caché par défaut) -->
+                <span id="badge-pro" class="hidden bg-blue-500 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded shadow-sm">PRO</span>
+            </div>
+            <p id="nom-boutique" class="text-xl font-black uppercase tracking-tight text-white mt-1">VÉRIFICATION...</p>
+            <div class="mt-2 text-right absolute bottom-5 right-5">
+                <span id="badge-abonnement" class="hidden text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-sm">...</span>
+            </div>
         </div>
     </nav>
 
@@ -102,72 +102,74 @@
                     </div>
                     <h2 class="font-black text-gray-800 uppercase text-sm tracking-wide">Ajouter un article</h2>
                 </div>
-                <span id="compteur-articles" class="text-[10px] font-black text-gray-400 bg-gray-50 px-3 py-1 rounded-lg">--/--</span>
+                <span id="compteur-articles" class="text-[10px] font-black text-gray-400 bg-gray-50 px-3 py-1 rounded-lg">-- / --</span>
             </div>
-<div id="zone-upgrade" class="mt-4 p-4 bg-orange-100 rounded-xl border border-orange-300 hidden">
-    <h3 class="font-bold text-orange-800 text-sm mb-2"><i class="fas fa-crown text-yellow-500"></i> Boostez vos ventes !</h3>
-    <p class="text-xs text-orange-700 mb-3">Passez au statut VIP pour publier en illimité, sans attente, et apparaître en haut du marché.</p>
-    <button onclick="contacterAdminUpgrade()" class="w-full bg-orange-500 text-white font-bold py-2 rounded-lg text-sm shadow-sm">
-        Devenir Vendeur VIP
-    </button>
-</div>
-            
+            <div id="zone-upgrade" class="mt-4 p-4 bg-orange-100 rounded-xl border border-orange-300 hidden">
+                <h3 class="font-bold text-orange-800 text-sm mb-2"><i class="fas fa-crown text-yellow-500"></i> Boostez vos ventes !</h3>
+                <p class="text-xs text-orange-700 mb-3">Passez au statut VIP pour publier en illimité, sans attente, et apparaître en haut.</p>
+                <button onclick="contacterAdminUpgrade()" class="w-full bg-orange-500 text-white font-bold py-2 rounded-lg text-sm shadow-md active:scale-95 transition-all">
+                    Devenir Vendeur VIP
+                </button>
+            </div>
+
             <div id="formulaire-annonce" class="space-y-5">
                 <div>
                     <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Désignation (Nom de l'article)</label>
-                    <input type="text" id="pNom" placeholder="Ex: Pagne Baoulé, iPhone 13..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500">
+                    <input type="text" id="pNom" placeholder="Ex: Pagne Baoulé, iPhone 13..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-800 focus:border-purple-300 focus:bg-white transition-colors">
                 </div>
 
                 <div>
                     <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Prix de vente (FCFA)</label>
-                    <input type="number" id="pPrix" placeholder="0" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-black text-orange-600 focus:border-orange-500">
+                    <input type="number" id="pPrix" placeholder="0" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-black text-gray-800 text-lg focus:border-purple-300 focus:bg-white transition-colors">
                 </div>
-                
+
                 <div>
                     <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Rayon du marché</label>
-                    <select id="pCat" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-500">
+                    <select id="pCat" class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-600 focus:border-purple-300 focus:bg-white transition-colors appearance-none">
                         <option value="Marché & Vivrier">Marché & Vivrier</option>
                         <option value="Alimentation & Boissons">Alimentation & Boissons</option>
                         <option value="Habillement & Pagnes">Habillement & Pagnes</option>
                         <option value="Mercerie & Couture">Mercerie & Couture</option>
                         <option value="Maison & Vaisselle">Maison & Vaisselle</option>
-                        <option value="Électronique & Ménager">Électronique & Ménager</option>
+                        <option value="Electronique & Ménager">Électronique & Ménager</option>
                         <option value="Construction & Quincaillerie">Construction & Quincaillerie</option>
                         <option value="Motos & Mécanique">Motos & Mécanique</option>
                         <option value="Agro-Élevage">Agro-Élevage</option>
                         <option value="Librairie & École">Librairie & École</option>
                         <option value="Beauté & Cosmétique">Beauté & Cosmétique</option>
-                        <option value="Événementiel & Location">Événementiel & Location</option>
-                   <option value="Univers Bébé & Maternité">Univers Bébé & Maternité</option>
-<option value="Immobilier & Terrains">Immobilier & Terrains</option>
-<option value="Restauration & Maquis">Restauration & Maquis</option>
-<option value="Services & Artisans">Services & Artisans</option>
+                        <option value="Evénementiel & Location">Événementiel & Location</option>
+                        <option value="Univers Bébé & Maternité">Univers Bébé & Maternité</option>
+                        <option value="Immobilier & Terrains">Immobilier & Terrains</option>
+                        <option value="Restauration & Maquis">Restauration & Maquis</option>
+                        <option value="Services & Artisans">Services & Artisans</option>
                     </select>
                 </div>
 
                 <div>
                     <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Description / Détails (Giga, Taille, État...)</label>
-                    <textarea id="pDesc" placeholder="Ex: 128 Go, Neuf dans le carton, Taille 42..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-700 focus:border-orange-500" rows="3"></textarea>
+                    <textarea id="pDesc" placeholder="Ex: 128 Go, Neuf dans le carton, Taille 42..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-600 text-sm h-24 focus:border-purple-300 focus:bg-white transition-colors"></textarea>
                 </div>
 
-                <button type="button" onclick="document.getElementById('photoInput').click()" class="w-full py-8 border-2 border-dashed border-purple-100 rounded-2xl bg-purple-50/50 text-purple-600 flex flex-col items-center active:bg-purple-100 transition-all">
-                    <i class="fas fa-camera text-3xl mb-2" id="iconPhoto"></i>
-                    <span id="btnPhotoText" class="font-black text-[10px] uppercase text-center px-4">Appuyez pour la photo</span>
+                <button type="button" onclick="document.getElementById('photoInput').click()" class="w-full py-8 border-2 border-dashed border-gray-300 rounded-2xl bg-gray-50 flex flex-col items-center justify-center gap-2 active:bg-gray-100 transition-colors">
+                    <i class="fas fa-camera text-3xl mb-2" id="iconPhoto" style="color: #9ca3af;"></i>
+                    <span id="btnPhotoText" class="font-black text-[10px] uppercase text-center px-4">Appuyez pour la photo de l'article</span>
                     <input type="file" id="photoInput" accept="image/*" class="hidden">
                 </button>
 
-                <button type="button" onclick="publierAnnonce()" id="btnPublier" class="w-full bg-orange-500 text-white font-black py-5 rounded-2xl shadow-lg shadow-orange-200 uppercase tracking-widest mt-4 active:scale-95 transition-all">
+                <button type="button" onclick="publierAnnonce()" id="btnPublier" class="w-full bg-orange-500 text-white font-black py-4 rounded-2xl uppercase tracking-widest shadow-lg shadow-orange-500/30 active:scale-95 transition-all mt-4">
                     Publier sur le marché
                 </button>
             </div>
 
             <div id="message-limite" class="hidden text-center py-6">
-                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-lock"></i>
                 </div>
-                <h3 class="font-black text-gray-800 uppercase text-xs mb-2">Limite Gratuite Atteinte</h3>
-                <p class="text-gray-500 text-[10px] font-bold mb-6 px-4">Passez au forfait Pro pour ajouter plus de 10 articles !</p>
-                <button onclick="window.open('https://wa.me/2250576326645')" class="bg-blue-600 text-white font-black px-8 py-3 rounded-xl uppercase text-[10px] shadow-lg">Devenir PRO (2000 F)</button>
+                <h3 class="font-black text-gray-800 uppercase text-sm mb-2">Limite Gratuite Atteinte</h3>
+                <p class="text-gray-500 text-[10px] font-bold mb-6 px-4">Passez au forfait Pro pour ajouter plus de 10 articles.</p>
+                <button onclick="window.open('https://wa.me/2250576326645')" class="bg-blue-600 text-white font-black px-6 py-3 rounded-xl shadow-md active:scale-95 transition-all text-xs">
+                    Contacter l'Admin
+                </button>
             </div>
         </div>
 
@@ -175,19 +177,24 @@
             <h2 class="font-black text-[#4c1d95] text-lg uppercase mb-4 border-b-2 border-purple-200 pb-2 flex items-center gap-2">
                 <i class="fas fa-boxes text-orange-500"></i> Mon Stock en Ligne
             </h2>
-            
+
             <div id="mes-articles" class="grid grid-cols-2 gap-4">
                 <p class="text-gray-400 text-sm italic col-span-2">Chargement de vos articles...</p>
             </div>
+            
+            <div id="pagination-controls" class="flex justify-between items-center mt-6 hidden">
+                <button id="btn-prev" onclick="changerPage(-1)" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-xl font-black text-xs">Précédent</button>
+                <span id="page-indicator" class="text-xs font-black text-[#5b21b6]">Page 1</span>
+                <button id="btn-next" onclick="changerPage(1)" class="px-4 py-2 bg-[#5b21b6] text-white rounded-xl font-black text-xs">Suivant</button>
+            </div>
         </div>
-    </main>
-    </main>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+                        </main>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-        const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-        
+        const dbUrl = 'https://szhxcohizqnwcmultjtq.supabase.co';
+        const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHhjb2hpemFud211bHRqdHEiLCJyb2xl...'; // (Utilise ta clé Supabase complète ici)
+
         let mySupabase = null;
         let myUser = null;
         let myPhoto = null;
@@ -195,18 +202,18 @@
         let monAbonnement = 'standard';
         let monNombreArticles = 0;
         let articleASupprimer = null;
-let pageActuelle = 1;
-const articlesParPage = 12;
-        
+        let pageActuelle = 1;
+        const articlesParPage = 12;
+
         // --- GESTION DES BELLES MODALES ---
         function afficherAlerteCustom(titre, message, typeAlerte) {
             const modal = document.getElementById('modal-alerte');
             const content = document.getElementById('modal-alerte-content');
             const icon = document.getElementById('alerte-icon');
-            
+
             document.getElementById('alerte-titre').innerText = titre;
             document.getElementById('alerte-message').innerText = message;
-            
+
             if (typeAlerte === 'succes') {
                 icon.className = "w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 bg-green-100 text-green-500";
                 icon.innerHTML = '<i class="fas fa-check-circle"></i>';
@@ -214,7 +221,7 @@ const articlesParPage = 12;
                 icon.className = "w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-4 bg-red-100 text-red-500";
                 icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
             }
-            
+
             modal.style.display = 'flex';
             setTimeout(() => { modal.classList.add('opacity-100'); content.classList.remove('scale-90'); }, 10);
         }
@@ -257,10 +264,9 @@ const articlesParPage = 12;
         // --- 1. BOUTON ORANGE : PUBLIER ---
         async function publierAnnonce() {
             if (monAbonnement === 'standard' && monNombreArticles >= 5) {
-    afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 5 emplacements gratuits. Passez PRO pour un stock ILLIMITÉ !", "erreur");
-    return;
+        afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 5 emplacements gratuits. Passez PRO pour un stock ILLIMITÉ.", "erreur");
+                return;
             }
-            
 
             const nomP = document.getElementById('pNom').value;
             const prixP = document.getElementById('pPrix').value;
@@ -269,50 +275,49 @@ const articlesParPage = 12;
 
             if (!nomP || !prixP) { afficherAlerteCustom("Attention", "Le nom et le prix sont obligatoires.", "erreur"); return; }
             if (!myPhoto) { afficherAlerteCustom("Attention", "N'oubliez pas la photo de l'article.", "erreur"); return; }
-            
+
             const btn = document.getElementById('btnPublier');
             btn.innerText = "ENVOI EN COURS...";
             btn.disabled = true;
 
-               try {
-        // --- NOUVEAU : Configuration de la compression ---
-        const optionsCompression = {
-            maxSizeMB: 0.15, // Compresse à 150 Ko maximum (parfait pour Cœur de Marché)
-            maxWidthOrHeight: 1024,
-            useWebWorker: true,
-            fileType: 'image/webp' // Format moderne et très léger
-        };
+            try {
+                // --- NOUVEAU : Configuration de la compression ---
+                const optionsCompression = {
+                    maxSizeMB: 0.15, // Compresse à 150 Ko maximum (parfait pour Cœur de Marché)
+                    maxWidthOrHeight: 1024,
+                    useWebWorker: true,
+                    fileType: 'image/webp' // Format moderne et très léger
+                };
 
-        btn.innerText = "COMPRESSION..."; // Indique au vendeur ce qui se passe
-        
-        // On compresse la photo stockée dans la variable globale myPhoto
-        const imageCompressee = await imageCompression(myPhoto, optionsCompression);
-        // -------------------------------------------------
+                btn.innerText = "COMPRESSION..."; // Indique au vendeur ce qui se passe
 
-        btn.innerText = "ENVOI EN COURS...";
-        
-        // On utilise l'extension .webp au lieu de .jpg
-        const nomFichier = myUser.id + "_" + Date.now() + ".webp"; 
-        
-        // On envoie l'image compressée à Supabase au lieu de myPhoto
-        const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, imageCompressee);
-        
-        if (errPhoto) throw new Error("Erreur Photo : " + errPhoto.message);
-        
-        const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
-                   
+                // On compresse la photo stockée dans la variable globale myPhoto
+                const imageCompressee = await imageCompression(myPhoto, optionsCompression);
+                // ----------------------------------------------------
+
+                btn.innerText = "ENVOI EN COURS...";
+
+                // On utilise l'extension .webp au lieu de .jpg
+                const nomFichier = myUser.id + "_" + Date.now() + ".webp";
+                
+                // On envoie l'image compressée à Supabase au lieu de myPhoto
+                const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, imageCompressee);
+
+                if (errPhoto) throw new Error("Erreur Photo : " + errPhoto.message);
+
+                const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
+
                 let statutArticle = 'actif';
 
                 const { error: errProduit } = await mySupabase.from('produits').insert([{
                     nom: nomP, prix: prixP, categorie: catP, description: descP, vendeur: myWhatsapp, image: publicUrl, statut: statutArticle
                 }]);
-                
+
                 if (errProduit) throw new Error(errProduit.message);
 
-afficherAlerteCustom("MAGNIFIQUE !", "Votre article est en ligne et visible par tous.", "succes");
-            
-                
-                setTimeout(() => { window.location.reload(); }, 2000); 
+                afficherAlerteCustom("MAGNIFIQUE !", "Votre article est en ligne et visible par tous.", "succes");
+
+                setTimeout(() => { window.location.reload(); }, 2000);
 
             } catch (erreur) {
                 afficherAlerteCustom("ÉCHEC", erreur.message, "erreur");
@@ -336,220 +341,203 @@ afficherAlerteCustom("MAGNIFIQUE !", "Votre article est en ligne et visible par 
                 document.getElementById('iconPhoto').style.color = "#16a34a";
             }
         });
+                // --- 4. CHARGER LES ARTICLES DU VENDEUR ---
+        async function chargerMesArticles(page = 1) {
+            if (!myWhatsapp) return;
+            pageActuelle = page;
+            const container = document.getElementById('mes-articles');
+            const from = (page - 1) * articlesParPage;
+            const to = from + articlesParPage - 1;
 
-  // --- 4. CHARGER LES ARTICLES DU VENDEUR ---
-async function chargerMesArticles(page = 1) {
-  if (!myWhatsapp) return;
-  pageActuelle = page;
-  const container = document.getElementById('mes-articles');
-  const from = (page - 1) * articlesParPage;
-  const to = from + articlesParPage - 1;
-
-  const { data, error, count } = await mySupabase
-    .from('produits')
-    .select('*', { count: 'exact' })
-    .eq('vendeur', myWhatsapp)
-    .order('dateajout', { ascending: false })
-    .range(from, to);
-
-  if (error || !data || data.length === 0) {
-    if (page === 1) container.innerHTML = `<p class="text-gray-400 text-sm font-bold col-span-2 text-center py-4">Vous n'avez aucun article.</p>`;
-    return;
-  }
-
-  monNombreArticles = count;
-  window.mesArticlesLocaux = data;
-
-    // 1. Calcul de la pagination
-const totalPages = Math.ceil(count / articlesParPage);
-let paginationHtml = '';
-
-if (totalPages > 1) {
-    paginationHtml = `<div style="grid-column: 1 / -1;" class="flex justify-center items-center gap-2 mt-6 mb-8">`;
-    
-    if (pageActuelle > 1) {
-        paginationHtml += `<button onclick="chargerMesArticles(${pageActuelle - 1})" class="bg-white border-2 border-gray-200 px-4 py-2 rounded-xl text-xs font-bold text-gray-700">Précédent</button>`;
-    }
-    
-    for (let i = 1; i <= totalPages; i++) {
-        if (i === pageActuelle) {
-            paginationHtml += `<span class="bg-[#5b21b6] text-white px-4 py-2 rounded-xl text-xs font-black shadow-md">${i}</span>`;
-        } else {
-            paginationHtml += `<button onclick="chargerMesArticles(${i})" class="bg-white border-2 border-gray-200 px-4 py-2 rounded-xl text-xs font-bold text-gray-700">${i}</button>`;
-        }
-    }
-    
-    if (pageActuelle < totalPages) {
-        paginationHtml += `<button onclick="chargerMesArticles(${pageActuelle + 1})" class="bg-white border-2 border-gray-200 px-4 py-2 rounded-xl text-xs font-bold text-gray-700">Suivant</button>`;
-    }
-    
-    paginationHtml += `</div>`;
-}
-
-// 2. Injection combinée des articles et de la pagination
-container.innerHTML = data.map(p => `...`).join('') + paginationHtml;
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col relative">
-      ${p.statut === 'attente' ? `<span class="absolute top-1 left-1 bg-gray-800 text-white text-[7px] px-2 py-0.5 rounded shadow">ATTENTE</span>` : ''}
-      <img src="${p.image}" class="w-full h-24 object-cover">
-      <div class="p-2 flex-1 flex flex-col">
-        <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-1">${p.nom}</h4>
-        <span class="text-orange-500 font-black text-xs mb-3">${p.prix} F</span>
-        <div class="flex gap-1 mt-auto">
-          <button onclick="demanderConfirmation('${p.id}')" class="w-9 bg-red-100 text-red-600 rounded-lg py-1"><i class="fas fa-trash"></i></button>
-          <button onclick="ouvrirModification('${p.id}')" class="w-9 bg-blue-100 text-blue-600 rounded-lg py-1"><i class="fas fa-pen"></i></button>
-          <button onclick="demanderBoost('${p.nom.replace(/'/g, "\\'")}')" class="flex-1 bg-orange-100 text-orange-600 rounded-lg py-1 text-[9px] font-bold uppercase"><i class="fas fa-rocket"></i> Boost</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-
-  const limiteAffichage = (monAbonnement === 'standard') ? 5 : "Illimité";
-  document.getElementById('compteur-articles').innerText = monNombreArticles + " / " + limiteAffichage;
-  
-  if (monAbonnement === 'standard' && monNombreArticles >= 5) {
-    document.getElementById('formulaire-annonce').classList.add('hidden');
-    document.getElementById('message-limite').classList.remove('hidden');
-  }
-        
-// --- FONCTION UPGRADE VIP ---
-function contacterAdminUpgrade() {
-    const nomElem = document.getElementById('nom-boutique');
-    const nomBoutique = nomElem ? nomElem.innerText : "ma boutique";
-    
-    const message = encodeURIComponent(`Bonjour Cœur de Marché, je suis le gérant de la boutique "${nomBoutique}". Je souhaite passer au statut VIP pour publier mes articles en illimité et être mis en avant. Comment procéder au paiement ?`);
-    
-    window.open(`https://wa.me/2250576326645?text=${message}`);
-        }
-        
-        // --- FONCTION UPGRADE PRO ---
-function contacterAdminPro() {
-    const nomElem = document.getElementById('nom-boutique');
-    const nomBoutique = nomElem ? nomElem.innerText : "ma boutique";
-    
-    const message = encodeURIComponent(`Bonjour Cœur de Marché, ma boutique "${nomBoutique}" a atteint la limite gratuite de 10 articles. Je souhaite passer au forfait PRO (2000 F / mois) pour débloquer mon espace et continuer à vendre. Comment procéder au paiement ?`);
-    
-    window.open(`https://wa.me/2250576326645?text=${message}`);
-}
-
-            // --- FONCTION DEMANDER UN BOOST ---
-    function demanderBoost(nomArticle) {
-        const nomBoutique = document.getElementById('nom-boutique').innerText;
-        const message = encodeURIComponent(`Bonjour Cœur de Marché, je suis la boutique "${nomBoutique}". Je souhaite payer pour BOOSTER mon article : [ ${nomArticle} ].`);
-        window.open(`https://wa.me/2250576326645?text=${message}`);
-    }
-
-    // --- FONCTIONS DE MODIFICATION ---
-    function ouvrirModification(id) {
-const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
-        if (!article) return;
-        
-        document.getElementById('mod-id').value = article.id;
-        document.getElementById('mod-nom').value = article.nom;
-        document.getElementById('mod-prix').value = article.prix;
-        document.getElementById('mod-desc').value = article.description || '';
-            window.urlImageActuelle = article.image;
-        
-        const modal = document.getElementById('modal-modifier');
-        modal.style.display = 'flex';
-        setTimeout(() => { 
-            modal.classList.add('opacity-100'); 
-            modal.children[0].classList.remove('scale-90'); 
-        }, 10);
-    }
-
-    function fermerModification() {
-        const modal = document.getElementById('modal-modifier');
-        modal.classList.remove('opacity-100');
-        modal.children[0].classList.add('scale-90');
-        setTimeout(() => { modal.style.display = 'none'; }, 300);
-    }
-
-    async function sauvegarderModification() {
-        const btn = document.getElementById('btn-sauver-mod');
-        const id = document.getElementById('mod-id').value;
-        const nom = document.getElementById('mod-nom').value;
-        const prix = document.getElementById('mod-prix').value;
-        const desc = document.getElementById('mod-desc').value;
-
-        if (!nom || !prix) {
-            afficherAlerteCustom("Attention", "Le nom et le prix sont obligatoires.", "erreur");
-            return;
-        }
-
-        btn.innerText = 'EN COURS...';
-        btn.disabled = true;
-
-        try {
-            const { error } = await mySupabase
+            const { data, error, count } = await mySupabase
                 .from('produits')
-                .update({ nom: nom, prix: prix, description: desc })
-                .eq('id', id);
+                .select('*', { count: 'exact' })
+                .eq('vendeur', myWhatsapp)
+                .order('dateajout', { ascending: false })
+                .range(from, to);
 
-            if (error) throw new Error(error.message);
-            
-            afficherAlerteCustom("Super", "Votre article a été modifié.", "succes");
-            fermerModification();
-            chargerMesArticles(); // On met à jour l'affichage
-            
-        } catch (erreur) {
-            afficherAlerteCustom("Échec", "Erreur lors de la modification.", "erreur");
-        } finally {
-            btn.innerText = 'SAUVEGARDER';
-            btn.disabled = false;
+            if (error || !data || data.length === 0) {
+                if (page === 1) container.innerHTML = '<p class="text-gray-400 text-sm font-bold col-span-2 text-center py-4">Vous n\'avez aucun article en ligne.</p>';
+                document.getElementById('pagination-controls').classList.add('hidden');
+                return;
+            }
+
+            monNombreArticles = count;
+            window.mesArticlesLocaux = data;
+
+            container.innerHTML = data.map(p => `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col relative">
+                    ${p.statut === 'attente' ? `<span class="absolute top-1 left-1 bg-gray-800 text-white text-[7px] px-2 py-0.5 rounded shadow-md z-10">EN REVUE</span>` : ''}
+                    <img src="${p.image}" class="w-full h-24 object-cover">
+                    <div class="p-2 flex-1 flex flex-col">
+                        <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-1">${p.nom}</h4>
+                        <span class="text-orange-500 font-black text-xs mb-3">${p.prix} F</span>
+                        <div class="flex gap-1 mt-auto">
+                            <button onclick="demanderConfirmation('${p.id}')" class="w-9 bg-red-100 text-red-600 rounded-lg py-1"><i class="fas fa-trash-alt"></i></button>
+                            <button onclick="ouvrirModification('${p.id}')" class="w-9 bg-blue-100 text-blue-600 rounded-lg py-1"><i class="fas fa-edit"></i></button>
+                            <button onclick="demanderBoost('${p.nom.replace(/'/g, "\\'")}')" class="flex-1 bg-orange-100 text-orange-600 rounded-lg text-[9px] font-black py-1"><i class="fas fa-rocket"></i> BOOST</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            const limiteAffichage = (monAbonnement === 'standard') ? 5 : "Illimité";
+            document.getElementById('compteur-articles').innerText = monNombreArticles + " / " + limiteAffichage;
+
+            if (monAbonnement === 'standard' && monNombreArticles >= 5) {
+                document.getElementById('formulaire-annonce').classList.add('hidden');
+                document.getElementById('message-limite').classList.remove('hidden');
+            }
+
+            mettreAJourPagination(count);
         }
-    }
 
-function allerAPage(p) {
-    pageActuelle = p;
-    chargerMesArticles(p);
-    document.getElementById('mes-articles').scrollIntoView({ behavior: 'smooth' });
-}
+        // --- FONCTION UPGRADE VIP ---
+        function contacterAdminUpgrade() {
+            const nomElem = document.getElementById('nom-boutique');
+            const nomBoutique = nomElem ? nomElem.innerText : "ma boutique";
 
-function changerPage(direction) {
-    const nouvellePage = pageActuelle + direction;
-    if (nouvellePage >= 1) {
-        allerAPage(nouvellePage);
-    }
-}
-        
-        // --- 6. DÉMARRAGE ET VÉRIFICATION PROFIL ---
+            const message = encodeURIComponent(`Bonjour Cœur de Marché, je suis le gérant de la boutique "${nomBoutique}". Je souhaite passer au statut de VENDEUR VIP pour 2000F/mois et booster mes ventes.`);
+            
+            window.open(`https://wa.me/2250576326645?text=${message}`);
+        }
+
+        // --- FONCTION UPGRADE PRO ---
+        function contacterAdminPro() {
+            const nomElem = document.getElementById('nom-boutique');
+            const nomBoutique = nomElem ? nomElem.innerText : "ma boutique";
+
+            const message = encodeURIComponent(`Bonjour Cœur de Marché, ma boutique "${nomBoutique}" a atteint la limite gratuite de 5 articles. Je souhaite passer au statut PRO.`);
+            
+            window.open(`https://wa.me/2250576326645?text=${message}`);
+        }
+
+        // --- FONCTION DEMANDER UN BOOST ---
+        function demanderBoost(nomArticle) {
+            const nomBoutique = document.getElementById('nom-boutique').innerText;
+            const message = encodeURIComponent(`Bonjour Cœur de Marché, je suis la boutique "${nomBoutique}". Je souhaite payer un BOOST VIP pour mon article : ${nomArticle}`);
+            window.open(`https://wa.me/2250576326645?text=${message}`);
+        }
+
+        // --- FONCTIONS DE MODIFICATION ---
+        function ouvrirModification(id) {
+            const article = window.mesArticlesLocaux.find(a => String(a.id) === String(id));
+            if (!article) return;
+
+            document.getElementById('mod-id').value = article.id;
+            document.getElementById('mod-nom').value = article.nom;
+            document.getElementById('mod-prix').value = article.prix;
+            document.getElementById('mod-desc').value = article.description || "";
+            window.urlImageActuelle = article.image;
+
+            const modal = document.getElementById('modal-modifier');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+                modal.children[0].classList.remove('scale-90');
+            }, 10);
+        }
+
+        function fermerModification() {
+            const modal = document.getElementById('modal-modifier');
+            modal.classList.remove('opacity-100');
+            modal.children[0].classList.add('scale-90');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        async function sauvegarderModification() {
+            const btn = document.getElementById('btn-sauver-mod');
+            const id = document.getElementById('mod-id').value;
+            const nom = document.getElementById('mod-nom').value;
+            const prix = document.getElementById('mod-prix').value;
+            const desc = document.getElementById('mod-desc').value;
+
+            if (!nom || !prix) {
+                afficherAlerteCustom("Attention", "Le nom et le prix sont obligatoires.", "erreur");
+                return;
+            }
+
+            btn.innerText = "EN COURS...";
+            btn.disabled = true;
+
+            try {
+                const { error } = await mySupabase
+                    .from('produits')
+                    .update({ nom: nom, prix: prix, description: desc })
+                    .eq('id', id);
+
+                if (error) throw new Error(error.message);
+
+                afficherAlerteCustom("Super", "Votre article a été modifié.", "succes");
+                fermerModification();
+                chargerMesArticles(); // On met à jour l'affichage
+
+            } catch (erreur) {
+                afficherAlerteCustom("Échec", "Erreur lors de la modification.", "erreur");
+            } finally {
+                btn.innerText = "SAUVEGARDER";
+                btn.disabled = false;
+            }
+        }
+
+        function mettreAJourPagination(total) {
+            const controls = document.getElementById('pagination-controls');
+            const totalPages = Math.ceil(total / articlesParPage);
+
+            if (totalPages <= 1) {
+                controls.classList.add('hidden');
+                return;
+            }
+
+            controls.classList.remove('hidden');
+            document.getElementById('page-indicator').innerText = `Page ${pageActuelle} / ${totalPages}`;
+            document.getElementById('btn-prev').disabled = (pageActuelle === 1);
+            document.getElementById('btn-next').disabled = (pageActuelle === totalPages);
+        }
+
+        function changerPage(dir) {
+            chargerMesArticles(pageActuelle + dir);
+            document.getElementById('mes-articles').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- 6. DEMARRAGE ET VERIFICATION PROFIL ---
         async function demarrerBureau() {
             try {
                 if (typeof window.supabase === 'undefined') return;
-                
+
                 mySupabase = window.supabase.createClient(dbUrl, dbKey);
                 const { data: { session } } = await mySupabase.auth.getSession();
-                
+
                 if (!session) {
                     window.location.href = "vendre.html";
                     return;
                 }
-                
+
                 myUser = session.user;
 
                 const { data: vendeur, error: errVendeur } = await mySupabase
                     .from('vendeurs')
-                    .select('*') 
+                    .select('*')
                     .eq('id', myUser.id)
                     .single();
-                
+
                 if (vendeur) {
-                        // AVIS D'EXPERT : On affiche le badge de confiance si le vendeur est PRO
-    if (monAbonnement === 'pro') {
-        document.getElementById('badge-pro').classList.remove('hidden');
-    }
-                    
+                    // AVIS D'EXPERT : On affiche le badge de confiance si le vendeur est PRO
+                    if (monAbonnement === 'pro') {
+                        document.getElementById('badge-pro').classList.remove('hidden');
+                    }
+
                     document.getElementById('nom-boutique').innerText = vendeur.nom_boutique || "Boutique";
                     document.getElementById('nom-vendeur').innerText = "Gérant : " + (vendeur.proprietaire || "Gérant");
                     myWhatsapp = vendeur.whatsapp;
-                    
+
                     monAbonnement = vendeur.abonnement || 'standard';
                     const badge = document.getElementById('badge-abonnement');
                     badge.innerText = monAbonnement;
                     badge.classList.remove('hidden');
                     badge.className = "text-[9px] font-black uppercase px-3 py-1 rounded-full shadow-sm badge-" + monAbonnement;
                     if (monAbonnement === 'standard') {
-    document.getElementById('zone-upgrade').classList.remove('hidden');
+                        document.getElementById('zone-upgrade').classList.remove('hidden');
                     }
                     chargerMesArticles();
                 }
@@ -560,70 +548,55 @@ function changerPage(direction) {
         }
 
         async function optimiserImageExistante() {
-    const id = document.getElementById('mod-id').value;
-    const btnOpti = document.getElementById('btn-optimiser-img');
+            const id = document.getElementById('mod-id').value;
+            const btnOpti = document.getElementById('btn-optimiser-img');
 
-    if (!window.urlImageActuelle) {
-        afficherAlerteCustom("Attention", "Aucune image trouvée pour cet article.", "erreur");
-        return;
-    }
+            if (!window.urlImageActuelle) {
+                afficherAlerteCustom("Attention", "Aucune image trouvée pour cet article.", "erreur");
+                return;
+            }
 
-    btnOpti.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Récupération...';
-    btnOpti.disabled = true;
+            btnOpti.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Récupération...';
+            btnOpti.disabled = true;
 
-    try {
-        // 1. Extraire le nom exact de l'ancienne image depuis l'URL
-        const ancienneUrl = window.urlImageActuelle;
-        const nomAncienFichier = ancienneUrl.substring(ancienneUrl.lastIndexOf('/') + 1).split('?')[0];
+            try {
+                const reponse = await fetch(window.urlImageActuelle);
+                const blob = await reponse.blob();
+                const fichierVirtuel = new File([blob], "image_recuperee.webp", { type: blob.type });
 
-        // 2. Récupération du fichier
-        const reponse = await fetch(ancienneUrl);
-        const blob = await reponse.blob();
-        const fichierVirtuel = new File([blob], "image_recuperee.webp", { type: blob.type });
+                btnOpti.innerHTML = '<i class="fas fa-compress fa-beat"></i> Compression...';
+                const optionsCompression = { maxSizeMB: 0.15, maxWidthOrHeight: 1024, useWebWorker: true, fileType: 'image/webp' };
+                const imageCompressee = await imageCompression(fichierVirtuel, optionsCompression);
 
-        // 3. Compression WebP
-        btnOpti.innerHTML = '<i class="fas fa-compress fa-beat"></i> Compression...';
-        const optionsCompression = { maxSizeMB: 0.15, maxWidthOrHeight: 1024, useWebWorker: true, fileType: 'image/webp' };
-        const imageCompressee = await imageCompression(fichierVirtuel, optionsCompression);
+                btnOpti.innerHTML = '<i class="fas fa-upload fa-bounce"></i> Envoi...';
+                const nomFichier = myUser.id + "_opti_" + Date.now() + ".webp";
+                
+                const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, imageCompressee);
+                if (errPhoto) throw new Error("Erreur d'envoi : " + errPhoto.message);
 
-        // 4. Téléversement du nouveau fichier
-        btnOpti.innerHTML = '<i class="fas fa-upload fa-bounce"></i> Envoi...';
-        const nomFichier = myUser.id + "_opti_" + Date.now() + ".webp";
-        
-        const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, imageCompressee);
-        if (errPhoto) throw new Error("Erreur d'envoi : " + errPhoto.message);
+                const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
 
-        // 5. Suppression de l'ancienne photo sur Supabase
-        if (nomAncienFichier && nomAncienFichier !== nomFichier) {
-            await mySupabase.storage.from('images').remove([nomAncienFichier]);
+                btnOpti.innerHTML = '<i class="fas fa-database"></i> Mise à jour...';
+                const { error: errDb } = await mySupabase
+                    .from('produits')
+                    .update({ image: publicUrl })
+                    .eq('id', id);
+
+                if (errDb) throw new Error(errDb.message);
+
+                afficherAlerteCustom("MAGNIFIQUE", "L'image a été allégée et remplacée avec succès !", "succes");
+                fermerModification();
+                chargerMesArticles();
+
+            } catch (erreur) {
+                afficherAlerteCustom("Échec", "Erreur : " + erreur.message, "erreur");
+            } finally {
+                btnOpti.innerHTML = '<i class="fas fa-compress-arrows-alt"></i> Alléger l\'image actuelle';
+                btnOpti.disabled = false;
+            }
         }
 
-        // 6. Récupération du nouveau lien public
-        const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
-
-        // 7. Mise à jour dans la base de données
-        btnOpti.innerHTML = '<i class="fas fa-database"></i> Mise à jour...';
-        const { error: errDb } = await mySupabase
-            .from('produits')
-            .update({ image: publicUrl })
-            .eq('id', id);
-
-        if (errDb) throw new Error(errDb.message);
-
-        afficherAlerteCustom("MAGNIFIQUE", "L'image a été allégée et l'ancienne a été supprimée du serveur !", "succes");
-        fermerModification();
-        chargerMesArticles(); 
-
-    } catch (erreur) {
-        afficherAlerteCustom("Échec", "Erreur : " + erreur.message, "erreur");
-    } finally {
-        btnOpti.innerHTML = '<i class="fas fa-compress-arrows-alt"></i> Alléger l\'image actuelle';
-        btnOpti.disabled = false;
-    }
-        }
-        
         demarrerBureau();
     </script>
 </body>
 </html>
-
