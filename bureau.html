@@ -354,7 +354,6 @@ async function chargerMesArticles(page = 1) {
 
   if (error || !data || data.length === 0) {
     if (page === 1) container.innerHTML = `<p class="text-gray-400 text-sm font-bold col-span-2 text-center py-4">Vous n'avez aucun article.</p>`;
-    document.getElementById('pagination-controls')?.classList.add('hidden');
     return;
   }
 
@@ -411,9 +410,6 @@ container.innerHTML = data.map(p => `...`).join('') + paginationHtml;
     document.getElementById('formulaire-annonce').classList.add('hidden');
     document.getElementById('message-limite').classList.remove('hidden');
   }
-
-  mettreAJourPagination(count);
-      }
         
 // --- FONCTION UPGRADE VIP ---
 function contacterAdminUpgrade() {
