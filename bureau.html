@@ -179,7 +179,6 @@
             <div id="mes-articles" class="grid grid-cols-2 gap-4">
                 <p class="text-gray-400 text-sm italic col-span-2">Chargement de vos articles...</p>
             </div>
-            <div id="pagination-controls" class="flex flex-wrap justify-center items-center gap-2 mt-6 pb-12"></div>
         </div>
     </main>
     </main>
@@ -362,7 +361,34 @@ async function chargerMesArticles(page = 1) {
   monNombreArticles = count;
   window.mesArticlesLocaux = data;
 
-  container.innerHTML = data.map(p => `
+    // 1. Calcul de la pagination
+const totalPages = Math.ceil(count / articlesParPage);
+let paginationHtml = '';
+
+if (totalPages > 1) {
+    paginationHtml = `<div style="grid-column: 1 / -1;" class="flex justify-center items-center gap-2 mt-6 mb-8">`;
+    
+    if (pageActuelle > 1) {
+        paginationHtml += `<button onclick="chargerMesArticles(${pageActuelle - 1})" class="bg-white border-2 border-gray-200 px-4 py-2 rounded-xl text-xs font-bold text-gray-700">Précédent</button>`;
+    }
+    
+    for (let i = 1; i <= totalPages; i++) {
+        if (i === pageActuelle) {
+            paginationHtml += `<span class="bg-[#5b21b6] text-white px-4 py-2 rounded-xl text-xs font-black shadow-md">${i}</span>`;
+        } else {
+            paginationHtml += `<button onclick="chargerMesArticles(${i})" class="bg-white border-2 border-gray-200 px-4 py-2 rounded-xl text-xs font-bold text-gray-700">${i}</button>`;
+        }
+    }
+    
+    if (pageActuelle < totalPages) {
+        paginationHtml += `<button onclick="chargerMesArticles(${pageActuelle + 1})" class="bg-white border-2 border-gray-200 px-4 py-2 rounded-xl text-xs font-bold text-gray-700">Suivant</button>`;
+    }
+    
+    paginationHtml += `</div>`;
+}
+
+// 2. Injection combinée des articles et de la pagination
+container.innerHTML = data.map(p => `...`).join('') + paginationHtml;
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex flex-col relative">
       ${p.statut === 'attente' ? `<span class="absolute top-1 left-1 bg-gray-800 text-white text-[7px] px-2 py-0.5 rounded shadow">ATTENTE</span>` : ''}
       <img src="${p.image}" class="w-full h-24 object-cover">
@@ -490,83 +516,7 @@ function changerPage(direction) {
     }
 }
 
-function mettreAjourPagination(total) {
-    const controls = document.getElementById('pagination-controls');
-    if (!controls) return;
-
-    controls.innerHTML = '';
-
-    const totalArticles = total || 0;
-    const totalPages = Math.ceil(totalArticles / articlesParPage);
-
-    if (totalPages <= 1) {
-        controls.classList.add('hidden');
-        return;
-    }
-
-    controls.classList.remove('hidden');
-
-    // --- BOUTON PRÉCÉDENT ---
-    const btnPrev = document.createElement('button');
-    btnPrev.innerText = '← Précédent';
-    btnPrev.className = `px-3 py-2 rounded-xl text-xs font-bold ${
-        pageActuelle === 1 
-            ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-            : 'bg-gray-200 text-gray-800 active:scale-95'
-    }`;
-    btnPrev.disabled = (pageActuelle === 1);
-    btnPrev.onclick = () => changerPage(-1);
-    controls.appendChild(btnPrev);
-
-    // --- BOUTONS NUMÉROTÉS ---
-    let start = Math.max(1, pageActuelle - 1);
-    let end = Math.min(totalPages, pageActuelle + 1);
-
-    if (pageActuelle === 1) end = Math.min(totalPages, 3);
-    if (pageActuelle === totalPages) start = Math.max(1, totalPages - 2);
-
-    if (start > 1) {
-        const btnFirst = document.createElement('button');
-        btnFirst.innerText = '1';
-        btnFirst.className = 'w-9 h-9 rounded-xl font-bold bg-white text-gray-700 border border-gray-200';
-        btnFirst.onclick = () => allerAPage(1);
-        controls.appendChild(btnFirst);
-
-        if (start > 2) {
-            const dots = document.createElement('span');
-            dots.innerText = '...';
-            dots.className = 'px-1 text-gray-400 font-bold';
-            controls.appendChild(dots);
-        }
-    }
-
-    for (let i = start; i <= end; i++) {
-        const btn = document.createElement('button');
-        btn.innerText = i;
-        if (i === pageActuelle) {
-            btn.className = 'w-9 h-9 rounded-xl font-black bg-[#5b21b6] text-white shadow-md';
-        } else {
-            btn.className = 'w-9 h-9 rounded-xl font-bold bg-white text-gray-700 border border-gray-200 active:bg-gray-50';
-            btn.onclick = () => allerAPage(i);
-        }
-        controls.appendChild(btn);
-    }
-
-    if (end < totalPages) {
-        if (end < totalPages - 1) {
-            const dots = document.createElement('span');
-            dots.innerText = '...';
-            dots.className = 'px-1 text-gray-400 font-bold';
-            controls.appendChild(dots);
-        }
-
-        const btnLast = document.createElement('button');
-        btnLast.innerText = totalPages;
-        btnLast.className = 'w-9 h-9 rounded-xl font-bold bg-white text-gray-700 border border-gray-200';
-        btnLast.onclick = () => allerAPage(totalPages);
-        controls.appendChild(btnLast);
-    }
-
+        
     // --- BOUTON SUIVANT ---
     const btnNext = document.createElement('button');
     btnNext.innerText = 'Suivant →';
