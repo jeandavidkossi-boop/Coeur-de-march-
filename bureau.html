@@ -468,8 +468,8 @@ const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
 
                 afficherAlerteCustom("Super", "Votre article a été modifié.", "succes");
                 fermerModification();
-                chargerMesArticles(); // On met à jour l'affichage
-
+                chargerMesArticles(pageActuelle); // On met à jour l'affichage
+                
             } catch (erreur) {
                 afficherAlerteCustom("Échec", "Erreur lors de la modification.", "erreur");
             } finally {
@@ -571,55 +571,64 @@ const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
             }
         }
 
-        async function optimiserImageExistante() {
-            const id = document.getElementById('mod-id').value;
-            const btnOpti = document.getElementById('btn-optimiser-img');
+    async function optimiserImageExistante() {
+        const id = document.getElementById('mod-id').value;
+        const btnOpti = document.getElementById('btn-optimiser-img');
 
-            if (!window.urlImageActuelle) {
-                afficherAlerteCustom("Attention", "Aucune image trouvée pour cet article.", "erreur");
-                return;
-            }
-
-            btnOpti.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Récupération...';
-            btnOpti.disabled = true;
-
-            try {
-                const reponse = await fetch(window.urlImageActuelle);
-                const blob = await reponse.blob();
-                const fichierVirtuel = new File([blob], "image_recuperee.webp", { type: blob.type });
-
-                btnOpti.innerHTML = '<i class="fas fa-compress fa-beat"></i> Compression...';
-                const optionsCompression = { maxSizeMB: 0.15, maxWidthOrHeight: 1024, useWebWorker: true, fileType: 'image/webp' };
-                const imageCompressee = await imageCompression(fichierVirtuel, optionsCompression);
-
-                btnOpti.innerHTML = '<i class="fas fa-upload fa-bounce"></i> Envoi...';
-                const nomFichier = myUser.id + "_opti_" + Date.now() + ".webp";
-                
-                const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, imageCompressee);
-                if (errPhoto) throw new Error("Erreur d'envoi : " + errPhoto.message);
-
-                const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
-
-                btnOpti.innerHTML = '<i class="fas fa-database"></i> Mise à jour...';
-                const { error: errDb } = await mySupabase
-                    .from('produits')
-                    .update({ image: publicUrl })
-                    .eq('id', id);
-
-                if (errDb) throw new Error(errDb.message);
-
-                afficherAlerteCustom("MAGNIFIQUE", "L'image a été allégée et remplacée avec succès !", "succes");
-                fermerModification();
-                chargerMesArticles();
-
-            } catch (erreur) {
-                afficherAlerteCustom("Échec", "Erreur : " + erreur.message, "erreur");
-            } finally {
-                btnOpti.innerHTML = '<i class="fas fa-compress-arrows-alt"></i> Alléger l\'image actuelle';
-                btnOpti.disabled = false;
-            }
+        if (!window.urlImageActuelle) {
+            afficherAlerteCustom("Attention", "Aucune image trouvée pour cet article.", "erreur");
+            return;
         }
 
+        btnOpti.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Récupération...';
+        btnOpti.disabled = true;
+
+        try {
+            const reponse = await fetch(window.urlImageActuelle);
+            const blob = await reponse.blob();
+            const fichierVirtuel = new File([blob], "image_recuperee.webp", { type: blob.type });
+
+            btnOpti.innerHTML = '<i class="fas fa-compress fa-beat"></i> Compression...';
+            const optionsCompression = { maxSizeMB: 0.15, maxWidthOrHeight: 1024, useWebWorker: true, fileType: 'image/webp' };
+            const imageCompressee = await imageCompression(fichierVirtuel, optionsCompression);
+
+            const nomFichier = myUser.id + "_opts_" + Date.now() + ".webp";
+
+            // --- NOUVEAU : SUPPRESSION DE L'ANCIENNE PHOTO ---
+            const partiesUrl = window.urlImageActuelle.split('/images/');
+            if (partiesUrl.length > 1) {
+                const ancienNomFichier = partiesUrl[1];
+                await mySupabase.storage.from('images').remove([ancienNomFichier]);
+            }
+            // ---------------------------------------------------
+
+            btnOpti.innerHTML = '<i class="fas fa-upload fa-bounce"></i> Envoi...';
+
+            const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, imageCompressee);
+            
+            if (errPhoto) throw new Error("Erreur d'envoi : " + errPhoto.message);
+
+            const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
+
+            btnOpti.innerHTML = '<i class="fas fa-database"></i> Mise à jour...';
+            const { error: errDb } = await mySupabase
+                .from('produits')
+                .update({ image: publicUrl })
+                .eq('id', id);
+
+            if (errDb) throw new Error(errDb.message);
+
+            afficherAlerteCustom("MAGNIFIQUE !", "L'image a été allégée et remplacée avec succès !", "succes");
+            fermerModification();
+            chargerMesArticles(pageActuelle); 
+
+        } catch (erreur) {
+            afficherAlerteCustom("Échec", "Erreur : " + erreur.message, "erreur");
+        } finally {
+            btnOpti.innerHTML = '<i class="fas fa-compress-arrows-alt"></i> Alléger l\'image actuelle';
+            btnOpti.disabled = false;
+        }                                                                                       }
+                
         demarrerBureau();
     </script>
 </body>
