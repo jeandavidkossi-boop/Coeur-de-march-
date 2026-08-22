@@ -182,10 +182,8 @@
                 <p class="text-gray-400 text-sm italic col-span-2">Chargement de vos articles...</p>
             </div>
             
-            <div id="pagination-controls" class="flex justify-between items-center mt-6 hidden">
-                <button id="btn-prev" onclick="changerPage(-1)" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-xl font-black text-xs">Précédent</button>
-                <span id="page-indicator" class="text-xs font-black text-[#5b21b6]">Page 1</span>
-                <button id="btn-next" onclick="changerPage(1)" class="px-4 py-2 bg-[#5b21b6] text-white rounded-xl font-black text-xs">Suivant</button>
+            <div id="pagination-controls" class="flex flex-wrap justify-center items-center gap-2 mt-8 mb-8 hidden">
+    <!-- Les boutons numérotés seront générés ici automatiquement par le script -->
             </div>
         </div>
                         </main>
@@ -481,24 +479,50 @@ const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJl
         }
 
         function mettreAJourPagination(total) {
-            const controls = document.getElementById('pagination-controls');
-            const totalPages = Math.ceil(total / articlesParPage);
+    const controls = document.getElementById('pagination-controls');
+    
+    // On s'assure qu'il y a toujours au moins 1 page affichée, même avec 0 article
+    const totalPages = Math.max(1, Math.ceil(total / articlesParPage)); 
+    
+    // On force l'affichage de la zone de pagination
+    controls.classList.remove('hidden');
+    controls.innerHTML = ''; // On vide l'ancienne pagination
 
-            if (totalPages <= 1) {
-                controls.classList.add('hidden');
-                return;
-            }
-
-            controls.classList.remove('hidden');
-            document.getElementById('page-indicator').innerText = `Page ${pageActuelle} / ${totalPages}`;
-            document.getElementById('btn-prev').disabled = (pageActuelle === 1);
-            document.getElementById('btn-next').disabled = (pageActuelle === totalPages);
-        }
-
-        function changerPage(dir) {
-            chargerMesArticles(pageActuelle + dir);
+    // On génère les puces numérotées de 1 jusqu'à la dernière page
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = i;
+        btn.onclick = () => {
+            chargerMesArticles(i);
             document.getElementById('mes-articles').scrollIntoView({ behavior: 'smooth' });
+        };
+        
+        // On applique le design violet pour la page active, et blanc pour les autres
+        if (i === pageActuelle) {
+            btn.className = "w-10 h-10 rounded-xl bg-[#5b21b6] text-white font-bold text-sm shadow-md flex items-center justify-center transition-all";
+        } else {
+            btn.className = "w-10 h-10 rounded-xl bg-white text-gray-700 font-bold text-sm shadow-sm border border-gray-200 flex items-center justify-center active:scale-95 transition-all";
         }
+        controls.appendChild(btn);
+    }
+
+    // On ajoute le bouton "Suivant" en bas uniquement s'il y a une page d'après
+    if (pageActuelle < totalPages) {
+        // Un div invisible pour forcer le bouton "Suivant" à passer à la ligne
+        const sautDeLigne = document.createElement('div');
+        sautDeLigne.className = "w-full h-2";
+        controls.appendChild(sautDeLigne);
+
+        const btnNext = document.createElement('button');
+        btnNext.innerText = "Suivant";
+        btnNext.onclick = () => {
+            chargerMesArticles(pageActuelle + 1);
+            document.getElementById('mes-articles').scrollIntoView({ behavior: 'smooth' });
+        };
+        btnNext.className = "px-6 py-2 rounded-full bg-white text-[#5b21b6] border-2 border-[#5b21b6] font-bold text-sm shadow-sm active:scale-95 transition-all";
+        controls.appendChild(btnNext);
+    }
+                             }
 
         // --- 6. DEMARRAGE ET VERIFICATION PROFIL ---
         async function demarrerBureau() {
