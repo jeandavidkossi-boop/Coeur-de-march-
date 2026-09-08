@@ -643,7 +643,7 @@ function ajouterAuPanier(nom, prix, tel) {
                       const msgBrut = "COMMANDE\n" + items.map(i => "- " + i.nom).join('\n') + "\n💰 TOTAL : " + sousTotal + " FCFA";
         const msg = encodeURIComponent(msgBrut).replace(/'/g, "%27");
         const telWhatsApp = tel.startsWith('+') ? tel.substring(1) : (tel.startsWith('225') ? tel : '225' + tel);
-        return '<div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm"><p class="font-black text-[#5b21b6] text-[10px] uppercase mb-3 border-b border-gray-100 pb-2">Boutique : ' + tel + '</p><div class="space-y-2 mb-4">' + htmlItems + '</div><button onclick="validerCommande(\'' + telWhatsApp + '\', \'' + msg + '\', \'' + tel + '\')" class="w-full bg-[#25D366] text-white font-black py-3 rounded-xl uppercase text-[10px] flex items-center justify-center gap-2 active:scale-95 transition"><i class="fab fa-whatsapp text-lg"></i> Commander ces articles</button></div>';
+        return '<div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm"><p class="font-black text-[#5b21b6] text-[10px] uppercase mb-3 border-b border-gray-100 pb-2">Boutique : ' + tel + '</p><div class="space-y-2 mb-4">' + htmlItems + '</div><button onclick="validerCommande('${tel}', '${tel}')" class="w-full bg-[#25D366] text-white font-black py-3 rounded-xl uppercase text-[10px] flex items-center justify-center gap-2 active:scale-95 transition"><i class="fab fa-whatsapp text-lg"></i> Commander ces articles</button></div>';
             }).join('');
             const modal = document.getElementById('modal-panier'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10);
         }
@@ -660,24 +660,74 @@ function ajouterAuPanier(nom, prix, tel) {
 
     ouvrirPanier();
         }
-        
-            function validerCommande(telWhatsApp, msgEncoded, telVendeur) {
-    window.open('https://wa.me/' + telWhatsApp + '?text=' + msgEncoded);
-    
-    panier = panier.filter(p => String(p.tel) !== String(telVendeur));
-    localStorage.setItem('coeur_panier', JSON.stringify(panier));
-    
-    // On met à jour le nouveau compteur central
-    const badgeNav = document.getElementById('panier-count-nav');
-    if (badgeNav) badgeNav.innerText = panier.length;
-    
-    if (panier.length === 0) {
-        fermerPanier();
-    } else {
-        ouvrirPanier();
-    }
+              
+    async function validerCommande(telWhatsApp, telVendeur) {
+    // 1. Affiche l'écran de chargement pour faire patienter le client
+    const ecranLoad = document.getElementById('ecran-chargement');
+    if (ecranLoad) { ecranLoad.style.display = 'flex'; ecranLoad.style.opacity = '1'; }
+
+    try {
+        // 2. Isoler les articles qui appartiennent uniquement à ce vendeur
+        const articlesVendeur = panier.filter(p => String(p.tel) === String(telVendeur));
+        if (articlesVendeur.length === 0) return;
+
+        // 3. Calculer le VRAI prix avec les données sécurisées (anti-piratage)
+        let vraiTotal = 0;
+        const itemsPourBase = [];
+        let detailTexte = "";
+
+        articlesVendeur.forEach(p => {
+            const articleReel = articlesParId.get(p.id_produit);
+            if (articleReel) {
+                vraiTotal += parseInt(articleReel.prix);
+                // On prépare les données pour la base de données
+                itemsPourBase.push({ id_produit: p.id_produit, prix: articleReel.prix, nom: articleReel.nom });
+                // On prépare le texte pour WhatsApp
+                detailTexte += `- ${articleReel.nom} (${articleReel.prix} F)\n`;
             }
-    
+        });
+
+        // 4. Enregistrer silencieusement dans la table "commandes" de Supabase
+        const { data, error } = await monSupabase
+            .from('commandes')
+            .insert([{
+                device_id: deviceId,
+                vendeur_tel: String(telVendeur),
+                total_fcfa: vraiTotal,
+                items: itemsPourBase
+            }])
+            .select(); // .select() est crucial pour récupérer le numéro généré
+
+        if (error) throw error;
+
+        // 5. Récupérer le numéro unique généré (ex: 12) et créer le code (CMD-12)
+        const numeroCmd = data[0].numero_commande;
+        const codeAffiche = "CMD-" + numeroCmd;
+
+        // 6. Créer le texte final et inviolable pour WhatsApp
+        const messageFinal = `🛒 *NOUVELLE COMMANDE #${codeAffiche}*\n\nDétails :\n${detailTexte}\n*TOTAL : ${vraiTotal} FCFA*\n\n_Cette commande est sécurisée dans le système._`;
+        const msgEncoded = encodeURIComponent(messageFinal);
+
+        // 7. Nettoyer le panier pour ce vendeur et mettre à jour le compteur
+        panier = panier.filter(p => String(p.tel) !== String(telVendeur));
+        localStorage.setItem('coeur_panier', JSON.stringify(panier));
+        
+        const badgeNav = document.getElementById('panier-count-nav');
+        if (badgeNav) badgeNav.innerText = panier.length;
+        if (panier.length === 0) fermerPanier(); else ouvrirPanier();
+
+        // 8. Ouvrir WhatsApp avec la facture officielle
+        window.open('https://wa.me/' + telWhatsApp + '?text=' + msgEncoded);
+
+    } catch (err) {
+        console.error("Erreur lors de la commande :", err);
+        alert("Une erreur est survenue lors de la création de la commande. Veuillez vérifier votre connexion internet.");
+    } finally {
+        // Cacher l'écran de chargement
+        if (ecranLoad) { ecranLoad.style.opacity = '0'; setTimeout(() => ecranLoad.style.display = 'none', 300); }
+    }
+    }
+        
         function fermerModalDetails() { const modal = document.getElementById('modal-details'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
         function fermerPanier() { const modal = document.getElementById('modal-panier'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
         function ouvrirAide() { const modal = document.getElementById('modal-aide'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10); }
