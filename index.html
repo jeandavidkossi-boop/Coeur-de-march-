@@ -215,7 +215,7 @@ let pageCourante = 1;
 const elementsParPage = 12;
         
         
-        let monSupabase;
+                        const conteneulet monSupabase;
 let deviceId = localStorage.getItem('coeur_device_id');
 if (!deviceId) {
     deviceId = 'tel_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
@@ -271,7 +271,7 @@ if (panier.length > 0) {
                 if (produitsData) articles = produitsData;
 
                 const { data: pubData } = await supabase.from('publicites').select('image, statut, id_produit').eq('statut', 'actif');
-                const conteneurVIP = document.getElementById('carrousel-vip');
+rVIP = document.getElementById('carrousel-vip');
                 if (pubData && pubData.length > 0) {
                     conteneurVIP.innerHTML = pubData.map(p => {
                         const articleLie = p.id_produit ? articles.find(a => a.id == p.id_produit) : null;
@@ -590,22 +590,24 @@ function allerPage(numPage) {
     // 2. On affiche la fiche produit (le bouton partager utilise maintenant la mémoire)
     document.getElementById('details-contenu').innerHTML = `
         <img src="${p.image}" onclick="ouvrirImage('${p.image}')" class="w-full h-64 object-cover rounded-xl mb-4 shadow-sm active:scale-95 transition transform">
-<div class="flex justify-between items-center">
-    <h3 class="font-black text-xl text-[#4c1d95]">${echapperHTML(nom)}</h3>
-    <span class="text-orange-500 font-black text-lg">${p.prix} F</span>
-</div>
-<div class="text-gray-600 text-sm mt-2 mb-6 overflow-y-auto" style="max-height: 200px;">
-    ${p.description ? echapperHTML(p.description) : 'Aucun détail supplémentaire.'}
-</div>
+        <div class="flex justify-between items-center">
+            <h3 class="font-black text-xl text-[#4c1d95]">${echapperHTML(nom)}</h3>
+            <span class="text-orange-500 font-black text-lg">${p.prix} F</span>
+        </div>
+        <div class="text-gray-600 text-sm mt-2 mb-6 overflow-y-auto" style="max-height: 200px;">
+            ${p.description ? echapperHTML(p.description) : 'Aucun détail supplémentaire.'}
+        </div>
         <div class="flex gap-2">
-            <button onclick="ajouterAuPanier('${nom}', '${p.prix}', '${p.vendeur}')" class="flex-1 bg-[#5b21b6] text-white font-black py-3 rounded-xl uppercase text-sm shadow-md transition transform active:scale-95">Ajouter au panier</button>
+            <button onclick="ajouterAuPanier('${p.id}', '${p.vendeur}')" class="flex-1 bg-[#5b21b6] text-white font-black py-3 rounded-xl uppercase text-sm shadow-md transition transform active:scale-95">Ajouter au panier</button>
             <button onclick="partager()" class="w-14 bg-blue-500 text-white rounded-xl flex items-center justify-center text-xl shadow-md transition transform active:scale-95"><i class="fas fa-share-alt"></i></button>
         </div>
     `;
     
-    const modal = document.getElementById('modal-details'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10);
-}
-
+    const modal = document.getElementById('modal-details'); 
+    modal.style.display = 'flex'; 
+    setTimeout(() => modal.classList.add('active'), 10);
+       }
+        
 function partager() { 
     if (navigator.share) { 
         navigator.share({ text: window.messagePartage }); 
