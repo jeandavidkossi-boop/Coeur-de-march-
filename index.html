@@ -215,7 +215,7 @@ let pageCourante = 1;
 const elementsParPage = 12;
         
         
-                        const conteneulet monSupabase;
+                        let monSupabase;
 let deviceId = localStorage.getItem('coeur_device_id');
 if (!deviceId) {
     deviceId = 'tel_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
