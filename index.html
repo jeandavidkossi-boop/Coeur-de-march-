@@ -265,11 +265,15 @@ if (panier.length > 0) {
             try {
                 const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
                 const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-                const supabase = window.supabase.createClient(dbUrl, dbKey);
+                window.monSupabase = window.supabase.createClient(dbUrl, dbKey);
 
-                const { data: produitsData } = await supabase.from('produits').select('*').eq('statut', 'actif').order('dateajout', { ascending: false });
-                if (produitsData) articles = produitsData;
+const { data: produitsData } = await window.monSupabase.from('produits').select('*').eq('statut', 'actif');
 
+if (produitsData) {
+    articles = produitsData;
+    window.articlesParId = new Map(articles.map(a => [a.id, a]));
+}
+                
                 const { data: pubData } = await supabase.from('publicites').select('image, statut, id_produit').eq('statut', 'actif');
 rVIP = document.getElementById('carrousel-vip');
                 if (pubData && pubData.length > 0) {
