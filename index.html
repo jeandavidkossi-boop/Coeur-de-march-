@@ -275,7 +275,7 @@ if (produitsData) {
 }
                 
                 const { data: pubData } = await supabase.from('publicites').select('image, statut, id_produit').eq('statut', 'actif');
-rVIP = document.getElementById('carrousel-vip');
+const conteneurVIP = document.getElementById('carrousel-vip');
                 if (pubData && pubData.length > 0) {
                     conteneurVIP.innerHTML = pubData.map(p => {
                         const articleLie = p.id_produit ? articles.find(a => a.id == p.id_produit) : null;
