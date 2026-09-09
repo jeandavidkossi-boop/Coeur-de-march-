@@ -265,48 +265,48 @@ if (panier.length > 0) {
             try {
                 const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
                 const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-                window.monSupabase = window.supabase.createClient(dbUrl, dbKey);
-
-const { data: produitsData } = await window.monSupabase.from('produits').select('*').eq('statut', 'actif');
-
-if (produitsData) {
-    articles = produitsData;
-    window.articlesParId = new Map(articles.map(a => [a.id, a]));
-}
-                
-                const { data: pubData } = await supabase.from('publicites').select('image, statut, id_produit').eq('statut', 'actif');
-const conteneurVIP = document.getElementById('carrousel-vip');
-                if (pubData && pubData.length > 0) {
-                    conteneurVIP.innerHTML = pubData.map(p => {
-                        const articleLie = p.id_produit ? articles.find(a => a.id == p.id_produit) : null;
-                        if (articleLie) {
-                            return `<div class="vip-banner relative overflow-hidden rounded-[15px] shadow-sm border border-gray-100" onclick="ouvrirDetails('${articleLie.nom.replace(/'/g, "\\'")}')"><img src="${p.image}" class="w-full h-32 object-cover"><div class="absolute bottom-2 right-2 bg-[#5b21b6] text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-xl shadow-lg flex items-center gap-1"><i class="fas fa-shopping-bag"></i> Voir l'article</div></div>`;
-                        } else {
-                            return `<img src="${p.image}" onclick="ouvrirImage('${p.image}')" class="vip-banner h-32 shadow-sm border border-gray-100">`;
-                        }
-                    }).join('');
-                    setTimeout(demarrerCarrouselAuto, 1000);
+                        monSupabase = window.supabase.createClient(dbUrl, dbKey);
+        
+        const { data: produitsData } = await monSupabase.from('produits').select('*').eq('statut', 'actif');
+        
+        if (produitsData) {
+            articles = produitsData;
+            window.articlesParId = new Map(articles.map(a => [a.id, a]));
+        }
+        
+        const { data: pubData } = await monSupabase.from('publicites').select('image, statut, id_produit').eq('statut', 'actif');
+        const conteneurVIP = document.getElementById('carrousel-vip');
+        
+        if (pubData && pubData.length > 0) {
+            conteneurVIP.innerHTML = pubData.map(p => {
+                const articleLie = p.id_produit ? articles.find(a => a.id == p.id_produit) : null;
+                if (articleLie) {
+                    return `<div class="vip-banner relative overflow-hidden rounded-[15px] shadow-sm border border-gray-100 shrink-0" style="min-width: 85vw;" onclick="ouvrirDetails('${echapperHTML(articleLie.nom).replace(/'/g, "\\'")}')"><img src="${p.image}" class="w-full h-32 object-cover"><div class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded-lg backdrop-blur-sm">Voir le produit</div></div>`;
+                } else {
+                    return `<img src="${p.image}" onclick="ouvrirImage('${p.image}')" class="vip-banner h-32 shadow-sm border border-gray-100">`;
                 }
-
-                const { data: tvData } = await supabase.from('tv_market').select('*').eq('statut', 'actif').limit(1).single();
-                const conteneurTV = document.getElementById('conteneur-tv');
-                if (tvData && tvData.lien_youtube) {
-                    const articleTV = tvData.id_produit ? articles.find(a => a.id == tvData.id_produit) : null;
-                    let boutonAction = "";
-                    if (articleTV) { boutonAction = `<button onclick="ouvrirDetails('${echapperHTML(articleTV.nom).replace(/'/g, "\\'")}')" class="w-full bg-[#f97316] text-white font-black py-4 rounded-xl mt-3 flex items-center justify-center gap-2 uppercase active:scale-95 transition"><i class="fas fa-shopping-cart text-sm"></i> Commander (${articleTV.prix} F)</button>`; }
-                    const youtubeIdNettoye = extraireYoutubeId(tvData.lien_youtube);
-                    conteneurTV.innerHTML = `<div class="bg-white p-3 rounded-[20px] shadow-sm border border-gray-100"><div class="video-container shadow-inner"><iframe src="https://www.youtube.com/embed/${youtubeIdNettoye}" frameborder="0" allowfullscreen></iframe></div>${boutonAction}</div>`;
-                }
-
-                
-                const { data: annonceData } = await supabase.from('annonces').select('message').limit(1).single();
-                if (annonceData) document.getElementById('texte-annonce').innerText = annonceData.message;
-
-                const produitRecherche = new URLSearchParams(window.location.search).get("produit");
-                if (produitRecherche) setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
-
-                            // --- 1. CHARGEMENT DES VENDEURS VIP ---
-            const { data: vendeursVip } = await supabase.from('vendeurs').select('*').eq('abonnement', 'vip');
+            }).join('');
+            setTimeout(demarrerCarrouselAuto, 1000);
+        }
+        
+        const { data: tvData } = await monSupabase.from('tv_market').select('*').eq('statut', 'actif').limit(1).single();
+        const conteneurTV = document.getElementById('conteneur-tv');
+        if (tvData && tvData.lien_youtube) {
+            const articleTV = tvData.id_produit ? articles.find(a => a.id == tvData.id_produit) : null;
+            let boutonAction = "";
+            if (articleTV) { boutonAction = `<button onclick="ouvrirDetails('${echapperHTML(articleTV.nom).replace(/'/g, "\\'")}')" class="mt-3 w-full bg-[#5b21b6] text-white font-black py-2 rounded-xl text-xs uppercase shadow-md active:scale-95 transition">Acheter ce produit</button>`; }
+            const youtubeIdNettoye = extraireYoutubeId(tvData.lien_youtube);
+            conteneurTV.innerHTML = `<div class="bg-white p-3 rounded-[20px] shadow-sm border border-gray-100"><div class="video-container rounded-[15px] overflow-hidden"><iframe src="https://www.youtube.com/embed/${youtubeIdNettoye}" frameborder="0" allowfullscreen></iframe></div>${boutonAction}</div>`;
+        }
+        
+        const { data: annonceData } = await monSupabase.from('annonces').select('message').limit(1).single();
+        if (annonceData) document.getElementById('texte-annonce').innerText = annonceData.message;
+        
+        const produitRecherche = new URLSearchParams(window.location.search).get('produit');
+        if (produitRecherche) setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
+        
+        // --- 1. CHARGEMENT DES VENDEURS VIP ---
+        const { data: vendeursVip } = await monSupabase.from('vendeurs').select('*').eq('abonnement', 'vip');                                                      
             const conteneurBoutiques = document.getElementById('avenue-boutiques-vip');
             
         if (conteneurBoutiques && vendeursVip && vendeursVip.length > 0) {
@@ -619,41 +619,68 @@ function partager() {
         window.open('https://wa.me/?text=' + encodeURIComponent(window.messagePartage)); 
     } 
 }
-function ajouterAuPanier(nom, prix, tel) {
-    panier.push({nom, prix, tel});
-    
-    // On met à jour le nouveau compteur du bouton central
-    const badgeNav = document.getElementById('panier-count-nav');
-    if (badgeNav) badgeNav.innerText = panier.length;
-    
-    enregistrerInteraction(nom, 'ajout_panier');
-    localStorage.setItem('coeur_panier', JSON.stringify(panier));
-    
-    afficherAlerteCustom('Ajouté !', `\n${nom}\n a été ajouté au panier.`);
-}
         
-        function ouvrirPanier() {
-            const container = document.getElementById('panier-liste'); const totalElt = document.getElementById('panier-total');
-            if (panier.length === 0) { 
-                container.innerHTML = '<p class="text-center py-6 font-bold text-gray-400">Panier vide</p>'; 
-                if(totalElt) totalElt.innerText = "0 FCFA"; 
-                document.getElementById('modal-panier').style.display = 'flex'; setTimeout(() => document.getElementById('modal-panier').classList.add('active'), 10); 
-                return; 
-            }
-            let totalGlobal = 0; const vendeurs = {};
-            panier.forEach((p, index) => { totalGlobal += parseInt(p.prix); const tel = p.tel || '2250576326645'; if (!vendeurs[tel]) vendeurs[tel] = []; vendeurs[tel].push({...p, index}); });
-            if(totalElt) totalElt.innerText = totalGlobal + " FCFA";
-            container.innerHTML = Object.keys(vendeurs).map(tel => {
-                const items = vendeurs[tel]; let sousTotal = 0;
-                const htmlItems = items.map(i => { sousTotal += parseInt(i.prix); return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl"><div class="flex-1 pr-4"><p class="font-black text-[10px] text-gray-800 uppercase truncate">${i.nom}</p><p class="text-orange-500 font-bold text-xs">${i.prix} F</p></div><button onclick="retirerDuPanier(${i.index})" class="w-8 h-8 bg-red-100 text-red-500 rounded-lg flex items-center justify-center active:scale-90"><i class="fas fa-trash-alt"></i></button></div>`; }).join('');
-                      const msgBrut = "COMMANDE\n" + items.map(i => "- " + i.nom).join('\n') + "\n💰 TOTAL : " + sousTotal + " FCFA";
-        const msg = encodeURIComponent(msgBrut).replace(/'/g, "%27");
-        const telWhatsApp = tel.startsWith('+') ? tel.substring(1) : (tel.startsWith('225') ? tel : '225' + tel);
-        return '<div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm"><p class="font-black text-[#5b21b6] text-[10px] uppercase mb-3 border-b border-gray-100 pb-2">Boutique : ' + tel + '</p><div class="space-y-2 mb-4">' + htmlItems + '</div><button onclick="validerCommande('${tel}', '${tel}')" class="w-full bg-[#25D366] text-white font-black py-3 rounded-xl uppercase text-[10px] flex items-center justify-center gap-2 active:scale-95 transition"><i class="fab fa-whatsapp text-lg"></i> Commander ces articles</button></div>';
-            }).join('');
-            const modal = document.getElementById('modal-panier'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10);
-        }
+    function ajouterAuPanier(idProduit, tel) {
+        panier.push({ id_produit: idProduit, tel: tel });
+        
+        const badgeNav = document.getElementById('panier-count-nav');
+        if (badgeNav) badgeNav.innerText = panier.length;
+        
+        enregistrerInteraction(idProduit, 'ajout_panier');
+        localStorage.setItem('coeur_panier', JSON.stringify(panier));
+        
+        // On cherche le nom pour faire une jolie alerte
+        const articleReel = window.articlesParId ? window.articlesParId.get(idProduit) : null;
+        const nomAffiche = articleReel ? articleReel.nom : 'Article';
+        afficherAlerteCustom('Ajouté !', `\n${nomAffiche}\n a été ajouté au panier.`);
+    }
 
+    function ouvrirPanier() {
+        const container = document.getElementById('panier-liste'); 
+        const totalElt = document.getElementById('panier-total');
+        
+        if (panier.length === 0) { 
+            container.innerHTML = '<p class="text-center py-6 font-bold text-gray-400">Panier vide</p>'; 
+            if(totalElt) totalElt.innerText = "0 FCFA"; 
+            const modal = document.getElementById('modal-panier');
+            modal.style.display = 'flex'; 
+            setTimeout(() => modal.classList.add('active'), 10); 
+            return; 
+        }
+        
+        let totalGlobal = 0; 
+        const vendeurs = {};
+        
+        panier.forEach((p, index) => { 
+            const articleReel = window.articlesParId.get(p.id_produit);
+            if (!articleReel) return; // Sécurité si le produit a été supprimé
+
+            totalGlobal += parseInt(articleReel.prix); 
+            const tel = p.tel || '2250576326645'; 
+            
+            if (!vendeurs[tel]) vendeurs[tel] = []; 
+            vendeurs[tel].push({...p, index: index, nom: articleReel.nom, prix: articleReel.prix}); 
+        });
+        
+        if(totalElt) totalElt.innerText = totalGlobal + " FCFA";
+        
+        container.innerHTML = Object.keys(vendeurs).map(tel => {
+            const items = vendeurs[tel]; 
+            let sousTotal = 0;
+            
+            const htmlItems = items.map(i => { 
+                sousTotal += parseInt(i.prix); 
+                return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl"><div class="flex-1 pr-4"><p class="font-black text-[10px] text-gray-800 uppercase truncate">${echapperHTML(i.nom)}</p><p class="text-orange-500 font-bold text-xs">${i.prix} F</p></div><button onclick="retirerDuPanier(${i.index})" class="w-8 h-8 bg-red-100 text-red-500 rounded-lg flex items-center justify-center active:scale-90"><i class="fas fa-trash-alt"></i></button></div>`; 
+            }).join('');
+            
+            return '<div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm"><p class="font-black text-[#5b21b6] text-[10px] uppercase mb-3 border-b border-gray-100 pb-2">Boutique : ' + tel + '</p><div class="space-y-2 mb-4">' + htmlItems + '</div><button onclick="validerCommande(\'' + tel + '\', \'' + tel + '\')" class="w-full bg-[#25D366] text-white font-black py-3 rounded-xl uppercase text-[10px] flex items-center justify-center gap-2 active:scale-95 transition"><i class="fab fa-whatsapp text-lg"></i> Commander ces articles</button></div>';
+        }).join('');
+        
+        const modal = document.getElementById('modal-panier'); 
+        modal.style.display = 'flex'; 
+        setTimeout(() => modal.classList.add('active'), 10);
+            }
+        
         function retirerDuPanier(index) {
     panier.splice(index, 1);
     
