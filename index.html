@@ -737,9 +737,13 @@ function partager() {
         if (badgeNav) badgeNav.innerText = panier.length;
         if (panier.length === 0) fermerPanier(); else ouvrirPanier();
 
-        // 8. Ouvrir WhatsApp avec la facture officielle
-        window.open('https://wa.me/' + telWhatsApp + '?text=' + msgEncoded);
-
+        // 8. Ajouter l'indicatif 225 et ouvrir WhatsApp
+        let numeroWa = String(telWhatsApp).replace(/\s+/g, '').replace('+', '');
+        if (numeroWa.length === 10) {
+            numeroWa = '225' + numeroWa;
+        }
+        window.open('https://wa.me/' + numeroWa + '?text=' + msgEncoded);
+        
     } catch (err) {
         console.error("Erreur lors de la commande :", err);
         alert("Une erreur est survenue lors de la création de la commande. Veuillez vérifier votre connexion internet.");
