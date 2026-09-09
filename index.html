@@ -387,6 +387,7 @@ if (panier.length > 0) {
         } else {
             afficherNouveautes(articles.slice(0, 6), 'liste-nouveautes');
         }
+            }
         // --- FIN SÉLECTION VIP ---
                 
             } catch (err) {
@@ -693,8 +694,7 @@ function partager() {
 
     ouvrirPanier();
         }
-       }   
-        
+            
     async function validerCommande(telWhatsApp, telVendeur) {
     // 1. Affiche l'écran de chargement pour faire patienter le client
     const ecranLoad = document.getElementById('ecran-chargement');
