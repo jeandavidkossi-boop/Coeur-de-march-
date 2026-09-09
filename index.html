@@ -387,7 +387,7 @@ if (panier.length > 0) {
         } else {
             afficherNouveautes(articles.slice(0, 6), 'liste-nouveautes');
         }
-            }
+        
         // --- FIN SÉLECTION VIP ---
                 
             } catch (err) {
@@ -623,15 +623,8 @@ function partager() {
         function ajouterAuPanier(nom, prix, tel) {
     panier.push({ nom, prix, tel });            
         const badgeNav = document.getElementById('panier-count-nav');
-        if (badgeNav) badgeNav.innerText = panier.length;
+        if (badgeNav) badgeNav.innerText = panier.length;   
         
-        enregistrerInteraction(idProduit, 'ajout_panier');
-        localStorage.setItem('coeur_panier', JSON.stringify(panier));
-        
-        // On cherche le nom pour faire une jolie alerte
-        const articleReel = window.articlesParId ? window.articlesParId.get(idProduit) : null;
-        const nomAffiche = articleReel ? articleReel.nom : 'Article';
-        afficherAlerteCustom('Ajouté !', `\n${nomAffiche}\n a été ajouté au panier.`);
     }
 
     function ouvrirPanier() {
@@ -650,15 +643,11 @@ function partager() {
         let totalGlobal = 0; 
         const vendeurs = {};
         
-            panier.forEach((p, index) => {
-        const articleReel = window.articlesParId.get(p.id_produit);
-        if (!articleReel) return; // Sécurise si le produit a été supprimé
-
-        totalGlobal += parseInt(articleReel.prix);
-        const tel = p.tel || '2250576326645';
-        
-        if (!vendeurs[tel]) vendeurs[tel] = [];
-        vendeurs[tel].push({...p, index, nom: articleReel.nom, prix: articleReel.prix});
+            panier.forEach((p, index) => { 
+        totalGlobal += parseInt(p.prix); 
+        const tel = p.tel || '2250576326645'; 
+        if (!vendeurs[tel]) vendeurs[tel] = []; 
+        vendeurs[tel].push({ ...p, index }); 
     });
         
         if(totalElt) totalElt.innerText = totalGlobal + " FCFA";
@@ -712,8 +701,8 @@ function partager() {
             const articleReel = articles.find(a => a.nom === p.nom && String(a.vendeur) === String(p.tel))        
             if (articleReel) {
                 vraiTotal += parseInt(articleReel.prix);
-                // On prépare les données pour la base de données
-                itemsPourBase.push({ id_produit: p.id_produit, prix: articleReel.prix, nom: articleReel.nom });
+                                // On prépare les données pour la base de données
+                itemsPourBase.push({ id_produit: articleReel.id, prix: articleReel.prix, nom: articleReel.nom });
                 // On prépare le texte pour WhatsApp
                 detailTexte += `- ${articleReel.nom} (${articleReel.prix} F)\n`;
             }
