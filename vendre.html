@@ -113,6 +113,7 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-client.js"></script>
 
     <script>
             function alertePro(message) {
@@ -127,9 +128,7 @@
     };
 
 // --- DÉTECTEUR AUTOMATIQUE DE RETOUR D'EMAIL ---
-const dbUrlGlobal = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-const dbKeyGlobal = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-const supabaseGlobal = window.supabase.createClient(dbUrlGlobal, dbKeyGlobal);
+const supabaseGlobal = window.supabaseClient;
 
 function afficherModal() {
   if (document.getElementById('mon-modal')) return;
@@ -169,10 +168,8 @@ supabaseGlobal.auth.onAuthStateChange((event) => {
     return;
   }
 
-  // Initialisation de Supabase avec ta clé
-  const dbUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-  const dbKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-  const supabase = window.supabase.createClient(dbUrl, dbKey);
+  // Initialisation de Supabase
+  const supabase = window.supabaseClient;
                       
   const btn = document.getElementById('btnAction');
   btn.innerText = "Envoi du mail...";
@@ -207,9 +204,7 @@ supabaseGlobal.auth.onAuthStateChange((event) => {
                 return;
             }
 
-            const supabaseUrl = 'https://szhxxohizqnwcmsltjtq.supabase.co';
-            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN6aHh4b2hpenFud2Ntc2x0anRxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMjE3MzcsImV4cCI6MjA5MTU5NzczN30.L0cczdas6kwaOSEehHF5s7nYU06W0u1s2_cRaytbRzw';
-            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            const supabase = window.supabaseClient;
             
             btn.innerText = "Traitement en cours...";
 
