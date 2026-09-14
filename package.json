@@ -1,0 +1,27 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "Application officielle de Cœur de Marché Bouaflé - Le carrefour digital de la Marahoué.",
+  "main": "sw.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeandavidkossi-boop/Coeur-de-march-.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/jeandavidkossi-boop/Coeur-de-march-/issues"
+  },
+  "homepage": "https://github.com/jeandavidkossi-boop/Coeur-de-march-#readme",
+  "devDependencies": {
+    "vite": "^8.3.0"
+  }
+}
