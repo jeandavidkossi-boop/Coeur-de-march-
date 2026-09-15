@@ -1,5 +1,5 @@
-const dbUrl = "VOTRE_VRAIE_URL_SUPABASE";
-const dbKey = "VOTRE_VRAIE_CLE_ANON_SUPABASE";
+const dbUrl = "https://szhxxohizqnwcmsltjtq.supabase.co";
+const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
 
 let mySupabase = null;
 let myUser = null;
