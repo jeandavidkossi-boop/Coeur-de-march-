@@ -1,13 +1,5 @@
 
 -- ========================================================================================
--- 0. Schema Migrations: Cast string phone numbers to UUID columns for true relational security
--- ========================================================================================
--- Note: In a real database with existing data (phone numbers), direct casting to UUID will fail.
--- Assuming this is either a fresh install or data has been migrated externally:
-ALTER TABLE produits ALTER COLUMN vendeur TYPE uuid USING vendeur::uuid;
-ALTER TABLE commandes RENAME COLUMN vendeur_tel TO vendeur_id;
-ALTER TABLE commandes ALTER COLUMN vendeur_id TYPE uuid USING vendeur_id::uuid;
-
 -- Secure Cœur de Marché Bouaflé Database
 -- This script enables Row Level Security (RLS) on all relevant tables to prevent unauthorized access.
 -- Ensure that you execute this in your Supabase SQL Editor.
@@ -48,15 +40,15 @@ USING (true);
 
 CREATE POLICY "Users can insert their own produits."
 ON produits FOR INSERT
-WITH CHECK (auth.uid() = vendeur); -- Assuming 'vendeur' stores the UUID of the vendor
+WITH CHECK (vendeur = (SELECT whatsapp FROM vendeurs WHERE id = auth.uid()));
 
 CREATE POLICY "Users can update their own produits."
 ON produits FOR UPDATE
-USING (auth.uid() = vendeur);
+USING (vendeur = (SELECT whatsapp FROM vendeurs WHERE id = auth.uid()));
 
 CREATE POLICY "Users can delete their own produits."
 ON produits FOR DELETE
-USING (auth.uid() = vendeur);
+USING (vendeur = (SELECT whatsapp FROM vendeurs WHERE id = auth.uid()));
 
 -- ========================================================================================
 -- 3. Table: commandes
@@ -74,7 +66,7 @@ WITH CHECK (true);
 -- Vendors can view their own commands
 CREATE POLICY "Vendors can view their own commandes."
 ON commandes FOR SELECT
-USING (auth.uid() = vendeur_id);
+USING (vendeur_tel = (SELECT whatsapp FROM vendeurs WHERE id = auth.uid()));
 
 -- ========================================================================================
 -- 4. Table: interactions_utilisateurs
