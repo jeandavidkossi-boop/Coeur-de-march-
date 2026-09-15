@@ -115,7 +115,7 @@ if (panier.length > 0) {
             : "background: linear-gradient(to right, #4c1d95, #7c3aed);";
 
         return `
-        <div onclick="filtrerVIP('${telVendeur}', '${echapperHTML(nomBoutique).replace(/'/g, "\\'")}', '${imageCouverture}')"
+        <div onclick="filtrerVIP('${v.whatsapp || v.telephone || v.numero || ''}', '${echapperHTML(nomBoutique).replace(/'/g, "\\'")}', '${imageCouverture}')"
              style="${bgStyle}"
              class="min-w-[220px] h-24 rounded-2xl shadow-md p-4 flex flex-col justify-center relative overflow-hidden shrink-0">
 

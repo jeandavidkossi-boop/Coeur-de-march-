@@ -5,9 +5,9 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(import.meta.dirname, 'index.html'),
-        vendre: resolve(import.meta.dirname, 'vendre.html'),
-        bureau: resolve(import.meta.dirname, 'bureau.html'),
+        main: resolve(new URL('.', import.meta.url).pathname, 'index.html'),
+        vendre: resolve(new URL('.', import.meta.url).pathname, 'vendre.html'),
+        bureau: resolve(new URL('.', import.meta.url).pathname, 'bureau.html'),
       },
     },
   },
