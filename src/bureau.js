@@ -116,7 +116,7 @@ const dbKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
                 let statutArticle = 'actif';
 
                 const { error: errProduit } = await mySupabase.from('produits').insert([{
-                    nom: nomP, prix: prixP, categorie: catP, description: descP, vendeur: myUser.id, image: publicUrl, statut: statutArticle
+                    nom: nomP, prix: prixP, categorie: catP, description: descP, vendeur: myWhatsapp, image: publicUrl, statut: statutArticle
                 }]);
 
                 if (errProduit) throw new Error(errProduit.message);
@@ -158,7 +158,7 @@ const dbKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
             const { data, error, count } = await mySupabase
                 .from('produits')
                 .select('*', { count: 'exact' })
-                .eq('vendeur', myUser.id)
+                .eq('vendeur', myWhatsapp)
                 .order('dateajout', { ascending: false })
                 .range(from, to);
 

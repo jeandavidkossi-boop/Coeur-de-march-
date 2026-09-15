@@ -513,7 +513,7 @@ function partager() {
             .from('commandes')
             .insert([{
                 device_id: deviceId,
-                vendeur_id: String(telVendeur),
+                vendeur_tel: String(telVendeur),
                 total_fcfa: vraiTotal,
                 items: itemsPourBase
             }])
