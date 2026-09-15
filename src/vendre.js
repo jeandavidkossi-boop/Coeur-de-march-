@@ -1,37 +1,37 @@
 let estEnInscription = false;
 
-        function modeI() {
-            estEnInscription = true;
-            document.getElementById('champs-inscription').style.display = 'block';
-            document.getElementById('form-titre').innerText = "Inscription nouveau vendeur";
-            document.getElementById('btnAction').innerText = "Créer ma boutique";
-            document.getElementById('swInsc').className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
-            document.getElementById('swConn').className = "text-gray-400 font-bold text-xs uppercase pb-1";
-        }
+function modeI() {
+    estEnInscription = true;
+    document.getElementById('champs-inscription').style.display = 'block';
+    document.getElementById('form-titre').innerText = "Inscription nouveau vendeur";
+    document.getElementById('btnAction').innerText = "Créer ma boutique";
+    document.getElementById('swInsc').className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
+    document.getElementById('swConn').className = "text-gray-400 font-bold text-xs uppercase pb-1";
+}
 
-        function modeC() {
-            estEnInscription = false;
-            document.getElementById('champs-inscription').style.display = 'none';
-            document.getElementById('form-titre').innerText = "Connectez-vous à votre boutique";
-            document.getElementById('btnAction').innerText = "Se connecter";
-            document.getElementById('swConn').className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
-            document.getElementById('swInsc').className = "text-gray-400 font-bold text-xs uppercase pb-1";
-        }
+function modeC() {
+    estEnInscription = false;
+    document.getElementById('champs-inscription').style.display = 'none';
+    document.getElementById('form-titre').innerText = "Connectez-vous à votre boutique";
+    document.getElementById('btnAction').innerText = "Se connecter";
+    document.getElementById('swConn').className = "text-cdm-purple font-bold text-xs uppercase border-b-2 border-cdm-orange pb-1";
+    document.getElementById('swInsc').className = "text-gray-400 font-bold text-xs uppercase pb-1";
+}
 
-            function alertePro(message) {
-        const n = document.getElementById('notif-custom');
-        n.innerText = message;
-        n.classList.add('active');
-        setTimeout(() => { n.classList.remove('active'); }, 3000);
-    }
+function alertePro(message) {
+    const n = document.getElementById('notif-custom');
+    n.innerText = message;
+    n.classList.add('active');
+    setTimeout(() => { n.classList.remove('active'); }, 3000);
+}
 
-    window.alert = function(msg) {
-        alertePro(msg);
-    };
+window.alert = function(msg) {
+    alertePro(msg);
+};
 
 // --- DÉTECTEUR AUTOMATIQUE DE RETOUR D'EMAIL ---
-const dbUrlGlobal = import.meta.env.VITE_SUPABASE_URL;
-const dbKeyGlobal = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const dbUrlGlobal = "https://szhxxohizqnwcmsltjtq.supabase.co";
+const dbKeyGlobal = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
 const supabaseGlobal = window.supabase.createClient(dbUrlGlobal, dbKeyGlobal);
 
 function afficherModal() {
@@ -64,7 +64,7 @@ supabaseGlobal.auth.onAuthStateChange((event) => {
 });
 // ------------------------------------------------
 
-        async function motDePasseOublie() {
+async function motDePasseOublie() {
   const email = document.getElementById('email').value;
 
   if (!email) {
@@ -72,9 +72,9 @@ supabaseGlobal.auth.onAuthStateChange((event) => {
     return;
   }
 
-  // Initialisation de Supabase avec ta clé
-  const dbUrl = import.meta.env.VITE_SUPABASE_URL;
-  const dbKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  // Initialisation de Supabase avec vos clés
+  const dbUrl = "https://szhxxohizqnwcmsltjtq.supabase.co";
+  const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
   const supabase = window.supabase.createClient(dbUrl, dbKey);
 
   const btn = document.getElementById('btnAction');
@@ -91,90 +91,89 @@ supabaseGlobal.auth.onAuthStateChange((event) => {
   }
 
   btn.innerText = "SE CONNECTER";
+}
+
+async function executerAction() {
+    const email = document.getElementById('email').value;
+    const pass = document.getElementById('password').value;
+    const btn = document.getElementById('btnAction');
+
+    // 1. Vérification de base
+    if(!email || !pass) {
+        alert("L'email et le mot de passe sont obligatoires !");
+        return;
+    }
+
+    // 2. Vérification anti-crash : on s'assure que Supabase est bien réveillé
+    if (typeof window.supabase === 'undefined') {
+        alert("Le système de base de données est en cours de chargement. Veuillez patienter une seconde et réessayer.");
+        return;
+    }
+
+    const supabaseUrl = "https://szhxxohizqnwcmsltjtq.supabase.co";
+    const supabaseKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    btn.innerText = "Traitement en cours...";
+
+    if(estEnInscription) {
+        const nomB = document.getElementById('nomB').value;
+        const nomP = document.getElementById('nomP').value;
+        const tel = document.getElementById('telephone').value;
+
+        // Vérification stricte des champs obligatoires
+        if(!nomB || !nomP || !tel) {
+            alert("Veuillez remplir TOUTES les informations (Nom, Propriétaire, WhatsApp).");
+            btn.innerText = "Créer ma boutique";
+            return;
         }
 
-        async function executerAction() {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            const btn = document.getElementById('btnAction');
+        // A. Création du compte sécurisé
+        const { data, error: authError } = await supabase.auth.signUp({
+            email: email,
+            password: pass
+        });
 
-            // 1. Vérification de base
-            if(!email || !pass) {
-                alert("L'email et le mot de passe sont obligatoires !");
-                return;
-            }
+        if(authError) {
+            alert("Erreur d'inscription : " + authError.message);
+            btn.innerText = "Créer ma boutique";
+        } else if (data.user) {
 
-            // 2. Vérification anti-crash : on s'assure que Supabase est bien réveillé
-            if (typeof window.supabase === 'undefined') {
-                alert("Le système de base de données est en cours de chargement. Veuillez patienter une seconde et réessayer.");
-                return;
-            }
-
-            const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-            const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-            btn.innerText = "Traitement en cours...";
-
-            if(estEnInscription) {
-                const nomB = document.getElementById('nomB').value;
-                const nomP = document.getElementById('nomP').value;
-                const tel = document.getElementById('telephone').value;
-
-                // Vérification stricte des champs obligatoires
-                if(!nomB || !nomP || !tel) {
-                    alert("Veuillez remplir TOUTES les informations (Nom, Propriétaire, WhatsApp).");
-                    btn.innerText = "Créer ma boutique";
-                    return;
-                }
-
-                // A. Création du compte sécurisé
-                const { data, error: authError } = await supabase.auth.signUp({
+            // B. Envoi des informations dans la table "vendeurs"
+            const { error: dbError } = await supabase.from('vendeurs').insert([
+                {
+                    id: data.user.id,
+                    nom_boutique: nomB,
+                    proprietaire: nomP,
+                    whatsapp: tel,
                     email: email,
-                    password: pass
-                });
-
-                if(authError) {
-                    alert("Erreur d'inscription : " + authError.message);
-                    btn.innerText = "Créer ma boutique";
-                } else if (data.user) {
-
-                    // B. Envoi des informations dans ta table "vendeurs"
-                    const { error: dbError } = await supabase.from('vendeurs').insert([
-                        {
-                            id: data.user.id,
-                            nom_boutique: nomB,
-                            proprietaire: nomP,
-                            whatsapp: tel,
-                            email: email,
-                            abonnement: 'standard'
-                        }
-                    ]);
-
-                    if(dbError) {
-                        alert("Erreur d'enregistrement dans la table : " + dbError.message);
-                        btn.innerText = "Créer ma boutique";
-                    } else {
-                        alert("Félicitations ! Votre boutique est créée. Connectez-vous maintenant.");
-                        modeC();
-                    }
+                    abonnement: 'standard'
                 }
+            ]);
+
+            if(dbError) {
+                alert("Erreur d'enregistrement dans la table : " + dbError.message);
+                btn.innerText = "Créer ma boutique";
             } else {
-                // CONNEXION CLASSIQUE
-                const { error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: pass
-                });
-
-                if(error) {
-                    alert("Identifiants incorrects.");
-                    btn.innerText = "Se connecter";
-                } else {
-                    window.location.href = "bureau.html"; // Redirection vers le bureau
-                }
+                alert("Félicitations ! Votre boutique est créée. Connectez-vous maintenant.");
+                modeC();
             }
         }
+    } else {
+        // CONNEXION CLASSIQUE
+        const { error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: pass
+        });
 
+        if(error) {
+            alert("Identifiants incorrects.");
+            btn.innerText = "Se connecter";
+        } else {
+            window.location.href = "bureau.html"; // Redirection vers le bureau
+        }
+    }
+}
 
 // Expose functions to global scope for inline event listeners
 window.alertePro = alertePro;
