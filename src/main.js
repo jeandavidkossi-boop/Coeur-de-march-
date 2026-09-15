@@ -54,8 +54,9 @@ async function init() {
     const ecranLoad = document.getElementById('ecran-chargement');
     try {
         // --- CORRECTION CLÉS SUPABASE ICI ---
-        const dbUrl = "VOTRE_VRAIE_URL_SUPABASE";
-        const dbKey = "VOTRE_VRAIE_CLE_ANON_SUPABASE";
+        const dbUrl = "https://szhxxohizqnwcmsltjtq.supabase.co";
+const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
+        
         // ------------------------------------
         
         monSupabase = window.supabase.createClient(dbUrl, dbKey);
