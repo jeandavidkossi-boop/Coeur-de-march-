@@ -3,6 +3,10 @@
   "target": {
     "namespace": "android_app",
     "package_name": "com.coeurdemarche.bouafle",
-    "sha256_cert_fingerprints": ["8C:42:BA:D9:C4:E2:B2:67:9B:23:E1:1F:A8:52:ED:6E:19:8C:CF:63:E2:64:10:52:D0:B6:12:CC:F0:60:E1:4C"]
+    "sha256_cert_fingerprints": [
+      "75:FA:EF:10:F5:54:61:D7:E5:DD:CE:21:B6:05:56:6C:03:39:F1:63:2B:26:67:44:39:C2:06:F6:E6:8A:EC:5F",
+      "8C:42:BA:D9:C4:E2:B2:67:9B:23:E1:1F:A8:52:ED:6E:19:8C:CF:63:E2:64:10:52:D0:B6:12:CC:F0:60:E1:4C"
+    ]
   }
 }]
+
