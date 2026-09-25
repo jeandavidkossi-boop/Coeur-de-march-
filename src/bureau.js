@@ -59,7 +59,7 @@ function fermerConfirm() {
 
 // Action de confirmation de suppression
 document.getElementById('btn-confirm-action').addEventListener('click', async () => {
-    if(articleASupprimer) {
+    if (articleASupprimer) {
         await mySupabase.from('produits').delete().eq('id', articleASupprimer);
         fermerConfirm();
         chargerMesArticles();
@@ -70,7 +70,7 @@ document.getElementById('btn-confirm-action').addEventListener('click', async ()
 // --- 1. BOUTON ORANGE : PUBLIER ---
 async function publierAnnonce() {
     if (monAbonnement === 'standard' && monNombreArticles >= 5) {
-afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 5 emplacements gratuits. Passez PRO pour un stock ILLIMITÉ.", "erreur");
+        afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 5 emplacements gratuits. Passez PRO pour un stock ILLIMITÉ.", "erreur");
         return;
     }
 
@@ -130,7 +130,7 @@ afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 5 emplacements g
         btn.innerText = "Publier sur le marché";
         btn.disabled = false;
     }
-                }
+}
 
 // --- 2. BOUTON SORTIR ---
 async function deconnecter() {
@@ -140,7 +140,7 @@ async function deconnecter() {
 
 // --- 3. SELECTION PHOTO ---
 document.getElementById('photoInput').addEventListener('change', function(e) {
-    if(e.target.files && e.target.files[0]) {
+    if (e.target.files && e.target.files[0]) {
         myPhoto = e.target.files[0];
         document.getElementById('btnPhotoText').innerText = "IMAGE PRÊTE ✅";
         document.getElementById('btnPhotoText').style.color = "#16a34a";
@@ -285,7 +285,7 @@ async function sauvegarderModification() {
         btn.innerText = "SAUVEGARDER";
         btn.disabled = false;
     }
-            }
+}
 
 function mettreAJourPagination(total) {
     const controls = document.getElementById('pagination-controls');
@@ -355,16 +355,19 @@ async function demarrerBureau() {
             .single();
 
         if (vendeur) {
-            // AVIS D'EXPERT : On affiche le badge de confiance si le vendeur est PRO
-            if (monAbonnement === 'pro') {
-                document.getElementById('badge-pro').classList.remove('hidden');
-            }
-
             document.getElementById('nom-boutique').innerText = vendeur.nom_boutique || "Boutique";
             document.getElementById('nom-vendeur').innerText = "Gérant : " + (vendeur.proprietaire || "Gérant");
             myWhatsapp = vendeur.whatsapp;
 
+            // On récupère d'abord l'abonnement
             monAbonnement = vendeur.abonnement || 'standard';
+
+            // Puis on affiche le badge PRO si éligible
+            if (monAbonnement === 'pro' || monAbonnement === 'vip') {
+                const badgePro = document.getElementById('badge-pro');
+                if (badgePro) badgePro.classList.remove('hidden');
+            }
+
             const badge = document.getElementById('badge-abonnement');
             badge.innerText = monAbonnement;
             badge.classList.remove('hidden');
@@ -436,11 +439,10 @@ async function optimiserImageExistante() {
     } finally {
         btnOpti.innerHTML = '<i class="fas fa-compress-arrows-alt"></i> Alléger l\'image actuelle';
         btnOpti.disabled = false;
-    }                                                                                       
+    }
 }
 
 demarrerBureau();
-
 
 // Expose functions to global scope for inline event listeners
 window.deconnecter = deconnecter;
