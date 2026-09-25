@@ -55,8 +55,7 @@ async function init() {
     try {
         // --- CORRECTION CLÉS SUPABASE ICI ---
         const dbUrl = "https://szhxxohizqnwcmsltjtq.supabase.co";
-const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
-        
+        const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
         // ------------------------------------
         
         monSupabase = window.supabase.createClient(dbUrl, dbKey);
@@ -122,7 +121,7 @@ const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
                     : "background: linear-gradient(to right, #4c1d95, #7c3aed);";
 
                 return `
-                <div onclick=\"filtrerVIP('${v.id}', '${echapperHTML(nomBoutique).replace(/'/g, "\\'")}', '${imageCouverture}')"
+                <div onclick="filtrerVIP('${v.id}', '${echapperHTML(nomBoutique).replace(/'/g, "\\'")}', '${imageCouverture}')"
                      style="${bgStyle}"
                      class="min-w-[220px] h-24 rounded-2xl shadow-md p-4 flex flex-col justify-center relative overflow-hidden shrink-0">
                     <div class="absolute inset-0 bg-black/60"></div>
@@ -153,7 +152,7 @@ const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
         const boutiqueRecherche = new URLSearchParams(window.location.search).get('boutique');
         if (boutiqueRecherche) {
             setTimeout(() => {
-                const vendeurTrouve = vendeursVip ? vendeursVip.find(v => String(v.id) === String(boutiqueRecherche)) : null;
+                const vendeurTrouve = vendeursVip ? vendeursVip.find(v => String(v.id) === String(boutiqueRecherche) || String(v.whatsapp) === String(boutiqueRecherche)) : null;
                 const nomPourBanniere = vendeurTrouve ? vendeurTrouve.nom_boutique : "Boutique Officielle";
                 const imagePourBanniere = vendeurTrouve ? (vendeurTrouve.image || vendeurTrouve.photo_couverture || vendeurTrouve.logo || '') : '';
                 filtrerVIP(boutiqueRecherche, nomPourBanniere, imagePourBanniere);
@@ -162,7 +161,7 @@ const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
 
         // --- NOUVEAU : SÉLECTION DU MOMENT (100% VIP) ---
         if (vendeursVip && vendeursVip.length > 0) {
-            const numerosVIP = vendeursVip.map(v => String(v.id));
+            const numerosVIP = vendeursVip.map(v => String(v.whatsapp));
             const articlesVIP = articles.filter(a => numerosVIP.includes(String(a.vendeur)));
             const selectionVIP = articlesVIP.sort(() => 0.5 - Math.random()).slice(0, 6);
             if (selectionVIP.length > 0) {
@@ -179,11 +178,12 @@ const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
     } finally {
         if (ecranLoad) { ecranLoad.style.opacity = '0'; setTimeout(() => { ecranLoad.style.display = 'none'; }, 300); }
     }
-               }
-            function filtrerVIP(idVendeur, nomBoutique, imageCouverture = '') {
+}
+
+function filtrerVIP(idVendeur, nomBoutique, imageCouverture = '') {
+    const telVendeur = window.vendeursMap[idVendeur] || idVendeur || '';
     const zoneBanniere = document.getElementById('banniere-vendeur');
-    if(zoneBanniere) {
-        const telVendeur = window.vendeursMap[idVendeur] || '';
+    if (zoneBanniere) {
         const styleFond = (imageCouverture && imageCouverture !== 'null' && imageCouverture !== 'undefined' && imageCouverture !== '')
             ? "background-image: url('" + imageCouverture + "'); background-size: cover; background-position: center;"
             : "background: linear-gradient(to right, #4c1d95, #7c3aed);";
@@ -207,7 +207,7 @@ const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
     }
 
     document.getElementById('inputRecherche').value = nomBoutique;
-    const resultats = articles.filter(a => String(a.vendeur) === String(idVendeur));
+    const resultats = articles.filter(a => String(a.vendeur) === String(telVendeur));
 
     document.getElementById('vue-accueil').classList.add('hidden');
     document.getElementById('vue-rayon').classList.add('hidden');
@@ -221,9 +221,9 @@ const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
 
     setTimeout(() => {
         const listeElt = document.getElementById('liste-boutique');
-        if(listeElt) listeElt.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (listeElt) listeElt.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 300);
-}
+            }
 
 function afficherNouveautes(liste, target) {
     const container = document.getElementById(target); if (!container) return;
@@ -245,6 +245,7 @@ function afficherProduits(liste, target, resetPage = true) {
     if (target === 'liste-boutique') critereTri = document.getElementById('tri-prix-boutique').value;
     if (target === 'liste-rayon') critereTri = document.getElementById('tri-prix-rayon').value;
 
+    // 1. Tri choisi par l'utilisateur
     if (critereTri === 'croissant') {
         listeTriee.sort((a, b) => parseInt(a.prix) - parseInt(b.prix));
     } else if (critereTri === 'decroissant') {
@@ -253,6 +254,14 @@ function afficherProduits(liste, target, resetPage = true) {
         listeTriee.reverse();
     }
 
+    // 2. Les articles boostés passent prioritairement en tête
+    listeTriee.sort((a, b) => {
+        if (a.est_booste === true && b.est_booste !== true) return -1;
+        if (b.est_booste === true && a.est_booste !== true) return 1;
+        return 0;
+    });
+
+    // 3. Découpage de la page courante
     const totalPages = Math.ceil(listeTriee.length / elementsParPage);
     if (pageCourante > totalPages && totalPages > 0) pageCourante = totalPages;
 
@@ -264,12 +273,6 @@ function afficherProduits(liste, target, resetPage = true) {
         container.innerHTML = `<div style="grid-column: 1 / -1;" class="text-center py-8 text-gray-400">Aucun produit trouvé.</div>`;
         return;
     }
-
-    listeTriee.sort((a, b) => {
-        if (a.est_booste === true && b.est_booste !== true) return -1;
-        if (b.est_booste === true && a.est_booste !== true) return 1;
-        return 0;
-    });
 
     container.innerHTML = listeFinale.map(p => {
         const designCarte = p.est_booste ? 'bg-orange-50 border-2 border-[#f97316]' : 'bg-white border-gray-100';
@@ -392,7 +395,7 @@ function ouvrirPanier() {
 
     if (panier.length === 0) {
         container.innerHTML = '<p class="text-center py-6 font-bold text-gray-400">Panier vide</p>';
-        if(totalElt) totalElt.innerText = "0 FCFA";
+        if (totalElt) totalElt.innerText = "0 FCFA";
         const modal = document.getElementById('modal-panier');
         modal.style.display = 'flex';
         setTimeout(() => modal.classList.add('active'), 10);
@@ -409,7 +412,7 @@ function ouvrirPanier() {
         vendeurs[tel].push({ ...p, index });
     });
 
-    if(totalElt) totalElt.innerText = totalGlobal + " FCFA";
+    if (totalElt) totalElt.innerText = totalGlobal + " FCFA";
 
     container.innerHTML = Object.keys(vendeurs).map(tel => {
         const items = vendeurs[tel];
@@ -420,7 +423,7 @@ function ouvrirPanier() {
             return `<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl"><div class="flex-1 pr-4"><p class="font-black text-[10px] text-gray-800 uppercase truncate">${echapperHTML(i.nom)}</p><p class="text-orange-500 font-bold text-xs">${i.prix} F</p></div><button onclick="retirerDuPanier(${i.index})" class="w-8 h-8 bg-red-100 text-red-500 rounded-lg flex items-center justify-center active:scale-90"><i class="fas fa-trash-alt"></i></button></div>`;
         }).join('');
 
-        return '<div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm"><p class=\"font-black text-[#5b21b6] text-[10px] uppercase mb-3 border-b border-gray-100 pb-2\">Boutique : ' + (window.vendeursMap[tel] || tel) + '</p><div class="space-y-2 mb-4">' + htmlItems + '</div><button onclick="validerCommande(\'' + tel + '\', \'' + tel + '\')" class="w-full bg-[#25D366] text-white font-black py-3 rounded-xl uppercase text-[10px] flex items-center justify-center gap-2 active:scale-95 transition"><i class="fab fa-whatsapp text-lg"></i> Commander ces articles</button></div>';
+        return '<div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm"><p class="font-black text-[#5b21b6] text-[10px] uppercase mb-3 border-b border-gray-100 pb-2">Boutique : ' + (window.vendeursMap[tel] || tel) + '</p><div class="space-y-2 mb-4">' + htmlItems + '</div><button onclick="validerCommande(\'' + tel + '\', \'' + tel + '\')" class="w-full bg-[#25D366] text-white font-black py-3 rounded-xl uppercase text-[10px] flex items-center justify-center gap-2 active:scale-95 transition"><i class="fab fa-whatsapp text-lg"></i> Commander ces articles</button></div>';
     }).join('');
 
     const modal = document.getElementById('modal-panier');
@@ -449,7 +452,7 @@ async function validerCommande(telWhatsApp, telVendeur) {
         let detailTexte = "";
 
         articlesVendeur.forEach(p => {
-            const articleReel = articles.find(a => a.nom === p.nom && String(a.vendeur) === String(p.tel))
+            const articleReel = articles.find(a => a.nom === p.nom && String(a.vendeur) === String(p.tel));
             if (articleReel) {
                 vraiTotal += parseInt(articleReel.prix);
                 itemsPourBase.push({ id_produit: articleReel.id, prix: articleReel.prix, nom: articleReel.nom });
@@ -519,14 +522,14 @@ function changerVue(v) {
 
     if (v === 'boutique') {
         const menu = document.getElementById('menu-rayons');
-        if(menu) menu.classList.remove('hidden');
+        if (menu) menu.classList.remove('hidden');
 
         const banniere = document.getElementById('banniere-vendeur');
-        if(banniere) banniere.innerHTML = '';
+        if (banniere) banniere.innerHTML = '';
 
         afficherProduits(articles, 'liste-boutique');
     }
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
 }
 
 function filtrerAccueil(c) { document.getElementById('titre-rayon').innerText = c; const f = articles.filter(a => a.categorie && a.categorie.includes(c)); afficherProduits(f, 'liste-rayon'); changerVue('rayon'); }
@@ -614,4 +617,4 @@ window.addEventListener('scroll', () => { const btn = document.getElementById('b
 
 init();
 if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); }); }
-            
+        
