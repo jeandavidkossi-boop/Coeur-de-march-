@@ -12,7 +12,7 @@
         .text-cdm-purple { color: #5b21b6; }
         .bg-cdm-orange { background-color: #f97316; }
         .border-cdm-orange { border-color: #f97316; }
-            #notif-custom {
+        #notif-custom {
             position: fixed;
             top: -100px;
             left: 50%;
@@ -30,15 +30,14 @@
         }
         #notif-custom.active { top: 25px; }
     </style>
-    </head>
-    
+</head>
 <body class="min-h-screen flex items-center justify-center p-4">
     <div id="notif-custom">Message envoyé !</div>
     
     <div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-gray-200 p-8">
         
         <div class="text-center mb-8">
-            <img src="1769121566036.png" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-cdm-orange shadow-sm" alt="Logo" onerror="this.src='https://via.placeholder.com/80?text=CDM'">
+            <img src="logo-pwa-512x512.png" class="w-20 h-20 rounded-full mx-auto mb-4 border-2 border-cdm-orange shadow-sm object-contain bg-white" alt="Logo" onerror="this.src='1769121566036.png'">
             <h1 class="text-2xl font-extrabold text-cdm-purple uppercase tracking-tight">Coeur de Marché</h1>
             <p class="text-cdm-orange font-bold text-xs uppercase tracking-widest">Bouaflé</p>
             <div class="h-1 w-12 bg-cdm-orange mx-auto mt-2 rounded-full"></div>
@@ -58,7 +57,7 @@
                 </div>
                 <div class="relative">
                     <i class="fab fa-whatsapp absolute left-4 top-4 text-gray-400"></i>
-                    <input type="tel" id="telephone" placeholder="Numéro WhatsApp" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
+                    <input type="tel" id="telephone" placeholder="Numéro WhatsApp (ex: 0700000000)" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
                 </div>
             </div>
 
@@ -71,7 +70,7 @@
                 <input type="password" id="password" placeholder="Mot de passe" class="w-full p-3.5 pl-11 bg-gray-50 border border-gray-200 rounded-xl outline-none font-medium">
             </div>
             <div class="text-right mb-4">
-  <button type="button" onclick="motDePasseOublie()" class="text-xs font-bold text-cdm-purple hover:underline">Mot de passe oublié ?</button>
+                <button type="button" onclick="motDePasseOublie()" class="text-xs font-bold text-cdm-purple hover:underline">Mot de passe oublié ?</button>
             </div>
             
             <button id="btnAction" onclick="executerAction()" class="w-full bg-cdm-orange text-white font-bold py-4 rounded-xl shadow-md active:scale-95 transition-all uppercase tracking-wider mt-4">
@@ -90,7 +89,8 @@
             </a>
         </div>
     </div>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="src/vendre.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="src/vendre.js"></script>
 </body>
 </html>
+
