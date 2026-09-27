@@ -233,7 +233,7 @@ function mettreAJourCompteurEtFormulaire(totalArticles) {
         if (formElt) formElt.classList.remove('hidden');
         if (msgLimiteElt) msgLimiteElt.classList.add('hidden');
     }
-        }
+            }
 
 async function chargerMesArticles(page = 1) {
     if (!myWhatsapp) return;
@@ -409,7 +409,7 @@ async function sauvegarderModification() {
         btn.innerText = "Sauver";
         btn.disabled = false;
     }
-        }
+}
 
 function mettreAJourPagination(total) {
     const controls = document.getElementById('pagination-controls');
@@ -455,21 +455,39 @@ function mettreAJourPagination(total) {
     }
 }
 
+async function enregistrerDemande(type, produitId, messageTexte) {
+    try {
+        await mySupabase.from('demandes').insert([{
+            vendeur_tel: myWhatsapp,
+            nom_boutique: monNomBoutique,
+            produit_id: produitId || null,
+            type: type,
+            message: messageTexte
+        }]);
+    } catch (e) {
+        console.log("Enregistrement demande ignoré", e);
+    }
+}
+
 function contacterAdminUpgrade() {
-    const message = encodeURIComponent(`Bonjour Cœur de Marché, je suis le gérant de la boutique "${monNomBoutique}". Je souhaite passer au statut de VENDEUR VIP pour 2000F/mois et booster mes ventes.`);
-    window.open(`https://wa.me/${NUMERO_ADMIN}?text=${message}`);
+    const texte = `Bonjour Cœur de Marché, je suis le gérant de la boutique "${monNomBoutique}". Je souhaite passer au statut de VENDEUR VIP pour 2000F/mois et booster mes ventes.`;
+    enregistrerDemande('vip', null, texte);
+    window.open(`https://wa.me/${NUMERO_ADMIN}?text=${encodeURIComponent(texte)}`);
 }
 
 function contacterAdminPro() {
-    const message = encodeURIComponent(`Bonjour Cœur de Marché, ma boutique "${monNomBoutique}" souhaite passer au forfait PRO pour publier en illimité.`);
-    window.open(`https://wa.me/${NUMERO_ADMIN}?text=${message}`);
+    const texte = `Bonjour Cœur de Marché, ma boutique "${monNomBoutique}" souhaite passer au forfait PRO pour publier en illimité.`;
+    enregistrerDemande('pro', null, texte);
+    window.open(`https://wa.me/${NUMERO_ADMIN}?text=${encodeURIComponent(texte)}`);
 }
 
 function demanderBoost(idOuNom) {
     const article = window.mesArticlesLocaux.find(a => String(a.id) === String(idOuNom));
     const nomArticle = article ? article.nom : idOuNom;
-    const message = encodeURIComponent(`Bonjour Cœur de Marché, je suis la boutique "${monNomBoutique}". Je souhaite activer un BOOST pour mon article : ${nomArticle}`);
-    window.open(`https://wa.me/${NUMERO_ADMIN}?text=${message}`);
+    const idArticle = article ? article.id : null;
+    const texte = `Bonjour Cœur de Marché, je suis la boutique "${monNomBoutique}". Je souhaite activer un BOOST pour mon article : ${nomArticle}`;
+    enregistrerDemande('boost', idArticle, texte);
+    window.open(`https://wa.me/${NUMERO_ADMIN}?text=${encodeURIComponent(texte)}`);
 }
 
 function partagerMaBoutique() {
@@ -543,7 +561,7 @@ async function changerBanniereVIP(event) {
         if (btnTexte) btnTexte.innerText = "Changer la photo de ma boutique VIP";
         if (btnElt) btnElt.disabled = false;
     }
-    }
+}
 
 async function chargerStatsEtCommandes() {
     if (!mySupabase || !myWhatsapp) return;
@@ -772,4 +790,5 @@ window.partagerMaBoutique = partagerMaBoutique;
 window.appelerLivreur = appelerLivreur;
 window.envoyerCommandeLivreur = envoyerCommandeLivreur;
 window.changerBanniereVIP = changerBanniereVIP;
-                                                                                          
+window.enregistrerDemande = enregistrerDemande;
+            
