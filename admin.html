@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#5b21b6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Admin CDM">
+<link rel="apple-touch-icon" href="logo-pwa-512x512.png">
+<title>Administration - Cœur de Marché Bouaflé</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+    body { font-family: 'Inter', sans-serif; background-color: #f8f9fd; }
+    .header-bg { background-color: #5b21b6; }
+    .tab-btn { color: #9ca3af; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 10px 4px; border-bottom: 3px solid transparent; white-space: nowrap; }
+    .tab-btn.active { color: #5b21b6; border-bottom: 3px solid #f97316; }
+    .carte { background: white; border-radius: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 14px; }
+    .badge-standard { background:#e5e7eb; color:#374151; }
+    .badge-pro { background:#ddd6fe; color:#5b21b6; }
+    .badge-vip { background:#fde68a; color:#92400e; }
+    .badge-en_attente { background:#fef3c7; color:#92400e; }
+    .badge-traitee { background:#d1fae5; color:#065f46; }
+    .badge-refusee { background:#fee2e2; color:#991b1b; }
+    .hidden { display:none !important; }
+</style>
+</head>
+<body class="pb-10">
+
+<!-- ECRAN DE CONNEXION -->
+<div id="ecran-login" class="fixed inset-0 z-50 flex items-center justify-center bg-[#5b21b6] p-6">
+    <div class="bg-white rounded-[25px] p-6 w-full max-w-sm shadow-2xl">
+        <h1 class="text-center font-black text-[#5b21b6] text-lg uppercase mb-1">Administration</h1>
+        <p class="text-center text-gray-400 text-[11px] mb-5">Cœur de Marché Bouaflé</p>
+        <input id="login-email" type="email" placeholder="Email" class="w-full bg-gray-100 rounded-xl px-4 py-3 text-sm mb-3 outline-none">
+        <input id="login-password" type="password" placeholder="Mot de passe" class="w-full bg-gray-100 rounded-xl px-4 py-3 text-sm mb-3 outline-none">
+        <button onclick="connecterAdmin()" id="btn-login" class="w-full bg-[#5b21b6] text-white font-black py-3 rounded-xl text-xs uppercase active:scale-95 transition">Se connecter</button>
+        <p id="login-erreur" class="text-red-500 text-[11px] text-center mt-3 hidden"></p>
+    </div>
+</div>
+
+<!-- APPLICATION ADMIN -->
+<div id="app-admin" class="hidden">
+    <div class="header-bg px-5 pt-6 pb-4 flex justify-between items-center">
+        <div>
+            <h1 class="text-white font-black text-base uppercase">Administration</h1>
+            <p class="text-purple-200 text-[10px]">Cœur de Marché Bouaflé</p>
+        </div>
+        <button onclick="deconnecterAdmin()" class="text-white/80 text-xs"><i class="fas fa-sign-out-alt"></i></button>
+    </div>
+
+    <div class="flex overflow-x-auto gap-4 px-5 bg-white shadow-sm sticky top-0 z-30">
+        <button class="tab-btn active" data-tab="demandes" onclick="changerOnglet('demandes')">Demandes <span id="badge-nb-demandes" class="hidden bg-[#f97316] text-white rounded-full px-1.5 ml-1">0</span></button>
+        <button class="tab-btn" data-tab="vendeurs" onclick="changerOnglet('vendeurs')">Vendeurs</button>
+        <button class="tab-btn" data-tab="produits" onclick="changerOnglet('produits')">Produits</button>
+        <button class="tab-btn" data-tab="commandes" onclick="changerOnglet('commandes')">Commandes</button>
+        <button class="tab-btn" data-tab="stats" onclick="changerOnglet('stats')">Stats</button>
+    </div>
+
+    <div class="p-4">
+
+        <!-- DEMANDES -->
+        <div id="onglet-demandes" class="space-y-3"></div>
+
+        <!-- VENDEURS -->
+        <div id="onglet-vendeurs" class="hidden">
+            <input id="recherche-vendeurs" oninput="filtrerVendeurs()" placeholder="Rechercher une boutique..." class="w-full bg-white rounded-xl px-4 py-3 text-sm mb-3 shadow-sm outline-none">
+            <div id="liste-vendeurs" class="space-y-3"></div>
+        </div>
+
+        <!-- PRODUITS -->
+        <div id="onglet-produits" class="hidden">
+            <input id="recherche-produits" oninput="filtrerProduits()" placeholder="Rechercher un article..." class="w-full bg-white rounded-xl px-4 py-3 text-sm mb-3 shadow-sm outline-none">
+            <div id="liste-produits" class="grid grid-cols-2 gap-3"></div>
+        </div>
+
+        <!-- COMMANDES -->
+        <div id="onglet-commandes" class="hidden space-y-3"></div>
+
+        <!-- STATS -->
+        <div id="onglet-stats" class="hidden grid grid-cols-2 gap-3"></div>
+
+    </div>
+</div>
+
+<!-- MODALE CONFIRMATION / ALERTE -->
+<div id="modale-confirm" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-6">
+    <div class="bg-white rounded-[20px] p-5 w-full max-w-xs text-center">
+        <p id="confirm-texte" class="text-sm font-bold text-gray-700 mb-4"></p>
+        <div class="flex gap-2">
+            <button onclick="fermerConfirmAdmin()" class="flex-1 bg-gray-100 text-gray-600 font-black py-2.5 rounded-xl text-xs uppercase">Annuler</button>
+            <button id="btn-confirm-oui" class="flex-1 bg-[#5b21b6] text-white font-black py-2.5 rounded-xl text-xs uppercase">Confirmer</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="src/admin.js"></script>
+</body>
+</html>
