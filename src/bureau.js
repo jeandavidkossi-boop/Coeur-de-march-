@@ -17,6 +17,13 @@ const articlesParPage = 12;
 
 window.mesArticlesLocaux = [];
 window.mesCommandesLocales = [];
+window.maBanniereActuelle = "";
+
+function formaterPrix(montant) {
+    const n = parseInt(String(montant ?? '0').replace(/\s+/g, ''), 10);
+    if (isNaN(n)) return montant;
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
 
 function echapperHTML(texte) {
     const div = document.createElement('div');
@@ -115,9 +122,18 @@ document.getElementById('btn-confirm-action').addEventListener('click', async ()
 document.getElementById('photoInput').addEventListener('change', function(e) {
     if (e.target.files && e.target.files[0]) {
         myPhoto = e.target.files[0];
-        document.getElementById('btnPhotoText').innerText = "IMAGE PRÊTE ✅";
+        document.getElementById('btnPhotoText').innerText = "IMAGE PRÊTE ✅ (Appuyez pour changer)";
         document.getElementById('btnPhotoText').style.color = "#16a34a";
-        document.getElementById('iconPhoto').style.color = "#16a34a";
+        
+        const iconElt = document.getElementById('iconPhoto');
+        const previewElt = document.getElementById('photoPreview');
+        if (previewElt) {
+            previewElt.src = URL.createObjectURL(myPhoto);
+            previewElt.classList.remove('hidden');
+            if (iconElt) iconElt.classList.add('hidden');
+        } else if (iconElt) {
+            iconElt.style.color = "#16a34a";
+        }
     }
 });
 
@@ -128,6 +144,11 @@ if (modPhotoInputElt) {
             modPhotoFile = e.target.files[0];
             const txt = document.getElementById('mod-photo-text');
             if (txt) txt.innerText = "Nouvelle photo prête ✅";
+            const modPreview = document.getElementById('mod-photo-preview');
+            if (modPreview) {
+                modPreview.src = URL.createObjectURL(modPhotoFile);
+                modPreview.classList.remove('hidden');
+            }
         }
     });
 }
@@ -212,7 +233,7 @@ function mettreAJourCompteurEtFormulaire(totalArticles) {
         if (formElt) formElt.classList.remove('hidden');
         if (msgLimiteElt) msgLimiteElt.classList.add('hidden');
     }
-}
+        }
 
 async function chargerMesArticles(page = 1) {
     if (!myWhatsapp) return;
@@ -266,7 +287,7 @@ async function chargerMesArticles(page = 1) {
             <img src="${p.image}" loading="lazy" class="w-full h-24 object-cover ${p.statut !== 'actif' ? 'opacity-50' : ''}">
             <div class="p-2 flex-1 flex flex-col">
                 <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-0.5">${echapperHTML(p.nom)}</h4>
-                <span class="text-orange-500 font-black text-xs mb-2">${p.prix} F</span>
+                <span class="text-orange-500 font-black text-xs mb-2">${formaterPrix(p.prix)} FCFA</span>
                 <div class="flex gap-1 mt-auto">
                     <button onclick="demanderConfirmation('${p.id}')" title="Supprimer" class="w-8 bg-red-100 text-red-600 rounded-lg py-1 text-xs"><i class="fas fa-trash-alt"></i></button>
                     <button onclick="ouvrirModification('${p.id}')" title="Modifier" class="w-8 bg-blue-100 text-blue-600 rounded-lg py-1 text-xs"><i class="fas fa-edit"></i></button>
@@ -300,6 +321,16 @@ function ouvrirModification(id) {
     modPhotoFile = null;
     const txtPhoto = document.getElementById('mod-photo-text');
     if (txtPhoto) txtPhoto.innerText = "Remplacer la photo (optionnel)";
+
+    const modPreview = document.getElementById('mod-photo-preview');
+    if (modPreview) {
+        if (article.image) {
+            modPreview.src = article.image;
+            modPreview.classList.remove('hidden');
+        } else {
+            modPreview.classList.add('hidden');
+        }
+    }
 
     document.getElementById('mod-id').value = article.id;
     document.getElementById('mod-nom').value = article.nom;
@@ -378,7 +409,7 @@ async function sauvegarderModification() {
         btn.innerText = "Sauver";
         btn.disabled = false;
     }
-}
+        }
 
 function mettreAJourPagination(total) {
     const controls = document.getElementById('pagination-controls');
@@ -422,7 +453,7 @@ function mettreAJourPagination(total) {
         btnNext.className = "px-6 py-2 rounded-full bg-white text-[#5b21b6] border-2 border-[#5b21b6] font-bold text-sm shadow-sm active:scale-95 transition-all";
         controls.appendChild(btnNext);
     }
-        }
+}
 
 function contacterAdminUpgrade() {
     const message = encodeURIComponent(`Bonjour Cœur de Marché, je suis le gérant de la boutique "${monNomBoutique}". Je souhaite passer au statut de VENDEUR VIP pour 2000F/mois et booster mes ventes.`);
@@ -462,10 +493,57 @@ function appelerLivreur() {
 function envoyerCommandeLivreur(numeroCmd) {
     const cmd = window.mesCommandesLocales.find(c => String(c.numero_commande) === String(numeroCmd));
     const quartier = (cmd && cmd.quartier_livraison) ? cmd.quartier_livraison : "À préciser avec le client";
-    const montant = cmd ? cmd.total_fcfa : "";
+    const montant = cmd ? formaterPrix(cmd.total_fcfa) : "";
     const message = encodeURIComponent(`🛵 *DEMANDE DE LIVRAISON #CMD-${numeroCmd}*\n\n🏪 *Boutique :* ${monNomBoutique} (${myWhatsapp})\n📍 *Quartier client :* ${quartier}\n💰 *Montant commande :* ${montant} FCFA\n\nMerci de nous contacter pour récupérer le colis.`);
     window.open(`https://wa.me/${NUMERO_LIVRAISON}?text=${message}`);
 }
+
+async function changerBanniereVIP(event) {
+    if (!event.target.files || !event.target.files[0] || !myUser) return;
+    const fichier = event.target.files[0];
+    const btnTexte = document.getElementById('texte-banniere-vip');
+    const btnElt = document.getElementById('btn-banniere-vip');
+
+    if (btnTexte) btnTexte.innerText = "COMPRESSION EN COURS...";
+    if (btnElt) btnElt.disabled = true;
+
+    try {
+        const optionsCompression = {
+            maxSizeMB: 0.15,
+            maxWidthOrHeight: 1024,
+            useWebWorker: true,
+            fileType: 'image/webp'
+        };
+
+        const imageCompressee = await imageCompression(fichier, optionsCompression);
+        if (btnTexte) btnTexte.innerText = "ENVOI DE LA BANNIÈRE...";
+
+        const nomFichier = "vip_" + myUser.id + "_" + Date.now() + ".webp";
+        const { error: errUpload } = await mySupabase.storage.from('images').upload(nomFichier, imageCompressee);
+        if (errUpload) throw new Error(errUpload.message);
+
+        const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
+
+        const { error: errUpdate } = await mySupabase
+            .from('vendeurs')
+            .update({ image: publicUrl })
+            .eq('id', myUser.id);
+
+        if (errUpdate) throw new Error(errUpdate.message);
+
+        if (window.maBanniereActuelle) {
+            await supprimerImageStorage(window.maBanniereActuelle);
+        }
+        window.maBanniereActuelle = publicUrl;
+
+        afficherAlerteCustom("Bannière VIP", "La photo de couverture de votre boutique officielle a été mise à jour !", "succes");
+    } catch (err) {
+        afficherAlerteCustom("Erreur", "Impossible de changer la bannière : " + err.message, "erreur");
+    } finally {
+        if (btnTexte) btnTexte.innerText = "Changer la photo de ma boutique VIP";
+        if (btnElt) btnElt.disabled = false;
+    }
+    }
 
 async function chargerStatsEtCommandes() {
     if (!mySupabase || !myWhatsapp) return;
@@ -520,7 +598,7 @@ async function chargerStatsEtCommandes() {
             <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
                 <div class="flex justify-between items-center mb-1.5">
                     <span class="font-black text-xs text-[#4c1d95]">#CMD-${c.numero_commande}</span>
-                    <span class="font-black text-xs text-orange-600">${c.total_fcfa} FCFA</span>
+                    <span class="font-black text-xs text-orange-600">${formaterPrix(c.total_fcfa)} FCFA</span>
                 </div>
                 <p class="text-[11px] text-gray-600 font-bold mb-2">${itemsListe}</p>
                 <div class="flex justify-between items-center pt-2 border-t border-gray-50">
@@ -627,6 +705,7 @@ async function demarrerBureau() {
             document.getElementById('nom-boutique').innerText = monNomBoutique;
             document.getElementById('nom-vendeur').innerText = "Gérant : " + (vendeur.proprietaire || "Gérant");
             myWhatsapp = String(vendeur.whatsapp || '').trim();
+            window.maBanniereActuelle = vendeur.image || vendeur.photo_couverture || vendeur.logo || "";
 
             monAbonnement = vendeur.abonnement || 'standard';
 
@@ -645,6 +724,11 @@ async function demarrerBureau() {
                         elFin.classList.remove('hidden');
                     }
                 }
+            }
+
+            if (monAbonnement === 'vip') {
+                const zoneBanniereVip = document.getElementById('zone-banniere-vip');
+                if (zoneBanniereVip) zoneBanniereVip.classList.remove('hidden');
             }
 
             const badge = document.getElementById('badge-abonnement');
@@ -687,3 +771,5 @@ window.basculerStock = basculerStock;
 window.partagerMaBoutique = partagerMaBoutique;
 window.appelerLivreur = appelerLivreur;
 window.envoyerCommandeLivreur = envoyerCommandeLivreur;
+window.changerBanniereVIP = changerBanniereVIP;
+                                                                                          
