@@ -22,6 +22,56 @@ window.tousVendeursListe = [];
 let intervalCarrousel;
 let timerToastPanier;
 
+function formaterPrix(montant) {
+    const n = parseInt(String(montant ?? '0').replace(/\s+/g, ''), 10);
+    if (isNaN(n)) return montant;
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+function pousserHistorique() {
+    if (window.history && window.history.pushState) {
+        window.history.pushState({ cdmNav: true }, '');
+    }
+}
+
+window.addEventListener('popstate', () => {
+    const modalImg = document.getElementById('modal-image');
+    if (modalImg && modalImg.style.display === 'flex') {
+        fermerImage(true);
+        return;
+    }
+    const modalAlerte = document.getElementById('modal-alerte');
+    if (modalAlerte && modalAlerte.style.display === 'flex') {
+        fermerAlerte(true);
+        return;
+    }
+    const modalDetails = document.getElementById('modal-details');
+    if (modalDetails && modalDetails.style.display === 'flex') {
+        fermerModalDetails(true);
+        return;
+    }
+    const modalPanier = document.getElementById('modal-panier');
+    if (modalPanier && modalPanier.style.display === 'flex') {
+        fermerPanier(true);
+        return;
+    }
+    const modalAide = document.getElementById('modal-aide');
+    if (modalAide && modalAide.style.display === 'flex') {
+        fermerAide(true);
+        return;
+    }
+    const vueRayon = document.getElementById('vue-rayon');
+    if (vueRayon && !vueRayon.classList.contains('hidden')) {
+        changerVue('boutique', true);
+        return;
+    }
+    const vueBoutique = document.getElementById('vue-boutique');
+    if (vueBoutique && !vueBoutique.classList.contains('hidden')) {
+        changerVue('accueil', true);
+        return;
+    }
+});
+
 function mettreAJourBadgePanier() {
     const badgeNav = document.getElementById('panier-count-nav');
     if (!badgeNav) return;
@@ -46,11 +96,13 @@ function afficherAlerteCustom(titre, message) {
     document.getElementById('alerte-message').innerText = message;
     const modal = document.getElementById('modal-alerte');
     modal.style.display = 'flex';
+    pousserHistorique();
     setTimeout(() => modal.classList.add('active'), 10);
 }
 
-function fermerAlerte() {
+function fermerAlerte(depuisRetour = false) {
     const modal = document.getElementById('modal-alerte');
+    if (!modal || modal.style.display === 'none') return;
     modal.classList.remove('active');
     setTimeout(() => modal.style.display = 'none', 300);
 }
@@ -60,6 +112,7 @@ function ouvrirImage(url) {
     imgElt.src = url;
     const modal = document.getElementById('modal-image');
     modal.style.display = 'flex';
+    pousserHistorique();
     setTimeout(() => {
         modal.classList.add('active');
         imgElt.classList.remove('scale-95');
@@ -67,8 +120,9 @@ function ouvrirImage(url) {
     }, 10);
 }
 
-function fermerImage() {
+function fermerImage(depuisRetour = false) {
     const modal = document.getElementById('modal-image');
+    if (!modal || modal.style.display === 'none') return;
     const imgElt = document.getElementById('image-en-grand');
     modal.classList.remove('active');
     imgElt.classList.remove('scale-100');
@@ -128,22 +182,30 @@ async function init() {
         const dbKey = "sb_publishable_hfQrBZ4OYrkHjUxvtzCL_g_mi05THSO";
         monSupabase = window.supabase.createClient(dbUrl, dbKey);
 
-        try {
-            await monSupabase.rpc('verifier_expirations');
-        } catch (e) {
+        monSupabase.rpc('verifier_expirations').then(() => {}).catch(e => {
             console.log("Vérification expirations ignorée", e);
-        }
+        });
 
-        const { data: produitsData } = await monSupabase.from('produits').select('*').eq('statut', 'actif');
+        const [
+            { data: produitsData },
+            { data: pubData },
+            { data: tvData },
+            { data: annonceData },
+            { data: tousVendeurs }
+        ] = await Promise.all([
+            monSupabase.from('produits').select('*').eq('statut', 'actif'),
+            monSupabase.from('publicites').select('image, statut, id_produit').eq('statut', 'actif'),
+            monSupabase.from('tv_market').select('*').eq('statut', 'actif').limit(1).maybeSingle(),
+            monSupabase.from('annonces').select('message').limit(1).maybeSingle(),
+            monSupabase.from('vendeurs').select('id, nom_boutique, whatsapp, abonnement, fin_abonnement, image, photo_couverture, logo')
+        ]);
 
         if (produitsData) {
             articles = produitsData;
             window.articlesParId = new Map(articles.map(a => [String(a.id), a]));
         }
 
-        const { data: pubData } = await monSupabase.from('publicites').select('image, statut, id_produit').eq('statut', 'actif');
         const conteneurVIP = document.getElementById('carrousel-vip');
-
         if (pubData && pubData.length > 0) {
             conteneurVIP.innerHTML = pubData.map(p => {
                 const articleLie = p.id_produit ? trouverArticle(p.id_produit) : null;
@@ -156,7 +218,6 @@ async function init() {
             setTimeout(demarrerCarrouselAuto, 1000);
         }
 
-        const { data: tvData } = await monSupabase.from('tv_market').select('*').eq('statut', 'actif').limit(1).single();
         const conteneurTV = document.getElementById('conteneur-tv');
         if (tvData && tvData.lien_youtube) {
             const articleTV = tvData.id_produit ? trouverArticle(tvData.id_produit) : null;
@@ -168,13 +229,11 @@ async function init() {
             conteneurTV.innerHTML = `<div class="bg-white p-3 rounded-[20px] shadow-sm border border-gray-100"><div class="video-container rounded-[15px] overflow-hidden"><iframe src="https://www.youtube.com/embed/${youtubeIdNettoye}" frameborder="0" allowfullscreen></iframe></div>${boutonAction}</div>`;
         }
 
-        const { data: annonceData } = await monSupabase.from('annonces').select('message').limit(1).single();
         if (annonceData) document.getElementById('texte-annonce').innerText = annonceData.message;
 
         const produitRecherche = new URLSearchParams(window.location.search).get('produit');
         if (produitRecherche) setTimeout(() => { ouvrirDetails(produitRecherche); }, 500);
 
-        const { data: tousVendeurs } = await monSupabase.from("vendeurs").select("*");
         window.vendeursMap = {};
         window.nomsBoutiquesParTel = {};
         window.tousVendeursListe = tousVendeurs || [];
@@ -266,9 +325,10 @@ async function init() {
             setTimeout(() => { ecranLoad.style.display = 'none'; }, 300);
         }
     }
-                    }
+            }
 
 function filtrerVIP(idVendeur, nomBoutique, imageCouverture = '') {
+    pousserHistorique();
     const telVendeur = window.vendeursMap[idVendeur] || idVendeur || '';
     const vendeurObj = window.tousVendeursListe.find(v => String(v.id) === String(idVendeur) || String(v.whatsapp) === String(telVendeur));
     const estVip = vendeurObj && vendeurObj.abonnement === 'vip';
@@ -326,7 +386,7 @@ function afficherNouveautes(liste, target) {
     }
     container.innerHTML = liste.map(p => `
         <div class="scroll-item bg-white rounded-[15px] shadow-sm overflow-hidden flex flex-col relative border border-gray-50 active:scale-95 transition">
-            <div class="price-badge" style="font-size:10px; padding:3px 8px; top:8px; right:8px;">${p.prix} F</div>
+            <div class="price-badge" style="font-size:10px; padding:3px 8px; top:8px; right:8px;">${formaterPrix(p.prix)} F</div>
             <img src="${p.image}" loading="lazy" onclick="ouvrirDetails('${p.id}')" class="w-full h-24 object-cover">
             <div class="px-2 py-2 flex-1 flex flex-col text-center">
                 <h3 class="font-black text-[#4c1d95] text-[9px] uppercase truncate mb-2">${echapperHTML(p.nom)}</h3>
@@ -388,13 +448,13 @@ function afficherProduits(liste, target, resetPage = true) {
             <div class="relative w-full h-40 bg-gray-100">
                 ${badgeSponsor}
                 <img src="${p.image}" loading="lazy" onclick="ouvrirImage('${p.image}')" class="w-full h-full object-cover">
-                <div class="price-badge"><small>FCFA</small></div>
+                <div class="price-badge">${formaterPrix(p.prix)} <small>FCFA</small></div>
             </div>
             <div class="p-3 flex flex-col flex-grow">
                 <h1 class="font-black text-[12px] text-[#5b21b6] mb-1 uppercase leading-tight line-clamp-2">${echapperHTML(p.nom)}</h1>
                 <div class="mt-auto flex gap-2">
                     <button onclick="ouvrirDetails('${p.id}')" class="flex-1 bg-gray-100 text-[#5b21b6] py-2.5 rounded-xl text-[10px] font-black uppercase">
-                        ${p.prix} F
+                        Voir détails
                     </button>
                     <button onclick="ajouterAuPanier('${p.id}')" class="w-10 h-10 bg-[#5b21b6] text-white rounded-xl flex items-center justify-center active:scale-95 transition-transform">
                         <i class="fas fa-shopping-basket"></i>
@@ -443,6 +503,11 @@ function changerTriRayon() { afficherProduits(articlesCourants, 'liste-rayon'); 
 
 async function enregistrerInteraction(article, typeAction) {
     if (!monSupabase || !article) return;
+    if (typeAction === 'vue') {
+        const cleVue = 'cdm_vue_' + String(article.id);
+        if (sessionStorage.getItem(cleVue)) return;
+        sessionStorage.setItem(cleVue, '1');
+    }
     try {
         await monSupabase.from('interactions_utilisateurs').insert([
             {
@@ -465,13 +530,13 @@ function ouvrirDetails(idOuNom) {
     const link = window.location.href.split('?')[0] + '?produit=' + encodeURIComponent(p.id);
     const nomBoutique = window.nomsBoutiquesParTel[String(p.vendeur || '').trim()] || '';
 
-    window.messagePartage = `🌟 *${p.nom}* (${p.prix} F)\nVoir ici : ${link}`;
+    window.messagePartage = `🌟 *${p.nom}* (${formaterPrix(p.prix)} FCFA)\nVoir ici : ${link}`;
 
     document.getElementById('details-contenu').innerHTML = `
         <img src="${p.image}" onclick="ouvrirImage('${p.image}')" class="w-full h-64 object-cover rounded-xl mb-4 shadow-sm active:scale-95 transition transform">
         <div class="flex justify-between items-center">
             <h3 class="font-black text-xl text-[#4c1d95]">${echapperHTML(p.nom)}</h3>
-            <span class="text-orange-500 font-black text-lg">${p.prix} F</span>
+            <span class="text-orange-500 font-black text-lg">${formaterPrix(p.prix)} FCFA</span>
         </div>
         ${nomBoutique ? `<p class="text-[10px] font-black uppercase text-gray-400 mt-1"><i class="fas fa-store mr-1 text-orange-400"></i> ${echapperHTML(nomBoutique)}</p>` : ''}
         <div class="text-gray-600 text-sm mt-2 mb-6 overflow-y-auto" style="max-height: 200px;">
@@ -485,6 +550,7 @@ function ouvrirDetails(idOuNom) {
 
     const modal = document.getElementById('modal-details');
     modal.style.display = 'flex';
+    pousserHistorique();
     setTimeout(() => modal.classList.add('active'), 10);
 }
 
@@ -555,17 +621,21 @@ function modifierQuantitePanier(index, delta) {
     }
     localStorage.setItem('coeur_panier', JSON.stringify(panier));
     mettreAJourBadgePanier();
-    ouvrirPanier();
+    ouvrirPanier(true);
 }
 
-function ouvrirPanier() {
+function ouvrirPanier(estRafraichissement = false) {
     const container = document.getElementById('panier-liste');
     const totalElt = document.getElementById('panier-total');
+    const modal = document.getElementById('modal-panier');
+
+    if (!estRafraichissement && modal.style.display !== 'flex') {
+        pousserHistorique();
+    }
 
     if (panier.length === 0) {
         container.innerHTML = '<p class="text-center py-6 font-bold text-gray-400">Panier vide</p>';
         if (totalElt) totalElt.innerText = "0 FCFA";
-        const modal = document.getElementById('modal-panier');
         modal.style.display = 'flex';
         setTimeout(() => modal.classList.add('active'), 10);
         return;
@@ -583,7 +653,7 @@ function ouvrirPanier() {
         vendeurs[tel].push({ ...p, quantite: qte, index });
     });
 
-    if (totalElt) totalElt.innerText = totalGlobal + " FCFA";
+    if (totalElt) totalElt.innerText = formaterPrix(totalGlobal) + " FCFA";
 
     container.innerHTML = Object.keys(vendeurs).map(tel => {
         const items = vendeurs[tel];
@@ -597,7 +667,7 @@ function ouvrirPanier() {
             <div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
                 <div class="flex-1 pr-2 overflow-hidden">
                     <p class="font-black text-[10px] text-gray-800 uppercase truncate">${echapperHTML(i.nom)}</p>
-                    <p class="text-orange-500 font-bold text-xs">${i.prix} F x ${i.quantite} = ${totalLigne} F</p>
+                    <p class="text-orange-500 font-bold text-xs">${formaterPrix(i.prix)} F x ${i.quantite} = ${formaterPrix(totalLigne)} F</p>
                 </div>
                 <div class="flex items-center gap-1.5 shrink-0">
                     <button onclick="modifierQuantitePanier(${i.index}, -1)" class="w-7 h-7 bg-white border border-gray-200 text-gray-700 font-black rounded-lg flex items-center justify-center active:scale-90">-</button>
@@ -612,7 +682,7 @@ function ouvrirPanier() {
         <div class="bg-white rounded-2xl p-4 border border-gray-100 mb-4 shadow-sm">
             <div class="flex justify-between items-center mb-3 border-b border-gray-100 pb-2">
                 <p class="font-black text-[#5b21b6] text-[10px] uppercase"><i class="fas fa-store mr-1"></i> Boutique : ${echapperHTML(nomBoutique)}</p>
-                <span class="text-[10px] font-black text-orange-600">${sousTotal} F</span>
+                <span class="text-[10px] font-black text-orange-600">${formaterPrix(sousTotal)} FCFA</span>
             </div>
             <div class="space-y-2 mb-4">${htmlItems}</div>
             <button onclick="validerCommande('${tel}', '${tel}')" class="w-full bg-[#25D366] text-white font-black py-3 rounded-xl uppercase text-[10px] flex items-center justify-center gap-2 active:scale-95 transition">
@@ -621,7 +691,6 @@ function ouvrirPanier() {
         </div>`;
     }).join('');
 
-    const modal = document.getElementById('modal-panier');
     modal.style.display = 'flex';
     setTimeout(() => modal.classList.add('active'), 10);
 }
@@ -630,7 +699,7 @@ function retirerDuPanier(index) {
     panier.splice(index, 1);
     localStorage.setItem('coeur_panier', JSON.stringify(panier));
     mettreAJourBadgePanier();
-    ouvrirPanier();
+    ouvrirPanier(true);
 }
 
 async function validerCommande(telWhatsApp, telVendeur) {
@@ -663,7 +732,7 @@ async function validerCommande(telWhatsApp, telVendeur) {
             const sousTotal = prixUnitaire * qte;
             vraiTotal += sousTotal;
             itemsPourBase.push({ id_produit: idArticle, prix: prixUnitaire, nom: nomArticle, quantite: qte });
-            detailTexte += `- ${qte}x ${nomArticle} (${sousTotal} F)\n`;
+            detailTexte += `- ${qte}x ${nomArticle} (${formaterPrix(sousTotal)} F)\n`;
         });
 
         const { data, error } = await monSupabase
@@ -688,14 +757,14 @@ async function validerCommande(telWhatsApp, telVendeur) {
             infoReception = `🛵 *Réception :* LIVRAISON À DOMICILE\n📍 *Quartier / Lieu :* ${quartier}\n📞 *Service Livraison Cœur de Marché :* https://wa.me/${NUMERO_LIVRAISON}`;
         }
 
-        const messageFinal = `🛒 *NOUVELLE COMMANDE #${codeAffiche}*\n\nDétails :\n${detailTexte}\n*TOTAL : ${vraiTotal} FCFA*\n\n${infoReception}\n\n_Cette commande est sécurisée dans le système._`;
+        const messageFinal = `🛒 *NOUVELLE COMMANDE #${codeAffiche}*\n\nDétails :\n${detailTexte}\n*TOTAL : ${formaterPrix(vraiTotal)} FCFA*\n\n${infoReception}\n\n_Cette commande est sécurisée dans le système._`;
         const msgEncoded = encodeURIComponent(messageFinal);
 
         panier = panier.filter(p => String(p.tel).trim() !== String(telVendeur).trim());
         localStorage.setItem('coeur_panier', JSON.stringify(panier));
 
         mettreAJourBadgePanier();
-        if (panier.length === 0) fermerPanier(); else ouvrirPanier();
+        if (panier.length === 0) fermerPanier(true); else ouvrirPanier(true);
 
         let numeroWa = String(window.vendeursMap[telVendeur] || telWhatsApp).replace(/\s+/g, '').replace('+', '');
         if (numeroWa.length === 10) {
@@ -711,12 +780,39 @@ async function validerCommande(telWhatsApp, telVendeur) {
     }
 }
 
-function fermerModalDetails() { const modal = document.getElementById('modal-details'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
-function fermerPanier() { const modal = document.getElementById('modal-panier'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
-function ouvrirAide() { const modal = document.getElementById('modal-aide'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10); }
-function fermerAide() { const modal = document.getElementById('modal-aide'); modal.classList.remove('active'); setTimeout(() => modal.style.display = 'none', 300); }
+function fermerModalDetails(depuisRetour = false) {
+    const modal = document.getElementById('modal-details');
+    if (!modal || modal.style.display === 'none') return;
+    modal.classList.remove('active');
+    setTimeout(() => modal.style.display = 'none', 300);
+}
 
-function changerVue(v) {
+function fermerPanier(depuisRetour = false) {
+    const modal = document.getElementById('modal-panier');
+    if (!modal || modal.style.display === 'none') return;
+    modal.classList.remove('active');
+    setTimeout(() => modal.style.display = 'none', 300);
+}
+
+function ouvrirAide() {
+    const modal = document.getElementById('modal-aide');
+    modal.style.display = 'flex';
+    pousserHistorique();
+    setTimeout(() => modal.classList.add('active'), 10);
+}
+
+function fermerAide(depuisRetour = false) {
+    const modal = document.getElementById('modal-aide');
+    if (!modal || modal.style.display === 'none') return;
+    modal.classList.remove('active');
+    setTimeout(() => modal.style.display = 'none', 300);
+}
+
+function changerVue(v, depuisRetour = false) {
+    if (!depuisRetour && v !== 'accueil') {
+        pousserHistorique();
+    }
+
     document.getElementById('inputRecherche').value = '';
 
     document.getElementById('vue-accueil').classList.add('hidden');
@@ -805,7 +901,7 @@ function lancerMicro() {
 function rechercherProduit(event) {
     const s = normaliserTexte(document.getElementById('inputRecherche').value);
     if (!s) {
-        changerVue('boutique');
+        changerVue('boutique', true);
         return;
     }
 
@@ -862,5 +958,4 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js');
     });
-            }
-        
+        }
