@@ -49,14 +49,15 @@
             <h1 class="text-white font-black text-base uppercase">Administration</h1>
             <p class="text-purple-200 text-[10px]">Cœur de Marché Bouaflé</p>
         </div>
-        <button onclick="deconnecterAdmin()" class="text-white/80 text-xs"><i class="fas fa-sign-out-alt"></i></button>
+        <button onclick="deconnecterAdmin()" class="text-white/80 text-xs p-2"><i class="fas fa-sign-out-alt text-base"></i></button>
     </div>
 
     <div class="flex overflow-x-auto gap-4 px-5 bg-white shadow-sm sticky top-0 z-30">
         <button class="tab-btn active" data-tab="demandes" onclick="changerOnglet('demandes')">Demandes <span id="badge-nb-demandes" class="hidden bg-[#f97316] text-white rounded-full px-1.5 ml-1">0</span></button>
         <button class="tab-btn" data-tab="vendeurs" onclick="changerOnglet('vendeurs')">Vendeurs</button>
-        <button class="tab-btn" data-tab="produits" onclick="changerOnglet('produits')">Produits</button>
+        <button class="tab-btn" data-tab="produits" onclick="changerOnglet('produits')">Produits <span id="badge-nb-attente" class="hidden bg-red-500 text-white rounded-full px-1.5 ml-1">0</span></button>
         <button class="tab-btn" data-tab="commandes" onclick="changerOnglet('commandes')">Commandes</button>
+        <button class="tab-btn" data-tab="contenu" onclick="changerOnglet('contenu')">Contenu</button>
         <button class="tab-btn" data-tab="stats" onclick="changerOnglet('stats')">Stats</button>
     </div>
 
@@ -67,18 +68,54 @@
 
         <!-- VENDEURS -->
         <div id="onglet-vendeurs" class="hidden">
-            <input id="recherche-vendeurs" oninput="filtrerVendeurs()" placeholder="Rechercher une boutique..." class="w-full bg-white rounded-xl px-4 py-3 text-sm mb-3 shadow-sm outline-none">
+            <input id="recherche-vendeurs" oninput="filtrerVendeurs()" placeholder="Rechercher une boutique ou numéro..." class="w-full bg-white rounded-xl px-4 py-3 text-sm mb-3 shadow-sm outline-none">
             <div id="liste-vendeurs" class="space-y-3"></div>
         </div>
 
         <!-- PRODUITS -->
         <div id="onglet-produits" class="hidden">
-            <input id="recherche-produits" oninput="filtrerProduits()" placeholder="Rechercher un article..." class="w-full bg-white rounded-xl px-4 py-3 text-sm mb-3 shadow-sm outline-none">
+            <div id="zone-a-valider" class="hidden mb-4">
+                <h2 class="font-black text-xs uppercase text-orange-600 mb-2"><i class="fas fa-clock mr-1"></i> Articles en attente de validation</h2>
+                <div id="liste-a-valider" class="space-y-3"></div>
+            </div>
+            <input id="recherche-produits" oninput="filtrerProduits()" placeholder="Rechercher un article, #ID ou numéro..." class="w-full bg-white rounded-xl px-4 py-3 text-sm mb-3 shadow-sm outline-none">
             <div id="liste-produits" class="grid grid-cols-2 gap-3"></div>
         </div>
 
         <!-- COMMANDES -->
         <div id="onglet-commandes" class="hidden space-y-3"></div>
+
+        <!-- CONTENU (VITRINE) -->
+        <div id="onglet-contenu" class="hidden space-y-4">
+            <div class="carte">
+                <h3 class="font-black text-xs uppercase text-[#5b21b6] mb-2"><i class="fas fa-bullhorn mr-1 text-orange-500"></i> Bandeau défilant</h3>
+                <textarea id="champ-annonce" rows="2" placeholder="Message défilant en haut du marché..." class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs font-bold outline-none mb-2"></textarea>
+                <button onclick="enregistrerAnnonce()" class="w-full bg-[#5b21b6] text-white font-black py-2.5 rounded-xl text-[11px] uppercase">Enregistrer le bandeau</button>
+            </div>
+
+            <div class="carte">
+                <h3 class="font-black text-xs uppercase text-[#5b21b6] mb-2"><i class="fas fa-tv mr-1 text-orange-500"></i> TV Marché (YouTube)</h3>
+                <input id="champ-tv-lien" type="text" placeholder="Lien YouTube (ex: https://youtu.be/...)" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs font-bold outline-none mb-2">
+                <input id="champ-tv-produit-id" type="number" placeholder="ID Produit associé (optionnel)" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs font-bold outline-none mb-2">
+                <div class="flex gap-2">
+                    <button onclick="enregistrerTvMarket(true)" class="flex-1 bg-green-600 text-white font-black py-2.5 rounded-xl text-[11px] uppercase">Activer TV</button>
+                    <button onclick="enregistrerTvMarket(false)" class="flex-1 bg-gray-200 text-gray-700 font-black py-2.5 rounded-xl text-[11px] uppercase">Désactiver</button>
+                </div>
+            </div>
+
+            <div class="carte">
+                <h3 class="font-black text-xs uppercase text-[#5b21b6] mb-2"><i class="fas fa-images mr-1 text-orange-500"></i> Bannières « À la une »</h3>
+                <div class="space-y-2 mb-3">
+                    <button type="button" id="btn-choisir-pub" onclick="document.getElementById('champ-pub-image').click()" class="w-full py-3 border-2 border-dashed border-purple-300 rounded-xl bg-purple-50 text-[#5b21b6] font-black text-xs uppercase">
+                        Choisir une image
+                    </button>
+                    <input type="file" id="champ-pub-image" accept="image/*" class="hidden">
+                    <input id="champ-pub-produit-id" type="number" placeholder="ID Produit ciblé (optionnel)" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-xs font-bold outline-none">
+                    <button id="btn-ajouter-pub" onclick="ajouterPublicite()" class="w-full bg-[#f97316] text-white font-black py-2.5 rounded-xl text-[11px] uppercase">Ajouter la bannière</button>
+                </div>
+                <div id="liste-publicites" class="space-y-2"></div>
+            </div>
+        </div>
 
         <!-- STATS -->
         <div id="onglet-stats" class="hidden grid grid-cols-2 gap-3"></div>
@@ -97,7 +134,9 @@
     </div>
 </div>
 
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="src/admin.js"></script>
 </body>
 </html>
+
