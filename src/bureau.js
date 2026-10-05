@@ -233,7 +233,7 @@ function mettreAJourCompteurEtFormulaire(totalArticles) {
         if (formElt) formElt.classList.remove('hidden');
         if (msgLimiteElt) msgLimiteElt.classList.add('hidden');
     }
-            }
+}
 
 async function chargerMesArticles(page = 1) {
     if (!myWhatsapp) return;
@@ -353,7 +353,7 @@ function fermerModification() {
     modal.classList.remove('opacity-100');
     modal.children[0].classList.add('scale-90');
     setTimeout(() => { modal.style.display = 'none'; }, 300);
-}
+            }
 
 async function sauvegarderModification() {
     const btn = document.getElementById('btn-sauver-mod');
@@ -561,7 +561,7 @@ async function changerBanniereVIP(event) {
         if (btnTexte) btnTexte.innerText = "Changer la photo de ma boutique VIP";
         if (btnElt) btnElt.disabled = false;
     }
-}
+            }
 
 async function chargerStatsEtCommandes() {
     if (!mySupabase || !myWhatsapp) return;
@@ -714,7 +714,7 @@ async function demarrerBureau() {
 
         const { data: vendeur } = await mySupabase
             .from('vendeurs')
-            .select('*')
+            .select('id, nom_boutique, proprietaire, whatsapp, abonnement, fin_abonnement, image, photo_couverture, logo, compte_actif')
             .eq('id', myUser.id)
             .single();
 
@@ -791,4 +791,4 @@ window.appelerLivreur = appelerLivreur;
 window.envoyerCommandeLivreur = envoyerCommandeLivreur;
 window.changerBanniereVIP = changerBanniereVIP;
 window.enregistrerDemande = enregistrerDemande;
-            
+    
