@@ -173,7 +173,7 @@ function trouverArticle(idOuNom) {
     const cle = String(idOuNom);
     if (window.articlesParId.has(cle)) return window.articlesParId.get(cle);
     return articles.find(a => String(a.id) === cle || a.nom === cle) || null;
-}
+                                        }
 
 async function init() {
     const ecranLoad = document.getElementById('ecran-chargement');
@@ -193,7 +193,7 @@ async function init() {
             { data: annonceData },
             { data: tousVendeurs }
         ] = await Promise.all([
-            monSupabase.from('produits').select('*').eq('statut', 'actif'),
+            monSupabase.from('produits').select('*').eq('statut', 'actif').order('dateajout', { ascending: true, nullsFirst: true }),
             monSupabase.from('publicites').select('image, statut, id_produit').eq('statut', 'actif'),
             monSupabase.from('tv_market').select('*').eq('statut', 'actif').limit(1).maybeSingle(),
             monSupabase.from('annonces').select('message').limit(1).maybeSingle(),
@@ -311,10 +311,10 @@ async function init() {
             if (selectionVIP.length > 0) {
                 afficherNouveautes(selectionVIP, 'liste-nouveautes');
             } else {
-                afficherNouveautes(articles.slice(0, 6), 'liste-nouveautes');
+                afficherNouveautes([...articles].reverse().slice(0, 6), 'liste-nouveautes');
             }
         } else {
-            afficherNouveautes(articles.slice(0, 6), 'liste-nouveautes');
+            afficherNouveautes([...articles].reverse().slice(0, 6), 'liste-nouveautes');
         }
 
     } catch (err) {
@@ -436,7 +436,7 @@ function afficherProduits(liste, target, resetPage = true) {
     if (listeFinale.length === 0) {
         container.innerHTML = `<div style="grid-column: 1 / -1;" class="text-center py-8 text-gray-400">Aucun produit trouvé.</div>`;
         return;
-    }
+        }
 
     container.innerHTML = listeFinale.map(p => {
         const estSponsorise = boostEstActif(p);
@@ -958,4 +958,5 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js');
     });
-        }
+                   }
+    
