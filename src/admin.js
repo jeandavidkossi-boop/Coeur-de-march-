@@ -165,7 +165,7 @@ async function traiterDemande(id, approuver) {
 async function chargerVendeurs() {
     const conteneur = document.getElementById('liste-vendeurs');
     conteneur.innerHTML = '<p class="text-center text-gray-400 text-xs py-6">Chargement...</p>';
-    const { data, error } = await mySupabase.from('vendeurs').select('*').order('date_inscription', { ascending: false });
+    const { data, error } = await mySupabase.from('vendeurs').select('id, nom_boutique, proprietaire, whatsapp, abonnement, fin_abonnement, image, photo_couverture, logo, compte_actif, date_inscription').order('date_inscription', { ascending: false });
     if (error) { conteneur.innerHTML = '<p class="text-red-500 text-xs text-center">Erreur</p>'; return; }
     tousVendeurs = data || [];
     afficherVendeurs(tousVendeurs);
@@ -233,8 +233,8 @@ async function toggleCompteVendeur(id) {
             chargerVendeurs();
         } catch (e) { alert("Erreur : " + e.message); }
     });
-}
-
+                                  }
+        
 // ---------- PRODUITS ----------
 async function chargerProduits() {
     const conteneur = document.getElementById('liste-produits');
@@ -321,7 +321,7 @@ function afficherProduitsAdmin(liste) {
         </div>
         `;
     }).join('');
-}
+    }
 
 function filtrerProduits() {
     const q = document.getElementById('recherche-produits').value.toLowerCase();
@@ -625,4 +625,4 @@ window.enregistrerTvMarket = enregistrerTvMarket;
 window.ajouterPublicite = ajouterPublicite;
 window.togglePublicite = togglePublicite;
 window.supprimerPublicite = supprimerPublicite;
-            
+        
