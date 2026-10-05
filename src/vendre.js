@@ -104,7 +104,7 @@ async function motDePasseOublie() {
     }
 
     btn.innerText = estEnInscription ? "Créer ma boutique" : "Se connecter";
-}
+                        }
 
 async function executerAction() {
     const email = document.getElementById('email').value.trim();
@@ -139,23 +139,37 @@ async function executerAction() {
 
             const { data, error: authError } = await supabaseGlobal.auth.signUp({
                 email: email,
-                password: pass
+                password: pass,
+                options: {
+                    data: {
+                        nom_boutique: nomB,
+                        proprietaire: nomP,
+                        whatsapp: tel
+                    }
+                }
             });
 
             if (authError) {
                 alert("Erreur d'inscription : " + authError.message);
                 btn.innerText = "Créer ma boutique";
             } else if (data.user) {
-                const { error: dbError } = await supabaseGlobal.from('vendeurs').insert([
-                    {
-                        id: data.user.id,
-                        nom_boutique: nomB,
-                        proprietaire: nomP,
-                        whatsapp: tel,
-                        email: email,
-                        abonnement: 'standard'
-                    }
-                ]);
+                let dbError = null;
+                // Si une session existe, on insère la ligne vendeur ici.
+                // Sans session (confirmation par email), c'est le trigger Supabase qui la crée.
+                // Un doublon (23505) veut dire que le trigger l'a déjà créée : on l'ignore.
+                if (data.session) {
+                    const { error: insertError } = await supabaseGlobal.from('vendeurs').insert([
+                        {
+                            id: data.user.id,
+                            nom_boutique: nomB,
+                            proprietaire: nomP,
+                            whatsapp: tel,
+                            email: email,
+                            abonnement: 'standard'
+                        }
+                    ]);
+                    if (insertError && insertError.code !== '23505') dbError = insertError;
+                }
 
                 if (dbError) {
                     alert("Erreur d'enregistrement : " + dbError.message);
@@ -192,4 +206,3 @@ window.modeI = modeI;
 window.executerAction = executerAction;
 window.modeC = modeC;
 window.motDePasseOublie = motDePasseOublie;
-    
