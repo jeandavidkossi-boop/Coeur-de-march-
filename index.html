@@ -144,6 +144,11 @@
                 <option value="decroissant">🔼 Plus cher</option>
             </select>
         </div>
+        <div class="flex items-center gap-2 mb-4">
+            <input id="prix-min-boutique" type="number" inputmode="numeric" min="0" placeholder="Prix min" oninput="appliquerFiltres('boutique')" class="w-1/3 bg-white border border-gray-100 text-[11px] font-bold py-2 px-3 rounded-xl outline-none shadow-sm">
+            <input id="prix-max-boutique" type="number" inputmode="numeric" min="0" placeholder="Prix max" oninput="appliquerFiltres('boutique')" class="w-1/3 bg-white border border-gray-100 text-[11px] font-bold py-2 px-3 rounded-xl outline-none shadow-sm">
+            <button id="btn-fav-boutique" onclick="basculerFiltreFavoris('boutique')" class="flex-1 bg-white text-red-500 border border-gray-100 text-[10px] font-black uppercase py-2 px-2 rounded-xl shadow-sm"><i class="fas fa-heart mr-1"></i>Favoris</button>
+        </div>
         <div id="menu-rayons">
             <h2 class="font-black text-[#4c1d95] text-sm mb-6 flex items-center gap-2 uppercase"><i class="fas fa-store text-orange-500"></i> Rayons du marché</h2>
             <div class="grid grid-cols-4 gap-y-6 gap-x-2 text-center mb-8">
@@ -168,13 +173,18 @@
         <div id="liste-boutique" class="grid grid-cols-2 gap-4 pb-10"></div>
     </div>
 
-    <div id="vue-rayon" class="hidden mt-8 px-6">
+        <div id="vue-rayon" class="hidden mt-8 px-6">
         <div class="flex justify-end items-center mb-4">
             <select id="tri-prix-rayon" onchange="changerTriRayon()" class="bg-white border border-gray-100 text-[#5b21b6] text-[10px] font-black uppercase py-2 px-3 rounded-xl outline-none shadow-sm">
                 <option value="recent">✨ Nouveautés</option>
                 <option value="croissant">🔽 Moins cher</option>
                 <option value="decroissant">🔼 Plus cher</option>
             </select>
+        </div>
+        <div class="flex items-center gap-2 mb-4">
+            <input id="prix-min-rayon" type="number" inputmode="numeric" min="0" placeholder="Prix min" oninput="appliquerFiltres('rayon')" class="w-1/3 bg-white border border-gray-100 text-[11px] font-bold py-2 px-3 rounded-xl outline-none shadow-sm">
+            <input id="prix-max-rayon" type="number" inputmode="numeric" min="0" placeholder="Prix max" oninput="appliquerFiltres('rayon')" class="w-1/3 bg-white border border-gray-100 text-[11px] font-bold py-2 px-3 rounded-xl outline-none shadow-sm">
+            <button id="btn-fav-rayon" onclick="basculerFiltreFavoris('rayon')" class="flex-1 bg-white text-red-500 border border-gray-100 text-[10px] font-black uppercase py-2 px-2 rounded-xl shadow-sm"><i class="fas fa-heart mr-1"></i>Favoris</button>
         </div>
         <div class="flex items-center gap-4 mb-6">
             <button onclick="changerVue('boutique')" class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600"><i class="fas fa-arrow-left"></i></button>
@@ -253,5 +263,4 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="src/main.js"></script>
 </body>
-    </html>
-    
+</html>
