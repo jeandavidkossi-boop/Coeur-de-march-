@@ -100,8 +100,7 @@
             </div>
         </div>
     </div>
-
-    <nav class="bg-cdm-purple text-white p-6 rounded-b-[35px] shadow-lg">
+        <nav class="bg-cdm-purple text-white p-6 rounded-b-[35px] shadow-lg">
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center gap-3">
                 <img src="logo-pwa-512x512.png" class="w-12 h-12 rounded-full border-2 border-orange-500 bg-white object-contain" alt="Logo" onerror="this.src='1769121566036.png'">
@@ -190,7 +189,7 @@
                 </div>
             </div>
 
-            <div id="formulaire-annonce" class="space-y-5">
+                        <div id="formulaire-annonce" class="space-y-5">
                 <div>
                     <label class="text-[10px] font-black uppercase text-gray-400 ml-2">Désignation (Nom de l'article)</label>
                     <input type="text" id="pNom" placeholder="Ex: Pagne Baoulé, iPhone 13..." class="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none font-bold text-gray-800 focus:border-purple-300 focus:bg-white transition-colors">
@@ -261,6 +260,9 @@
             <h2 class="font-black text-[#4c1d95] text-lg uppercase mb-4 border-b-2 border-purple-200 pb-2 flex items-center gap-2">
                 <i class="fas fa-boxes text-orange-500"></i> Mon Stock en Ligne
             </h2>
+            <div class="flex justify-end mb-3">
+                <button onclick="exporterProduitsCSV()" class="bg-green-100 text-green-700 text-[10px] font-black uppercase px-3 py-1.5 rounded-xl active:scale-95 transition"><i class="fas fa-file-excel mr-1"></i> Exporter mes produits (CSV)</button>
+            </div>
 
             <div id="mes-articles" class="grid grid-cols-2 gap-4">
                 <p class="text-gray-400 text-sm italic col-span-2">Chargement de vos articles...</p>
@@ -274,6 +276,9 @@
                 <span><i class="fas fa-receipt text-green-500 mr-1"></i> Dernières Commandes</span>
                 <span class="text-[10px] bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-black">Livraison : 01 43 81 27 59</span>
             </h2>
+            <div class="flex justify-end mb-3">
+                <button onclick="exporterCommandesCSV()" class="bg-green-100 text-green-700 text-[10px] font-black uppercase px-3 py-1.5 rounded-xl active:scale-95 transition"><i class="fas fa-file-excel mr-1"></i> Exporter mes commandes (CSV)</button>
+            </div>
             <div id="mes-commandes" class="space-y-3">
                 <p class="text-gray-400 text-xs italic">Chargement des commandes...</p>
             </div>
@@ -284,4 +289,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="src/bureau.js"></script>
 </body>
-</html>
+    </html>
+    
