@@ -80,7 +80,7 @@ function fermerConfirm() {
     modal.classList.remove('opacity-100');
     content.classList.add('scale-90');
     setTimeout(() => { modal.style.display = 'none'; }, 300);
-}
+        }
 
 async function supprimerImageStorage(urlImage) {
     if (!urlImage || !mySupabase) return;
@@ -215,7 +215,7 @@ async function publierAnnonce() {
         btn.innerText = "Publier sur le marché";
         btn.disabled = false;
     }
-}
+            }
 
 function mettreAJourCompteurEtFormulaire(totalArticles) {
     monNombreArticles = totalArticles || 0;
@@ -278,8 +278,8 @@ async function chargerMesArticles(page = 1) {
         const btnStockClass = estEpuise ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600";
         const btnStockIcon = estEpuise ? "fa-check" : "fa-pause";
         const btnBoostHtml = boostActif
-            ? `<button onclick="demanderBoost('${p.id}')" class="flex-1 bg-green-100 text-green-700 rounded-lg text-[8px] font-black py-1"><i class="fas fa-fire"></i> ACTIF</button>`
-            : `<button onclick="demanderBoost('${p.id}')" class="flex-1 bg-orange-100 text-orange-600 rounded-lg text-[9px] font-black py-1"><i class="fas fa-rocket"></i> BOOST</button>`;
+            ? `<button onclick="demanderBoost('${p.id}')" class="w-full bg-green-100 text-green-700 rounded-lg text-[8px] font-black py-1"><i class="fas fa-fire"></i> ACTIF</button>`
+            : `<button onclick="demanderBoost('${p.id}')" class="w-full bg-orange-100 text-orange-600 rounded-lg text-[9px] font-black py-1"><i class="fas fa-rocket"></i> BOOST</button>`;
 
         return `
         <div class="bg-white rounded-xl shadow-sm border ${boostActif ? 'border-orange-400' : 'border-gray-200'} overflow-hidden flex flex-col relative">
@@ -288,9 +288,10 @@ async function chargerMesArticles(page = 1) {
             <div class="p-2 flex-1 flex flex-col">
                 <h4 class="font-black text-[10px] text-gray-800 uppercase truncate mb-0.5">${echapperHTML(p.nom)}</h4>
                 <span class="text-orange-500 font-black text-xs mb-2">${formaterPrix(p.prix)} FCFA</span>
-                <div class="flex gap-1 mt-auto">
+                <div class="flex flex-wrap gap-1 mt-auto">
                     <button onclick="demanderConfirmation('${p.id}')" title="Supprimer" class="w-8 bg-red-100 text-red-600 rounded-lg py-1 text-xs"><i class="fas fa-trash-alt"></i></button>
                     <button onclick="ouvrirModification('${p.id}')" title="Modifier" class="w-8 bg-blue-100 text-blue-600 rounded-lg py-1 text-xs"><i class="fas fa-edit"></i></button>
+                    <button onclick="dupliquerArticle('${p.id}')" title="Dupliquer" class="w-8 bg-purple-100 text-purple-700 rounded-lg py-1 text-xs"><i class="fas fa-copy"></i></button>
                     <button onclick="basculerStock('${p.id}', '${p.statut}')" title="Mettre en pause / Activer" class="w-8 ${btnStockClass} rounded-lg py-1 text-xs"><i class="fas ${btnStockIcon}"></i></button>
                     ${btnBoostHtml}
                 </div>
@@ -346,14 +347,14 @@ function ouvrirModification(id) {
         modal.classList.add('opacity-100');
         modal.children[0].classList.remove('scale-90');
     }, 10);
-}
+                }
 
 function fermerModification() {
     const modal = document.getElementById('modal-modifier');
     modal.classList.remove('opacity-100');
     modal.children[0].classList.add('scale-90');
     setTimeout(() => { modal.style.display = 'none'; }, 300);
-            }
+}
 
 async function sauvegarderModification() {
     const btn = document.getElementById('btn-sauver-mod');
@@ -561,7 +562,7 @@ async function changerBanniereVIP(event) {
         if (btnTexte) btnTexte.innerText = "Changer la photo de ma boutique VIP";
         if (btnElt) btnElt.disabled = false;
     }
-            }
+                                        }
 
 async function chargerStatsEtCommandes() {
     if (!mySupabase || !myWhatsapp) return;
@@ -791,4 +792,118 @@ window.appelerLivreur = appelerLivreur;
 window.envoyerCommandeLivreur = envoyerCommandeLivreur;
 window.changerBanniereVIP = changerBanniereVIP;
 window.enregistrerDemande = enregistrerDemande;
-    
+
+// ---------------------------------------------------------------
+// Dupliquer un article
+// ---------------------------------------------------------------
+let duplicationEnCours = false;
+
+async function dupliquerArticle(id) {
+    if (duplicationEnCours) return;
+    const p = (window.mesArticlesLocaux || []).find(a => String(a.id) === String(id));
+    if (!p) return;
+
+    if (monAbonnement === 'standard' && monNombreArticles >= 5) {
+        afficherAlerteCustom("Limite atteinte", "Vous avez utilisé vos 5 emplacements gratuits. Passez PRO ou VIP pour un stock ILLIMITÉ.", "erreur");
+        return;
+    }
+
+    duplicationEnCours = true;
+    afficherAlerteCustom("Duplication...", "Copie de l'article en cours, patientez quelques secondes.", "succes");
+
+    try {
+        // On copie aussi l'image : si on supprime l'original plus tard, la copie garde sa photo.
+        const reponse = await fetch(p.image);
+        if (!reponse.ok) throw new Error("Impossible de copier la photo de l'article.");
+        const blob = await reponse.blob();
+        const ext = (String(p.image).split('?')[0].split('.').pop() || 'webp').toLowerCase();
+        const nomFichier = myUser.id + "_" + Date.now() + "." + (ext.length <= 5 ? ext : 'webp');
+
+        const { error: errPhoto } = await mySupabase.storage.from('images').upload(nomFichier, blob, { contentType: blob.type || 'image/webp' });
+        if (errPhoto) throw new Error("Erreur Photo : " + errPhoto.message);
+        const { data: { publicUrl } } = mySupabase.storage.from('images').getPublicUrl(nomFichier);
+
+        const { error: errProduit } = await mySupabase.from('produits').insert([{
+            nom: p.nom + ' (copie)',
+            prix: p.prix,
+            categorie: p.categorie,
+            description: p.description || '',
+            vendeur: myWhatsapp,
+            image: publicUrl,
+            statut: 'actif'
+        }]);
+        if (errProduit) {
+            await supprimerImageStorage(publicUrl);
+            throw new Error(errProduit.message);
+        }
+
+        afficherAlerteCustom("Article dupliqué", "La copie est en ligne. Utilisez le crayon pour changer son nom, son prix ou sa photo.", "succes");
+        await chargerMesArticles(1);
+    } catch (e) {
+        afficherAlerteCustom("ÉCHEC", e.message, "erreur");
+    } finally {
+        duplicationEnCours = false;
+    }
+}
+
+// ---------------------------------------------------------------
+// Export CSV (ouvrable dans Excel)
+// ---------------------------------------------------------------
+function formaterDateCSV(v) {
+    if (!v) return '';
+    const d = new Date(typeof v === 'string' && /^\d+$/.test(v) ? Number(v) : v);
+    return isNaN(d.getTime()) ? String(v) : d.toLocaleDateString('fr-FR');
+}
+
+function telechargerCSV(nomFichier, lignes) {
+    const echapper = (valeur) => {
+        let t = String(valeur === null || valeur === undefined ? '' : valeur);
+        if (/^[=+\-@]/.test(t)) t = "'" + t; // évite l'exécution de formules dans Excel
+        return '"' + t.replace(/"/g, '""') + '"';
+    };
+    const contenu = '\uFEFF' + lignes.map(l => l.map(echapper).join(';')).join('\r\n');
+    const blob = new Blob([contenu], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nomFichier;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+async function exporterProduitsCSV() {
+    if (!myWhatsapp) return;
+    const { data, error } = await mySupabase
+        .from('produits')
+        .select('nom, prix, categorie, statut, dateajout, description')
+        .eq('vendeur', myWhatsapp)
+        .order('dateajout', { ascending: false });
+    if (error || !data || data.length === 0) {
+        afficherAlerteCustom("Export", error ? error.message : "Vous n'avez aucun article à exporter.", "erreur");
+        return;
+    }
+    const lignes = [['Nom', 'Prix (FCFA)', 'Catégorie', 'Statut', 'Date d\'ajout', 'Description']];
+    data.forEach(p => lignes.push([p.nom, p.prix, p.categorie, p.statut, formaterDateCSV(p.dateajout), p.description || '']));
+    telechargerCSV('mes-produits.csv', lignes);
+}
+
+async function exporterCommandesCSV() {
+    if (!myWhatsapp) return;
+    const { data, error } = await mySupabase
+        .from('commandes')
+        .select('numero_commande, created_at, total_fcfa, items, statut, mode_reception, quartier_livraison')
+        .eq('vendeur_tel', myWhatsapp)
+        .order('numero_commande', { ascending: false });
+    if (error || !data || data.length === 0) {
+        afficherAlerteCustom("Export", error ? error.message : "Aucune commande à exporter.", "erreur");
+        return;
+    }
+    const lignes = [['N° commande', 'Date', 'Total (FCFA)', 'Articles', 'Statut', 'Réception', 'Quartier']];
+    data.forEach(c => {
+        const articles = Array.isArray(c.items) ? c.items.map(i => (i.quantite || 1) + 'x ' + i.nom).join(' | ') : '';
+        lignes.push([c.numero_commande, formaterDateCSV(c.created_at), c.total_fcfa, articles, c.statut || '', c.mode_reception || '', c.quartier_livraison || '']);
+    });
+    telechargerCSV('mes-commandes.csv', lignes);
+}
