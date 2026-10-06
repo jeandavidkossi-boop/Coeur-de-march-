@@ -1,5 +1,64 @@
 let articles = [];
 let panier = JSON.parse(localStorage.getItem('coeur_panier')) || [];
+
+// --- Favoris (stockés sur le téléphone, comme le panier) ---
+let favoris = (() => {
+    try {
+        const v = JSON.parse(localStorage.getItem('coeur_favoris'));
+        return Array.isArray(v) ? v.map(String) : [];
+    } catch (e) { return []; }
+})();
+const filtreFavoris = { boutique: false, rayon: false };
+let minuteurFiltres = null;
+
+function estFavori(id) { return favoris.includes(String(id)); }
+
+function iconeCoeur(id) {
+    return estFavori(id) ? 'fas fa-heart text-red-500' : 'far fa-heart text-gray-400';
+}
+
+function basculerFavori(id, event) {
+    if (event) event.stopPropagation();
+    id = String(id);
+    if (estFavori(id)) {
+        favoris = favoris.filter(f => f !== id);
+        afficherToastPanier("Retiré des favoris");
+    } else {
+        favoris.push(id);
+        afficherToastPanier("Ajouté aux favoris ❤️");
+    }
+    try { localStorage.setItem('coeur_favoris', JSON.stringify(favoris)); } catch (e) {}
+    document.querySelectorAll('[data-fav-id]').forEach(btn => {
+        if (btn.getAttribute('data-fav-id') === id) {
+            const ic = btn.querySelector('i');
+            if (ic) ic.className = iconeCoeur(id);
+        }
+    });
+    // Si le filtre « Favoris » est actif, on retire tout de suite l'article de la liste
+    if ((cibleCourante === 'liste-boutique' && filtreFavoris.boutique) ||
+        (cibleCourante === 'liste-rayon' && filtreFavoris.rayon)) {
+        afficherProduits(articlesCourants, cibleCourante, false);
+    }
+}
+
+function appliquerFiltres(suffixe) {
+    clearTimeout(minuteurFiltres);
+    minuteurFiltres = setTimeout(() => {
+        afficherProduits(articlesCourants, 'liste-' + suffixe);
+    }, 250);
+}
+
+function basculerFiltreFavoris(suffixe) {
+    filtreFavoris[suffixe] = !filtreFavoris[suffixe];
+    const btn = document.getElementById('btn-fav-' + suffixe);
+    if (btn) {
+        btn.classList.toggle('bg-red-500', filtreFavoris[suffixe]);
+        btn.classList.toggle('text-white', filtreFavoris[suffixe]);
+        btn.classList.toggle('bg-white', !filtreFavoris[suffixe]);
+        btn.classList.toggle('text-red-500', !filtreFavoris[suffixe]);
+    }
+    afficherProduits(articlesCourants, 'liste-' + suffixe);
+}
 let articlesCourants = [];
 let cibleCourante = '';
 let pageCourante = 1;
@@ -173,7 +232,7 @@ function trouverArticle(idOuNom) {
     const cle = String(idOuNom);
     if (window.articlesParId.has(cle)) return window.articlesParId.get(cle);
     return articles.find(a => String(a.id) === cle || a.nom === cle) || null;
-                                        }
+}
 
 async function init() {
     const ecranLoad = document.getElementById('ecran-chargement');
@@ -407,6 +466,23 @@ function afficherProduits(liste, target, resetPage = true) {
     let listeTriee = [...liste];
     let critereTri = 'recent';
 
+    // Filtres : fourchette de prix et favoris (vues boutique et rayon)
+    const suffixeFiltre = target === 'liste-boutique' ? 'boutique' : (target === 'liste-rayon' ? 'rayon' : null);
+    if (suffixeFiltre) {
+        const elMin = document.getElementById('prix-min-' + suffixeFiltre);
+        const elMax = document.getElementById('prix-max-' + suffixeFiltre);
+        const prixMin = elMin ? parseInt(elMin.value, 10) : NaN;
+        const prixMax = elMax ? parseInt(elMax.value, 10) : NaN;
+        const seulementFavoris = filtreFavoris[suffixeFiltre];
+        listeTriee = listeTriee.filter(p => {
+            const prix = parseInt(p.prix, 10) || 0;
+            if (!isNaN(prixMin) && prix < prixMin) return false;
+            if (!isNaN(prixMax) && prix > prixMax) return false;
+            if (seulementFavoris && !estFavori(p.id)) return false;
+            return true;
+        });
+    }
+
     if (target === 'liste-boutique') critereTri = document.getElementById('tri-prix-boutique').value;
     if (target === 'liste-rayon') critereTri = document.getElementById('tri-prix-rayon').value;
 
@@ -436,7 +512,7 @@ function afficherProduits(liste, target, resetPage = true) {
     if (listeFinale.length === 0) {
         container.innerHTML = `<div style="grid-column: 1 / -1;" class="text-center py-8 text-gray-400">Aucun produit trouvé.</div>`;
         return;
-        }
+            }
 
     container.innerHTML = listeFinale.map(p => {
         const estSponsorise = boostEstActif(p);
@@ -449,6 +525,7 @@ function afficherProduits(liste, target, resetPage = true) {
                 ${badgeSponsor}
                 <img src="${p.image}" loading="lazy" onclick="ouvrirImage('${p.image}')" class="w-full h-full object-cover">
                 <div class="price-badge">${formaterPrix(p.prix)} <small>FCFA</small></div>
+                <button data-fav-id="${p.id}" onclick="basculerFavori('${p.id}', event)" class="absolute bottom-2 right-2 z-20 w-8 h-8 rounded-full bg-white/90 shadow flex items-center justify-center active:scale-90 transition-transform"><i class="${iconeCoeur(p.id)}"></i></button>
             </div>
             <div class="p-3 flex flex-col flex-grow">
                 <h1 class="font-black text-[12px] text-[#5b21b6] mb-1 uppercase leading-tight line-clamp-2">${echapperHTML(p.nom)}</h1>
@@ -544,6 +621,7 @@ function ouvrirDetails(idOuNom) {
         </div>
         <div class="flex gap-2">
             <button onclick="ajouterAuPanier('${p.id}')" class="flex-1 bg-[#5b21b6] text-white font-black py-3 rounded-xl uppercase text-sm shadow-md transition transform active:scale-95">Ajouter au panier</button>
+            <button data-fav-id="${p.id}" onclick="basculerFavori('${p.id}', event)" class="w-14 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-xl shadow-md transition transform active:scale-95"><i class="${iconeCoeur(p.id)}"></i></button>
             <button onclick="partager()" class="w-14 bg-blue-500 text-white rounded-xl flex items-center justify-center text-xl shadow-md transition transform active:scale-95"><i class="fas fa-share-alt"></i></button>
         </div>
     `;
@@ -560,7 +638,7 @@ function partager() {
     } else {
         window.open('https://wa.me/?text=' + encodeURIComponent(window.messagePartage));
     }
-}
+        }
 
 function choisirModeReception(mode) {
     modeReceptionChoisi = mode;
@@ -958,5 +1036,5 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js');
     });
-                   }
-    
+                        }
+            
