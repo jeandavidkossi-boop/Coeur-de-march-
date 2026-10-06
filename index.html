@@ -14,251 +14,228 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8f9fd; overflow-x: hidden; }
-        .header-bg { background-color: #5b21b6; padding-bottom: 25px; }
-        .scrolling-banner { background-color: #ffedd5; color: #000000; font-size: 15px; font-weight: 900; padding: 12px 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        
+        /* Design E-commerce Pro (Jumia style) */
+        .scrolling-banner { background-color: #fff3cd; color: #856404; font-size: 13px; font-weight: 700; padding: 10px 0; border-bottom: 1px solid #ffeeba; }
         .scrolling-banner p { display: inline-block; white-space: nowrap; animation: defilement 35s linear infinite; padding-right: 50px; }
         @keyframes defilement { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
-        .search-container { margin-top: 0; position: relative; z-index: 50; padding: 0 24px; }
-        .search-box { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); padding: 6px; display: flex; align-items: center; }
-        .mic-btn { background-color: #5b21b6; color: white; width: 45px; height: 45px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
-        .price-badge { background-color: #f97316; color: white; position: absolute; top: 12px; right: 12px; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; z-index: 10; box-shadow: 0 4px 10px rgba(249,115,22,0.3); }
-        .btn-ajouter { background-color: #5b21b6; color: white; width: 100%; padding: 12px 0; border-radius: 15px; font-weight: 900; font-size: 11px; text-transform: uppercase; margin-top: 8px; }
-        .nav-bar { background: white; height: 75px; display: flex; justify-content: space-around; align-items: center; position: fixed; bottom: 0; width: 100%; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100; border-top-left-radius: 25px; border-top-right-radius: 25px; }
+        
+        .nav-bar { background: white; height: 65px; display: flex; justify-content: space-around; align-items: center; position: fixed; bottom: 0; width: 100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
         .active-nav { color: #f97316 !important; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #9ca3af; font-size: 20px; }
-        .nav-text { font-size: 9px; font-weight: 900; text-transform: capitalize; margin-top: 4px; }
-        .panier-central { background: #f97316; width: 65px; height: 65px; border-radius: 50%; border: 6px solid #f8f9fd; margin-top: -30px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: white; font-size: 28px; display: flex; align-items: center; justify-content: center; position: relative; }
-        #toast-panier { position: fixed; top: -80px; left: 50%; transform: translateX(-50%); background: #16a34a; color: white; padding: 10px 20px; border-radius: 999px; font-size: 11px; font-weight: 900; text-transform: uppercase; box-shadow: 0 10px 25px rgba(22,163,74,0.35); z-index: 9999; transition: top 0.35s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #6b7280; font-size: 20px; padding: 5px; }
+        .nav-text { font-size: 10px; font-weight: 500; margin-top: 4px; }
+        .panier-central { color: #4b5563; font-size: 20px; position: relative; }
+        
+        #toast-panier { position: fixed; top: -80px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 12px 24px; border-radius: 8px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 12px rgba(34,197,94,0.3); z-index: 9999; transition: top 0.3s ease; white-space: nowrap; }
         #toast-panier.show { top: 20px; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; display: none; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.3s; }
-        .modal-content { background: white; width: 100%; border-radius: 30px 30px 0 0; padding: 25px; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        
+        /* Correction Bug Largeur Modal */
+        .modal-content { background: white; width: 100%; border-radius: 16px 16px 0 0; padding: 20px; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; }
+        
         .modal-overlay.active { opacity: 1; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
-        .modal-alerte-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
-        .modal-alerte-content { background: white; width: 85%; border-radius: 25px; padding: 25px; transform: scale(0.9); transition: transform 0.3s; text-align: center; }
+        
+        .modal-alerte-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 300; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        .modal-alerte-content { background: white; width: 85%; max-width: 320px; border-radius: 12px; padding: 24px; transform: scale(0.95); transition: transform 0.3s; text-align: center; }
         .modal-alerte-overlay.active { opacity: 1; }
         .modal-alerte-overlay.active .modal-alerte-content { transform: scale(1); }
-        .modal-image-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 400; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
-        .modal-image-overlay.active { opacity: 1; }
-        #ecran-chargement { position: fixed; inset: 0; background-color: #f8f9fd; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
-        #btn-remonter { position: fixed; bottom: 160px; right: 24px; background: white; color: #5b21b6; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 90; }
+        
+        #ecran-chargement { position: fixed; inset: 0; background-color: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s; }
+        #btn-remonter { position: fixed; bottom: 80px; right: 20px; background: white; color: #374151; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 90; border: 1px solid #e5e7eb; }
         #btn-remonter.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        
         .hide-scroll::-webkit-scrollbar { display: none; }
-        .scroll-h { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding-bottom: 10px; }
-        .scroll-item { min-width: 140px; scroll-snap-align: start; flex-shrink: 0; }
-        .vip-banner { min-width: 90%; scroll-snap-align: center; border-radius: 15px; object-fit: cover; }
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .scroll-h { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding-bottom: 8px; }
+        .scroll-item { min-width: 130px; scroll-snap-align: start; flex-shrink: 0; }
+        
+        /* Fiche Produit Plein Écran */
+        .page-details { position: fixed; inset: 0; background: white; z-index: 150; overflow-y: auto; transform: translateX(100%); transition: transform 0.3s ease; display: none; padding-bottom: 80px; }
+        .page-details.active { transform: translateX(0); }
+        
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
     </style>
 </head>
-<body class="pb-32">
+<body class="pb-20">
 
-    <div id="toast-panier"><i class="fas fa-check-circle mr-1"></i> Ajouté au panier !</div>
-
-    <div id="modal-image" class="modal-image-overlay" onclick="fermerImage()">
-        <button onclick="fermerImage()" class="absolute top-6 right-6 text-white text-3xl z-50 p-2"><i class="fas fa-times"></i></button>
-        <img id="image-en-grand" src="" class="max-w-[95%] max-h-[85%] object-contain rounded-lg shadow-2xl transition-transform duration-300 transform scale-95">
-    </div>
+    <div id="toast-panier"><i class="fas fa-check-circle mr-2"></i> Ajouté au panier !</div>
 
     <div id="modal-alerte" class="modal-alerte-overlay" onclick="fermerAlerte()">
         <div class="modal-alerte-content" onclick="event.stopPropagation()">
-            <div class="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fas fa-bell"></i></div>
-            <h3 id="alerte-titre" class="font-black text-lg uppercase mb-2 text-[#5b21b6]">Titre</h3>
-            <p id="alerte-message" class="text-gray-500 text-xs font-bold mb-6">Message</p>
-            <button onclick="fermerAlerte()" class="w-full bg-[#f97316] text-white font-black py-4 rounded-xl uppercase text-[10px]">Compris</button>
+            <div class="w-12 h-12 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-xl mx-auto mb-3"><i class="fas fa-info-circle"></i></div>
+            <h3 id="alerte-titre" class="font-bold text-lg mb-1 text-gray-900">Titre</h3>
+            <p id="alerte-message" class="text-gray-500 text-sm mb-5">Message</p>
+            <button onclick="fermerAlerte()" class="w-full bg-[#f97316] text-white font-bold py-3 rounded-lg">Compris</button>
         </div>
     </div>
 
     <div id="ecran-chargement" class="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
-        <img src="logo-pwa-512x512.png" class="w-[280px] max-w-[85%] object-contain animate-pulse" alt="Logo complet">
+        <img src="logo-pwa-512x512.png" class="w-[200px] max-w-[70%] object-contain animate-pulse" alt="Logo">
     </div>
     
-    <div class="bg-[#4c1d95] pt-8 pb-6 px-6 relative shadow-md">
-        <div class="flex items-center gap-4 mb-6">
-            <div class="bg-white rounded-full p-1 shadow-sm shrink-0">
-                <img src="logo-pwa-512x512.png" class="w-12 h-12 object-contain rounded-full" alt="Logo">
+    <!-- En-tête Pro -->
+    <div class="bg-white pt-4 pb-4 px-4 shadow-sm relative z-10">
+        <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+                <img src="logo-pwa-512x512.png" class="w-8 h-8 object-contain" alt="Logo">
+                <h1 class="text-[#5b21b6] text-xl font-black tracking-tight">Cœur de Marché</h1>
             </div>
-            <div class="flex flex-col">
-                <h1 class="text-white text-[22px] font-black uppercase tracking-wide leading-none">CŒUR DE MARCHÉ</h1>
-                <p class="text-orange-400 font-bold text-[10px] uppercase tracking-widest mt-1">
-                    <i class="fas fa-map-marker-alt mr-1"></i> Bouaflé
-                </p>
-            </div>
+            <div class="text-[10px] text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded">Bouaflé</div>
         </div>
          
-        <div class="w-full bg-white rounded-full shadow-inner p-1.5 flex items-center mt-4">
-            <i class="fas fa-search text-gray-400 ml-3 mr-2 text-lg shrink-0"></i>
-            <input type="search" id="inputRecherche" oninput="rechercherProduit(event)" onkeydown="if(event.key==='Enter') this.blur()" placeholder="Que cherchez-vous à Bouaflé ?" class="flex-1 bg-transparent border-none outline-none text-gray-700 text-sm ml-1">
-            <button onclick="lancerMicro()" id="btnMicro" class="w-10 h-10 bg-[#5b21b6] rounded-full flex items-center justify-center text-white shrink-0 shadow-md">
+        <div class="w-full bg-gray-100 rounded-lg p-1 flex items-center border border-gray-200 focus-within:border-purple-400 transition-colors">
+            <i class="fas fa-search text-gray-400 ml-2 mr-2"></i>
+            <input type="search" id="inputRecherche" oninput="rechercherProduit(event)" onkeydown="if(event.key==='Enter') this.blur()" placeholder="Chercher un produit, une marque..." class="flex-1 bg-transparent border-none outline-none text-gray-800 text-sm py-2">
+            <button onclick="lancerMicro()" id="btnMicro" class="w-8 h-8 flex items-center justify-center text-gray-500">
                 <i id="iconMicro" class="fas fa-microphone"></i>
             </button>
         </div>
     </div>
-    
-    <div class="scrolling-banner mt-0 mx-0 mb-4 bg-white border-b border-gray-200 shadow-sm overflow-hidden py-1">
+        <div class="scrolling-banner mt-0 mx-0 mb-2">
         <p id="texte-annonce"></p>
     </div>
 
     <div id="vue-accueil">
-        <div id="section-boutiques-vip" class="px-6 mt-6 mb-2">
-            <h2 class="font-black text-[#4c1d95] text-[11px] mb-3 flex items-center gap-2 uppercase tracking-widest">
-                <i class="fas fa-crown text-yellow-500 text-sm"></i> Boutiques Officielles
-            </h2>
-            <div id="avenue-boutiques-vip" class="flex gap-4 overflow-x-auto hide-scroll py-2" style="scroll-behavior: smooth;"></div>
+        <div class="px-4 mt-4">
+            <div id="carrousel-vip" class="scroll-h hide-scroll pb-2"></div>
         </div>
 
-        <div class="flex justify-between px-8 mt-6">
-            <button onclick="filtrerAccueil('Vivrier')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#ffedd5] rounded-2xl flex items-center justify-center text-[#d97706] text-2xl mb-2 shadow-sm"><i class="fas fa-shopping-basket"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Marché Frais</span></button>
-            <button onclick="filtrerAccueil('Beauté')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#dcfce7] rounded-2xl flex items-center justify-center text-[#16a34a] text-2xl mb-2 shadow-sm"><i class="fas fa-star"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Tendances</span></button>
-            <button onclick="filtrerAccueil('Alimentation')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#e0e7ff] rounded-2xl flex items-center justify-center text-[#4f46e5] text-2xl mb-2 shadow-sm"><i class="fas fa-box-open"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Superette</span></button>
-            <button onclick="filtrerAccueil('Habillement')" class="flex flex-col items-center"><div class="w-16 h-16 bg-[#fce7f3] rounded-2xl flex items-center justify-center text-[#db2777] text-2xl mb-2 shadow-sm"><i class="fas fa-gift"></i></div><span class="text-[9px] font-black uppercase text-gray-600">Idées Cadeaux</span></button>
+        <div class="px-4 mt-6 mb-2">
+            <h2 class="font-bold text-gray-800 text-sm mb-3">Boutiques Officielles</h2>
+            <div id="avenue-boutiques-vip" class="flex gap-3 overflow-x-auto hide-scroll pb-2" style="scroll-behavior: smooth;"></div>
         </div>
         
-        <div class="px-6 mt-8">
-            <h2 class="font-black text-[#4c1d95] text-sm mb-3 flex items-center gap-2 uppercase"><i class="fas fa-star text-yellow-500"></i> À la une</h2>
-            <div id="carrousel-vip" class="scroll-h hide-scroll">
-                <div class="bg-gray-100 w-full h-32 rounded-[15px] flex flex-col items-center justify-center text-gray-400"><i class="fas fa-bullhorn text-2xl mb-2"></i><span class="text-xs font-bold uppercase tracking-wider">Chargement VIP...</span></div>
-            </div>
-        </div>
-
-        <div class="px-6 mt-6">
-            <h2 class="font-black text-[#4c1d95] text-sm mb-3 flex items-center gap-2 uppercase"><i class="fas fa-tv text-orange-500"></i> TV Marché</h2>
-            <div id="conteneur-tv">
-                <div class="bg-gray-100 p-3 rounded-[20px] shadow-sm border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 h-40"><i class="fas fa-video text-3xl mb-2"></i><span class="text-xs font-bold uppercase tracking-wider">Espace TV Disponible</span></div>
-            </div>
-        </div>
-
-        <div class="px-6 mt-8 mb-8">
-            <h2 class="font-black text-[#4c1d95] text-sm mb-3 flex items-center gap-2 uppercase"><i class="fas fa-fire text-red-500"></i> Sélection du Moment</h2>
+        <div class="px-4 mt-6">
+            <h2 class="font-bold text-gray-800 text-sm mb-3">Nouveautés pour vous</h2>
             <div id="liste-nouveautes" class="scroll-h hide-scroll"></div>
         </div>
-    </div>
-        <div id="vue-boutique" class="hidden mt-8 px-6">
-        <div id="banniere-vendeur" class="mb-4"></div>
-        <div class="flex justify-end items-center mb-4">
-            <select id="tri-prix-boutique" onchange="changerTriBoutique()" class="bg-white border border-gray-100 text-[#5b21b6] text-[10px] font-black uppercase py-2 px-3 rounded-xl outline-none shadow-sm">
-                <option value="recent">✨ Nouveautés</option>
-                <option value="croissant">🔽 Moins cher</option>
-                <option value="decroissant">🔼 Plus cher</option>
-            </select>
+
+        <div class="px-4 mt-8 mb-6">
+            <h2 class="font-bold text-gray-800 text-sm mb-3">TV Marché</h2>
+            <div id="conteneur-tv"></div>
         </div>
-        <div class="flex items-center gap-2 mb-4">
-            <input id="prix-min-boutique" type="number" inputmode="numeric" min="0" placeholder="Prix min" oninput="appliquerFiltres('boutique')" class="w-1/3 bg-white border border-gray-100 text-[11px] font-bold py-2 px-3 rounded-xl outline-none shadow-sm">
-            <input id="prix-max-boutique" type="number" inputmode="numeric" min="0" placeholder="Prix max" oninput="appliquerFiltres('boutique')" class="w-1/3 bg-white border border-gray-100 text-[11px] font-bold py-2 px-3 rounded-xl outline-none shadow-sm">
-            <button id="btn-fav-boutique" onclick="basculerFiltreFavoris('boutique')" class="flex-1 bg-white text-red-500 border border-gray-100 text-[10px] font-black uppercase py-2 px-2 rounded-xl shadow-sm"><i class="fas fa-heart mr-1"></i>Favoris</button>
-        </div>
-        <div id="menu-rayons">
-            <h2 class="font-black text-[#4c1d95] text-sm mb-6 flex items-center gap-2 uppercase"><i class="fas fa-store text-orange-500"></i> Rayons du marché</h2>
-            <div class="grid grid-cols-4 gap-y-6 gap-x-2 text-center mb-8">
-                <div onclick="filtrerBoutique('Marché & Vivrier')"><div class="w-12 h-12 mx-auto bg-green-100 text-green-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-carrot"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Vivrier</span></div>
-                <div onclick="filtrerBoutique('Alimentation & Boissons')"><div class="w-12 h-12 mx-auto bg-blue-100 text-blue-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-shopping-basket"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Aliment.</span></div>
-                <div onclick="filtrerBoutique('Habillement & Pagnes')"><div class="w-12 h-12 mx-auto bg-purple-100 text-purple-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-tshirt"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Mode</span></div>
-                <div onclick="filtrerBoutique('Mercerie & Couture')"><div class="w-12 h-12 mx-auto bg-pink-100 text-pink-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-cut"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Mercerie</span></div>
-                <div onclick="filtrerBoutique('Maison & Vaisselle')"><div class="w-12 h-12 mx-auto bg-orange-100 text-orange-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-home"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Maison</span></div>
-                <div onclick="filtrerBoutique('Électronique & Ménager')"><div class="w-12 h-12 mx-auto bg-gray-200 text-gray-700 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-tv"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Électro</span></div>
-                <div onclick="filtrerBoutique('Construction & Quincaillerie')"><div class="w-12 h-12 mx-auto bg-yellow-100 text-yellow-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-tools"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Outils</span></div>
-                <div onclick="filtrerBoutique('Motos & Mécanique')"><div class="w-12 h-12 mx-auto bg-red-100 text-red-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-motorcycle"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Moto</span></div>
-                <div onclick="filtrerBoutique('Agro-Élevage')"><div class="w-12 h-12 mx-auto bg-emerald-100 text-emerald-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-tractor"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Agro</span></div>
-                <div onclick="filtrerBoutique('Librairie & École')"><div class="w-12 h-12 mx-auto bg-indigo-100 text-indigo-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-book"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">École</span></div>
-                <div onclick="filtrerBoutique('Beauté & Cosmétique')"><div class="w-12 h-12 mx-auto bg-rose-100 text-rose-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-spa"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Beauté</span></div>
-                <div onclick="filtrerBoutique('Événementiel & Location')"><div class="w-12 h-12 mx-auto bg-cyan-100 text-cyan-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-glass-cheers"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Fête</span></div>
-                <div onclick="filtrerBoutique('Univers Bébé & Maternité')"><div class="w-12 h-12 mx-auto bg-pink-100 text-pink-500 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-baby"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Bébé</span></div>
-                <div onclick="filtrerBoutique('Immobilier & Terrains')"><div class="w-12 h-12 mx-auto bg-blue-100 text-blue-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-home"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Immo</span></div>
-                <div onclick="filtrerBoutique('Restauration & Maquis')"><div class="w-12 h-12 mx-auto bg-orange-100 text-orange-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-utensils"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Resto</span></div>
-                <div onclick="filtrerBoutique('Services & Artisans')"><div class="w-12 h-12 mx-auto bg-teal-100 text-teal-600 rounded-[15px] flex items-center justify-center text-xl mb-1 shadow-sm"><i class="fas fa-briefcase"></i></div><span class="text-[9px] font-bold uppercase text-gray-700">Services</span></div>
-            </div>
-        </div>
-        <div id="liste-boutique" class="grid grid-cols-2 gap-4 pb-10"></div>
     </div>
 
-        <div id="vue-rayon" class="hidden mt-8 px-6">
-        <div class="flex justify-end items-center mb-4">
-            <select id="tri-prix-rayon" onchange="changerTriRayon()" class="bg-white border border-gray-100 text-[#5b21b6] text-[10px] font-black uppercase py-2 px-3 rounded-xl outline-none shadow-sm">
-                <option value="recent">✨ Nouveautés</option>
-                <option value="croissant">🔽 Moins cher</option>
-                <option value="decroissant">🔼 Plus cher</option>
-            </select>
+    <div id="vue-boutique" class="hidden mt-4 px-4">
+        <div id="banniere-vendeur" class="mb-4"></div>
+        
+        <div class="bg-white p-3 rounded-lg border border-gray-200 mb-4 shadow-sm">
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-xs font-bold text-gray-700">Trier et Filtrer</span>
+                <select id="tri-prix-boutique" onchange="changerTriBoutique()" class="bg-gray-50 border border-gray-200 text-gray-700 text-xs font-medium py-1.5 px-2 rounded outline-none">
+                    <option value="recent">Plus récents</option>
+                    <option value="croissant">Prix croissant</option>
+                    <option value="decroissant">Prix décroissant</option>
+                </select>
+            </div>
+            <div class="flex items-center gap-2">
+                <input id="prix-min-boutique" type="number" placeholder="Min" oninput="appliquerFiltres('boutique')" class="w-1/3 bg-gray-50 border border-gray-200 text-xs py-1.5 px-2 rounded outline-none">
+                <span class="text-gray-400 text-xs">-</span>
+                <input id="prix-max-boutique" type="number" placeholder="Max" oninput="appliquerFiltres('boutique')" class="w-1/3 bg-gray-50 border border-gray-200 text-xs py-1.5 px-2 rounded outline-none">
+                <button id="btn-fav-boutique" onclick="basculerFiltreFavoris('boutique')" class="flex-1 bg-white border border-gray-200 text-gray-600 text-xs font-medium py-1.5 px-2 rounded flex items-center justify-center gap-1"><i class="fas fa-heart text-gray-300"></i> Favoris</button>
+            </div>
         </div>
-        <div class="flex items-center gap-2 mb-4">
-            <input id="prix-min-rayon" type="number" inputmode="numeric" min="0" placeholder="Prix min" oninput="appliquerFiltres('rayon')" class="w-1/3 bg-white border border-gray-100 text-[11px] font-bold py-2 px-3 rounded-xl outline-none shadow-sm">
-            <input id="prix-max-rayon" type="number" inputmode="numeric" min="0" placeholder="Prix max" oninput="appliquerFiltres('rayon')" class="w-1/3 bg-white border border-gray-100 text-[11px] font-bold py-2 px-3 rounded-xl outline-none shadow-sm">
-            <button id="btn-fav-rayon" onclick="basculerFiltreFavoris('rayon')" class="flex-1 bg-white text-red-500 border border-gray-100 text-[10px] font-black uppercase py-2 px-2 rounded-xl shadow-sm"><i class="fas fa-heart mr-1"></i>Favoris</button>
+
+        <!-- RESTITUTION DE LA GRILLE DES 16 RAYONS -->
+        <div id="menu-rayons" class="mb-6">
+            <h2 class="font-bold text-gray-800 text-sm mb-4">Rayons du marché</h2>
+            <div class="grid grid-cols-4 gap-y-5 gap-x-2 text-center">
+                <div onclick="filtrerBoutique('Marché & Vivrier')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-green-50 text-green-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-green-100"><i class="fas fa-carrot"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Vivrier</span></div>
+                <div onclick="filtrerBoutique('Alimentation & Boissons')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-blue-100"><i class="fas fa-shopping-basket"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Aliment.</span></div>
+                <div onclick="filtrerBoutique('Habillement & Pagnes')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-purple-100"><i class="fas fa-tshirt"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Mode</span></div>
+                <div onclick="filtrerBoutique('Mercerie & Couture')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-pink-50 text-pink-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-pink-100"><i class="fas fa-cut"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Mercerie</span></div>
+                <div onclick="filtrerBoutique('Maison & Vaisselle')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-orange-50 text-orange-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-orange-100"><i class="fas fa-home"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Maison</span></div>
+                <div onclick="filtrerBoutique('Électronique & Ménager')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-gray-100 text-gray-700 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-gray-200"><i class="fas fa-tv"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Électro</span></div>
+                <div onclick="filtrerBoutique('Construction & Quincaillerie')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-yellow-50 text-yellow-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-yellow-100"><i class="fas fa-tools"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Outils</span></div>
+                <div onclick="filtrerBoutique('Motos & Mécanique')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-red-50 text-red-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-red-100"><i class="fas fa-motorcycle"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Moto</span></div>
+                <div onclick="filtrerBoutique('Agro-Élevage')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-emerald-100"><i class="fas fa-tractor"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Agro</span></div>
+                <div onclick="filtrerBoutique('Librairie & École')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-indigo-100"><i class="fas fa-book"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">École</span></div>
+                <div onclick="filtrerBoutique('Beauté & Cosmétique')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-rose-50 text-rose-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-rose-100"><i class="fas fa-spa"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Beauté</span></div>
+                <div onclick="filtrerBoutique('Événementiel & Location')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-cyan-50 text-cyan-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-cyan-100"><i class="fas fa-glass-cheers"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Fête</span></div>
+                <div onclick="filtrerBoutique('Univers Bébé & Maternité')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-pink-50 text-pink-500 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-pink-100"><i class="fas fa-baby"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Bébé</span></div>
+                <div onclick="filtrerBoutique('Immobilier & Terrains')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-blue-50 text-blue-700 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-blue-100"><i class="fas fa-building"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Immo</span></div>
+                <div onclick="filtrerBoutique('Restauration & Maquis')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-orange-50 text-orange-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-orange-100"><i class="fas fa-utensils"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Resto</span></div>
+                <div onclick="filtrerBoutique('Services & Artisans')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-teal-50 text-teal-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-teal-100"><i class="fas fa-briefcase"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Services</span></div>
+            </div>
         </div>
-        <div class="flex items-center gap-4 mb-6">
-            <button onclick="changerVue('boutique')" class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600"><i class="fas fa-arrow-left"></i></button>
-            <h2 id="titre-rayon" class="font-black text-[#4c1d95] text-sm uppercase">Rayon</h2>
+
+        <div id="liste-boutique" class="grid grid-cols-2 gap-3 pb-6"></div>
+                                                                                                                                                                                                                                                                                       </div>
+                                                                                                                                                                                                                                                                                       
+        <div id="vue-rayon" class="hidden mt-4 px-4">
+        <div class="bg-white p-3 rounded-lg border border-gray-200 mb-4 shadow-sm">
+            <div class="flex justify-between items-center mb-3">
+                <span class="text-xs font-bold text-gray-700">Trier et Filtrer</span>
+                <select id="tri-prix-rayon" onchange="changerTriRayon()" class="bg-gray-50 border border-gray-200 text-gray-700 text-xs font-medium py-1.5 px-2 rounded outline-none">
+                    <option value="recent">Plus récents</option>
+                    <option value="croissant">Prix croissant</option>
+                    <option value="decroissant">Prix décroissant</option>
+                </select>
+            </div>
+            <div class="flex items-center gap-2">
+                <input id="prix-min-rayon" type="number" placeholder="Min" oninput="appliquerFiltres('rayon')" class="w-1/3 bg-gray-50 border border-gray-200 text-xs py-1.5 px-2 rounded outline-none">
+                <span class="text-gray-400 text-xs">-</span>
+                <input id="prix-max-rayon" type="number" placeholder="Max" oninput="appliquerFiltres('rayon')" class="w-1/3 bg-gray-50 border border-gray-200 text-xs py-1.5 px-2 rounded outline-none">
+                <button id="btn-fav-rayon" onclick="basculerFiltreFavoris('rayon')" class="flex-1 bg-white border border-gray-200 text-gray-600 text-xs font-medium py-1.5 px-2 rounded flex items-center justify-center gap-1"><i class="fas fa-heart text-gray-300"></i> Favoris</button>
+            </div>
         </div>
-        <div id="liste-rayon" class="grid grid-cols-2 gap-4 pb-10"></div>
+
+        <div class="flex items-center gap-3 mb-4">
+            <button onclick="changerVue('boutique')" class="w-8 h-8 flex items-center justify-center text-gray-600"><i class="fas fa-arrow-left"></i></button>
+            <h2 id="titre-rayon" class="font-bold text-gray-900 text-lg">Rayon</h2>
+        </div>
+        <div id="liste-rayon" class="grid grid-cols-2 gap-3 pb-6"></div>
     </div>
 
     <button id="btn-remonter" onclick="remonterHaut()"><i class="fas fa-arrow-up"></i></button>
 
-    <div id="modal-details" class="modal-overlay" onclick="fermerModalDetails()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div id="details-contenu"></div>
-        </div>
+    <!-- La Fiche Produit Plein Écran -->
+    <div id="modal-details" class="page-details">
+        <div id="details-contenu"></div>
     </div>
     
     <div id="modal-panier" class="modal-overlay" onclick="fermerPanier()">
         <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="font-black text-xl text-[#5b21b6] uppercase">Mon Panier</h2>
-                <button onclick="fermerPanier()" class="text-gray-400 text-2xl"><i class="fas fa-times"></i></button>
+            <div class="flex justify-between items-center mb-5 pb-3 border-b border-gray-100">
+                <h2 class="font-bold text-lg text-gray-900">Panier</h2>
+                <button onclick="fermerPanier()" class="text-gray-400 text-xl"><i class="fas fa-times"></i></button>
             </div>
 
-            <div class="bg-gray-50 p-3 rounded-2xl border border-gray-100 mb-4">
-                <p class="text-[10px] font-black uppercase text-gray-500 mb-2">Mode de réception :</p>
+            <div class="bg-gray-50 p-3 rounded-lg border border-gray-200 mb-5">
+                <p class="text-xs font-bold text-gray-700 mb-2">Mode de livraison :</p>
                 <div class="grid grid-cols-2 gap-2">
-                    <button type="button" id="btn-mode-retrait" onclick="choisirModeReception('retrait')" class="py-2.5 px-3 rounded-xl font-black text-[10px] uppercase bg-[#5b21b6] text-white shadow-sm transition">
-                        <i class="fas fa-store mr-1"></i> En boutique
+                    <button type="button" id="btn-mode-retrait" onclick="choisirModeReception('retrait')" class="py-2 px-2 rounded border border-[#f97316] bg-[#f97316] text-white text-xs font-bold transition">
+                        Retrait boutique
                     </button>
-                    <button type="button" id="btn-mode-livraison" onclick="choisirModeReception('livraison')" class="py-2.5 px-3 rounded-xl font-black text-[10px] uppercase bg-white text-gray-600 border border-gray-200 transition">
-                        <i class="fas fa-motorcycle mr-1"></i> Livraison
+                    <button type="button" id="btn-mode-livraison" onclick="choisirModeReception('livraison')" class="py-2 px-2 rounded border border-gray-300 bg-white text-gray-600 text-xs font-medium transition">
+                        Livraison
                     </button>
                 </div>
-                <div id="zone-quartier-livraison" class="hidden mt-3 space-y-2">
-                    <input type="text" id="quartier-livraison" placeholder="Votre quartier / lieu (ex: Koblata, Commerce...)" class="w-full p-2.5 bg-white border border-orange-200 rounded-xl text-xs font-bold text-gray-700 outline-none">
-                    <div class="flex items-center justify-between bg-orange-50 px-3 py-2 rounded-xl border border-orange-100">
-                        <span class="text-[10px] font-bold text-orange-800"><i class="fas fa-shipping-fast mr-1"></i> Service Livraison : 01 43 81 27 59</span>
-                        <a href="https://wa.me/2250143812759" target="_blank" class="bg-[#25D366] text-white text-[9px] font-black px-2.5 py-1 rounded-lg uppercase">WhatsApp</a>
-                    </div>
+                <div id="zone-quartier-livraison" class="hidden mt-3">
+                    <input type="text" id="quartier-livraison" placeholder="Votre quartier (ex: Commerce...)" class="w-full p-2 bg-white border border-gray-300 rounded text-sm outline-none focus:border-[#f97316]">
                 </div>
             </div>
 
             <div id="panier-liste" class="space-y-4 mb-6"></div>
-            <div class="flex justify-between items-center pt-4 border-t border-gray-100 mb-6">
-                <span class="font-black text-gray-400 text-xs uppercase">Total Global</span>
-                <span id="panier-total" class="font-black text-xl text-orange-600">0 FCFA</span>
-            </div>
-        </div>
-    </div>
-    
-    <div id="modal-aide" class="modal-overlay" onclick="fermerAide()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="text-center pb-8">
-                <div class="w-20 h-20 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-4xl mx-auto mb-4"><i class="fas fa-headset"></i></div>
-                <h2 class="font-black text-2xl text-[#5b21b6] uppercase mb-2">Besoin d'aide ?</h2>
-                <p class="text-gray-500 font-bold text-xs mb-6 px-4">L'équipe de Coeur de Marché et notre service de livraison sont à votre disposition sur WhatsApp.</p>
-                <div class="space-y-3">
-                    <button onclick="window.open('https://wa.me/2250576326645')" class="w-full bg-[#25D366] text-white font-black py-4 rounded-xl text-sm uppercase shadow-lg shadow-green-200 active:scale-95 transition">
-                        <i class="fab fa-whatsapp mr-2 text-xl"></i> Contacter le support
-                    </button>
-                    <button onclick="window.open('https://wa.me/2250143812759')" class="w-full bg-[#f97316] text-white font-black py-3.5 rounded-xl text-xs uppercase shadow-md active:scale-95 transition">
-                        <i class="fas fa-motorcycle mr-2 text-base"></i> Service Livraison (01 43 81 27 59)
-                    </button>
-                </div>
+            <div class="flex justify-between items-center pt-4 border-t border-gray-200 mb-2">
+                <span class="font-medium text-gray-600 text-sm">Total</span>
+                <span id="panier-total" class="font-black text-xl text-[#f97316]">0 FCFA</span>
             </div>
         </div>
     </div>
 
     <nav class="nav-bar">
         <button onclick="changerVue('accueil')" id="nav-accueil" class="nav-item active-nav"><i class="fas fa-home"></i><span class="nav-text">Accueil</span></button>
-        <button onclick="changerVue('boutique')" id="nav-boutique" class="nav-item"><i class="fas fa-store-alt"></i><span class="nav-text">Boutiques</span></button>
-        <button onclick="ouvrirPanier()" class="panier-central active:scale-95 transition"><i class="fas fa-shopping-basket"></i><span id="panier-count-nav" class="absolute -top-1 -right-1 bg-red-600 text-white text-[11px] font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-md">0</span></button>
-        <a href="vendre.html" class="nav-item"><i class="fas fa-store"></i><span class="nav-text">Vendre</span></a>
-        <button onclick="ouvrirAide()" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
+        <button onclick="changerVue('boutique')" id="nav-boutique" class="nav-item"><i class="fas fa-store"></i><span class="nav-text">Boutiques</span></button>
+        <button onclick="ouvrirPanier()" class="nav-item relative">
+            <i class="fas fa-shopping-cart"></i><span class="nav-text">Panier</span>
+            <span id="panier-count-nav" class="absolute top-0 right-1 bg-[#f97316] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">0</span>
+        </button>
+        <a href="vendre.html" class="nav-item"><i class="fas fa-user-tag"></i><span class="nav-text">Vendre</span></a>
     </nav>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="src/main.js"></script>
