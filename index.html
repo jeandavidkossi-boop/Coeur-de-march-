@@ -17,25 +17,28 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
         
-        /* Design E-commerce Pro (Jumia style) */
+        .header-bg { background-color: #5b21b6; padding-bottom: 25px; }
         .scrolling-banner { background-color: #fff3cd; color: #856404; font-size: 13px; font-weight: 700; padding: 10px 0; border-bottom: 1px solid #ffeeba; }
         .scrolling-banner p { display: inline-block; white-space: nowrap; animation: defilement 35s linear infinite; padding-right: 50px; }
         @keyframes defilement { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
         
-        .nav-bar { background: white; height: 65px; display: flex; justify-content: space-around; align-items: center; position: fixed; bottom: 0; width: 100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; }
+        .search-container { margin-top: 0; position: relative; z-index: 50; padding: 0 24px; }
+        .search-box { background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.08); padding: 6px; display: flex; align-items: center; }
+        .mic-btn { background-color: #5b21b6; color: white; width: 45px; height: 45px; border-radius: 15px; display: flex; justify-content: center; align-items: center; font-size: 18px; }
+        
+        /* Correction Navigation et Panier Central */
+        .nav-bar { background: white; height: 65px; display: flex; justify-content: space-around; align-items: center; position: fixed; bottom: 0; width: 100%; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); z-index: 100; border-top-left-radius: 15px; border-top-right-radius: 15px; }
         .active-nav { color: #f97316 !important; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #6b7280; font-size: 20px; padding: 5px; }
         .nav-text { font-size: 10px; font-weight: 500; margin-top: 4px; }
-        .panier-central { color: #4b5563; font-size: 20px; position: relative; }
+        .panier-central { background: #f97316; width: 60px; height: 60px; border-radius: 50%; border: 5px solid #f8f9fa; margin-top: -25px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); color: white; font-size: 24px; display: flex; align-items: center; justify-content: center; position: relative; }
         
         #toast-panier { position: fixed; top: -80px; left: 50%; transform: translateX(-50%); background: #22c55e; color: white; padding: 12px 24px; border-radius: 8px; font-size: 13px; font-weight: 700; box-shadow: 0 4px 12px rgba(34,197,94,0.3); z-index: 9999; transition: top 0.3s ease; white-space: nowrap; }
         #toast-panier.show { top: 20px; }
         
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.3s; }
-        
         /* Correction Bug Largeur Modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity 0.3s; }
         .modal-content { background: white; width: 100%; border-radius: 16px 16px 0 0; padding: 20px; max-height: 90vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.3s ease; }
-        
         .modal-overlay.active { opacity: 1; }
         .modal-overlay.active .modal-content { transform: translateY(0); }
         
@@ -44,25 +47,33 @@
         .modal-alerte-overlay.active { opacity: 1; }
         .modal-alerte-overlay.active .modal-alerte-content { transform: scale(1); }
         
+        .modal-image-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 400; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        .modal-image-overlay.active { opacity: 1; }
+        
         #ecran-chargement { position: fixed; inset: 0; background-color: white; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.3s; }
         #btn-remonter { position: fixed; bottom: 80px; right: 20px; background: white; color: #374151; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); opacity: 0; pointer-events: none; transition: all 0.3s; z-index: 90; border: 1px solid #e5e7eb; }
         #btn-remonter.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
         
         .hide-scroll::-webkit-scrollbar { display: none; }
         .scroll-h { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; padding-bottom: 8px; }
-        .scroll-item { min-width: 130px; scroll-snap-align: start; flex-shrink: 0; }
-        
-        /* Fiche Produit Plein Écran */
-        .page-details { position: fixed; inset: 0; background: white; z-index: 150; overflow-y: auto; transform: translateX(100%); transition: transform 0.3s ease; display: none; padding-bottom: 80px; }
-        .page-details.active { transform: translateX(0); }
+        .scroll-item { min-width: 140px; scroll-snap-align: start; flex-shrink: 0; }
         
         .video-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        /* Fiche Produit Plein Écran (Remplace le Modal de détails) */
+        .page-details { position: fixed; inset: 0; background: white; z-index: 150; overflow-y: auto; transform: translateX(100%); transition: transform 0.3s ease; display: none; padding-bottom: 80px; }
+        .page-details.active { transform: translateX(0); }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-24">
 
     <div id="toast-panier"><i class="fas fa-check-circle mr-2"></i> Ajouté au panier !</div>
+
+    <div id="modal-image" class="modal-image-overlay" onclick="fermerImage()">
+        <button onclick="fermerImage()" class="absolute top-6 right-6 text-white text-3xl z-50 p-2"><i class="fas fa-times"></i></button>
+        <img id="image-en-grand" src="" class="max-w-[95%] max-h-[85%] object-contain rounded-lg shadow-2xl transition-transform duration-300 transform scale-95">
+    </div>
 
     <div id="modal-alerte" class="modal-alerte-overlay" onclick="fermerAlerte()">
         <div class="modal-alerte-content" onclick="event.stopPropagation()">
@@ -77,52 +88,70 @@
         <img src="logo-pwa-512x512.png" class="w-[200px] max-w-[70%] object-contain animate-pulse" alt="Logo">
     </div>
     
-    <!-- En-tête Pro -->
-    <div class="bg-white pt-4 pb-4 px-4 shadow-sm relative z-10">
-        <div class="flex items-center justify-between mb-3">
-            <div class="flex items-center gap-2">
-                <img src="logo-pwa-512x512.png" class="w-8 h-8 object-contain" alt="Logo">
-                <h1 class="text-[#5b21b6] text-xl font-black tracking-tight">Cœur de Marché</h1>
+    <div class="bg-[#4c1d95] pt-6 pb-4 px-5 relative shadow-md">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="bg-white rounded-full p-1 shadow-sm shrink-0">
+                <img src="logo-pwa-512x512.png" class="w-10 h-10 object-contain rounded-full" alt="Logo">
             </div>
-            <div class="text-[10px] text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded">Bouaflé</div>
+            <div class="flex flex-col">
+                <h1 class="text-white text-[20px] font-black uppercase tracking-wide leading-none">CŒUR DE MARCHÉ</h1>
+                <p class="text-orange-400 font-bold text-[9px] uppercase tracking-widest mt-1">
+                    <i class="fas fa-map-marker-alt mr-1"></i> Bouaflé
+                </p>
+            </div>
         </div>
          
-        <div class="w-full bg-gray-100 rounded-lg p-1 flex items-center border border-gray-200 focus-within:border-purple-400 transition-colors">
-            <i class="fas fa-search text-gray-400 ml-2 mr-2"></i>
-            <input type="search" id="inputRecherche" oninput="rechercherProduit(event)" onkeydown="if(event.key==='Enter') this.blur()" placeholder="Chercher un produit, une marque..." class="flex-1 bg-transparent border-none outline-none text-gray-800 text-sm py-2">
-            <button onclick="lancerMicro()" id="btnMicro" class="w-8 h-8 flex items-center justify-center text-gray-500">
+        <div class="w-full bg-white rounded-lg shadow-inner p-1 flex items-center mt-2 border border-purple-800">
+            <i class="fas fa-search text-gray-400 ml-3 mr-2 text-md shrink-0"></i>
+            <input type="search" id="inputRecherche" oninput="rechercherProduit(event)" onkeydown="if(event.key==='Enter') this.blur()" placeholder="Que cherchez-vous à Bouaflé ?" class="flex-1 bg-transparent border-none outline-none text-gray-700 text-sm ml-1 py-1">
+            <button onclick="lancerMicro()" id="btnMicro" class="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center text-[#5b21b6] shrink-0 mr-1">
                 <i id="iconMicro" class="fas fa-microphone"></i>
             </button>
         </div>
     </div>
-        <div class="scrolling-banner mt-0 mx-0 mb-2">
+    
+    <div class="scrolling-banner mt-0 mx-0 mb-4 bg-white border-b border-gray-200 shadow-sm overflow-hidden py-1">
         <p id="texte-annonce"></p>
     </div>
-
-    <div id="vue-accueil">
-        <div class="px-4 mt-4">
-            <div id="carrousel-vip" class="scroll-h hide-scroll pb-2"></div>
+        <div id="vue-accueil">
+        <div id="section-boutiques-vip" class="px-5 mt-4 mb-2">
+            <h2 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2">
+                <i class="fas fa-crown text-yellow-500"></i> Boutiques Officielles
+            </h2>
+            <div id="avenue-boutiques-vip" class="flex gap-3 overflow-x-auto hide-scroll py-2" style="scroll-behavior: smooth;"></div>
         </div>
 
-        <div class="px-4 mt-6 mb-2">
-            <h2 class="font-bold text-gray-800 text-sm mb-3">Boutiques Officielles</h2>
-            <div id="avenue-boutiques-vip" class="flex gap-3 overflow-x-auto hide-scroll pb-2" style="scroll-behavior: smooth;"></div>
+        <div class="flex justify-between px-6 mt-6">
+            <button onclick="filtrerAccueil('Vivrier')" class="flex flex-col items-center"><div class="w-14 h-14 bg-[#ffedd5] rounded-full flex items-center justify-center text-[#d97706] text-xl mb-1 shadow-sm border border-orange-100"><i class="fas fa-shopping-basket"></i></div><span class="text-[9px] font-bold uppercase text-gray-600">Marché Frais</span></button>
+            <button onclick="filtrerAccueil('Beauté')" class="flex flex-col items-center"><div class="w-14 h-14 bg-[#dcfce7] rounded-full flex items-center justify-center text-[#16a34a] text-xl mb-1 shadow-sm border border-green-100"><i class="fas fa-star"></i></div><span class="text-[9px] font-bold uppercase text-gray-600">Tendances</span></button>
+            <button onclick="filtrerAccueil('Alimentation')" class="flex flex-col items-center"><div class="w-14 h-14 bg-[#e0e7ff] rounded-full flex items-center justify-center text-[#4f46e5] text-xl mb-1 shadow-sm border border-blue-100"><i class="fas fa-box-open"></i></div><span class="text-[9px] font-bold uppercase text-gray-600">Superette</span></button>
+            <button onclick="filtrerAccueil('Habillement')" class="flex flex-col items-center"><div class="w-14 h-14 bg-[#fce7f3] rounded-full flex items-center justify-center text-[#db2777] text-xl mb-1 shadow-sm border border-pink-100"><i class="fas fa-gift"></i></div><span class="text-[9px] font-bold uppercase text-gray-600">Cadeaux</span></button>
         </div>
         
-        <div class="px-4 mt-6">
-            <h2 class="font-bold text-gray-800 text-sm mb-3">Nouveautés pour vous</h2>
-            <div id="liste-nouveautes" class="scroll-h hide-scroll"></div>
+        <div class="px-5 mt-8">
+            <h2 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2"><i class="fas fa-star text-yellow-500"></i> À la une</h2>
+            <div id="carrousel-vip" class="scroll-h hide-scroll pb-2">
+                <div class="bg-gray-100 w-full h-32 rounded-lg flex flex-col items-center justify-center text-gray-400"><i class="fas fa-bullhorn text-2xl mb-2"></i><span class="text-xs font-bold uppercase tracking-wider">Chargement VIP...</span></div>
+            </div>
         </div>
 
-        <div class="px-4 mt-8 mb-6">
-            <h2 class="font-bold text-gray-800 text-sm mb-3">TV Marché</h2>
-            <div id="conteneur-tv"></div>
+        <div class="px-5 mt-6">
+            <h2 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2"><i class="fas fa-tv text-orange-500"></i> TV Marché</h2>
+            <div id="conteneur-tv">
+                <div class="bg-gray-100 p-3 rounded-lg shadow-sm border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 h-40"><i class="fas fa-video text-3xl mb-2"></i><span class="text-xs font-bold uppercase tracking-wider">Espace TV Disponible</span></div>
+            </div>
+        </div>
+
+        <div class="px-5 mt-8 mb-6">
+            <h2 class="font-bold text-gray-800 text-sm mb-3 flex items-center gap-2"><i class="fas fa-fire text-red-500"></i> Sélection du Moment</h2>
+            <div id="liste-nouveautes" class="scroll-h hide-scroll pb-2"></div>
         </div>
     </div>
 
-    <div id="vue-boutique" class="hidden mt-4 px-4">
+    <div id="vue-boutique" class="hidden mt-6 px-4">
         <div id="banniere-vendeur" class="mb-4"></div>
         
+        <!-- Filtres Jumia Style -->
         <div class="bg-white p-3 rounded-lg border border-gray-200 mb-4 shadow-sm">
             <div class="flex justify-between items-center mb-3">
                 <span class="text-xs font-bold text-gray-700">Trier et Filtrer</span>
@@ -140,7 +169,6 @@
             </div>
         </div>
 
-        <!-- RESTITUTION DE LA GRILLE DES 16 RAYONS -->
         <div id="menu-rayons" class="mb-6">
             <h2 class="font-bold text-gray-800 text-sm mb-4">Rayons du marché</h2>
             <div class="grid grid-cols-4 gap-y-5 gap-x-2 text-center">
@@ -162,11 +190,9 @@
                 <div onclick="filtrerBoutique('Services & Artisans')" class="cursor-pointer"><div class="w-10 h-10 mx-auto bg-teal-50 text-teal-600 rounded-full flex items-center justify-center text-lg mb-1.5 shadow-sm border border-teal-100"><i class="fas fa-briefcase"></i></div><span class="text-[9px] font-medium text-gray-600 uppercase">Services</span></div>
             </div>
         </div>
-
-        <div id="liste-boutique" class="grid grid-cols-2 gap-3 pb-6"></div>
-                                                                                                                                                                                                                                                                                       </div>
-                                                                                                                                                                                                                                                                                       
-        <div id="vue-rayon" class="hidden mt-4 px-4">
+        <div id="liste-boutique" class="grid grid-cols-2 gap-3 pb-8"></div>
+    </div>
+       <div id="vue-rayon" class="hidden mt-6 px-4">
         <div class="bg-white p-3 rounded-lg border border-gray-200 mb-4 shadow-sm">
             <div class="flex justify-between items-center mb-3">
                 <span class="text-xs font-bold text-gray-700">Trier et Filtrer</span>
@@ -185,15 +211,15 @@
         </div>
 
         <div class="flex items-center gap-3 mb-4">
-            <button onclick="changerVue('boutique')" class="w-8 h-8 flex items-center justify-center text-gray-600"><i class="fas fa-arrow-left"></i></button>
+            <button onclick="changerVue('boutique')" class="w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-600 shadow-sm"><i class="fas fa-arrow-left"></i></button>
             <h2 id="titre-rayon" class="font-bold text-gray-900 text-lg">Rayon</h2>
         </div>
-        <div id="liste-rayon" class="grid grid-cols-2 gap-3 pb-6"></div>
+        <div id="liste-rayon" class="grid grid-cols-2 gap-3 pb-8"></div>
     </div>
 
     <button id="btn-remonter" onclick="remonterHaut()"><i class="fas fa-arrow-up"></i></button>
 
-    <!-- La Fiche Produit Plein Écran -->
+    <!-- Remplacement du Modal par une Fiche Produit Plein Écran -->
     <div id="modal-details" class="page-details">
         <div id="details-contenu"></div>
     </div>
@@ -217,6 +243,10 @@
                 </div>
                 <div id="zone-quartier-livraison" class="hidden mt-3">
                     <input type="text" id="quartier-livraison" placeholder="Votre quartier (ex: Commerce...)" class="w-full p-2 bg-white border border-gray-300 rounded text-sm outline-none focus:border-[#f97316]">
+                    <div class="flex items-center justify-between bg-orange-50 px-3 py-2 rounded mt-2 border border-orange-100">
+                        <span class="text-[10px] font-bold text-orange-800"><i class="fas fa-shipping-fast mr-1"></i> Livraison : 01 43 81 27 59</span>
+                        <a href="https://wa.me/2250143812759" target="_blank" class="bg-[#25D366] text-white text-[9px] font-bold px-2 py-1 rounded">WhatsApp</a>
+                    </div>
                 </div>
             </div>
 
@@ -227,15 +257,31 @@
             </div>
         </div>
     </div>
+    
+    <div id="modal-aide" class="modal-overlay" onclick="fermerAide()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="text-center pb-8">
+                <div class="w-16 h-16 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fas fa-headset"></i></div>
+                <h2 class="font-bold text-xl text-gray-900 mb-2">Besoin d'aide ?</h2>
+                <p class="text-gray-500 text-xs mb-6 px-4">L'équipe de Coeur de Marché et notre service de livraison sont à votre disposition sur WhatsApp.</p>
+                <div class="space-y-3">
+                    <button onclick="window.open('https://wa.me/2250576326645')" class="w-full bg-[#25D366] text-white font-bold py-3 rounded-lg text-sm shadow-sm active:bg-green-600 transition">
+                        <i class="fab fa-whatsapp mr-2"></i> Contacter le support
+                    </button>
+                    <button onclick="window.open('https://wa.me/2250143812759')" class="w-full bg-[#f97316] text-white font-bold py-3 rounded-lg text-sm shadow-sm active:bg-orange-600 transition">
+                        <i class="fas fa-motorcycle mr-2"></i> Service Livraison
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <nav class="nav-bar">
         <button onclick="changerVue('accueil')" id="nav-accueil" class="nav-item active-nav"><i class="fas fa-home"></i><span class="nav-text">Accueil</span></button>
-        <button onclick="changerVue('boutique')" id="nav-boutique" class="nav-item"><i class="fas fa-store"></i><span class="nav-text">Boutiques</span></button>
-        <button onclick="ouvrirPanier()" class="nav-item relative">
-            <i class="fas fa-shopping-cart"></i><span class="nav-text">Panier</span>
-            <span id="panier-count-nav" class="absolute top-0 right-1 bg-[#f97316] text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center border border-white">0</span>
-        </button>
+        <button onclick="changerVue('boutique')" id="nav-boutique" class="nav-item"><i class="fas fa-store-alt"></i><span class="nav-text">Boutiques</span></button>
+        <button onclick="ouvrirPanier()" class="panier-central active:scale-95 transition"><i class="fas fa-shopping-basket"></i><span id="panier-count-nav" class="absolute top-0 right-1 bg-white text-[#f97316] text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#f97316] shadow-sm">0</span></button>
         <a href="vendre.html" class="nav-item"><i class="fas fa-user-tag"></i><span class="nav-text">Vendre</span></a>
+        <button onclick="ouvrirAide()" class="nav-item"><i class="fas fa-question-circle"></i><span class="nav-text">Aide</span></button>
     </nav>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="src/main.js"></script>
