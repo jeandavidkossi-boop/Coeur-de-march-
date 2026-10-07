@@ -386,49 +386,57 @@ function filtrerVIP(idVendeur, nomBoutique, imageCouverture = '') {
     
     const nomAffiche = nomBoutique || (vendeurObj ? vendeurObj.nom_boutique : "Boutique");
     const estVip = vendeurObj && vendeurObj.abonnement === 'vip';
-    const texteStatut = estVip ? 'Boutique Officielle' : 'Boutique Partenaire';
+    const texteStatut = estVip ? '~ Boutique Officielle' : '~ Boutique Partenaire';
 
-    // Récupération de l'image de couverture
-    let imageAffichee = imageCouverture;
-    if (!imageAffichee && vendeurObj) {
-        imageAffichee = vendeurObj.image || vendeurObj.photo_couverture || vendeurObj.logo || '';
+    // 1. Définir l'image de couverture (Rectangle du haut)
+    let coverUrl = imageCouverture;
+    if (!coverUrl && vendeurObj) {
+        coverUrl = vendeurObj.photo_couverture || vendeurObj.image || '';
     }
+
+    // 2. Définir le Logo (Cercle central)
+    let logoUrl = vendeurObj ? vendeurObj.logo : '';
+    let initiale = (nomAffiche || 'B')[0].toUpperCase();
+    let logoHtml = logoUrl 
+        ? `<img src="${logoUrl}" class="w-full h-full object-cover">` 
+        : `${initiale}`;
 
     const zoneBanniere = document.getElementById('banniere-vendeur');
     if (zoneBanniere) {
-        const styleFond = (imageAffichee && imageAffichee !== 'null' && imageAffichee !== 'undefined' && imageAffichee !== '')
-            ? "background-image: url('" + imageAffichee + "'); background-size: cover; background-position: center;"
-            : "background: linear-gradient(to right, #4c1d95, #7c3aed);";
+        const styleFond = (coverUrl && coverUrl !== 'null' && coverUrl !== 'undefined' && coverUrl !== '')
+            ? `background-image: url('${coverUrl}'); background-size: cover; background-position: center;`
+            : `background: linear-gradient(to right, #4c1d95, #7c3aed);`;
 
-        // LE NOUVEAU DESIGN FAÇON "WHATSAPP BUSINESS"
+        // LE DESIGN "WHATSAPP BUSINESS"
         zoneBanniere.innerHTML = `
-        <div class="bg-white rounded-lg border border-gray-200 shadow-sm mb-4 overflow-hidden relative">
-            <!-- 1. La Couverture -->
-            <div style="${styleFond}" class="w-full h-28 relative">
-                <button onclick="partagerBoutique('${telVendeur}', '${echapperHTML(nomAffiche).replace(/'/g, "\\'")}')" 
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm mb-6 overflow-hidden">
+            <!-- Couverture -->
+            <div style="${styleFond}" class="w-full h-32 relative">
+                <div class="absolute inset-0 bg-black/10"></div>
+                <button onclick="partagerBoutique('${telVendeur}', '${echapperHTML(nomAffiche).replace(/'/g, "\\'")}')"
                         class="absolute top-3 right-3 bg-black/40 backdrop-blur-md text-white w-8 h-8 rounded-full flex items-center justify-center z-20 transition active:scale-95">
                     <i class="fas fa-share-alt text-sm"></i>
                 </button>
             </div>
-            
-            <!-- 2. La section Profil (Logo + Textes) -->
-            <div class="px-4 pb-4 relative">
-                <!-- Le Logo circulaire qui chevauche l'image -->
-                <div class="w-16 h-16 bg-gray-100 rounded-full border-4 border-white shadow-sm flex items-center justify-center text-[#5b21b6] font-black text-2xl absolute -top-8 left-4 overflow-hidden">
-                    ${(nomAffiche || 'B')[0].toUpperCase()}
-                </div>
-                
-                <!-- Les Textes et Badges alignés -->
-                <div class="mt-10 flex justify-between items-start">
-                    <div>
-                        <div class="flex items-center gap-1.5">
-                            <h2 class="text-lg font-black text-gray-900 leading-tight">${echapperHTML(nomAffiche)}</h2>
-                            ${estVip ? '<i class="fas fa-check-circle text-[#25D366] text-sm" title="Vérifié"></i>' : ''}
-                        </div>
-                        <p class="text-[11px] font-medium text-gray-500 mt-0.5">${texteStatut}</p>
+
+            <!-- Profil (Logo superposé au centre) -->
+            <div class="relative flex justify-center mt-[-40px]">
+                <div class="w-20 h-20 bg-white rounded-full p-1 shadow-sm">
+                    <div class="w-full h-full bg-gray-50 rounded-full flex items-center justify-center text-[#5b21b6] font-black text-3xl overflow-hidden border border-gray-100">
+                        ${logoHtml}
                     </div>
-                    ${estVip ? '<span class="bg-yellow-100 text-yellow-700 text-[9px] font-black px-2 py-1 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm"><i class="fas fa-crown"></i> VIP</span>' : ''}
                 </div>
+            </div>
+
+            <!-- Informations (Centrées en dessous) -->
+            <div class="text-center px-4 pb-5 pt-2">
+                <div class="flex items-center justify-center gap-1.5 mb-0.5">
+                    <h2 class="text-xl font-bold text-gray-900 leading-tight">${echapperHTML(nomAffiche)}</h2>
+                    ${estVip ? '<i class="fas fa-check-circle text-[#25D366] text-base" title="Compte Vérifié"></i>' : ''}
+                </div>
+                <p class="text-[13px] text-gray-500 font-medium">${texteStatut}</p>
+                
+                ${estVip ? '<div class="mt-3 flex justify-center"><span class="bg-yellow-50 border border-yellow-200 text-yellow-700 text-[9px] font-black px-2 py-1 rounded uppercase tracking-wider flex items-center gap-1 shadow-sm"><i class="fas fa-crown"></i> Vendeur VIP</span></div>' : ''}
             </div>
         </div>
         `;
@@ -452,7 +460,6 @@ function filtrerVIP(idVendeur, nomBoutique, imageCouverture = '') {
         if (listeElt) listeElt.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 300);
 }
-
 
 // -------------------------------------------------------------
 // DESIGN CARTES (STYLE JUMIA) ET CORRECTION NOMS
